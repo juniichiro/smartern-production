@@ -183,75 +183,55 @@ class OfficeMatchingController extends Controller
 
     public function exportCsv()
     {
-        $confirmedMatches = MatchResult::where('is_confirmed', true)->get();
-
-        if ($confirmedMatches->isEmpty()) {
-            return back()->with('error', 'No finalized matches to export. Please confirm assignments first.');
-        }
-
-        // Load Onboarding Details into a lookup array
-        $onboardingDetails = [];
         $applicants = OnboardingApplicant::all();
-        foreach ($applicants as $app) {
-            $onboardingDetails[$app->full_name] = [
-                'email' => $app->email,
-                'first_name' => $app->first_name,
-                'middle_name' => $app->middle_name,
-                'last_name' => $app->last_name,
-                'gender' => $app->gender,
-                'gender_other_specify' => $app->gender_other_specify,
-                'phone_number' => $app->phone_number,
-                'profile_picture' => $app->profile_picture,
-                'emergency_contact' => $app->emergency_contact,
-            ];
+
+        if ($applicants->isEmpty()) {
+            return back()->with('error', 'No onboarding applicants found to export.');
         }
 
-        $filename = 'Intern_Accounts_Batch.csv';
+        $filename = 'SmarTern_Matching_Backup_' . date('Y-m-d_H-i-s') . '.csv';
         $headers = [
             'Content-Type' => 'text/csv',
             'Content-Disposition' => "attachment; filename=\"$filename\"",
         ];
 
-        $callback = function () use ($confirmedMatches, $onboardingDetails) {
+        $callback = function () use ($applicants) {
             $file = fopen('php://output', 'w');
 
             fputcsv($file, [
-                'first_name',
-                'middle_name',
-                'last_name',
+                'student_id',
+                'student_name',
+                'university',
                 'email',
-                'school',
-                'office_id',
-                'role_id',
-                'gender',
-                'gender_other_specify',
-                'phone_number',
-                'profile_picture',
-                'emergency_contact',
+                'tech_skills',
+                'soft_skills'
             ]);
 
-            foreach ($confirmedMatches as $match) {
-                $details = $onboardingDetails[$match->applicant_name] ?? null;
-
-                if ($details) {
-                    fputcsv($file, [
-                        $details['first_name'],
-                        $details['middle_name'],
-                        $details['last_name'],
-                        $details['email'],
-                        $match->school,
-                        $match->office_id,
-                        UserRole::INTERN->value,
-                        $details['gender'],
-                        $details['gender_other_specify'],
-                        $details['phone_number'],
-                        $details['profile_picture'],
-                        $details['emergency_contact'],
-                    ]);
-                } else {
-                    // Fallback for manual overrides without DB details
-                    fputcsv($file, [$match->applicant_name, '', '', 'pending@smarttern.com', $match->school, $match->office_id, UserRole::INTERN->value, 'male', '', '09000000000', '', '']);
+            foreach ($applicants as $app) {
+                $techPairs = [];
+                if (is_array($app->tech_skills)) {
+                    foreach ($app->tech_skills as $skill => $score) {
+                        $techPairs[] = "{$skill}:{$score}";
+                    }
                 }
+                $techString = implode(';', $techPairs);
+
+                $softPairs = [];
+                if (is_array($app->soft_skills)) {
+                    foreach ($app->soft_skills as $skill => $score) {
+                        $softPairs[] = "{$skill}:{$score}";
+                    }
+                }
+                $softString = implode(';', $softPairs);
+
+                fputcsv($file, [
+                    $app->applicant_id,
+                    $app->full_name,
+                    $app->university,
+                    $app->email,
+                    $techString,
+                    $softString
+                ]);
             }
             fclose($file);
         };
