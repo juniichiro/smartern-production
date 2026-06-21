@@ -44,7 +44,7 @@ class AttendanceSeeder extends Seeder
                     'clock_out' => $clockOut,
                     'latitude' => 14.5995,  // Sample coords (Manila area)
                     'longitude' => 120.9842,
-                    'status' => 'present',
+                    'status' => 'on_time',
                     'remarks' => 'Completed 8 hours render.',
                 ]);
             }
