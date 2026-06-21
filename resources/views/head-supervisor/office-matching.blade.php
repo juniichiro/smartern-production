@@ -374,7 +374,7 @@
                                                                             {{-- The Bar itself --}}
                                                                             <div @click="showBreakdown = '{{ $match->id }}'; $nextTick(() => { if (window.MathJax) { MathJax.typesetPromise(); } })"
                                                                                  class="w-16 cursor-pointer rounded-t-2xl transition-all duration-500 ease-out shadow-xl hover:ring-8 hover:ring-blue-500/10 active:scale-95 bg-gradient-to-t from-emerald-600 to-emerald-400 hover:from-emerald-500 hover:to-emerald-300"
-                                                                                 style="height: {{ max(5, $match->score) }}%;"
+                                                                                 style="height: {{ max(5, $match->score) }}%; background: linear-gradient(to top, #047857, #10b981);"
                                                                                  title="Click to view breakdown for {{ $match->office->name }}">
                                                                             </div>
                                                                         @elseif($match->score >= 60)
@@ -387,7 +387,7 @@
                                                                             {{-- The Bar itself --}}
                                                                             <div @click="showBreakdown = '{{ $match->id }}'; $nextTick(() => { if (window.MathJax) { MathJax.typesetPromise(); } })"
                                                                                  class="w-16 cursor-pointer rounded-t-2xl transition-all duration-500 ease-out shadow-xl hover:ring-8 hover:ring-blue-500/10 active:scale-95 bg-gradient-to-t from-blue-700 to-blue-500 hover:from-blue-600 hover:to-blue-400"
-                                                                                 style="height: {{ max(5, $match->score) }}%;"
+                                                                                 style="height: {{ max(5, $match->score) }}%; background: linear-gradient(to top, #084577, #3b82f6);"
                                                                                  title="Click to view breakdown for {{ $match->office->name }}">
                                                                             </div>
                                                                         @elseif($match->score >= 40)
@@ -400,7 +400,7 @@
                                                                             {{-- The Bar itself --}}
                                                                             <div @click="showBreakdown = '{{ $match->id }}'; $nextTick(() => { if (window.MathJax) { MathJax.typesetPromise(); } })"
                                                                                  class="w-16 cursor-pointer rounded-t-2xl transition-all duration-500 ease-out shadow-xl hover:ring-8 hover:ring-blue-500/10 active:scale-95 bg-gradient-to-t from-indigo-600 to-indigo-400 hover:from-indigo-500 hover:to-indigo-300"
-                                                                                 style="height: {{ max(5, $match->score) }}%;"
+                                                                                 style="height: {{ max(5, $match->score) }}%; background: linear-gradient(to top, #4338ca, #6366f1);"
                                                                                  title="Click to view breakdown for {{ $match->office->name }}">
                                                                             </div>
                                                                         @else
@@ -413,7 +413,7 @@
                                                                             {{-- The Bar itself --}}
                                                                             <div @click="showBreakdown = '{{ $match->id }}'; $nextTick(() => { if (window.MathJax) { MathJax.typesetPromise(); } })"
                                                                                  class="w-16 cursor-pointer rounded-t-2xl transition-all duration-500 ease-out shadow-xl hover:ring-8 hover:ring-blue-500/10 active:scale-95 bg-gradient-to-t from-amber-600 to-amber-400 hover:from-amber-500 hover:to-amber-300"
-                                                                                 style="height: {{ max(5, $match->score) }}%;"
+                                                                                 style="height: {{ max(5, $match->score) }}%; background: linear-gradient(to top, #b45309, #f59e0b);"
                                                                                  title="Click to view breakdown for {{ $match->office->name }}">
                                                                             </div>
                                                                         @endif
