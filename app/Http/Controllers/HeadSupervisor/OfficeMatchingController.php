@@ -108,7 +108,12 @@ class OfficeMatchingController extends Controller
         $preassignments = [];
 
         while (($data = fgetcsv($handle)) !== false) {
-            $applicantName = $data[1];
+            // Safeguard against empty or corrupt rows
+            if (empty($data) || count($data) < 2 || empty(trim($data[1]))) {
+                continue;
+            }
+
+            $applicantName = trim($data[1]);
             $preassignedOfficeId = isset($data[6]) && ! empty(trim($data[6])) ? (int) $data[6] : null;
 
             if ($preassignedOfficeId) {
@@ -124,8 +129,8 @@ class OfficeMatchingController extends Controller
 
             // Parse dynamic skills: "Skill:Score;Skill:Score"
             $allSkills = [];
-            $rawTech = ! empty($data[4]) ? explode(';', $data[4]) : [];
-            $rawSoft = ! empty($data[5]) ? explode(';', $data[5]) : [];
+            $rawTech = isset($data[4]) && ! empty($data[4]) ? explode(';', $data[4]) : [];
+            $rawSoft = isset($data[5]) && ! empty($data[5]) ? explode(';', $data[5]) : [];
 
             if (! $applicant) {
                 $applicantId = 'APP-' . strtoupper(Str::random(8));
@@ -167,8 +172,8 @@ class OfficeMatchingController extends Controller
                     'first_name' => $firstName,
                     'middle_name' => $middleName,
                     'last_name' => $lastName,
-                    'email' => ! empty($data[3]) ? $data[3] : 'pending_' . strtolower(Str::random(5)) . '@smarttern.com',
-                    'university' => ! empty($data[2]) ? $data[2] : 'N/A',
+                    'email' => isset($data[3]) && ! empty($data[3]) ? $data[3] : 'pending_' . strtolower(Str::random(5)) . '@smarttern.com',
+                    'university' => isset($data[2]) && ! empty($data[2]) ? $data[2] : 'N/A',
                     'tech_skills' => $techSkillsFormatted,
                     'soft_skills' => $softSkillsFormatted,
                     'gender' => 'male',
@@ -192,7 +197,7 @@ class OfficeMatchingController extends Controller
 
             $allStudentData[] = [
                 'student_name' => $applicantName,
-                'university' => $data[2],
+                'university' => isset($data[2]) ? $data[2] : 'N/A',
                 'skills' => $allSkills,
                 'resume_text' => $resumeText,
                 'verified_skills' => $applicant ? ($applicant->evaluation?->verified_skills ?? []) : [],

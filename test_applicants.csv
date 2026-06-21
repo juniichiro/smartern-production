@@ -1,0 +1,3 @@
+student_id,student_name,university,email,tech_skills,soft_skills,office_id
+APP-TEST01,Alice Smith,Quezon University,alice.smith@example.com,PHP:5;Laravel:4;JavaScript:3,Communication:5;Teamwork:4,
+APP-TEST02,Bob Jones,Metro College,bob.jones@example.com,Python:4;Django:3;SQL:4,Leadership:4;Problem Solving:5,
