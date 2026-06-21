@@ -59,6 +59,7 @@ Alpine.data('uiNotification', (timeout = 2000) => ({
  */
 Alpine.data('toastManager', (context = null) => ({
     toasts: [],
+    queue: [],
     init() {
         window.addEventListener('toast', (e) => {
             const { message, type, target } = e.detail;
@@ -69,7 +70,7 @@ Alpine.data('toastManager', (context = null) => ({
             // If this is a global manager (no context), only accept toasts with no target
             if (!context && target) return;
 
-            this.add(message, type);
+            this.enqueue(message, type);
         });
 
         // Initialize global helper if this is the global manager
@@ -81,17 +82,24 @@ Alpine.data('toastManager', (context = null) => ({
             };
         }
     },
-    add(message, type = 'success') {
-        const id = Date.now();
-        this.toasts.push({ id, message, type, show: false });
-        
-        // Use nextTick to trigger entry animation
+    enqueue(message, type = 'success') {
+        const id = Date.now() + Math.random();
+        this.queue.push({ id, message, type, show: false });
+        this.processQueue();
+    },
+    processQueue() {
+        if (this.toasts.length > 0) return;
+        if (this.queue.length === 0) return;
+
+        const nextToast = this.queue.shift();
+        this.toasts.push(nextToast);
+
         this.$nextTick(() => {
-            const toast = this.toasts.find(t => t.id === id);
+            const toast = this.toasts.find(t => t.id === nextToast.id);
             if (toast) toast.show = true;
         });
 
-        setTimeout(() => this.remove(id), 5000);
+        setTimeout(() => this.remove(nextToast.id), 5000);
     },
     remove(id) {
         const toast = this.toasts.find(t => t.id === id);
@@ -99,6 +107,7 @@ Alpine.data('toastManager', (context = null) => ({
             toast.show = false;
             setTimeout(() => {
                 this.toasts = this.toasts.filter(t => t.id !== id);
+                this.processQueue();
             }, 300);
         }
     }

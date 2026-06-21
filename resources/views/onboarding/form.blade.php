@@ -691,6 +691,17 @@
 
                     if (hasErrors) {
                         this.scrollToFirstError();
+                        if (window.showToast) {
+                            const uniqueErrors = [...new Set(Object.values(this.errors).filter(e => e && e !== 'Selection Required'))];
+                            uniqueErrors.forEach(err => {
+                                window.showToast(err, 'error');
+                            });
+                            
+                            const hasCompetencyError = Object.keys(this.errors).some(k => k.startsWith('competency-'));
+                            if (hasCompetencyError) {
+                                window.showToast('Please complete all competency assessments.', 'error');
+                            }
+                        }
                         return false;
                     }
                 }
