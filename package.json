@@ -22,7 +22,6 @@
         "vite": "^6.0.0"
     },
     "dependencies": {
-        "@rolldown/binding-win32-x64-msvc": "^1.0.0-rc.16",
         "chart.js": "^4.5.1"
     }
 }
