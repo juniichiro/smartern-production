@@ -255,6 +255,117 @@
                 </div>
             </div>
         </x-table-container>
+
+        {{-- Pending Onboarding Accounts Section --}}
+        @if(isset($pendingOnboarding) && $pendingOnboarding->isNotEmpty())
+            <div class="mt-12 relative z-30">
+                <x-table-container 
+                    title="Pending Onboarding Approvals" 
+                    subtitle="Applications matching completed. Ready for account creation."
+                >
+                    {{-- Desktop Table --}}
+                    <div class="hidden md:block overflow-x-auto border border-gray-100 dark:border-gray-800 rounded-2xl custom-scrollbar font-medium">
+                        <table class="w-full text-left min-w-[800px]">
+                            <thead>
+                                <tr class="bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 text-[11px] font-bold uppercase tracking-wider">
+                                    <th class="px-8 py-5">Applicant</th>
+                                    <th class="px-8 py-5">Email Address</th>
+                                    <th class="px-8 py-5">Institution</th>
+                                    <th class="px-8 py-5 text-center">Assigned Office</th>
+                                    <th class="px-8 py-5 text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
+                                @foreach($pendingOnboarding as $applicant)
+                                @php
+                                    $middleInitial = ($applicant->middle_name) ? substr($applicant->middle_name, 0, 1) . '. ' : '';
+                                    $fullName = $applicant->first_name . ' ' . $middleInitial . $applicant->last_name;
+                                @endphp
+                                <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors group/row">
+                                    <td class="px-8 py-6">
+                                        <div class="flex items-center gap-4 font-bold">
+                                            <div class="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 flex items-center justify-center font-bold text-sm border border-blue-100 dark:border-blue-800/50 uppercase">
+                                                {{ strtoupper(substr($applicant->first_name, 0, 1) . substr($applicant->last_name, 0, 1)) }}
+                                            </div>
+                                            <div class="text-gray-800 dark:text-gray-200 text-[14px] uppercase tracking-normal">{{ $fullName }}</div>
+                                        </div>
+                                    </td>
+                                    <td class="px-8 py-6 text-gray-500 dark:text-gray-400 text-[13px]">{{ $applicant->email }}</td>
+                                    <td class="px-8 py-6 text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider text-[11px]">{{ $applicant->university }}</td>
+                                    <td class="px-8 py-6 text-center text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider text-[11px]">
+                                        {{ $applicant->office_name }}
+                                    </td>
+                                    <td class="px-8 py-6">
+                                        <div class="flex justify-center gap-4">
+                                            <form action="{{ route('admin.accounts.onboarding-approve', $applicant->id) }}" method="POST" class="inline">
+                                                @csrf
+                                                <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-xl text-xs font-bold transition active:scale-95 flex items-center gap-1 shadow-sm">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                                    Approve
+                                                </button>
+                                            </form>
+                                            <form action="{{ route('admin.accounts.onboarding-discard', $applicant->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to discard this application request?')">
+                                                @csrf
+                                                <button type="submit" class="bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/30 text-rose-600 dark:text-rose-500 px-4 py-2 rounded-xl text-xs font-bold transition active:scale-95 flex items-center gap-1 shadow-sm">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                                    Discard
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {{-- Mobile Cards --}}
+                    <div class="md:hidden space-y-4">
+                        @foreach($pendingOnboarding as $applicant)
+                        @php
+                            $middleInitial = ($applicant->middle_name) ? substr($applicant->middle_name, 0, 1) . '. ' : '';
+                            $fullName = $applicant->first_name . ' ' . $middleInitial . $applicant->last_name;
+                        @endphp
+                        <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700">
+                            <div class="flex items-center gap-4 mb-4 font-bold">
+                                <div class="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 flex items-center justify-center font-bold text-base border border-blue-100 dark:border-blue-800/50 uppercase">
+                                    {{ strtoupper(substr($applicant->first_name, 0, 1) . substr($applicant->last_name, 0, 1)) }}
+                                </div>
+                                <div>
+                                    <div class="text-gray-800 dark:text-gray-200 text-base leading-tight uppercase tracking-tight">{{ $fullName }}</div>
+                                    <div class="text-gray-500 dark:text-gray-400 text-xs mt-1 font-medium">{{ $applicant->email }}</div>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap gap-2 mb-4 font-bold text-[9px] border-gray-100 dark:border-gray-800 uppercase tracking-wider">
+                                <span class="px-3 py-1 rounded-full bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400">
+                                    {{ $applicant->university }}
+                                </span>
+                                <span class="px-3 py-1 rounded-full bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400">
+                                    {{ $applicant->office_name }}
+                                </span>
+                            </div>
+                            <div class="flex gap-4 pt-4 border-t border-gray-200/50 dark:border-gray-700/50">
+                                <form action="{{ route('admin.accounts.onboarding-approve', $applicant->id) }}" method="POST" class="flex-1">
+                                    @csrf
+                                    <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-2 shadow-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                        Approve
+                                    </button>
+                                </form>
+                                <form action="{{ route('admin.accounts.onboarding-discard', $applicant->id) }}" method="POST" class="flex-1" onsubmit="return confirm('Are you sure you want to discard this application request?')">
+                                    @csrf
+                                    <button type="submit" class="w-full bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/30 text-rose-600 dark:text-rose-500 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-2 shadow-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                        Discard
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                </x-table-container>
+            </div>
+        @endif
     </div>
 
     {{-- MODALS --}}

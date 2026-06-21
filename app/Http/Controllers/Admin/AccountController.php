@@ -23,6 +23,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use App\Models\OnboardingApplicant;
+use App\Models\MatchResult;
 use Illuminate\Support\Str;
 
 class AccountController extends Controller
@@ -67,7 +69,16 @@ class AccountController extends Controller
 
         $hasHrHead = SupervisorDetail::where('is_hr_head', true)->exists() || User::where('role_id', UserRole::HEAD_SUPERVISOR)->exists();
 
-        return view('admin.accounts', compact('users', 'offices', 'roles', 'hasHrHead'));
+        $pendingOnboarding = OnboardingApplicant::select('onboarding_applicants.*', 'match_results.office_id', 'offices.name as office_name')
+            ->join('match_results', 'match_results.applicant_name', '=', 'onboarding_applicants.full_name')
+            ->join('offices', 'offices.id', '=', 'match_results.office_id')
+            ->where('match_results.is_confirmed', true)
+            ->whereNotIn('onboarding_applicants.email', function ($q) {
+                $q->select('email')->from('users');
+            })
+            ->get();
+
+        return view('admin.accounts', compact('users', 'offices', 'roles', 'hasHrHead', 'pendingOnboarding'));
     }
 
     public function store(StoreAccountRequest $request)
@@ -308,5 +319,86 @@ class AccountController extends Controller
         $this->auditService->log('Account Deleted', "User: {$email}");
 
         return redirect()->route('admin.account')->with('success', 'Account withdrawn.');
+    }
+
+    public function approveOnboardingAccount(Request $request, $id)
+    {
+        $applicant = OnboardingApplicant::findOrFail($id);
+        
+        $match = MatchResult::where('applicant_name', $applicant->full_name)
+            ->where('is_confirmed', true)
+            ->first();
+            
+        if (! $match) {
+            return redirect()->back()->with('error', 'No finalized office assignment found for this applicant.');
+        }
+        
+        if (User::where('email', $applicant->email)->exists()) {
+            return redirect()->back()->with('error', 'An account with this email address already exists.');
+        }
+
+        $internRole = Role::where('name', 'intern')->first();
+        if (! $internRole) {
+            return redirect()->back()->with('error', 'Intern role not found in system.');
+        }
+        
+        try {
+            DB::transaction(function () use ($applicant, $match, $internRole) {
+                $plainPassword = Str::password(12, symbols: true);
+                
+                $user = User::create([
+                    'email' => $applicant->email,
+                    'password' => Hash::make($plainPassword),
+                    'role_id' => $internRole->id,
+                    'google2fa_secret' => null,
+                    'google2fa_enabled' => false,
+                    'failed_attempts' => 0,
+                    'is_first_login' => true,
+                ]);
+                
+                InternDetail::create([
+                    'user_id' => $user->id,
+                    'first_name' => $applicant->first_name,
+                    'middle_name' => $applicant->middle_name ?? '',
+                    'last_name' => $applicant->last_name,
+                    'phone_number' => $applicant->phone_number ?? '09000000000',
+                    'profile_picture' => $applicant->profile_picture ?? '',
+                    'school' => $applicant->university ?? 'N/A',
+                    'office_id' => $match->office_id,
+                    'gender' => (! empty($applicant->gender) && in_array(ucfirst($applicant->gender), ['Male', 'Female', 'Other'])) ? ucfirst($applicant->gender) : 'Male',
+                    'gender_other_specify' => $applicant->gender_other_specify ?? '',
+                    'emergency_contact' => $applicant->emergency_contact ?? '',
+                    'course' => 'N/A',
+                    'hours_rendered' => 0,
+                ]);
+                
+                try {
+                    Mail::to($user->email)->send(new UserAccountCreatedMail($user, $plainPassword));
+                } catch (\Exception $e) {
+                    Log::error("Failed to send onboarding email to {$user->email}: ".$e->getMessage());
+                }
+                
+                $this->auditService->log('Account Created', "Approved onboarding applicant: {$applicant->email} as intern");
+            });
+            
+            return redirect()->back()->with('success', 'Onboarding account approved and created successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Approve failed: ' . $e->getMessage()]);
+        }
+    }
+
+    public function discardOnboardingAccount(Request $request, $id)
+    {
+        $applicant = OnboardingApplicant::findOrFail($id);
+        $email = $applicant->email;
+        
+        DB::transaction(function () use ($applicant) {
+            MatchResult::where('applicant_name', $applicant->full_name)->delete();
+            $applicant->delete();
+        });
+        
+        $this->auditService->log('Account Request Discarded', "Discarded onboarding application for: {$email}");
+        
+        return redirect()->back()->with('success', 'Onboarding application discarded.');
     }
 }
