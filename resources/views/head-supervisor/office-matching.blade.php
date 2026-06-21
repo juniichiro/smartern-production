@@ -466,10 +466,7 @@
                                                                  </div>
                                                              @endforeach
                                                          </div>
-                                                     </div>
-                                                @endif
-                                            </div>
-                                                    @foreach($top5Matches as $match)
+                                                     @foreach($top5Matches as $match)
                                                         @php
                                                             $breakdown = $match->breakdown ? json_decode($match->breakdown, true) : null;
                                                         @endphp
