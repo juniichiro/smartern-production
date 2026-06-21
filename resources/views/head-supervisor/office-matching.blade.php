@@ -322,10 +322,9 @@
                                     <td colspan="6" class="px-12 py-8">
                                         @php
                                             $top5Matches = $matches->sortByDesc('score')->take(5);
-                                            $firstMatchId = $top5Matches->first() ? $top5Matches->first()->id : '';
                                         @endphp
                                         <div class="bg-white dark:bg-gray-900 p-8 rounded-[35px] border border-gray-100 dark:border-gray-800 shadow-lg space-y-8"
-                                             x-data="{ activeMatchId: '{{ $firstMatchId }}' }">
+                                             x-data="{ activeMatchId: 'all' }">
                                             <div class="text-left border-b border-gray-50 dark:border-gray-800 pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                                                 <div>
                                                     <h5 class="text-xs font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400">Match Compatibility Analysis</h5>
@@ -336,110 +335,141 @@
                                                 <div class="relative w-full sm:w-64">
                                                     <select x-model="activeMatchId" 
                                                             class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 text-xs font-bold uppercase tracking-wider rounded-xl px-4 py-3 shadow-sm focus:ring-2 focus:ring-[#0B5694]/20 outline-none transition-all cursor-pointer">
+                                                        <option value="all">All Top 5 Offices</option>
                                                         @foreach($top5Matches as $match)
                                                             <option value="{{ $match->id }}">{{ $match->office->name }} ({{ $match->score }}%)</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
                                             </div>
+
                                             <div class="space-y-5 max-w-3xl">
                                                 @if($matches->count() > 0)
                                                     {{-- Statistical Vertical Bar Chart --}}
-                                                    <div class="relative w-full max-w-sm mx-auto pt-4 pb-2">
+                                                    <div class="relative w-full max-w-xl mx-auto pt-4 pb-2">
                                                         {{-- Chart Area: height exactly h-48 (192px) --}}
                                                         <div class="relative h-48 w-full">
                                                             {{-- Y-Axis Gridlines Background --}}
                                                             <div class="absolute inset-0 flex flex-col justify-between pointer-events-none text-[9px] font-bold text-gray-400 dark:text-gray-500 pb-1.5">
-                                                                <div class="w-full border-t border-dashed border-gray-150 dark:border-gray-800/60 pt-1 flex justify-between"><span>100% Match</span></div>
+                                                                <div class="w-full border-t border-dashed border-gray-150 dark:border-gray-800/60 pt-1 flex justify-between"><span>100%</span></div>
                                                                 <div class="w-full border-t border-dashed border-gray-150 dark:border-gray-800/60 pt-1 flex justify-between"><span>75%</span></div>
                                                                 <div class="w-full border-t border-dashed border-gray-150 dark:border-gray-800/60 pt-1 flex justify-between"><span>50%</span></div>
                                                                 <div class="w-full border-t border-dashed border-gray-150 dark:border-gray-800/60 pt-1 flex justify-between"><span>25%</span></div>
                                                                 <div class="w-full border-b border-gray-200 dark:border-gray-800 pb-1 flex justify-between"><span>0%</span></div>
                                                             </div>
 
-                                                            {{-- Bars Container --}}
-                                                            @foreach($top5Matches as $match)
-                                                                <div x-show="activeMatchId === '{{ $match->id }}'" 
-                                                                     x-transition.opacity.duration.300ms
-                                                                     class="absolute inset-0 flex items-end justify-center z-10 pb-0.5">
-                                                                    
-                                                                    <div class="flex flex-col items-center w-24 justify-end group h-full relative">
-                                                                        @if($match->score >= 80)
-                                                                            {{-- Score display above the bar --}}
-                                                                            <span class="absolute text-xs font-black text-emerald-500 pointer-events-none transform -translate-y-5 transition-all group-hover:scale-115"
-                                                                                  style="bottom: {{ $match->score }}%;">
-                                                                                {{ $match->score }}%
-                                                                            </span>
-                                                                            
-                                                                            {{-- The Bar itself --}}
-                                                                            <div @click="showBreakdown = '{{ $match->id }}'; $nextTick(() => { if (window.MathJax) { MathJax.typesetPromise(); } })"
-                                                                                 class="w-16 cursor-pointer rounded-t-2xl transition-all duration-500 ease-out shadow-xl hover:ring-8 hover:ring-blue-500/10 active:scale-95 bg-gradient-to-t from-emerald-600 to-emerald-400 hover:from-emerald-500 hover:to-emerald-300"
-                                                                                 style="height: {{ max(5, $match->score) }}%; background: linear-gradient(to top, #047857, #10b981);"
-                                                                                 title="Click to view breakdown for {{ $match->office->name }}">
-                                                                            </div>
-                                                                        @elseif($match->score >= 60)
-                                                                            {{-- Score display above the bar --}}
-                                                                            <span class="absolute text-xs font-black text-[#0B5694] dark:text-blue-400 pointer-events-none transform -translate-y-5 transition-all group-hover:scale-115"
-                                                                                  style="bottom: {{ $match->score }}%;">
-                                                                                {{ $match->score }}%
-                                                                            </span>
-                                                                            
-                                                                            {{-- The Bar itself --}}
-                                                                            <div @click="showBreakdown = '{{ $match->id }}'; $nextTick(() => { if (window.MathJax) { MathJax.typesetPromise(); } })"
-                                                                                 class="w-16 cursor-pointer rounded-t-2xl transition-all duration-500 ease-out shadow-xl hover:ring-8 hover:ring-blue-500/10 active:scale-95 bg-gradient-to-t from-blue-700 to-blue-500 hover:from-blue-600 hover:to-blue-400"
-                                                                                 style="height: {{ max(5, $match->score) }}%; background: linear-gradient(to top, #084577, #3b82f6);"
-                                                                                 title="Click to view breakdown for {{ $match->office->name }}">
-                                                                            </div>
-                                                                        @elseif($match->score >= 40)
-                                                                            {{-- Score display above the bar --}}
-                                                                            <span class="absolute text-xs font-black text-indigo-500 pointer-events-none transform -translate-y-5 transition-all group-hover:scale-115"
-                                                                                  style="bottom: {{ $match->score }}%;">
-                                                                                {{ $match->score }}%
-                                                                            </span>
-                                                                            
-                                                                            {{-- The Bar itself --}}
-                                                                            <div @click="showBreakdown = '{{ $match->id }}'; $nextTick(() => { if (window.MathJax) { MathJax.typesetPromise(); } })"
-                                                                                 class="w-16 cursor-pointer rounded-t-2xl transition-all duration-500 ease-out shadow-xl hover:ring-8 hover:ring-blue-500/10 active:scale-95 bg-gradient-to-t from-indigo-600 to-indigo-400 hover:from-indigo-500 hover:to-indigo-300"
-                                                                                 style="height: {{ max(5, $match->score) }}%; background: linear-gradient(to top, #4338ca, #6366f1);"
-                                                                                 title="Click to view breakdown for {{ $match->office->name }}">
-                                                                            </div>
-                                                                        @else
-                                                                            {{-- Score display above the bar --}}
-                                                                            <span class="absolute text-xs font-black text-amber-500 pointer-events-none transform -translate-y-5 transition-all group-hover:scale-115"
-                                                                                  style="bottom: {{ $match->score }}%;">
-                                                                                {{ $match->score }}%
-                                                                            </span>
-                                                                            
-                                                                            {{-- The Bar itself --}}
-                                                                            <div @click="showBreakdown = '{{ $match->id }}'; $nextTick(() => { if (window.MathJax) { MathJax.typesetPromise(); } })"
-                                                                                 class="w-16 cursor-pointer rounded-t-2xl transition-all duration-500 ease-out shadow-xl hover:ring-8 hover:ring-blue-500/10 active:scale-95 bg-gradient-to-t from-amber-600 to-amber-400 hover:from-amber-500 hover:to-amber-300"
-                                                                                 style="height: {{ max(5, $match->score) }}%; background: linear-gradient(to top, #b45309, #f59e0b);"
-                                                                                 title="Click to view breakdown for {{ $match->office->name }}">
-                                                                            </div>
-                                                                        @endif
-                                                                    </div>
-                                                                </div>
-                                                            @endforeach
-                                                        </div>
-                                                        
-                                                        {{-- X-Axis Labels --}}
-                                                        <div class="flex justify-around mt-6 border-t border-gray-200 dark:border-gray-800 pt-4 text-center">
-                                                            @foreach($top5Matches as $match)
-                                                                <div x-show="activeMatchId === '{{ $match->id }}'" 
-                                                                     x-transition.opacity.duration.200ms
-                                                                     class="w-full">
-                                                                    <span class="block text-xs font-black text-gray-800 dark:text-gray-200 uppercase tracking-widest leading-relaxed truncate" title="{{ $match->office->name }}">
-                                                                        {{ $match->office->name }}
-                                                                    </span>
-                                                                    @if($confirmedMatch && $confirmedMatch->id === $match->id)
-                                                                        <span class="inline-block mt-2 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-500 border border-emerald-500/20 px-3 py-1 rounded-xl text-[9px] tracking-widest font-black uppercase shadow-sm">Current Assignment</span>
-                                                                    @endif
-                                                                </div>
-                                                            @endforeach
-                                                        </div>
-                                                    </div>
+                                                            {{-- ALL BARS SIDE-BY-SIDE --}}
+                                                            <div x-show="activeMatchId === 'all'" 
+                                                                 x-transition.opacity.duration.300ms
+                                                                 class="absolute inset-0 flex items-end justify-around z-10 pb-0.5 px-6">
+                                                                 @foreach($top5Matches as $match)
+                                                                     @php
+                                                                         if ($match->score >= 80) {
+                                                                             $barBg = 'background: linear-gradient(to top, #047857, #10b981);';
+                                                                             $textColor = 'text-emerald-500';
+                                                                         } elseif ($match->score >= 60) {
+                                                                             $barBg = 'background: linear-gradient(to top, #084577, #3b82f6);';
+                                                                             $textColor = 'text-[#0B5694] dark:text-blue-400';
+                                                                         } elseif ($match->score >= 40) {
+                                                                             $barBg = 'background: linear-gradient(to top, #4338ca, #6366f1);';
+                                                                             $textColor = 'text-indigo-500';
+                                                                         } else {
+                                                                             $barBg = 'background: linear-gradient(to top, #b45309, #f59e0b);';
+                                                                             $textColor = 'text-amber-500';
+                                                                         }
+                                                                     @endphp
+                                                                     <div class="flex flex-col items-center w-14 justify-end group h-full relative">
+                                                                         {{-- Score display above the bar --}}
+                                                                         <span class="absolute text-[10px] font-black {{ $textColor }} pointer-events-none transform -translate-y-5 transition-all group-hover:scale-110"
+                                                                               style="bottom: {{ $match->score }}%;">
+                                                                             {{ $match->score }}%
+                                                                         </span>
+                                                                         
+                                                                         {{-- The Bar itself --}}
+                                                                         <div @click="showBreakdown = '{{ $match->id }}'; $nextTick(() => { if (window.MathJax) { MathJax.typesetPromise(); } })"
+                                                                              class="w-10 cursor-pointer rounded-t-lg transition-all duration-300 ease-out shadow-md hover:ring-4 hover:ring-blue-500/20 active:scale-95"
+                                                                              style="height: {{ max(5, $match->score) }}%; {{ $barBg }}"
+                                                                              title="Click to view breakdown for {{ $match->office->name }}">
+                                                                         </div>
+                                                                     </div>
+                                                                 @endforeach
+                                                             </div>
 
-                                                    @foreach($top5Matches as $match)
+                                                             {{-- FOCUSED SINGLE BAR --}}
+                                                             @foreach($top5Matches as $match)
+                                                                 @php
+                                                                     if ($match->score >= 80) {
+                                                                         $barBg = 'background: linear-gradient(to top, #047857, #10b981);';
+                                                                         $textColor = 'text-emerald-500';
+                                                                     } elseif ($match->score >= 60) {
+                                                                         $barBg = 'background: linear-gradient(to top, #084577, #3b82f6);';
+                                                                         $textColor = 'text-[#0B5694] dark:text-blue-400';
+                                                                     } elseif ($match->score >= 40) {
+                                                                         $barBg = 'background: linear-gradient(to top, #4338ca, #6366f1);';
+                                                                         $textColor = 'text-indigo-500';
+                                                                     } else {
+                                                                         $barBg = 'background: linear-gradient(to top, #b45309, #f59e0b);';
+                                                                         $textColor = 'text-amber-500';
+                                                                     }
+                                                                 @endphp
+                                                                 <div x-show="activeMatchId === '{{ $match->id }}'" 
+                                                                      x-transition.opacity.duration.300ms
+                                                                      class="absolute inset-0 flex items-end justify-center z-10 pb-0.5">
+                                                                     
+                                                                     <div class="flex flex-col items-center w-24 justify-end group h-full relative">
+                                                                         {{-- Score display above the bar --}}
+                                                                         <span class="absolute text-xs font-black {{ $textColor }} pointer-events-none transform -translate-y-5 transition-all group-hover:scale-115"
+                                                                               style="bottom: {{ $match->score }}%;">
+                                                                             {{ $match->score }}%
+                                                                         </span>
+                                                                         
+                                                                         {{-- The Bar itself --}}
+                                                                         <div @click="showBreakdown = '{{ $match->id }}'; $nextTick(() => { if (window.MathJax) { MathJax.typesetPromise(); } })"
+                                                                              class="w-16 cursor-pointer rounded-t-2xl transition-all duration-500 ease-out shadow-xl hover:ring-8 hover:ring-blue-500/10 active:scale-95"
+                                                                              style="height: {{ max(5, $match->score) }}%; {{ $barBg }}"
+                                                                              title="Click to view breakdown for {{ $match->office->name }}">
+                                                                         </div>
+                                                                     </div>
+                                                                 </div>
+                                                             @endforeach
+                                                         </div>
+                                                         
+                                                         {{-- X-Axis Labels --}}
+                                                         <div class="mt-6 border-t border-gray-200 dark:border-gray-800 pt-4 text-center">
+                                                             {{-- Labels when 'All' is active --}}
+                                                             <div x-show="activeMatchId === 'all'" 
+                                                                  x-transition.opacity.duration.200ms
+                                                                  class="flex justify-around px-6">
+                                                                 @foreach($top5Matches as $match)
+                                                                     <div class="w-14 text-center">
+                                                                         <span class="block text-[9px] sm:text-[10px] font-black text-gray-700 dark:text-gray-300 uppercase tracking-wider truncate" title="{{ $match->office->name }}">
+                                                                             {{ $match->office->name }}
+                                                                         </span>
+                                                                         @if($confirmedMatch && $confirmedMatch->id === $match->id)
+                                                                             <span class="inline-block mt-1 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-500 border border-emerald-500/20 px-1 py-0.5 rounded text-[7px] tracking-widest font-black uppercase shadow-sm">Assigned</span>
+                                                                         @endif
+                                                                     </div>
+                                                                 @endforeach
+                                                             </div>
+
+                                                             {{-- Label when focused activeMatchId is chosen --}}
+                                                             @foreach($top5Matches as $match)
+                                                                 <div x-show="activeMatchId === '{{ $match->id }}'" 
+                                                                      x-transition.opacity.duration.200ms
+                                                                      class="w-full text-center">
+                                                                     <span class="block text-xs font-black text-gray-800 dark:text-gray-200 uppercase tracking-widest leading-relaxed truncate" title="{{ $match->office->name }}">
+                                                                         {{ $match->office->name }}
+                                                                     </span>
+                                                                     @if($confirmedMatch && $confirmedMatch->id === $match->id)
+                                                                         <span class="inline-block mt-2 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-500 border border-emerald-500/20 px-3 py-1 rounded-xl text-[9px] tracking-widest font-black uppercase shadow-sm">Current Assignment</span>
+                                                                     @endif
+                                                                 </div>
+                                                             @endforeach
+                                                         </div>
+                                                     </div>
+                                                @endif
+                                            </div>
+
                                                         @php
                                                             $breakdown = $match->breakdown ? json_decode($match->breakdown, true) : null;
                                                         @endphp
