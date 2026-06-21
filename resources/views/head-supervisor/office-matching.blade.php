@@ -274,23 +274,14 @@
                                                     <div class="space-y-4">
                                                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                                                             <h5 class="text-xs font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400">Skill Verification</h5>
-                                                            {{-- Category Filter Buttons --}}
-                                                            <div class="flex items-center gap-2 bg-gray-50 dark:bg-gray-950 p-1.5 rounded-xl border border-gray-100 dark:border-gray-800/80">
-                                                                <button type="button" @click="skillFilter = 'all'"
-                                                                        :class="skillFilter === 'all' ? 'bg-[#0B5694] text-white shadow-sm' : 'text-gray-500 hover:text-gray-800 dark:hover:text-gray-200'"
-                                                                        class="px-3.5 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all">
-                                                                    All
-                                                                </button>
-                                                                <button type="button" @click="skillFilter = 'tech'"
-                                                                        :class="skillFilter === 'tech' ? 'bg-[#0B5694] text-white shadow-sm' : 'text-gray-500 hover:text-gray-800 dark:hover:text-gray-200'"
-                                                                        class="px-3.5 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all">
-                                                                    Technical
-                                                                </button>
-                                                                <button type="button" @click="skillFilter = 'soft'"
-                                                                        :class="skillFilter === 'soft' ? 'bg-[#0B5694] text-white shadow-sm' : 'text-gray-500 hover:text-gray-800 dark:hover:text-gray-200'"
-                                                                        class="px-3.5 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all">
-                                                                    Soft Skills
-                                                                </button>
+                                                            {{-- Category Filter Dropdown --}}
+                                                            <div class="relative w-full sm:w-56">
+                                                                <select x-model="skillFilter" 
+                                                                        class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 text-xs font-bold uppercase tracking-wider rounded-xl px-4 py-3 shadow-sm focus:ring-2 focus:ring-[#0B5694]/20 outline-none transition-all cursor-pointer">
+                                                                    <option value="all">All Sections</option>
+                                                                    <option value="tech">Technical Skills</option>
+                                                                    <option value="soft">Soft Skills</option>
+                                                                </select>
                                                             </div>
                                                         </div>
                                                         @php $verifiedSkills = $applicant->evaluation?->verified_skills ?? []; @endphp
