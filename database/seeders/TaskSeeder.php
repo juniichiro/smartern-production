@@ -45,14 +45,14 @@ class TaskSeeder extends Seeder
                 'is_file_required' => false,
             ]);
 
-            // 3. Submitted Task (Awaiting Review)
+            // 3. In-Progress Task (Awaiting Review or Action)
             Task::create([
                 'supervisor_id' => $supervisorId,
                 'intern_id' => $intern->user_id,
                 'office_id' => $intern->office_id,
                 'title' => 'Primary Department Report Drafting',
                 'description' => 'Gather logs, summarize performance indicators, and write the draft report for supervisor review.',
-                'status' => 'submitted',
+                'status' => 'in_progress',
                 'due_date' => Carbon::now()->subDay(),
                 'is_file_required' => true,
                 'file_path' => 'reports/sample_report.pdf',
