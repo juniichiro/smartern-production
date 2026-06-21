@@ -99,5 +99,8 @@ class OnboardingApplicantSeeder extends Seeder
 
             OnboardingApplicant::create($applicant);
         }
+
+        // Auto-run the matching engine logic for seeded applicants
+        \Illuminate\Support\Facades\Artisan::call('matching:run');
     }
 }

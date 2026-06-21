@@ -8,28 +8,41 @@ use Illuminate\Console\Command;
 
 class RunMatchingCommand extends Command
 {
-    protected $signature = 'matching:run {id}';
+    protected $signature = 'matching:run {id?}';
 
-    protected $description = 'Manually run matching for an applicant';
+    protected $description = 'Manually run matching for a specific applicant or all applicants';
 
     public function handle(SmartMatchingService $service)
     {
         $id = $this->argument('id');
-        $applicant = OnboardingApplicant::find($id);
 
-        if (! $applicant) {
-            $this->error('Applicant not found.');
+        if ($id) {
+            $applicant = OnboardingApplicant::find($id);
 
-            return;
-        }
+            if (! $applicant) {
+                $this->error('Applicant not found.');
 
-        $this->info('Running matching for: '.$applicant->full_name);
-        $result = $service->runMatchingForApplicant($applicant);
+                return;
+            }
 
-        if ($result) {
-            $this->info('Success!');
+            $this->info('Running matching for: '.$applicant->full_name);
+            $result = $service->runMatchingForApplicant($applicant);
+
+            if ($result) {
+                $this->info('Success!');
+            } else {
+                $this->error('Failed. Check logs.');
+            }
         } else {
-            $this->error('Failed. Check logs.');
+            $applicants = OnboardingApplicant::all();
+            $this->info('Running matching calculations for ' . $applicants->count() . ' applicants...');
+
+            foreach ($applicants as $applicant) {
+                $this->info(' - Running match for: ' . $applicant->full_name);
+                $service->runMatchingForApplicant($applicant);
+            }
+
+            $this->info('Success! Matching calculations complete for all applicants.');
         }
     }
 }
