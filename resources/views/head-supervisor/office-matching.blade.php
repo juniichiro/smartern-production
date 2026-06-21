@@ -418,113 +418,122 @@
                                                                                 </div>
                                                                             </div>
 
-                                                                            <h3>1. Intern Scores & Multipliers</h3>
-                                                                            <ul>
-                                                                                @foreach($breakdown['skills_breakdown'] as $skillItem)
-                                                                                    @php
-                                                                                        $base = $skillItem['self_reported'] ?? 0;
-                                                                                        $verified = $skillItem['verified'] ?? null;
-                                                                                        $isVerified = ($verified !== null);
-                                                                                        
-                                                                                        $sourceDesc = "";
-                                                                                        if ($isVerified) {
-                                                                                            $sourceDesc = "verified at <strong>" . $verified . "</strong> (giving " . $verified . " &times; 1.5 = " . $skillItem['effective_score'] . " due to supervisor verification)";
-                                                                                        } elseif ($skillItem['resume_match'] ?? false) {
-                                                                                            if ($base > 0) {
-                                                                                                $sourceDesc = "self-reported at <strong>" . $base . "</strong> with resume match (giving " . $base . " &times; 1.2 = " . $skillItem['effective_score'] . " due to resume triangulation)";
+                                                                            @if(isset($breakdown['skills_breakdown']) && count($breakdown['skills_breakdown']) > 0)
+                                                                                <h3>1. Intern Scores & Multipliers</h3>
+                                                                                <ul>
+                                                                                    @foreach($breakdown['skills_breakdown'] as $skillItem)
+                                                                                        @php
+                                                                                            $base = $skillItem['self_reported'] ?? 0;
+                                                                                            $verified = $skillItem['verified'] ?? null;
+                                                                                            $isVerified = ($verified !== null);
+                                                                                            
+                                                                                            $sourceDesc = "";
+                                                                                            if ($isVerified) {
+                                                                                                $sourceDesc = "verified at <strong>" . $verified . "</strong> (giving " . $verified . " &times; 1.5 = " . $skillItem['effective_score'] . " due to supervisor verification)";
+                                                                                            } elseif ($skillItem['resume_match'] ?? false) {
+                                                                                                if ($base > 0) {
+                                                                                                    $sourceDesc = "self-reported at <strong>" . $base . "</strong> with resume match (giving " . $base . " &times; 1.2 = " . $skillItem['effective_score'] . " due to resume triangulation)";
+                                                                                                } else {
+                                                                                                    $sourceDesc = "found in resume text (giving 0 &times; 1.2 = 0)";
+                                                                                                }
                                                                                             } else {
-                                                                                                $sourceDesc = "found in resume text (giving 0 &times; 1.2 = 0)";
+                                                                                                $sourceDesc = "self-reported at <strong>" . $base . "</strong> (giving " . $base . " &times; 1.0 = " . $skillItem['effective_score'] . ")";
                                                                                             }
-                                                                                        } else {
-                                                                                            $sourceDesc = "self-reported at <strong>" . $base . "</strong> (giving " . $base . " &times; 1.0 = " . $skillItem['effective_score'] . ")";
-                                                                                        }
-                                                                                    @endphp
-                                                                                    <li><code>{{ strtoupper($skillItem['skill']) }}</code> is {!! $sourceDesc !!}.</li>
-                                                                                @endforeach
-                                                                            </ul>
+                                                                                        @endphp
+                                                                                        <li><code>{{ strtoupper($skillItem['skill']) }}</code> is {!! $sourceDesc !!}.</li>
+                                                                                    @endforeach
+                                                                                </ul>
 
-                                                                            @php
-                                                                                $pisTerms = [];
-                                                                                $nisTerms = [];
-                                                                                $pisSimpTerms = [];
-                                                                                $nisSimpTerms = [];
-                                                                                $pisSumSq = 0;
-                                                                                $nisSumSq = 0;
-                                                                                foreach($breakdown['skills_breakdown'] as $skillItem) {
-                                                                                    $wj = $skillItem['priority'];
-                                                                                    $xij = $skillItem['effective_score'];
+                                                                                @php
+                                                                                    $pisTerms = [];
+                                                                                    $nisTerms = [];
+                                                                                    $pisSimpTerms = [];
+                                                                                    $nisSimpTerms = [];
+                                                                                    $pisSumSq = 0;
+                                                                                    $nisSumSq = 0;
+                                                                                    foreach($breakdown['skills_breakdown'] as $skillItem) {
+                                                                                        $wj = $skillItem['priority'];
+                                                                                        $xij = $skillItem['effective_score'];
+                                                                                        
+                                                                                        $diffPis = round(7.5 - $xij, 2);
+                                                                                        $diffNis = round($xij - 0.0, 2);
+                                                                                        
+                                                                                        $termPisVal = ($wj * $diffPis) ** 2;
+                                                                                        $termNisVal = ($wj * $diffNis) ** 2;
+                                                                                        
+                                                                                        $pisSumSq += $termPisVal;
+                                                                                        $nisSumSq += $termNisVal;
+                                                                                        
+                                                                                        $pisTerms[] = "({$wj} \\cdot (7.5 - {$xij}))^2";
+                                                                                        $nisTerms[] = "({$wj} \\cdot ({$xij} - 0.0))^2";
+                                                                                        
+                                                                                        $pisSimpTerms[] = round($wj * $diffPis, 2) . "^2";
+                                                                                        $nisSimpTerms[] = round($wj * $diffNis, 2) . "^2";
+                                                                                    }
                                                                                     
-                                                                                    $diffPis = round(7.5 - $xij, 2);
-                                                                                    $diffNis = round($xij - 0.0, 2);
+                                                                                    $dPlus = round(sqrt($pisSumSq), 2);
+                                                                                    $dMinus = round(sqrt($nisSumSq), 2);
                                                                                     
-                                                                                    $termPisVal = ($wj * $diffPis) ** 2;
-                                                                                    $termNisVal = ($wj * $diffNis) ** 2;
+                                                                                    $cc = 0;
+                                                                                    if (($dPlus + $dMinus) > 0) {
+                                                                                        $cc = round(($dMinus / ($dPlus + $dMinus)) * 100, 2);
+                                                                                    }
                                                                                     
-                                                                                    $pisSumSq += $termPisVal;
-                                                                                    $nisSumSq += $termNisVal;
+                                                                                    $behScore = $breakdown['behavioral_score'] ?? 3;
+                                                                                    $behPct = $breakdown['behavioral_percentage'] ?? 60.0;
                                                                                     
-                                                                                    $pisTerms[] = "({$wj} \\cdot (7.5 - {$xij}))^2";
-                                                                                    $nisTerms[] = "({$wj} \\cdot ({$xij} - 0.0))^2";
+                                                                                    $skillContribution = round($cc * 0.8, 2);
+                                                                                    $behavioralContribution = round($behPct * 0.2, 2);
+                                                                                    $rawScore = round($skillContribution + $behavioralContribution, 2);
                                                                                     
-                                                                                    $pisSimpTerms[] = round($wj * $diffPis, 2) . "^2";
-                                                                                    $nisSimpTerms[] = round($wj * $diffNis, 2) . "^2";
-                                                                                }
-                                                                                
-                                                                                $dPlus = round(sqrt($pisSumSq), 2);
-                                                                                $dMinus = round(sqrt($nisSumSq), 2);
-                                                                                
-                                                                                $cc = 0;
-                                                                                if (($dPlus + $dMinus) > 0) {
-                                                                                    $cc = round(($dMinus / ($dPlus + $dMinus)) * 100, 2);
-                                                                                }
-                                                                                
-                                                                                $behScore = $breakdown['behavioral_score'] ?? 3;
-                                                                                $behPct = $breakdown['behavioral_percentage'] ?? 60.0;
-                                                                                
-                                                                                $skillContribution = round($cc * 0.8, 2);
-                                                                                $behavioralContribution = round($behPct * 0.2, 2);
-                                                                                $rawScore = round($skillContribution + $behavioralContribution, 2);
-                                                                                
-                                                                                $isRecommended = $breakdown['is_recommended'] ?? true;
-                                                                                $recommendedText = ($isRecommended === true || $isRecommended === 1 || $isRecommended === "1" || $isRecommended === "Recommended") ? "Recommended" : "Needs More Training";
-                                                                            @endphp
+                                                                                    $isRecommended = $breakdown['is_recommended'] ?? true;
+                                                                                    $recommendedText = ($isRecommended === true || $isRecommended === 1 || $isRecommended === "1" || $isRecommended === "Recommended") ? "Recommended" : "Needs More Training";
+                                                                                @endphp
 
-                                                                            <h3>2. Geometric Distances</h3>
-                                                                            <p>Distance to Positive Ideal (\(D^+\)):</p>
-                                                                            <div class="my-3 overflow-hidden text-center font-semibold text-gray-800 dark:text-gray-200">
-                                                                                $$D^+ = \sqrt{ {!! implode(" + ", $pisTerms) !!} } = \sqrt{ {!! implode(" + ", $pisSimpTerms) !!} } = \sqrt{ {{ round($pisSumSq, 2) }} } \approx {{ $dPlus }}$$
-                                                                            </div>
-
-                                                                            <p>Distance to Negative Ideal (\(D^-\)):</p>
-                                                                            <div class="my-3 overflow-hidden text-center font-semibold text-gray-800 dark:text-gray-200">
-                                                                                $$D^- = \sqrt{ {!! implode(" + ", $nisTerms) !!} } = \sqrt{ {!! implode(" + ", $nisSimpTerms) !!} } = \sqrt{ {{ round($nisSumSq, 2) }} } \approx {{ $dMinus }}$$
-                                                                            </div>
-
-                                                                            <h3>3. Closeness Coefficient (\(CC_i\))</h3>
-                                                                            <div class="my-3 overflow-hidden text-center font-semibold text-gray-800 dark:text-gray-200">
-                                                                                $$CC_i = \frac{D^-}{D^+ + D^-} = \frac{ {{ $dMinus }} }{ {{ $dPlus }} + {{ $dMinus }} } = \frac{ {{ $dMinus }} }{ {{ round($dPlus + $dMinus, 2) }} } \approx {{ $cc }}\%$$
-                                                                            </div>
-
-                                                                            <h3>4. Behavioral Integration</h3>
-                                                                            <p>Behavioral score is <strong><code>{{ $behScore }}</code></strong> ({{ $behPct }}%).</p>
-
-                                                                            <h3>5. Weighted Score Formula</h3>
-                                                                            <div class="my-3 overflow-hidden text-center font-semibold text-gray-800 dark:text-gray-200">
-                                                                                $$\text{Base Score} = ({{ $cc }}\% \times 0.8) + ({{ $behPct }}\% \times 0.2) = {{ $skillContribution }}\% + {{ $behavioralContribution }}\% = {{ $rawScore }}\%$$
-                                                                            </div>
-
-                                                                            @if($recommendedText === "Needs More Training")
-                                                                                @php $finalScore = round($rawScore * 0.5); @endphp
-                                                                                <h3>6. Recommendation Penalty (Needs More Training)</h3>
-                                                                                <p>"Needs More Training" triggers a strict <strong>50% reduction</strong>:</p>
+                                                                                <h3>2. Geometric Distances</h3>
+                                                                                <p>Distance to Positive Ideal (\(D^+\shrink\)):</p>
                                                                                 <div class="my-3 overflow-hidden text-center font-semibold text-gray-800 dark:text-gray-200">
-                                                                                    $$\text{Final Score} = {{ $rawScore }}\% \times 0.5 = {{ round($rawScore * 0.5, 2) }}\% \rightarrow \mathbf{ {{ $finalScore }}\% }$$
+                                                                                    $$D^+ = \sqrt{ {!! implode(" + ", $pisTerms) !!} } = \sqrt{ {!! implode(" + ", $pisSimpTerms) !!} } = \sqrt{ {{ round($pisSumSq, 2) }} } \approx {{ $dPlus }}$$
                                                                                 </div>
-                                                                            @else
-                                                                                @php $finalScore = round($rawScore); @endphp
-                                                                                <h3>6. Final Score</h3>
+
+                                                                                <p>Distance to Negative Ideal (\(D^-\shrink\)):</p>
                                                                                 <div class="my-3 overflow-hidden text-center font-semibold text-gray-800 dark:text-gray-200">
-                                                                                    $$\text{Final Score} = {{ $rawScore }}\% \rightarrow \mathbf{ {{ $finalScore }}\% }$$
+                                                                                    $$D^- = \sqrt{ {!! implode(" + ", $nisTerms) !!} } = \sqrt{ {!! implode(" + ", $nisSimpTerms) !!} } = \sqrt{ {{ round($nisSumSq, 2) }} } \approx {{ $dMinus }}$$
+                                                                                </div>
+
+                                                                                <h3>3. Closeness Coefficient (\(CC_i\))</h3>
+                                                                                <div class="my-3 overflow-hidden text-center font-semibold text-gray-800 dark:text-gray-200">
+                                                                                    $$CC_i = \frac{D^-}{D^+ + D^-} = \frac{ {{ $dMinus }} }{ {{ $dPlus }} + {{ $dMinus }} } = \frac{ {{ $dMinus }} }{ {{ round($dPlus + $dMinus, 2) }} } \approx {{ $cc }}\%$$
+                                                                                </div>
+
+                                                                                <h3>4. Behavioral Integration</h3>
+                                                                                <p>Behavioral score is <strong><code>{{ $behScore }}</code></strong> ({{ $behPct }}%).</p>
+
+                                                                                <h3>5. Weighted Score Formula</h3>
+                                                                                <div class="my-3 overflow-hidden text-center font-semibold text-gray-800 dark:text-gray-200">
+                                                                                    $$\text{Base Score} = ({{ $cc }}\% \times 0.8) + ({{ $behPct }}\% \times 0.2) = {{ $skillContribution }}\% + {{ $behavioralContribution }}\% = {{ $rawScore }}\%$$
+                                                                                </div>
+
+                                                                                @if($recommendedText === "Needs More Training")
+                                                                                    @php $finalScore = round($rawScore * 0.5); @endphp
+                                                                                    <h3>6. Recommendation Penalty (Needs More Training)</h3>
+                                                                                    <p>"Needs More Training" triggers a strict <strong>50% reduction</strong>:</p>
+                                                                                    <div class="my-3 overflow-hidden text-center font-semibold text-gray-800 dark:text-gray-200">
+                                                                                        $$\text{Final Score} = {{ $rawScore }}\% \times 0.5 = {{ round($rawScore * 0.5, 2) }}\% \rightarrow \mathbf{ {{ $finalScore }}\% }$$
+                                                                                    </div>
+                                                                                @else
+                                                                                    @php $finalScore = round($rawScore); @endphp
+                                                                                    <h3>6. Final Score</h3>
+                                                                                    <div class="my-3 overflow-hidden text-center font-semibold text-gray-800 dark:text-gray-200">
+                                                                                        $$\text{Final Score} = {{ $rawScore }}\% \rightarrow \mathbf{ {{ $finalScore }}\% }$$
+                                                                                    </div>
+                                                                                @endif
+                                                                            @else
+                                                                                <div class="p-5 bg-amber-50/50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/50 rounded-2xl mb-6">
+                                                                                    <h4 class="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">Direct Assignment / Fallback Score</h4>
+                                                                                    <p class="text-sm font-semibold text-gray-600 dark:text-gray-300 mt-2 leading-relaxed">
+                                                                                        This matching result was created directly or manually mapped. The TOPSIS mathematical analysis breakdown is not applicable for this record.
+                                                                                    </p>
                                                                                 </div>
                                                                             @endif
                                                                         </div>
