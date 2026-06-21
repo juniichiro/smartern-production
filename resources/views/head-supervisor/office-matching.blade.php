@@ -291,9 +291,9 @@
                                                                                 <span class="inline-block bg-gray-100 dark:bg-gray-800 px-2.5 py-1 rounded-lg text-[10px] font-extrabold">{{ $score }} / 5</span>
                                                                             </td>
                                                                             <td class="px-6 py-3.5 text-right">
-                                                                                <select name="verified_skills[{{ $skill }}]" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2 text-xs font-bold focus:ring-2 focus:ring-[#0B5694]/20 outline-none transition-all cursor-pointer shadow-sm">
+                                                                                <select name="verified_skills[{{ $skill }}]" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl pl-4 pr-10 py-2 text-xs font-bold focus:ring-2 focus:ring-[#0B5694]/20 outline-none transition-all cursor-pointer shadow-sm">
                                                                                     @for($i=1; $i<=5; $i++)
-                                                                                        <option value="{{ $i }}" {{ ($verifiedSkills[$skill] ?? $score) == $i ? 'selected' : '' }}>{{ $i }}</option>
+                                                                                        <option value="{{ $i }}" {{ ($verifiedSkills[$skill] ?? $score) == $i ? 'selected' : '' }}>{{ $i }} - {{ ['Poor', 'Fair', 'Good', 'Excellent', 'Superior'][$i-1] }}</option>
                                                                                     @endfor
                                                                                 </select>
                                                                             </td>
