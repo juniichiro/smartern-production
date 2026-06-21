@@ -24,6 +24,10 @@ class DatabaseSeeder extends Seeder
             SupervisorDetailSeeder::class, // Profile info for supervisors
             InternDetailSeeder::class,    // Profile info for interns
             SchoolCoordinatorDetailSeeder::class, // Profile info for school coordinators
+            OnboardingApplicantSeeder::class, // 5 onboarding applications
+            TaskSeeder::class, // Completed, submitted, pending tasks
+            AttendanceSeeder::class, // Attendance records mapping to hours_rendered
+            JournalSeeder::class, // Daily and weekly log journals
         ]);
     }
 }

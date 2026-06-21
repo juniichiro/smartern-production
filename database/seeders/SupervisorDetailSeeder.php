@@ -35,5 +35,29 @@ class SupervisorDetailSeeder extends Seeder
                 'is_hr_head' => false,
             ]);
         }
+
+        $finance_super = User::where('email', 'finance_super@smartern.com')->first();
+        if ($finance_super) {
+            SupervisorDetail::create([
+                'user_id' => $finance_super->id,
+                'office_id' => 3, // Finance & Accounting
+                'first_name' => 'Albert',
+                'last_name' => 'Finney',
+                'phone_number' => '09000000004',
+                'is_hr_head' => false,
+            ]);
+        }
+
+        $admin_super = User::where('email', 'admin_super@smartern.com')->first();
+        if ($admin_super) {
+            SupervisorDetail::create([
+                'user_id' => $admin_super->id,
+                'office_id' => 4, // Administrative Services
+                'first_name' => 'Sarah',
+                'last_name' => 'Admin',
+                'phone_number' => '09000000005',
+                'is_hr_head' => false,
+            ]);
+        }
     }
 }

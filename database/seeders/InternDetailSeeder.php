@@ -53,6 +53,50 @@ class InternDetailSeeder extends Seeder
                 'phone_number' => '09123456785',
                 'hours_rendered' => 480,
             ],
+            [
+                'email' => 'john.doe@smartern.com',
+                'office_id' => 3, // Finance
+                'first_name' => 'John',
+                'last_name' => 'Doe',
+                'course' => 'Business Administration',
+                'school' => 'DLSU',
+                'gender' => 'Male',
+                'phone_number' => '09123456786',
+                'hours_rendered' => 120,
+            ],
+            [
+                'email' => 'jane.smith@smartern.com',
+                'office_id' => 3, // Finance
+                'first_name' => 'Jane',
+                'last_name' => 'Smith',
+                'course' => 'Accountancy',
+                'school' => 'UST',
+                'gender' => 'Female',
+                'phone_number' => '09123456787',
+                'hours_rendered' => 240,
+            ],
+            [
+                'email' => 'mark.santos@smartern.com',
+                'office_id' => 4, // Admin
+                'first_name' => 'Mark',
+                'last_name' => 'Santos',
+                'course' => 'Public Administration',
+                'school' => 'UP',
+                'gender' => 'Male',
+                'phone_number' => '09123456788',
+                'hours_rendered' => 80,
+            ],
+            [
+                'email' => 'sophia.lee@smartern.com',
+                'office_id' => 1, // ICT
+                'first_name' => 'Sophia',
+                'last_name' => 'Lee',
+                'course' => 'Computer Science',
+                'school' => 'DLSU',
+                'gender' => 'Female',
+                'phone_number' => '09123456789',
+                'hours_rendered' => 320,
+            ],
         ];
 
         foreach ($interns as $data) {
