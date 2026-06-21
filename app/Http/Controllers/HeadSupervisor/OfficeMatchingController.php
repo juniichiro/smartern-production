@@ -178,6 +178,8 @@ class OfficeMatchingController extends Controller
                     'soft_skills' => $softSkillsFormatted,
                     'gender' => 'male',
                     'phone_number' => '09000000000',
+                    'emergency_contact' => 'N/A',
+                    'emergency_contact_number' => 'N/A',
                     'privacy_acknowledged_at' => now(),
                 ]);
             }
@@ -394,16 +396,21 @@ class OfficeMatchingController extends Controller
             return '';
         }
 
-        $pythonPath = env('PYTHON_PATH') ?: ((strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') ? 'python' : 'python3');
-        $process = new Process([$pythonPath, base_path('scripts/pdf_parser.py'), $fullPath]);
-        $process->run();
+        try {
+            $pythonPath = env('PYTHON_PATH') ?: ((strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') ? 'python' : 'python3');
+            $process = new Process([$pythonPath, base_path('scripts/pdf_parser.py'), $fullPath]);
+            $process->run();
 
-        if (! $process->isSuccessful()) {
+            if (! $process->isSuccessful()) {
+                return '';
+            }
+
+            $output = json_decode($process->getOutput(), true);
+
+            return $output['text'] ?? '';
+        } catch (\Exception $e) {
+            \Log::error("Failed to extract resume text: " . $e->getMessage());
             return '';
         }
-
-        $output = json_decode($process->getOutput(), true);
-
-        return $output['text'] ?? '';
     }
 }
