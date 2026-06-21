@@ -165,10 +165,17 @@ class OnboardingController extends Controller
         $process->run();
 
         if (! $process->isSuccessful()) {
+            \Log::error('PDF Parser Process failed. Exit code: ' . $process->getExitCode() . '. Error output: ' . $process->getErrorOutput() . '. Command: ' . $process->getCommandLine());
             return response()->json(['error' => 'Failed to parse PDF.'], 500);
         }
 
         $output = json_decode($process->getOutput(), true);
+        
+        if (isset($output['error'])) {
+            \Log::error('PDF Parser Script failed: ' . $output['error']);
+            return response()->json(['error' => 'Failed to parse PDF: ' . $output['error']], 500);
+        }
+
         $text = $output['text'] ?? '';
         $possibleName = $output['name'] ?? '';
         $email = $output['email'] ?? '';
