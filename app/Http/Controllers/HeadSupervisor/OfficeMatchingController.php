@@ -99,12 +99,18 @@ class OfficeMatchingController extends Controller
 
         $rules = OfficeRule::all()->groupBy('office_id');
         $allStudentData = [];
+        $preassignments = [];
 
         while (($data = fgetcsv($handle)) !== false) {
             $applicantName = $data[1];
+            $preassignedOfficeId = isset($data[6]) && ! empty(trim($data[6])) ? (int) $data[6] : null;
 
-            if (MatchResult::where('applicant_name', $applicantName)->where('is_confirmed', true)->exists()) {
-                continue;
+            if ($preassignedOfficeId) {
+                $preassignments[$applicantName] = $preassignedOfficeId;
+            } else {
+                if (MatchResult::where('applicant_name', $applicantName)->where('is_confirmed', true)->exists()) {
+                    continue;
+                }
             }
 
             // Check if we have this applicant in our DB (Smart Matching)
@@ -142,6 +148,32 @@ class OfficeMatchingController extends Controller
 
         if (! empty($allStudentData)) {
             $this->matchingService->processMatchingBatch($allStudentData, $rules);
+        }
+
+        // Apply preassigned office finalizations
+        foreach ($preassignments as $name => $officeId) {
+            $existingRecord = MatchResult::where('applicant_name', $name)->first();
+            
+            // If the matching engine created the match, make it confirmed
+            $updated = MatchResult::where('applicant_name', $name)
+                ->where('office_id', $officeId)
+                ->update(['is_confirmed' => true]);
+                
+            // If it didn't exist, create it manually confirmed
+            if (! $updated) {
+                MatchResult::updateOrCreate(
+                    [
+                        'applicant_name' => $name,
+                        'office_id' => $officeId,
+                    ],
+                    [
+                        'school' => $existingRecord ? $existingRecord->school : 'N/A',
+                        'score' => 0,
+                        'status' => 'manual_override',
+                        'is_confirmed' => true,
+                    ]
+                );
+            }
         }
 
         return redirect()->route('head-supervisor.matching')
@@ -204,7 +236,8 @@ class OfficeMatchingController extends Controller
                 'university',
                 'email',
                 'tech_skills',
-                'soft_skills'
+                'soft_skills',
+                'office_id'
             ]);
 
             foreach ($applicants as $app) {
@@ -224,13 +257,19 @@ class OfficeMatchingController extends Controller
                 }
                 $softString = implode(';', $softPairs);
 
+                $confirmedMatch = MatchResult::where('applicant_name', $app->full_name)
+                    ->where('is_confirmed', true)
+                    ->first();
+                $officeId = $confirmedMatch ? $confirmedMatch->office_id : '';
+
                 fputcsv($file, [
                     $app->applicant_id,
                     $app->full_name,
                     $app->university,
                     $app->email,
                     $techString,
-                    $softString
+                    $softString,
+                    $officeId
                 ]);
             }
             fclose($file);
