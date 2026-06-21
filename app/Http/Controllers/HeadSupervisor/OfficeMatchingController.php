@@ -314,7 +314,8 @@ class OfficeMatchingController extends Controller
             return '';
         }
 
-        $process = new Process(['python', base_path('scripts/pdf_parser.py'), $fullPath]);
+        $pythonPath = env('PYTHON_PATH', 'python');
+        $process = new Process([$pythonPath, base_path('scripts/pdf_parser.py'), $fullPath]);
         $process->run();
 
         if (! $process->isSuccessful()) {

@@ -83,7 +83,8 @@ class SmartMatchingService
 
     private function executeBatchReteScript($students, $rules)
     {
-        $process = new Process(['python', base_path('scripts/rete_match.py')]);
+        $pythonPath = env('PYTHON_PATH', 'python');
+        $process = new Process([$pythonPath, base_path('scripts/rete_match.py')]);
         $process->setInput(json_encode(['students' => $students, 'rules' => $rules]));
         $process->run();
 
@@ -110,7 +111,8 @@ class SmartMatchingService
             return '';
         }
 
-        $process = new Process(['python', base_path('scripts/pdf_parser.py'), $fullPath]);
+        $pythonPath = env('PYTHON_PATH', 'python');
+        $process = new Process([$pythonPath, base_path('scripts/pdf_parser.py'), $fullPath]);
         $process->run();
 
         if (! $process->isSuccessful()) {

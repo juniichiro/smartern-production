@@ -160,7 +160,8 @@ class OnboardingController extends Controller
         $path = $file->store('temp_resumes', 'public');
         $fullPath = Storage::disk('public')->path($path);
 
-        $process = new Process(['python', base_path('scripts/pdf_parser.py'), $fullPath]);
+        $pythonPath = env('PYTHON_PATH', 'python');
+        $process = new Process([$pythonPath, base_path('scripts/pdf_parser.py'), $fullPath]);
         $process->run();
 
         if (! $process->isSuccessful()) {
