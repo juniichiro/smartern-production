@@ -10,6 +10,8 @@ class OnboardingApplicantSeeder extends Seeder
 {
     public function run(): void
     {
+        $activeAssessments = \App\Models\AssessmentItem::active()->get();
+
         $applicants = [
             [
                 'applicant_id' => 'APP-2026-001',
@@ -18,8 +20,6 @@ class OnboardingApplicantSeeder extends Seeder
                 'last_name' => 'Johnson',
                 'email' => 'alice.j@example.com',
                 'university' => 'DLSU',
-                'tech_skills' => ['PHP', 'Laravel', 'HTML', 'CSS'],
-                'soft_skills' => ['Teamwork', 'Communication', 'Problem Solving'],
                 'gender' => 'Female',
                 'phone_number' => '09991234561',
                 'emergency_contact' => 'Robert Johnson',
@@ -33,8 +33,6 @@ class OnboardingApplicantSeeder extends Seeder
                 'last_name' => 'Smith',
                 'email' => 'bob.s@example.com',
                 'university' => 'UST',
-                'tech_skills' => ['Python', 'SQL', 'Data Analytics'],
-                'soft_skills' => ['Critical Thinking', 'Adaptability'],
                 'gender' => 'Male',
                 'phone_number' => '09991234563',
                 'emergency_contact' => 'Mary Smith',
@@ -48,8 +46,6 @@ class OnboardingApplicantSeeder extends Seeder
                 'last_name' => 'Brown',
                 'email' => 'charlie.b@example.com',
                 'university' => 'UP',
-                'tech_skills' => ['Java', 'Spring Boot', 'Git'],
-                'soft_skills' => ['Leadership', 'Time Management'],
                 'gender' => 'Male',
                 'phone_number' => '09991234565',
                 'emergency_contact' => 'Sally Brown',
@@ -63,8 +59,6 @@ class OnboardingApplicantSeeder extends Seeder
                 'last_name' => 'Prince',
                 'email' => 'diana.p@example.com',
                 'university' => 'FEU-TECH',
-                'tech_skills' => ['JavaScript', 'React', 'Tailwind'],
-                'soft_skills' => ['Creativity', 'Conflict Resolution'],
                 'gender' => 'Female',
                 'phone_number' => '09991234567',
                 'emergency_contact' => 'Hippolyta Prince',
@@ -78,8 +72,6 @@ class OnboardingApplicantSeeder extends Seeder
                 'last_name' => 'Wright',
                 'email' => 'evan.w@example.com',
                 'university' => 'DLSU',
-                'tech_skills' => ['UI/UX Design', 'Figma', 'Product Management'],
-                'soft_skills' => ['Empathy', 'Collaboration'],
                 'gender' => 'Male',
                 'phone_number' => '09991234569',
                 'emergency_contact' => 'Arthur Wright',
@@ -89,6 +81,22 @@ class OnboardingApplicantSeeder extends Seeder
         ];
 
         foreach ($applicants as $applicant) {
+            $techSkills = [];
+            $softSkills = [];
+
+            foreach ($activeAssessments as $item) {
+                $compText = trim($item->competency_text);
+                $score = rand(3, 5);
+                if ($item->category === 'technical') {
+                    $techSkills[$compText] = $score;
+                } else {
+                    $softSkills[$compText] = $score;
+                }
+            }
+
+            $applicant['tech_skills'] = $techSkills;
+            $applicant['soft_skills'] = $softSkills;
+
             OnboardingApplicant::create($applicant);
         }
     }
