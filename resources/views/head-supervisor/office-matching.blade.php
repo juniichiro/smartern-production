@@ -320,24 +320,47 @@
                                 {{-- ANALYSIS --}}
                                 <tr x-show="expanded === '{{ $applicant->applicant_id }}'" x-cloak class="bg-gray-50/50 dark:bg-gray-950/50 border-b border-gray-100 dark:border-gray-800">
                                     <td colspan="6" class="px-12 py-8">
-                                        <div class="bg-white dark:bg-gray-900 p-8 rounded-[35px] border border-gray-100 dark:border-gray-800 shadow-lg flex flex-col sm:flex-row items-center justify-between gap-6">
-                                            <div class="text-left">
-                                                <h5 class="text-xs font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400">Compatibility Analysis</h5>
-                                                <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mt-1">Select a department to view the full mathematical breakdown and assign</p>
+                                        <div class="bg-white dark:bg-gray-900 p-8 rounded-[35px] border border-gray-100 dark:border-gray-800 shadow-lg space-y-6">
+                                            <div class="text-left border-b border-gray-50 dark:border-gray-800 pb-4">
+                                                <h5 class="text-xs font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400">Match Compatibility Analysis</h5>
+                                                <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mt-1">Showing top 3 offices. Click on any bar to view its TOPSIS calculation breakdown.</p>
                                             </div>
-                                            <div class="flex flex-wrap gap-3">
+                                            <div class="space-y-5 max-w-3xl">
                                                 @if($matches->count() > 0)
-                                                    @foreach($matches->sortByDesc('score') as $match)
+                                                    @foreach($matches->sortByDesc('score')->take(3) as $match)
                                                         @php
                                                             $breakdown = $match->breakdown ? json_decode($match->breakdown, true) : null;
+                                                            
+                                                            if ($match->score >= 80) {
+                                                                $barColor = 'bg-emerald-500 hover:bg-emerald-600 dark:bg-emerald-600 dark:hover:bg-emerald-500';
+                                                                $textColor = 'text-emerald-500';
+                                                            } elseif ($match->score >= 60) {
+                                                                $barColor = 'bg-[#0B5694] hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-500';
+                                                                $textColor = 'text-[#0B5694] dark:text-blue-400';
+                                                            } elseif ($match->score >= 40) {
+                                                                $barColor = 'bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-500';
+                                                                $textColor = 'text-indigo-500';
+                                                            } else {
+                                                                $barColor = 'bg-amber-500 hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-500';
+                                                                $textColor = 'text-amber-500';
+                                                            }
                                                         @endphp
-                                                        <button @click="showBreakdown = '{{ $match->id }}'; $nextTick(() => { if (window.MathJax) { MathJax.typesetPromise(); } })" type="button"
-                                                                class="px-5 py-3 rounded-xl border text-xs font-bold uppercase tracking-wider transition-all active:scale-95 flex items-center gap-2 {{ $confirmedMatch && $confirmedMatch->id === $match->id ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-500/20 text-emerald-600 dark:text-emerald-400' : 'bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300' }}">
-                                                            @if($confirmedMatch && $confirmedMatch->id === $match->id)
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="inline"><polyline points="20 6 9 17 4 12"/></svg>
-                                                            @endif
-                                                            {{ $match->office->name }} ({{ $match->score }}%)
-                                                        </button>
+                                                        <div class="space-y-1.5">
+                                                            <div class="flex justify-between items-center text-xs font-bold uppercase tracking-wider">
+                                                                <span class="text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                                                                    {{ $match->office->name }}
+                                                                    @if($confirmedMatch && $confirmedMatch->id === $match->id)
+                                                                        <span class="bg-emerald-50 dark:bg-emerald-950/30 text-emerald-500 border border-emerald-500/20 px-2 py-0.5 rounded text-[9px] tracking-widest font-black uppercase">Assigned</span>
+                                                                    @endif
+                                                                </span>
+                                                                <span class="{{ $textColor }} font-extrabold">{{ $match->score }}% Match</span>
+                                                            </div>
+                                                            <div class="relative w-full h-8 bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden cursor-pointer shadow-inner border border-gray-200/50 dark:border-gray-800 hover:ring-2 hover:ring-blue-500/20 transition-all active:scale-[0.99] group"
+                                                                 @click="showBreakdown = '{{ $match->id }}'; $nextTick(() => { if (window.MathJax) { MathJax.typesetPromise(); } })"
+                                                                 title="Click to view breakdown for {{ $match->office->name }}">
+                                                                <div class="h-full {{ $barColor }} rounded-l-xl transition-all duration-500 ease-out" style="width: {{ $match->score }}%"></div>
+                                                            </div>
+                                                        </div>
 
                                                         {{-- MODAL FOR FULL BREAKDOWN --}}
                                                         @if($breakdown)
