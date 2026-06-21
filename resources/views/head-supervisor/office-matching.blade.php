@@ -255,9 +255,9 @@
                                     </td>
                                     <td class="px-6 py-6 text-right">
                                         <div class="flex justify-end gap-3">
-                                            <button @click="expanded === '{{ $applicant->applicant_id }}' ? expanded = null : expanded = '{{ $applicant->applicant_id }}'" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 px-5 py-2.5 rounded-xl text-xs font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white dark:hover:border-gray-500 transition shadow-sm uppercase tracking-wider active:scale-95">Analysis</button>
+                                            <button @click="if (expanded === '{{ $applicant->applicant_id }}') { expanded = null; } else { expanded = '{{ $applicant->applicant_id }}'; evaluating = null; }" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 px-5 py-2.5 rounded-xl text-xs font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white dark:hover:border-gray-500 transition shadow-sm uppercase tracking-wider active:scale-95">Analysis</button>
                                             @if(!$confirmedMatch)
-                                                <button @click="evaluating === '{{ $applicant->applicant_id }}' ? evaluating = null : evaluating = '{{ $applicant->applicant_id }}'" class="bg-[#0B5694] dark:bg-blue-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-[#084577] transition shadow-sm uppercase tracking-wider active:scale-95">Evaluate</button>
+                                                <button @click="if (evaluating === '{{ $applicant->applicant_id }}') { evaluating = null; } else { evaluating = '{{ $applicant->applicant_id }}'; expanded = null; }" class="bg-[#0B5694] dark:bg-blue-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-[#084577] transition shadow-sm uppercase tracking-wider active:scale-95">Evaluate</button>
                                             @endif
                                         </div>
                                     </td>
