@@ -1,0 +1,201 @@
+student_id,student_name,university,technical_skill_1,score_1,technical_skill_2,score_2,technical_skill_3,score_3,soft_skill_1,soft_score_1,soft_skill_2,soft_score_2
+INT-3001,Raniel John Britos,FEU Tech,Laravel,5,Tailwind CSS,4,MySQL,5,Problem Solving,5,Teamwork,4
+INT-3002,Tamiyah Gale Valera,FEU Tech,Microsoft Excel,5,Technical Writing,4,Data Analysis,5,Communication,5,Adaptability,4
+INT-3003,Ren Ren Agustin,FEU Tech,Python,5,React,4,Django,4,Critical Thinking,5,Leadership,4
+INT-3004,Franzese Denn Selosa,FEU Tech,Photoshop,5,Graphic Design,5,Illustrator,4,Creativity,4,Time Management,5
+INT-3005,Christian Estabillo,FEU Tech,Network Security,5,Linux,4,Ethical Hacking,5,Adaptability,5,Problem Solving,4
+INT-3006,Jacob Rethrick Abad,FEU Tech,Technical Writing,3,Data Entry,3,Microsoft Word,2,Communication,2,Punctuality,3
+INT-3007,Justin Rey Magalong,FEU Tech,Laravel,2,React,2,JavaScript,3,Communication,3,Teamwork,2
+INT-3008,Barric Aricayos,FEU Tech,Microsoft Excel,3,Psychology,2,Public Speaking,3,Teamwork,3,Empathy,4
+INT-3009,Nathan Cabrales,FEU Tech,Java,3,Laravel,2,Spring Boot,2,Communication,2,Technical Writing,3
+INT-3010,Earl Camama,FEU Tech,MySQL,2,Microsoft Excel,4,Database Design,3,Communication,3,Problem Solving,2
+INT-3011,Aaron Dela Cruz,FEU Tech,Laravel,4,Tailwind CSS,3,Vue.js,4,Teamwork,4,Communication,5
+INT-3012,Bernadette Santos,FEU Tech,PHP,3,MySQL,5,API Development,4,Communication,5,Critical Thinking,4
+INT-3013,Carlos Mendoza,FEU Tech,Python,5,React,4,Node.js,5,Problem Solving,4,Adaptability,5
+INT-3014,Dianne Reyes,FEU Tech,Laravel,5,Bootstrap,5,PHP,4,Leadership,3,Public Speaking,4
+INT-3015,Edgar Garcia,FEU Tech,Microsoft Excel,4,Data Entry,4,Inventory Management,5,Teamwork,5,Organization,4
+INT-3001,Raniel John Britos,FEU Tech,Laravel,5,Tailwind CSS,4,MySQL,5,Problem Solving,5,Teamwork,4
+INT-3002,Tamiyah Gale Valera,FEU Tech,Microsoft Excel,5,Technical Writing,4,Data Analysis,5,Communication,5,Adaptability,4
+INT-3003,Ren Ren Agustin,FEU Tech,Python,5,React,4,Django,4,Critical Thinking,5,Leadership,4
+INT-3004,Franzese Denn Selosa,FEU Tech,Photoshop,5,Graphic Design,5,Illustrator,4,Creativity,4,Time Management,5
+INT-3005,Christian Estabillo,FEU Tech,Network Security,5,Linux,4,Ethical Hacking,5,Adaptability,5,Problem Solving,4
+INT-3006,Jacob Rethrick Abad,FEU Tech,Technical Writing,3,Data Entry,3,Microsoft Word,2,Communication,2,Punctuality,3
+INT-3007,Justin Rey Magalong,FEU Tech,Laravel,2,React,2,JavaScript,3,Communication,3,Teamwork,2
+INT-3008,Barric Aricayos,FEU Tech,Microsoft Excel,3,Psychology,2,Public Speaking,3,Teamwork,3,Empathy,4
+INT-3009,Nathan Cabrales,FEU Tech,Java,3,Laravel,2,Spring Boot,2,Communication,2,Technical Writing,3
+INT-3010,Earl Camama,FEU Tech,MySQL,2,Microsoft Excel,4,Database Design,3,Communication,3,Problem Solving,2
+INT-3011,Aaron Dela Cruz,FEU Tech,Laravel,4,Tailwind CSS,3,Vue.js,4,Teamwork,4,Communication,5
+INT-3012,Bernadette Santos,FEU Tech,PHP,3,MySQL,5,API Development,4,Communication,5,Critical Thinking,4
+INT-3013,Carlos Mendoza,FEU Tech,Python,5,React,4,Node.js,5,Problem Solving,4,Adaptability,5
+INT-3014,Dianne Reyes,FEU Tech,Laravel,5,Bootstrap,5,PHP,4,Leadership,3,Public Speaking,4
+INT-3015,Edgar Garcia,FEU Tech,Microsoft Excel,4,Data Entry,4,Inventory Management,5,Teamwork,5,Organization,4
+INT-3001,Raniel John Britos,FEU Tech,Laravel,5,Tailwind CSS,4,MySQL,5,Problem Solving,5,Teamwork,4
+INT-3002,Tamiyah Gale Valera,FEU Tech,Microsoft Excel,5,Technical Writing,4,Data Analysis,5,Communication,5,Adaptability,4
+INT-3003,Ren Ren Agustin,FEU Tech,Python,5,React,4,Django,4,Critical Thinking,5,Leadership,4
+INT-3004,Franzese Denn Selosa,FEU Tech,Photoshop,5,Graphic Design,5,Illustrator,4,Creativity,4,Time Management,5
+INT-3005,Christian Estabillo,FEU Tech,Network Security,5,Linux,4,Ethical Hacking,5,Adaptability,5,Problem Solving,4
+INT-3006,Jacob Rethrick Abad,FEU Tech,Technical Writing,3,Data Entry,3,Microsoft Word,2,Communication,2,Punctuality,3
+INT-3007,Justin Rey Magalong,FEU Tech,Laravel,2,React,2,JavaScript,3,Communication,3,Teamwork,2
+INT-3008,Barric Aricayos,FEU Tech,Microsoft Excel,3,Psychology,2,Public Speaking,3,Teamwork,3,Empathy,4
+INT-3009,Nathan Cabrales,FEU Tech,Java,3,Laravel,2,Spring Boot,2,Communication,2,Technical Writing,3
+INT-3010,Earl Camama,FEU Tech,MySQL,2,Microsoft Excel,4,Database Design,3,Communication,3,Problem Solving,2
+INT-3011,Aaron Dela Cruz,FEU Tech,Laravel,4,Tailwind CSS,3,Vue.js,4,Teamwork,4,Communication,5
+INT-3012,Bernadette Santos,FEU Tech,PHP,3,MySQL,5,API Development,4,Communication,5,Critical Thinking,4
+INT-3013,Carlos Mendoza,FEU Tech,Python,5,React,4,Node.js,5,Problem Solving,4,Adaptability,5
+INT-3014,Dianne Reyes,FEU Tech,Laravel,5,Bootstrap,5,PHP,4,Leadership,3,Public Speaking,4
+INT-3015,Edgar Garcia,FEU Tech,Microsoft Excel,4,Data Entry,4,Inventory Management,5,Teamwork,5,Organization,4
+INT-3001,Raniel John Britos,FEU Tech,Laravel,5,Tailwind CSS,4,MySQL,5,Problem Solving,5,Teamwork,4
+INT-3002,Tamiyah Gale Valera,FEU Tech,Microsoft Excel,5,Technical Writing,4,Data Analysis,5,Communication,5,Adaptability,4
+INT-3003,Ren Ren Agustin,FEU Tech,Python,5,React,4,Django,4,Critical Thinking,5,Leadership,4
+INT-3004,Franzese Denn Selosa,FEU Tech,Photoshop,5,Graphic Design,5,Illustrator,4,Creativity,4,Time Management,5
+INT-3005,Christian Estabillo,FEU Tech,Network Security,5,Linux,4,Ethical Hacking,5,Adaptability,5,Problem Solving,4
+INT-3006,Jacob Rethrick Abad,FEU Tech,Technical Writing,3,Data Entry,3,Microsoft Word,2,Communication,2,Punctuality,3
+INT-3007,Justin Rey Magalong,FEU Tech,Laravel,2,React,2,JavaScript,3,Communication,3,Teamwork,2
+INT-3008,Barric Aricayos,FEU Tech,Microsoft Excel,3,Psychology,2,Public Speaking,3,Teamwork,3,Empathy,4
+INT-3009,Nathan Cabrales,FEU Tech,Java,3,Laravel,2,Spring Boot,2,Communication,2,Technical Writing,3
+INT-3010,Earl Camama,FEU Tech,MySQL,2,Microsoft Excel,4,Database Design,3,Communication,3,Problem Solving,2
+INT-3011,Aaron Dela Cruz,FEU Tech,Laravel,4,Tailwind CSS,3,Vue.js,4,Teamwork,4,Communication,5
+INT-3012,Bernadette Santos,FEU Tech,PHP,3,MySQL,5,API Development,4,Communication,5,Critical Thinking,4
+INT-3013,Carlos Mendoza,FEU Tech,Python,5,React,4,Node.js,5,Problem Solving,4,Adaptability,5
+INT-3014,Dianne Reyes,FEU Tech,Laravel,5,Bootstrap,5,PHP,4,Leadership,3,Public Speaking,4
+INT-3015,Edgar Garcia,FEU Tech,Microsoft Excel,4,Data Entry,4,Inventory Management,5,Teamwork,5,Organization,4
+INT-3001,Raniel John Britos,FEU Tech,Laravel,5,Tailwind CSS,4,MySQL,5,Problem Solving,5,Teamwork,4
+INT-3002,Tamiyah Gale Valera,FEU Tech,Microsoft Excel,5,Technical Writing,4,Data Analysis,5,Communication,5,Adaptability,4
+INT-3003,Ren Ren Agustin,FEU Tech,Python,5,React,4,Django,4,Critical Thinking,5,Leadership,4
+INT-3004,Franzese Denn Selosa,FEU Tech,Photoshop,5,Graphic Design,5,Illustrator,4,Creativity,4,Time Management,5
+INT-3005,Christian Estabillo,FEU Tech,Network Security,5,Linux,4,Ethical Hacking,5,Adaptability,5,Problem Solving,4
+INT-3006,Jacob Rethrick Abad,FEU Tech,Technical Writing,3,Data Entry,3,Microsoft Word,2,Communication,2,Punctuality,3
+INT-3007,Justin Rey Magalong,FEU Tech,Laravel,2,React,2,JavaScript,3,Communication,3,Teamwork,2
+INT-3008,Barric Aricayos,FEU Tech,Microsoft Excel,3,Psychology,2,Public Speaking,3,Teamwork,3,Empathy,4
+INT-3009,Nathan Cabrales,FEU Tech,Java,3,Laravel,2,Spring Boot,2,Communication,2,Technical Writing,3
+INT-3010,Earl Camama,FEU Tech,MySQL,2,Microsoft Excel,4,Database Design,3,Communication,3,Problem Solving,2
+INT-3011,Aaron Dela Cruz,FEU Tech,Laravel,4,Tailwind CSS,3,Vue.js,4,Teamwork,4,Communication,5
+INT-3012,Bernadette Santos,FEU Tech,PHP,3,MySQL,5,API Development,4,Communication,5,Critical Thinking,4
+INT-3013,Carlos Mendoza,FEU Tech,Python,5,React,4,Node.js,5,Problem Solving,4,Adaptability,5
+INT-3014,Dianne Reyes,FEU Tech,Laravel,5,Bootstrap,5,PHP,4,Leadership,3,Public Speaking,4
+INT-3015,Edgar Garcia,FEU Tech,Microsoft Excel,4,Data Entry,4,Inventory Management,5,Teamwork,5,Organization,4
+INT-3001,Raniel John Britos,FEU Tech,Laravel,5,Tailwind CSS,4,MySQL,5,Problem Solving,5,Teamwork,4
+INT-3002,Tamiyah Gale Valera,FEU Tech,Microsoft Excel,5,Technical Writing,4,Data Analysis,5,Communication,5,Adaptability,4
+INT-3003,Ren Ren Agustin,FEU Tech,Python,5,React,4,Django,4,Critical Thinking,5,Leadership,4
+INT-3004,Franzese Denn Selosa,FEU Tech,Photoshop,5,Graphic Design,5,Illustrator,4,Creativity,4,Time Management,5
+INT-3005,Christian Estabillo,FEU Tech,Network Security,5,Linux,4,Ethical Hacking,5,Adaptability,5,Problem Solving,4
+INT-3006,Jacob Rethrick Abad,FEU Tech,Technical Writing,3,Data Entry,3,Microsoft Word,2,Communication,2,Punctuality,3
+INT-3007,Justin Rey Magalong,FEU Tech,Laravel,2,React,2,JavaScript,3,Communication,3,Teamwork,2
+INT-3008,Barric Aricayos,FEU Tech,Microsoft Excel,3,Psychology,2,Public Speaking,3,Teamwork,3,Empathy,4
+INT-3009,Nathan Cabrales,FEU Tech,Java,3,Laravel,2,Spring Boot,2,Communication,2,Technical Writing,3
+INT-3010,Earl Camama,FEU Tech,MySQL,2,Microsoft Excel,4,Database Design,3,Communication,3,Problem Solving,2
+INT-3011,Aaron Dela Cruz,FEU Tech,Laravel,4,Tailwind CSS,3,Vue.js,4,Teamwork,4,Communication,5
+INT-3012,Bernadette Santos,FEU Tech,PHP,3,MySQL,5,API Development,4,Communication,5,Critical Thinking,4
+INT-3013,Carlos Mendoza,FEU Tech,Python,5,React,4,Node.js,5,Problem Solving,4,Adaptability,5
+INT-3014,Dianne Reyes,FEU Tech,Laravel,5,Bootstrap,5,PHP,4,Leadership,3,Public Speaking,4
+INT-3015,Edgar Garcia,FEU Tech,Microsoft Excel,4,Data Entry,4,Inventory Management,5,Teamwork,5,Organization,4
+INT-3001,Raniel John Britos,FEU Tech,Laravel,5,Tailwind CSS,4,MySQL,5,Problem Solving,5,Teamwork,4
+INT-3002,Tamiyah Gale Valera,FEU Tech,Microsoft Excel,5,Technical Writing,4,Data Analysis,5,Communication,5,Adaptability,4
+INT-3003,Ren Ren Agustin,FEU Tech,Python,5,React,4,Django,4,Critical Thinking,5,Leadership,4
+INT-3004,Franzese Denn Selosa,FEU Tech,Photoshop,5,Graphic Design,5,Illustrator,4,Creativity,4,Time Management,5
+INT-3005,Christian Estabillo,FEU Tech,Network Security,5,Linux,4,Ethical Hacking,5,Adaptability,5,Problem Solving,4
+INT-3006,Jacob Rethrick Abad,FEU Tech,Technical Writing,3,Data Entry,3,Microsoft Word,2,Communication,2,Punctuality,3
+INT-3007,Justin Rey Magalong,FEU Tech,Laravel,2,React,2,JavaScript,3,Communication,3,Teamwork,2
+INT-3008,Barric Aricayos,FEU Tech,Microsoft Excel,3,Psychology,2,Public Speaking,3,Teamwork,3,Empathy,4
+INT-3009,Nathan Cabrales,FEU Tech,Java,3,Laravel,2,Spring Boot,2,Communication,2,Technical Writing,3
+INT-3010,Earl Camama,FEU Tech,MySQL,2,Microsoft Excel,4,Database Design,3,Communication,3,Problem Solving,2
+INT-3011,Aaron Dela Cruz,FEU Tech,Laravel,4,Tailwind CSS,3,Vue.js,4,Teamwork,4,Communication,5
+INT-3012,Bernadette Santos,FEU Tech,PHP,3,MySQL,5,API Development,4,Communication,5,Critical Thinking,4
+INT-3013,Carlos Mendoza,FEU Tech,Python,5,React,4,Node.js,5,Problem Solving,4,Adaptability,5
+INT-3014,Dianne Reyes,FEU Tech,Laravel,5,Bootstrap,5,PHP,4,Leadership,3,Public Speaking,4
+INT-3015,Edgar Garcia,FEU Tech,Microsoft Excel,4,Data Entry,4,Inventory Management,5,Teamwork,5,Organization,4
+INT-3001,Raniel John Britos,FEU Tech,Laravel,5,Tailwind CSS,4,MySQL,5,Problem Solving,5,Teamwork,4
+INT-3002,Tamiyah Gale Valera,FEU Tech,Microsoft Excel,5,Technical Writing,4,Data Analysis,5,Communication,5,Adaptability,4
+INT-3003,Ren Ren Agustin,FEU Tech,Python,5,React,4,Django,4,Critical Thinking,5,Leadership,4
+INT-3004,Franzese Denn Selosa,FEU Tech,Photoshop,5,Graphic Design,5,Illustrator,4,Creativity,4,Time Management,5
+INT-3005,Christian Estabillo,FEU Tech,Network Security,5,Linux,4,Ethical Hacking,5,Adaptability,5,Problem Solving,4
+INT-3006,Jacob Rethrick Abad,FEU Tech,Technical Writing,3,Data Entry,3,Microsoft Word,2,Communication,2,Punctuality,3
+INT-3007,Justin Rey Magalong,FEU Tech,Laravel,2,React,2,JavaScript,3,Communication,3,Teamwork,2
+INT-3008,Barric Aricayos,FEU Tech,Microsoft Excel,3,Psychology,2,Public Speaking,3,Teamwork,3,Empathy,4
+INT-3009,Nathan Cabrales,FEU Tech,Java,3,Laravel,2,Spring Boot,2,Communication,2,Technical Writing,3
+INT-3010,Earl Camama,FEU Tech,MySQL,2,Microsoft Excel,4,Database Design,3,Communication,3,Problem Solving,2
+INT-3011,Aaron Dela Cruz,FEU Tech,Laravel,4,Tailwind CSS,3,Vue.js,4,Teamwork,4,Communication,5
+INT-3012,Bernadette Santos,FEU Tech,PHP,3,MySQL,5,API Development,4,Communication,5,Critical Thinking,4
+INT-3013,Carlos Mendoza,FEU Tech,Python,5,React,4,Node.js,5,Problem Solving,4,Adaptability,5
+INT-3014,Dianne Reyes,FEU Tech,Laravel,5,Bootstrap,5,PHP,4,Leadership,3,Public Speaking,4
+INT-3015,Edgar Garcia,FEU Tech,Microsoft Excel,4,Data Entry,4,Inventory Management,5,Teamwork,5,Organization,4
+INT-3001,Raniel John Britos,FEU Tech,Laravel,5,Tailwind CSS,4,MySQL,5,Problem Solving,5,Teamwork,4
+INT-3002,Tamiyah Gale Valera,FEU Tech,Microsoft Excel,5,Technical Writing,4,Data Analysis,5,Communication,5,Adaptability,4
+INT-3003,Ren Ren Agustin,FEU Tech,Python,5,React,4,Django,4,Critical Thinking,5,Leadership,4
+INT-3004,Franzese Denn Selosa,FEU Tech,Photoshop,5,Graphic Design,5,Illustrator,4,Creativity,4,Time Management,5
+INT-3005,Christian Estabillo,FEU Tech,Network Security,5,Linux,4,Ethical Hacking,5,Adaptability,5,Problem Solving,4
+INT-3006,Jacob Rethrick Abad,FEU Tech,Technical Writing,3,Data Entry,3,Microsoft Word,2,Communication,2,Punctuality,3
+INT-3007,Justin Rey Magalong,FEU Tech,Laravel,2,React,2,JavaScript,3,Communication,3,Teamwork,2
+INT-3008,Barric Aricayos,FEU Tech,Microsoft Excel,3,Psychology,2,Public Speaking,3,Teamwork,3,Empathy,4
+INT-3009,Nathan Cabrales,FEU Tech,Java,3,Laravel,2,Spring Boot,2,Communication,2,Technical Writing,3
+INT-3010,Earl Camama,FEU Tech,MySQL,2,Microsoft Excel,4,Database Design,3,Communication,3,Problem Solving,2
+INT-3011,Aaron Dela Cruz,FEU Tech,Laravel,4,Tailwind CSS,3,Vue.js,4,Teamwork,4,Communication,5
+INT-3012,Bernadette Santos,FEU Tech,PHP,3,MySQL,5,API Development,4,Communication,5,Critical Thinking,4
+INT-3013,Carlos Mendoza,FEU Tech,Python,5,React,4,Node.js,5,Problem Solving,4,Adaptability,5
+INT-3014,Dianne Reyes,FEU Tech,Laravel,5,Bootstrap,5,PHP,4,Leadership,3,Public Speaking,4
+INT-3015,Edgar Garcia,FEU Tech,Microsoft Excel,4,Data Entry,4,Inventory Management,5,Teamwork,5,Organization,4
+INT-3001,Raniel John Britos,FEU Tech,Laravel,5,Tailwind CSS,4,MySQL,5,Problem Solving,5,Teamwork,4
+INT-3002,Tamiyah Gale Valera,FEU Tech,Microsoft Excel,5,Technical Writing,4,Data Analysis,5,Communication,5,Adaptability,4
+INT-3003,Ren Ren Agustin,FEU Tech,Python,5,React,4,Django,4,Critical Thinking,5,Leadership,4
+INT-3004,Franzese Denn Selosa,FEU Tech,Photoshop,5,Graphic Design,5,Illustrator,4,Creativity,4,Time Management,5
+INT-3005,Christian Estabillo,FEU Tech,Network Security,5,Linux,4,Ethical Hacking,5,Adaptability,5,Problem Solving,4
+INT-3006,Jacob Rethrick Abad,FEU Tech,Technical Writing,3,Data Entry,3,Microsoft Word,2,Communication,2,Punctuality,3
+INT-3007,Justin Rey Magalong,FEU Tech,Laravel,2,React,2,JavaScript,3,Communication,3,Teamwork,2
+INT-3008,Barric Aricayos,FEU Tech,Microsoft Excel,3,Psychology,2,Public Speaking,3,Teamwork,3,Empathy,4
+INT-3009,Nathan Cabrales,FEU Tech,Java,3,Laravel,2,Spring Boot,2,Communication,2,Technical Writing,3
+INT-3010,Earl Camama,FEU Tech,MySQL,2,Microsoft Excel,4,Database Design,3,Communication,3,Problem Solving,2
+INT-3011,Aaron Dela Cruz,FEU Tech,Laravel,4,Tailwind CSS,3,Vue.js,4,Teamwork,4,Communication,5
+INT-3012,Bernadette Santos,FEU Tech,PHP,3,MySQL,5,API Development,4,Communication,5,Critical Thinking,4
+INT-3013,Carlos Mendoza,FEU Tech,Python,5,React,4,Node.js,5,Problem Solving,4,Adaptability,5
+INT-3014,Dianne Reyes,FEU Tech,Laravel,5,Bootstrap,5,PHP,4,Leadership,3,Public Speaking,4
+INT-3015,Edgar Garcia,FEU Tech,Microsoft Excel,4,Data Entry,4,Inventory Management,5,Teamwork,5,Organization,4
+INT-3001,Raniel John Britos,FEU Tech,Laravel,5,Tailwind CSS,4,MySQL,5,Problem Solving,5,Teamwork,4
+INT-3002,Tamiyah Gale Valera,FEU Tech,Microsoft Excel,5,Technical Writing,4,Data Analysis,5,Communication,5,Adaptability,4
+INT-3003,Ren Ren Agustin,FEU Tech,Python,5,React,4,Django,4,Critical Thinking,5,Leadership,4
+INT-3004,Franzese Denn Selosa,FEU Tech,Photoshop,5,Graphic Design,5,Illustrator,4,Creativity,4,Time Management,5
+INT-3005,Christian Estabillo,FEU Tech,Network Security,5,Linux,4,Ethical Hacking,5,Adaptability,5,Problem Solving,4
+INT-3006,Jacob Rethrick Abad,FEU Tech,Technical Writing,3,Data Entry,3,Microsoft Word,2,Communication,2,Punctuality,3
+INT-3007,Justin Rey Magalong,FEU Tech,Laravel,2,React,2,JavaScript,3,Communication,3,Teamwork,2
+INT-3008,Barric Aricayos,FEU Tech,Microsoft Excel,3,Psychology,2,Public Speaking,3,Teamwork,3,Empathy,4
+INT-3009,Nathan Cabrales,FEU Tech,Java,3,Laravel,2,Spring Boot,2,Communication,2,Technical Writing,3
+INT-3010,Earl Camama,FEU Tech,MySQL,2,Microsoft Excel,4,Database Design,3,Communication,3,Problem Solving,2
+INT-3011,Aaron Dela Cruz,FEU Tech,Laravel,4,Tailwind CSS,3,Vue.js,4,Teamwork,4,Communication,5
+INT-3012,Bernadette Santos,FEU Tech,PHP,3,MySQL,5,API Development,4,Communication,5,Critical Thinking,4
+INT-3013,Carlos Mendoza,FEU Tech,Python,5,React,4,Node.js,5,Problem Solving,4,Adaptability,5
+INT-3014,Dianne Reyes,FEU Tech,Laravel,5,Bootstrap,5,PHP,4,Leadership,3,Public Speaking,4
+INT-3015,Edgar Garcia,FEU Tech,Microsoft Excel,4,Data Entry,4,Inventory Management,5,Teamwork,5,Organization,4
+INT-3001,Raniel John Britos,FEU Tech,Laravel,5,Tailwind CSS,4,MySQL,5,Problem Solving,5,Teamwork,4
+INT-3002,Tamiyah Gale Valera,FEU Tech,Microsoft Excel,5,Technical Writing,4,Data Analysis,5,Communication,5,Adaptability,4
+INT-3003,Ren Ren Agustin,FEU Tech,Python,5,React,4,Django,4,Critical Thinking,5,Leadership,4
+INT-3004,Franzese Denn Selosa,FEU Tech,Photoshop,5,Graphic Design,5,Illustrator,4,Creativity,4,Time Management,5
+INT-3005,Christian Estabillo,FEU Tech,Network Security,5,Linux,4,Ethical Hacking,5,Adaptability,5,Problem Solving,4
+INT-3006,Jacob Rethrick Abad,FEU Tech,Technical Writing,3,Data Entry,3,Microsoft Word,2,Communication,2,Punctuality,3
+INT-3007,Justin Rey Magalong,FEU Tech,Laravel,2,React,2,JavaScript,3,Communication,3,Teamwork,2
+INT-3008,Barric Aricayos,FEU Tech,Microsoft Excel,3,Psychology,2,Public Speaking,3,Teamwork,3,Empathy,4
+INT-3009,Nathan Cabrales,FEU Tech,Java,3,Laravel,2,Spring Boot,2,Communication,2,Technical Writing,3
+INT-3010,Earl Camama,FEU Tech,MySQL,2,Microsoft Excel,4,Database Design,3,Communication,3,Problem Solving,2
+INT-3011,Aaron Dela Cruz,FEU Tech,Laravel,4,Tailwind CSS,3,Vue.js,4,Teamwork,4,Communication,5
+INT-3012,Bernadette Santos,FEU Tech,PHP,3,MySQL,5,API Development,4,Communication,5,Critical Thinking,4
+INT-3013,Carlos Mendoza,FEU Tech,Python,5,React,4,Node.js,5,Problem Solving,4,Adaptability,5
+INT-3014,Dianne Reyes,FEU Tech,Laravel,5,Bootstrap,5,PHP,4,Leadership,3,Public Speaking,4
+INT-3015,Edgar Garcia,FEU Tech,Microsoft Excel,4,Data Entry,4,Inventory Management,5,Teamwork,5,Organization,4
+INT-3001,Raniel John Britos,FEU Tech,Laravel,5,Tailwind CSS,4,MySQL,5,Problem Solving,5,Teamwork,4
+INT-3002,Tamiyah Gale Valera,FEU Tech,Microsoft Excel,5,Technical Writing,4,Data Analysis,5,Communication,5,Adaptability,4
+INT-3003,Ren Ren Agustin,FEU Tech,Python,5,React,4,Django,4,Critical Thinking,5,Leadership,4
+INT-3004,Franzese Denn Selosa,FEU Tech,Photoshop,5,Graphic Design,5,Illustrator,4,Creativity,4,Time Management,5
+INT-3005,Christian Estabillo,FEU Tech,Network Security,5,Linux,4,Ethical Hacking,5,Adaptability,5,Problem Solving,4
+INT-3006,Jacob Rethrick Abad,FEU Tech,Technical Writing,3,Data Entry,3,Microsoft Word,2,Communication,2,Punctuality,3
+INT-3007,Justin Rey Magalong,FEU Tech,Laravel,2,React,2,JavaScript,3,Communication,3,Teamwork,2
+INT-3008,Barric Aricayos,FEU Tech,Microsoft Excel,3,Psychology,2,Public Speaking,3,Teamwork,3,Empathy,4
+INT-3009,Nathan Cabrales,FEU Tech,Java,3,Laravel,2,Spring Boot,2,Communication,2,Technical Writing,3
+INT-3010,Earl Camama,FEU Tech,MySQL,2,Microsoft Excel,4,Database Design,3,Communication,3,Problem Solving,2
+INT-3011,Aaron Dela Cruz,FEU Tech,Laravel,4,Tailwind CSS,3,Vue.js,4,Teamwork,4,Communication,5
+INT-3012,Bernadette Santos,FEU Tech,PHP,3,MySQL,5,API Development,4,Communication,5,Critical Thinking,4
+INT-3013,Carlos Mendoza,FEU Tech,Python,5,React,4,Node.js,5,Problem Solving,4,Adaptability,5
+INT-3014,Dianne Reyes,FEU Tech,Laravel,5,Bootstrap,5,PHP,4,Leadership,3,Public Speaking,4
+INT-3015,Edgar Garcia,FEU Tech,Microsoft Excel,4,Data Entry,4,Inventory Management,5,Teamwork,5,Organization,4
+INT-3013,Carlos Mendoza,FEU Tech,Python,5,React,4,Node.js,5,Problem Solving,4,Adaptability,5
+INT-3014,Dianne Reyes,FEU Tech,Laravel,5,Bootstrap,5,PHP,4,Leadership,3,Public Speaking,4
+INT-3015,Edgar Garcia,FEU Tech,Microsoft Excel,4,Data Entry,4,Inventory Management,5,Teamwork,5,Organization,4
+INT-3013,Carlos Mendoza,FEU Tech,Python,5,React,4,Node.js,5,Problem Solving,4,Adaptability,5
+INT-3014,Dianne Reyes,FEU Tech,Laravel,5,Bootstrap,5,PHP,4,Leadership,3,Public Speaking,4

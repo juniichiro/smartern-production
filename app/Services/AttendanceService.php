@@ -1,0 +1,643 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\AbsenceRequest;
+use App\Models\Attendance;
+use App\Models\Journal;
+use App\Models\Schedule;
+use App\Models\User;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
+
+class AttendanceService
+{
+    /**
+     * Fetch Philippine holidays for a specific year, cached for 7 days to preserve performance.
+     */
+    public function getPhilippineHolidays($year)
+    {
+        return Cache::remember("ph_holidays_{$year}", now()->addDays(7), function () use ($year) {
+            try {
+                // Query Nager.Date public API (free, open, no token required)
+                $response = Http::timeout(5)->get("https://date.nager.at/api/v3/PublicHolidays/{$year}/PH");
+                if ($response->successful()) {
+                    return collect($response->json())->mapWithKeys(function ($holiday) {
+                        return [$holiday['date'] => [
+                            'id' => null, // Null indicates system-generated holiday
+                            'type' => 'holiday',
+                            'description' => $holiday['name'],
+                        ]];
+                    })->toArray();
+                }
+            } catch (\Exception $e) {
+                // Fail-safe: log warning and continue without breaking the app
+                logger()->warning('Failed to fetch Philippine holidays from Nager.Date API: '.$e->getMessage());
+            }
+
+            return [];
+        });
+    }
+
+    /**
+     * Check if a specific date is a holiday, has a work suspension, or is a weekend without a work_day override.
+     * Returns an array with ['blocked' => true, 'type' => '...', 'description' => '...'] or ['blocked' => false]
+     */
+    public function checkDateStatus(Carbon $date)
+    {
+        $dateStr = $date->toDateString();
+
+        // 1. Check database overrides first (they take priority)
+        // We only care about date-specific overrides here (where school_name is null or applies to everyone)
+        $schedule = Schedule::whereDate('date', $dateStr)
+            ->whereNull('school_name')
+            ->first();
+
+        if ($schedule) {
+            if ($schedule->type === 'holiday') {
+                return [
+                    'blocked' => true,
+                    'type' => 'holiday',
+                    'description' => $schedule->description ?? 'Official Holiday',
+                ];
+            }
+            if ($schedule->type === 'suspension') {
+                return [
+                    'blocked' => true,
+                    'type' => 'suspension',
+                    'description' => $schedule->description ?? 'Work Suspended',
+                ];
+            }
+            if ($schedule->type === 'work_day') {
+                // Explicitly allowed workday override
+                return [
+                    'blocked' => false,
+                ];
+            }
+        }
+
+        // 2. Check API holidays
+        $apiHolidays = $this->getPhilippineHolidays($date->year);
+        if (isset($apiHolidays[$dateStr])) {
+            $holidayDetails = $apiHolidays[$dateStr];
+
+            return [
+                'blocked' => true,
+                'type' => 'holiday',
+                'description' => $holidayDetails['description'] ?? 'Official Holiday',
+            ];
+        }
+
+        // 3. Check weekend rule
+        if ($date->isWeekend()) {
+            return [
+                'blocked' => true,
+                'type' => 'weekend',
+                'description' => 'Weekends are non-working days by default',
+            ];
+        }
+
+        return [
+            'blocked' => false,
+        ];
+    }
+
+    /**
+     * Get the effective schedule for a specific intern on a specific date.
+     */
+    public function getEffectiveSchedule(User $user, Carbon $date)
+    {
+        $intern = $user->internDetails;
+        $school = $intern->school ?? null;
+
+        // 1. Check for date-specific global overrides (holiday, suspension)
+        $dateStatus = $this->checkDateStatus($date);
+        if ($dateStatus['blocked']) {
+            return $dateStatus;
+        }
+
+        // 2. Check for approved FULL-DAY absence for this user
+        $absence = AbsenceRequest::where('intern_id', $user->id)
+            ->whereDate('date', $date->toDateString())
+            ->where('status', 'approved')
+            ->where('type', 'absence')
+            ->first();
+
+        if ($absence) {
+            return [
+                'blocked' => true,
+                'type' => 'absence',
+                'description' => 'Approved Absence: '.$absence->reason,
+            ];
+        }
+
+        // 3. Check for school-specific default schedule (recurring)
+        if ($school) {
+            $schoolSchedule = Schedule::where('type', 'school_default')
+                ->where('school_name', $school)
+                ->first();
+
+            if ($schoolSchedule) {
+                // Block if current date is before official start
+                if ($schoolSchedule->start_date && $date->copy()->startOfDay()->lt($schoolSchedule->start_date->copy()->startOfDay())) {
+                    return [
+                        'blocked' => true,
+                        'type' => 'pre_internship',
+                        'description' => 'The internship program has not officially started yet.',
+                    ];
+                }
+
+                return [
+                    'blocked' => false,
+                    'type' => 'school_default',
+                    'start_time' => $schoolSchedule->start_time,
+                    'end_time' => $schoolSchedule->end_time,
+                    'daily_hours' => (int) $schoolSchedule->daily_hours,
+                    'rounding_mode' => $schoolSchedule->rounding_mode ?? 'none',
+                    'description' => "Schedule for {$school}",
+                ];
+            }
+        }
+
+        // 3. System Default
+        return [
+            'blocked' => false,
+            'type' => 'system_default',
+            'start_time' => '08:00:00',
+            'end_time' => '17:00:00',
+            'daily_hours' => 8,
+            'rounding_mode' => 'none',
+            'description' => 'Standard Office Hours',
+        ];
+    }
+
+    /**
+     * Get a merged, sorted list of check-ins, holidays, suspensions, and absences for an intern.
+     */
+    public function getMergedLogs(User $user, $limit = null)
+    {
+        // 1. Fetch actual attendance logs
+        $actualAttendances = Attendance::where('intern_id', $user->id)
+            ->with(['internDetails.user', 'office'])
+            ->get()
+            ->keyBy(function ($item) {
+                return $item->clock_in->toDateString();
+            });
+
+        // 2. Fetch approved absence requests
+        $absenceRequests = AbsenceRequest::where('intern_id', $user->id)
+            ->where('status', 'approved')
+            ->get()
+            ->keyBy(function ($item) {
+                return $item->date->toDateString();
+            });
+
+        // 3. Fetch all schedule overrides (holidays, suspensions, extra workdays)
+        $schedules = Schedule::all()->keyBy(function ($item) {
+            return $item->date->toDateString();
+        });
+
+        // 4. Define the active internship period
+        // Priority: 1. Official start_date in school_default schedule, 2. Account creation date, 3. 30-day fallback
+        $intern = $user->internDetails;
+        $school = $intern->school ?? null;
+        $officialStart = null;
+
+        if ($school) {
+            $schoolSchedule = Schedule::where('type', 'school_default')
+                ->where('school_name', $school)
+                ->first();
+
+            if ($schoolSchedule && $schoolSchedule->start_date) {
+                $officialStart = $schoolSchedule->start_date->copy()->startOfDay();
+            }
+        }
+
+        $startDate = $officialStart;
+        if (! $startDate) {
+            $dates = collect();
+            if ($user->created_at) {
+                $dates->push($user->created_at->copy()->startOfDay());
+            }
+            $validAttendances = $actualAttendances->filter(fn ($log) => $log->clock_in !== null);
+            if ($validAttendances->isNotEmpty()) {
+                $earliestActual = $validAttendances->min(fn ($log) => $log->clock_in)->copy()->startOfDay();
+                $dates->push($earliestActual);
+            }
+            $startDate = $dates->isNotEmpty() ? $dates->min() : now()->subDays(30)->startOfDay();
+        }
+        $endDate = now()->startOfDay();
+
+        // If official start is in the future, we return an empty collection to signify work hasn't started
+        if ($officialStart && $officialStart->greaterThan($endDate)) {
+            return collect();
+        }
+
+        // Simulation/Testing Fix: If calculated start is in the "future" relative to now (and not using official start),
+        // we fallback to showing the last 30 days so logs are visible.
+        if (! $officialStart && $startDate->greaterThan($endDate)) {
+            $startDate = $endDate->copy()->subDays(30);
+        }
+
+        // 5. Fetch Philippine holidays for the years in range
+        $startYear = $startDate->year;
+        $endYear = $endDate->year;
+
+        $apiHolidays = collect();
+        for ($y = $startYear; $y <= $endYear; $y++) {
+            $apiHolidays = $apiHolidays->merge($this->getPhilippineHolidays($y));
+        }
+
+        // 6. Generate the date calendar period
+        $period = CarbonPeriod::create($startDate, $endDate);
+        $mergedLogs = collect();
+
+        foreach ($period as $date) {
+            $dateStr = $date->toDateString();
+
+            // Case A: Actual check-in exists in database
+            if (isset($actualAttendances[$dateStr])) {
+                $log = $actualAttendances[$dateStr];
+                // ... (rest of actual attendance logic)
+
+                // Fetch effective schedule to get rounding mode
+                $effectiveSchedule = $this->getEffectiveSchedule($user, $date);
+                $roundingMode = $effectiveSchedule['rounding_mode'] ?? 'none';
+
+                $duration = null;
+                // If the status is excused, duration is ALWAYS 0.00
+                if ($log->status === 'excused') {
+                    $duration = 0.00;
+                } elseif ($log->clock_out) {
+                    $minutes = $log->clock_in->diffInMinutes($log->clock_out);
+                    $hours = $minutes / 60;
+
+                    // Deduct lunch break if > 5 hours (standard practice in SmarTern)
+                    if ($hours > 5.0) {
+                        $hours = max(0.0, $hours - 1.0);
+                    }
+
+                    if ($roundingMode === 'floor') {
+                        $duration = floor($hours);
+                    } elseif ($roundingMode === 'ceil') {
+                        $duration = ceil($hours);
+                    } else {
+                        $duration = round($hours);
+                    }
+
+                    // Cap at daily hours if it's a school default or system default
+                    if (isset($effectiveSchedule['daily_hours'])) {
+                        $duration = min((float) $effectiveSchedule['daily_hours'], (float) $duration);
+                    }
+                }
+
+                $status = $log->status;
+                $remarks = $log->remarks;
+
+                // Check for approved early leave to update status/remarks in view
+                // We use a manual check here since we haven't updated the fetch logic for earlyLeaves yet in this turn
+                $hasEarlyLeave = AbsenceRequest::where('intern_id', $user->id)
+                    ->whereDate('date', $dateStr)
+                    ->where('status', 'approved')
+                    ->where('type', 'early_leave')
+                    ->exists();
+
+                if ($hasEarlyLeave && $log->clock_out) {
+                    $status = 'excused'; // Visually mark as excused once they have actually checked out early
+                    $remarks .= ' (Excused Early Leave)';
+                }
+
+                $mergedLogs->push([
+                    'type' => 'actual',
+                    'date' => $date->copy(),
+                    'clock_in' => $log->clock_in,
+                    'clock_out' => $log->clock_out,
+                    'status' => $status,
+                    'remarks' => $remarks,
+                    'duration' => $duration,
+                    'record' => $log,
+                ]);
+
+                continue;
+            }
+
+            // If official start is not set, we don't generate absences/holidays for the past
+            if (! $officialStart) {
+                continue;
+            }
+
+            // Case B: Approved Absence Request (Full Day Only)
+
+            if (isset($absenceRequests[$dateStr]) && $absenceRequests[$dateStr]->type === 'absence') {
+                $req = $absenceRequests[$dateStr];
+                $mergedLogs->push([
+                    'type' => 'excused',
+                    'date' => $date->copy(),
+                    'clock_in' => null,
+                    'clock_out' => null,
+                    'status' => 'excused',
+                    'remarks' => $req->reason,
+                    'duration' => 0.00,
+                    'record' => null,
+                ]);
+
+                continue;
+            }
+
+            // Case C: No check-in. Check override schedule rules
+            // Database overrides take priority over API holidays
+            $schedule = $schedules->get($dateStr);
+            if (! $schedule && $apiHolidays->has($dateStr)) {
+                $holidayDetails = $apiHolidays->get($dateStr);
+                $schedule = (object) [
+                    'type' => 'holiday',
+                    'description' => $holidayDetails['description'],
+                ];
+            }
+
+            $isWeekend = $date->isWeekend();
+
+            if ($schedule) {
+                if ($schedule->type === 'holiday') {
+                    $mergedLogs->push([
+                        'type' => 'holiday',
+                        'date' => $date->copy(),
+                        'clock_in' => null,
+                        'clock_out' => null,
+                        'status' => 'holiday',
+                        'remarks' => $schedule->description ?? 'Official Holiday',
+                        'duration' => 0.00,
+                        'record' => null,
+                    ]);
+                } elseif ($schedule->type === 'suspension') {
+                    $mergedLogs->push([
+                        'type' => 'suspension',
+                        'date' => $date->copy(),
+                        'clock_in' => null,
+                        'clock_out' => null,
+                        'status' => 'suspension',
+                        'remarks' => $schedule->description ?? 'Work Suspended',
+                        'duration' => 0.00,
+                        'record' => null,
+                    ]);
+                } elseif ($schedule->type === 'work_day') {
+                    // Extra workday on weekend but missed
+                    if (! $date->isToday()) {
+                        $mergedLogs->push([
+                            'type' => 'absent',
+                            'date' => $date->copy(),
+                            'clock_in' => null,
+                            'clock_out' => null,
+                            'status' => 'absent',
+                            'remarks' => 'Absent for the day',
+                            'duration' => 0.00,
+                            'record' => null,
+                        ]);
+                    }
+                }
+            } else {
+                // Case C: Standard weekday check
+                if (! $isWeekend) {
+                    if (! $date->isToday()) {
+                        $mergedLogs->push([
+                            'type' => 'absent',
+                            'date' => $date->copy(),
+                            'clock_in' => null,
+                            'clock_out' => null,
+                            'status' => 'absent',
+                            'remarks' => 'Absent for the day',
+                            'duration' => 0.00,
+                            'record' => null,
+                        ]);
+                    }
+                }
+            }
+        }
+
+        // Sort by date descending
+        $sorted = $mergedLogs->sortByDesc(function ($item) {
+            return $item['date']->timestamp;
+        });
+
+        if ($limit) {
+            return $sorted->take($limit);
+        }
+
+        return $sorted;
+    }
+
+    /**
+     * Get the consolidated attendance status for an intern today.
+     */
+    public function getInternStatus($userId)
+    {
+        $user = User::with('internDetails.office')->findOrFail($userId);
+        $effectiveSchedule = $this->getEffectiveSchedule($user, now());
+
+        $todayRecord = Attendance::where('intern_id', $userId)
+            ->whereDate('clock_in', now()->toDateString())
+            ->first();
+
+        $completedToday = $todayRecord && $todayRecord->clock_out !== null;
+
+        $statusMessage = 'Ready to clock in.';
+        $nextAvailableScan = null;
+
+        if ($completedToday) {
+            $statusMessage = 'You have already completed your shift today.';
+        } elseif ($todayRecord) {
+            $statusMessage = 'You have already clocked in today at '.$todayRecord->clock_in->format('h:i A').'.';
+            // Throttling: Must wait 5 minutes before clocking out
+            $nextAvailableScan = $todayRecord->clock_in->addMinutes(5);
+        }
+
+        return [
+            'todayRecord' => $todayRecord,
+            'completedToday' => $completedToday,
+            'statusMessage' => $statusMessage,
+            'nextAvailableScan' => $nextAvailableScan ? $nextAvailableScan->toIso8601String() : null,
+            'effectiveSchedule' => $effectiveSchedule,
+        ];
+    }
+
+    /**
+     * Record a clock-in or clock-out event.
+     */
+    public function recordAttendance($userId, $latitude = null, $longitude = null, $earlyCheckoutReason = null)
+    {
+        $user = User::with('internDetails.office')->findOrFail($userId);
+        $office = $user->internDetails->office;
+
+        $todayRecord = Attendance::where('intern_id', $userId)
+            ->whereDate('clock_in', now()->toDateString())
+            ->first();
+
+        // 1. Clock Out Logic
+        if ($todayRecord) {
+            if ($todayRecord->clock_out) {
+                return ['success' => false, 'message' => 'Attendance already completed for today.'];
+            }
+
+            // Throttling Check
+            if ($todayRecord->clock_in->diffInMinutes(now()) < 5) {
+                return [
+                    'success' => false,
+                    'message' => 'Security cooldown: Please wait '.(5 - $todayRecord->clock_in->diffInMinutes(now())).' more minutes before checking out.',
+                ];
+            }
+
+            // Calculate hours rendered
+            $minutes = $todayRecord->clock_in->diffInMinutes(now());
+            $hours = $minutes / 60;
+
+            if ($hours > 5.0) {
+                $hours = max(0.0, $hours - 1.0); // deduct 1 hour lunch break
+            }
+
+            // Rounding mode based on effective schedule
+            $effectiveSchedule = $this->getEffectiveSchedule($user, now());
+            $roundingMode = $effectiveSchedule['rounding_mode'] ?? 'none';
+
+            if ($roundingMode === 'floor') {
+                $hoursRendered = floor($hours);
+            } elseif ($roundingMode === 'ceil') {
+                $hoursRendered = ceil($hours);
+            } else {
+                $hoursRendered = round($hours);
+            }
+
+            if (isset($effectiveSchedule['daily_hours'])) {
+                $hoursRendered = min((float) $effectiveSchedule['daily_hours'], (float) $hoursRendered);
+            }
+
+            // Check for approved Early Leave
+            $earlyLeave = AbsenceRequest::where('intern_id', $userId)
+                ->whereDate('date', now()->toDateString())
+                ->where('status', 'approved')
+                ->where('type', 'early_leave')
+                ->first();
+
+            // Check if early checkout
+            $endTime = $effectiveSchedule['end_time'] ?? '17:00:00';
+            $isEarly = now()->format('H:i:s') < $endTime;
+            $reason = $earlyCheckoutReason ? trim($earlyCheckoutReason) : null;
+
+            // Calculate checkout remarks
+            if ($isEarly) {
+                if ($earlyLeave) {
+                    $checkoutRemarks = "Excused Early Leave: Rendered {$hoursRendered} hour(s) ({$earlyLeave->reason})";
+                } else {
+                    $checkoutRemarks = 'Left early ('.($reason ?? 'No reason provided')."): Rendered {$hoursRendered} hour(s)";
+                }
+            } else {
+                $checkoutRemarks = "Completed full shift ({$hoursRendered} hrs)";
+            }
+
+            $finalRemarks = $todayRecord->remarks
+                ? $todayRecord->remarks.' | '.$checkoutRemarks
+                : $checkoutRemarks;
+
+            $todayRecord->update([
+                'clock_out' => now(),
+                'latitude' => $latitude ?? $todayRecord->latitude,
+                'longitude' => $longitude ?? $todayRecord->longitude,
+                'remarks' => $finalRemarks,
+            ]);
+
+            if ($user->internDetails) {
+                $user->internDetails->increment('hours_rendered', $hoursRendered);
+            }
+
+            // Auto-create Daily Journal if not already created
+            try {
+                $hasDailyJournal = Journal::where('intern_id', $userId)
+                    ->where('journal_type', 'daily')
+                    ->where('entry_date', now()->format('Y-m-d'))
+                    ->exists();
+
+                if (! $hasDailyJournal) {
+                    Journal::create([
+                        'intern_id' => $userId,
+                        'journal_type' => 'daily',
+                        'entry_date' => now()->format('Y-m-d'),
+                        'title' => 'Daily Journal - '.now()->format('F d, Y'),
+                        'notes' => null,
+                        'content' => Journal::compileContent((int) $userId, 'daily', now()->format('Y-m-d'), null),
+                    ]);
+                }
+            } catch (\Exception $e) {
+                logger()->error('Failed to auto-create daily journal on clock out: '.$e->getMessage());
+                if (app()->environment('testing')) {
+                    throw $e;
+                }
+            }
+
+            // Auto-create Weekly Journal on Friday clock-out
+            try {
+                if (now()->isFriday()) {
+                    $startOfWeek = now()->startOfWeek()->format('Y-m-d');
+                    $hasWeeklyJournal = Journal::where('intern_id', $userId)
+                        ->where('journal_type', 'weekly')
+                        ->where('entry_date', $startOfWeek)
+                        ->exists();
+
+                    if (! $hasWeeklyJournal) {
+                        Journal::create([
+                            'intern_id' => $userId,
+                            'journal_type' => 'weekly',
+                            'entry_date' => $startOfWeek,
+                            'title' => 'Weekly Journal - Week of '.now()->startOfWeek()->format('F d, Y'),
+                            'notes' => null,
+                            'content' => Journal::compileContent((int) $userId, 'weekly', $startOfWeek, null),
+                        ]);
+                    }
+                }
+            } catch (\Exception $e) {
+                logger()->error('Failed to auto-create weekly journal on clock out: '.$e->getMessage());
+                if (app()->environment('testing')) {
+                    throw $e;
+                }
+            }
+
+            return [
+                'success' => true,
+                'type' => 'out',
+                'message' => 'Clock-out successful. Session finalized.',
+            ];
+        }
+
+        // 2. Clock In Logic
+        $effectiveSchedule = $this->getEffectiveSchedule($user, now());
+
+        if (isset($effectiveSchedule['blocked']) && $effectiveSchedule['blocked']) {
+            return ['success' => false, 'message' => 'Attendance is blocked: '.$effectiveSchedule['description']];
+        }
+
+        $status = 'on_time';
+        if (isset($effectiveSchedule['start_time'])) {
+            $startTime = Carbon::createFromFormat('H:i:s', $effectiveSchedule['start_time']);
+            // Late if after 15-minute grace period
+            if (now()->greaterThan($startTime->addMinutes(15))) {
+                $status = 'late';
+            }
+        }
+
+        Attendance::create([
+            'intern_id' => $userId,
+            'office_id' => $office->id,
+            'clock_in' => now(),
+            'latitude' => $latitude,
+            'longitude' => $longitude,
+            'status' => $status,
+            'remarks' => $status === 'late' ? 'Clocked in after grace period.' : 'Standard entry.',
+        ]);
+
+        return [
+            'success' => true,
+            'type' => 'in',
+            'message' => 'Clock-in successful. Welcome to the office.',
+        ];
+    }
+}

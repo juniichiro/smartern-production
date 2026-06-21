@@ -1,0 +1,11 @@
+student_id,student_name,university,technical_skill_1,score_1,technical_skill_2,score_2,soft_skill_1,soft_score_1
+INT-3001,Raniel John Britos,FEU Tech,Laravel,5,Tailwind CSS,4,Communication,5
+INT-3002,Tamiyah Gale Valera,FEU Tech,Communication,5,Microsoft Excel,5,Problem Solving,4
+INT-3003,Ren Ren Agustin,FEU Tech,Laravel,4,Tailwind CSS,5,Communication,5
+INT-3004,Franzese Denn Selosa,FEU Tech,Communication,5,Microsoft Excel,4,Teamwork,5
+INT-3005,Christian Estabillo,FEU Tech,Laravel,5,Tailwind CSS,3,Leadership,5
+INT-3006,Jacob Rethrick Abad,FEU Tech,Technical Writing,3,Data Entry,3,Communication,4
+INT-3007,Justin Rey Magalong,FEU Tech,Laravel,3,React,2,Communication,3
+INT-3008,Barric Aricayos,FEU Tech,Microsoft Excel,3,Psychology,4,Teamwork,2
+INT-3009,Nathan Cabrales,FEU Tech,Java,3,Laravel,2,Communication,3
+INT-3010,Earl Camama,FEU Tech,MySQL,3,Microsoft Excel,2,Communication,4

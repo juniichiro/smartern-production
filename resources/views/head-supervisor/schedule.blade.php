@@ -1,0 +1,853 @@
+@extends('layouts.app')
+
+@section('title', 'Schedule')
+
+@section('content')
+<x-page-layout 
+    portalType="Head Supervisor" 
+    userName="{{ Auth::user()->supervisorDetails->first_name }}" 
+    userRole="Head Supervisor"
+>
+    <div class="flex-1 text-left transition-all duration-300"
+          x-data="calendarManager(JSON.parse('{{ addslashes($schedulesJson) }}'), JSON.parse('{{ addslashes($schoolSchedulesJson) }}'))">
+        
+        {{-- Header --}}
+        <div class="mb-8">
+            <x-page-header 
+                title="Schedule" 
+                subtitle="Configure system-wide calendar overrides for holidays or set school-specific default schedules." 
+            />
+        </div>
+
+        {{-- Success/Error Messages --}}
+        @if(session('success'))
+            <div x-data="{ show: true }" 
+                 x-show="show" 
+                 x-init="setTimeout(() => show = false, 5000)"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 transform -translate-y-2"
+                 x-transition:enter-end="opacity-100 transform translate-y-0"
+                 x-transition:leave="transition ease-in duration-500"
+                 x-transition:leave-start="opacity-100 transform translate-y-0"
+                 x-transition:leave-end="opacity-0 transform -translate-y-2"
+                 class="mb-8 p-4 bg-emerald-50 border border-emerald-200 dark:bg-emerald-950/20 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 rounded-2xl font-semibold shadow-sm">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        <span>{{ session('success') }}</span>
+                    </div>
+                    <button @click="show = false" class="text-emerald-400 hover:text-emerald-600 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                </div>
+            </div>
+        @endif
+
+        @if($errors->any())
+            <div class="mb-8 p-4 bg-rose-50 border border-rose-200 dark:bg-rose-950/20 dark:border-rose-800 text-rose-600 dark:text-rose-400 rounded-2xl font-semibold">
+                <ul class="list-disc pl-5">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        {{-- Skeletons --}}
+        <div x-show="loading" class="flex flex-col gap-8">
+            <div class="bg-white dark:bg-gray-900 rounded-[35px] shadow-sm border border-gray-100 dark:border-gray-800 p-6 lg:p-10 flex flex-col space-y-8">
+                <div class="flex justify-between items-center">
+                    <x-skeleton class="h-8 w-48 rounded-lg" />
+                    <div class="flex gap-2">
+                        <x-skeleton class="h-10 w-10 rounded-2xl" />
+                        <x-skeleton class="h-10 w-10 rounded-2xl" />
+                    </div>
+                </div>
+                <x-skeleton class="h-[500px] w-full rounded-[25px]" />
+            </div>
+
+            {{-- Summary Bar Skeleton --}}
+            <div class="w-full bg-white dark:bg-gray-900 rounded-[35px] shadow-sm border border-gray-100 dark:border-gray-800 p-8 flex items-center justify-between">
+                <div class="flex items-center gap-6">
+                    <x-skeleton class="w-14 h-14 rounded-2xl" />
+                    <div class="space-y-2 text-left">
+                        <x-skeleton class="h-5 w-32 rounded-md" />
+                        <x-skeleton class="h-3 w-48 rounded-md" />
+                    </div>
+                </div>
+                <div class="flex gap-10">
+                    <div class="space-y-2 text-left">
+                        <x-skeleton class="h-3 w-16 rounded-md" />
+                        <x-skeleton class="h-4 w-24 rounded-md" />
+                    </div>
+                    <div class="space-y-2 text-left">
+                        <x-skeleton class="h-3 w-16 rounded-md" />
+                        <x-skeleton class="h-4 w-24 rounded-md" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- MAIN CONTENT GRID --}}
+        <div x-show="!loading" x-transition.opacity.duration.500ms class="flex flex-col gap-8 items-start">
+            
+            {{-- CALENDAR CONTAINER --}}
+            <div class="w-full bg-white dark:bg-gray-900 rounded-[35px] shadow-sm border border-gray-100 dark:border-gray-800 p-6 lg:p-10 overflow-hidden flex flex-col">
+                
+                {{-- CALENDAR MONTH NAVIGATION HEADER --}}
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
+                    <div class="flex items-center gap-6">
+                        <div>
+                            <h3 class="text-xl md:text-2xl font-black text-gray-800 dark:text-gray-100 tracking-tight uppercase" x-text="monthName()"></h3>
+                            <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-1 font-black uppercase tracking-widest leading-none">
+                                <span x-show="!selectedSchool">Standard office hours applied.</span>
+                                <span x-show="selectedSchool" class="text-[#0B5694] dark:text-blue-400" x-text="`Default schedule for ${selectedSchool} is active.`"></span>
+                            </p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button @click="prevMonth()" class="p-2.5 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-xl transition-all border border-gray-100 dark:border-gray-700 active:scale-95">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m15 18-6-6 6-6"/></svg>
+                            </button>
+                            <button @click="nextMonth()" class="p-2.5 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-xl transition-all border border-gray-100 dark:border-gray-700 active:scale-95">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m9 18 6-6-6-6"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-3">
+                        {{-- School Filter --}}
+                        <div class="relative w-full sm:w-64">
+                            <select x-model="selectedSchool" 
+                                    class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl px-5 py-3 text-[10px] font-black uppercase tracking-widest text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-400 focus:outline-none transition-all shadow-sm">
+                                <option value="">Global System Default</option>
+                                <template x-for="schoolName in Object.keys(schoolSchedules)" :key="schoolName">
+                                    <option :value="schoolName" x-text="schoolName"></option>
+                                </template>
+                            </select>
+                        </div>
+
+                        <button @click="resetSchoolForm(); showSchoolModal = true" 
+                                class="px-6 py-3 bg-[#0B5694] dark:bg-blue-600 text-white rounded-xl font-bold text-[10px] uppercase tracking-wider shadow-lg shadow-blue-500/10 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                            Register School Schedule
+                        </button>
+                    </div>
+                </div>
+
+                {{-- CALENDAR GRID --}}
+                <div class="border border-gray-100 dark:border-gray-850 rounded-[25px] overflow-hidden shadow-inner bg-gray-50/50 dark:bg-gray-950/20">
+                    <div class="grid grid-cols-7 border-b border-gray-100 dark:border-gray-850 text-center bg-gray-50 dark:bg-gray-800/40">
+                        <template x-for="day in ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']">
+                            <div class="py-4 text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest" x-text="day"></div>
+                        </template>
+                    </div>
+
+                    <div class="grid grid-cols-7 divide-x divide-y divide-gray-100 dark:divide-gray-850">
+                        <template x-for="blank in blankDays">
+                            <div class="min-h-[120px] bg-gray-100/30 dark:bg-gray-900/10"></div>
+                        </template>
+
+                        <template x-for="day in daysInMonth" :key="day.dateStr">
+                            <div @click="selectDate(day)"
+                                 class="min-h-[120px] p-4 bg-white dark:bg-gray-900 cursor-pointer flex flex-col justify-between hover:bg-blue-50/20 dark:hover:bg-blue-900/5 transition-all group border-t border-l border-gray-100 dark:border-gray-850 first-of-type:border-t-0"
+                                 :class="{'opacity-60 bg-gray-50/50 dark:bg-gray-950/20': isPast(day.dateStr)}">
+                                <div class="flex justify-between items-start">
+                                    <span class="text-xs font-bold text-gray-400 dark:text-gray-500 group-hover:text-[#0B5694] dark:group-hover:text-blue-400 transition-colors uppercase tracking-[0.1em]"
+                                          x-text="getCellLabel(day)"></span>
+                                    <span class="text-lg font-black text-gray-850 dark:text-gray-100 leading-none group-hover:scale-110 transition-transform"
+                                          x-text="day.day"></span>
+                                </div>
+
+                                <div class="mt-4 space-y-2 flex-1 flex flex-col justify-end">
+                                    {{-- School Schedule Indicator --}}
+                                    <template x-if="selectedSchool && schoolSchedules[selectedSchool] && !day.isWeekend && day.events.length === 0">
+                                        <div class="rounded-2xl p-3 text-xs font-bold text-left leading-tight tracking-tight shadow-sm border bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 border-blue-100 dark:border-blue-900/50">
+                                            <div class="font-black uppercase tracking-widest text-[9px] mb-1 opacity-90">School Default</div>
+                                            <div class="truncate font-bold" x-text="formatTime(schoolSchedules[selectedSchool].start_time) + ' - ' + formatTime(schoolSchedules[selectedSchool].end_time)"></div>
+                                            <div class="text-[9px] mt-1 opacity-70" x-text="(schoolSchedules[selectedSchool].daily_hours % 1 === 0 ? schoolSchedules[selectedSchool].daily_hours : schoolSchedules[selectedSchool].daily_hours) + ' HRS CREDIT'"></div>
+                                        </div>
+                                    </template>
+
+                                    <template x-for="event in day.events" :key="event.id || event.description || event.reason">
+                                        <div>
+                                            <template x-if="event.type !== 'absence'">
+                                                <div class="rounded-2xl p-3 text-xs font-bold text-left leading-tight tracking-tight shadow-sm border"
+                                                     :class="{
+                                                         'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/50': event.type === 'holiday',
+                                                         'bg-purple-50 dark:bg-purple-950/30 text-purple-600 dark:text-purple-400 border-purple-100 dark:border-purple-900/50': event.type === 'suspension',
+                                                         'bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 border-blue-100 dark:border-blue-900/50': event.type === 'work_day'
+                                                     }">
+                                                    <div class="font-black uppercase tracking-widest text-[9px] mb-1 opacity-90"
+                                                         x-text="event.type === 'holiday' ? 'Holiday' : (event.type === 'suspension' ? 'Suspended' : 'Weekend Work')"></div>
+                                                    <div class="truncate font-bold" x-text="event.description"></div>
+                                                </div>
+                                            </template>
+
+                                            {{-- Absence Requests --}}
+                                            <template x-if="event.type === 'absence_request'">
+                                                <div class="rounded-2xl p-3 text-xs font-bold text-left leading-tight tracking-tight shadow-sm border"
+                                                     :class="{
+                                                         'bg-orange-50 dark:bg-orange-950/30 text-orange-600 dark:text-orange-400 border-orange-100 dark:border-orange-900/50': event.status === 'pending',
+                                                         'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/50': event.status === 'approved',
+                                                         'bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 border-rose-100 dark:border-rose-900/50': event.status === 'rejected'
+                                                     }">
+                                                    <div class="font-black uppercase tracking-widest text-[9px] mb-1 opacity-90 flex justify-between items-center">
+                                                        <span x-text="(event.request_type === 'early_leave' ? 'Early Leave ' : 'Absence ') + (event.status === 'pending' ? 'Pending' : (event.status === 'approved' ? 'Approved' : 'Rejected'))"></span>
+                                                        <template x-if="event.status === 'pending'">
+                                                            <div class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse"></div>
+                                                        </template>
+                                                    </div>
+                                                    <div class="truncate font-bold" x-text="event.intern_name + ': ' + event.reason"></div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+            {{-- SCHOOL SCHEDULE SETTINGS SUMMARY (Shown only when filtered) --}}
+            <template x-if="selectedSchool && schoolSchedules[selectedSchool]">
+                <div class="w-full bg-white dark:bg-gray-900 rounded-[35px] shadow-sm border border-gray-100 dark:border-gray-800 p-8 flex items-center justify-between">
+                    <div class="flex items-center gap-6">
+                        <div class="w-14 h-14 bg-blue-50 dark:bg-blue-900/30 text-[#0B5694] dark:text-blue-400 rounded-2xl flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                        </div>
+                        <div class="text-left">
+                            <h4 class="text-lg font-black text-gray-800 dark:text-white uppercase tracking-tight" x-text="selectedSchool"></h4>
+                            <p class="text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest mt-1">Default Institutional Schedule</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-10">
+                        <div class="text-left">
+                            <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Shift Hours</span>
+                            <p class="text-sm font-black text-gray-800 dark:text-white tracking-widest" x-text="formatTime(schoolSchedules[selectedSchool].start_time) + ' - ' + formatTime(schoolSchedules[selectedSchool].end_time)"></p>
+                        </div>
+                        <div class="text-left">
+                            <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Daily Credit</span>
+                            <p class="text-sm font-black text-gray-800 dark:text-white tracking-widest" x-text="(schoolSchedules[selectedSchool].daily_hours % 1 === 0 ? schoolSchedules[selectedSchool].daily_hours : schoolSchedules[selectedSchool].daily_hours) + ' HRS (' + schoolSchedules[selectedSchool].rounding_mode.toUpperCase() + ')'"></p>
+                        </div>
+                        <div class="flex gap-2">
+                             <button @click="editSchoolSchedule(schoolSchedules[selectedSchool])" class="p-4 bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 rounded-2xl hover:bg-blue-100 transition-all border border-blue-100 dark:border-blue-900/50">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                             </button>
+                             <form :action="`/head-supervisor/schedule/${schoolSchedules[selectedSchool].id}`" method="POST" onsubmit="return confirm('Withdraw this school schedule? Standard office hours will apply.');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="p-4 bg-rose-50 dark:bg-rose-900/20 text-rose-500 rounded-2xl hover:bg-rose-100 transition-all border border-rose-100 dark:border-rose-900/50">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+
+        {{-- REGISTER SCHOOL SCHEDULE MODAL --}}
+        <div x-show="showSchoolModal"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-950/80 backdrop-blur-md"
+             x-cloak>
+            
+            <div @click.away="showSchoolModal = false"
+                 class="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-[40px] shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300">
+                
+                <header class="p-8 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-950">
+                    <div>
+                        <h3 class="text-xl font-black text-gray-800 dark:text-white uppercase tracking-tight" x-text="isEditingSchool ? 'Refine School Schedule' : 'Register School Schedule'"></h3>
+                        <p class="text-xs text-[#0B5694] dark:text-blue-400 font-bold uppercase mt-1 tracking-widest" x-text="isEditingSchool ? 'Modify existing institutional hours.' : 'Assign specific hours to a university.'"></p>
+                    </div>
+                    <button @click="showSchoolModal = false" class="p-3 bg-gray-200 dark:bg-gray-800/50 hover:bg-gray-300 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 rounded-2xl transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                </header>
+
+                <div class="p-10">
+                    <form :action="schoolFormAction" method="POST" class="space-y-6">
+                        @csrf
+                        <template x-if="isEditingSchool">
+                            <input type="hidden" name="_method" value="PUT">
+                        </template>
+                        <input type="hidden" name="type" value="school_default">
+
+                        <div class="space-y-2 text-left">
+                            <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Select University</label>
+                            <select name="school_name" required x-model="schoolFormData.school_name"
+                                    class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-300 shadow-none outline-none focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-400 transition-all">
+                                <option value="" disabled selected>Choose a school...</option>
+                                @foreach($universities as $uni)
+                                    <option value="{{ $uni }}">{{ $uni }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-2 text-left">
+                                <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Internship Start</label>
+                                <input type="date" name="start_date" x-model="schoolFormData.start_date"
+                                       class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-300 shadow-none outline-none focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-400 transition-all">
+                            </div>
+                            <div class="space-y-2 text-left">
+                                <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Target Completion</label>
+                                <input type="date" name="target_end_date" x-model="schoolFormData.target_end_date"
+                                       class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-300 shadow-none outline-none focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-400 transition-all">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-2 text-left">
+                                <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Start Time</label>
+                                <input type="time" name="start_time" required x-model="schoolFormData.start_time"
+                                       class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-300 shadow-none outline-none focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-400 transition-all">
+                            </div>
+                            <div class="space-y-2 text-left">
+                                <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">End Time</label>
+                                <input type="time" name="end_time" required x-model="schoolFormData.end_time"
+                                       class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-300 shadow-none outline-none focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-400 transition-all">
+                            </div>
+                        </div>
+
+                        <div class="space-y-2 text-left">
+                            <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Daily Hour Credit</label>
+                            <div class="relative">
+                                <input type="number" name="daily_hours" required step="1" x-model="schoolFormData.daily_hours"
+                                       class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-300 shadow-none outline-none focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-400 transition-all">
+                                <span class="absolute right-5 top-1/2 -translate-y-1/2 text-[10px] font-black text-gray-400 uppercase tracking-widest">Hours / Day</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2 text-left">
+                            <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Hour Calculation Rule</label>
+                            <div class="grid grid-cols-3 gap-3">
+                                <label class="cursor-pointer group">
+                                    <input type="radio" name="rounding_mode" value="none" x-model="schoolFormData.rounding_mode" class="hidden peer">
+                                    <div class="p-3 text-center border border-gray-100 dark:border-gray-800 rounded-xl peer-checked:bg-[#0B5694] peer-checked:text-white transition-all">
+                                        <p class="text-[10px] font-black uppercase tracking-widest">Standard</p>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer group">
+                                    <input type="radio" name="rounding_mode" value="floor" x-model="schoolFormData.rounding_mode" class="hidden peer">
+                                    <div class="p-3 text-center border border-gray-100 dark:border-gray-800 rounded-xl peer-checked:bg-[#0B5694] peer-checked:text-white transition-all">
+                                        <p class="text-[10px] font-black uppercase tracking-widest">Floor</p>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer group">
+                                    <input type="radio" name="rounding_mode" value="ceil" x-model="schoolFormData.rounding_mode" class="hidden peer">
+                                    <div class="p-3 text-center border border-gray-100 dark:border-gray-800 rounded-xl peer-checked:bg-[#0B5694] peer-checked:text-white transition-all">
+                                        <p class="text-[10px] font-black uppercase tracking-widest">Ceil</p>
+                                    </div>
+                                </label>
+                            </div>
+                            <p class="text-[10px] text-gray-400 font-medium italic mt-2 px-1">Calculations are rounded to the nearest whole hour. Floor ignores extra minutes; Ceil rounds up.</p>
+                        </div>
+
+                        <button type="submit"
+                                class="w-full flex items-center justify-center gap-3 px-6 py-4 bg-[#0B5694] dark:bg-blue-600 text-white rounded-2xl font-bold text-xs uppercase tracking-wider shadow-xl shadow-blue-500/10 hover:scale-[1.02] active:scale-95 transition-all">
+                            <span x-text="isEditingSchool ? 'Finalize & Update' : 'Finalize School Schedule'"></span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {{-- ABSENCE REVIEW MODAL --}}
+        <div x-show="showAbsenceReviewModal"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-950/80 backdrop-blur-md"
+             x-cloak>
+            <div @click.away="showAbsenceReviewModal = false"
+                 class="bg-white dark:bg-gray-900 w-full max-w-md rounded-[40px] shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300">
+                <header class="p-8 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-950">
+                    <div>
+                        <h3 class="text-xl font-black text-gray-800 dark:text-white uppercase tracking-tight">Review Absence Request</h3>
+                        <p class="text-xs text-[#0B5694] dark:text-blue-400 font-bold uppercase mt-1 tracking-widest" x-text="selectedDateStr"></p>
+                    </div>
+                    <button @click="showAbsenceReviewModal = false" class="p-3 bg-gray-200 dark:bg-gray-800/50 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-2xl transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                </header>
+                <div class="p-10">
+                    <div class="space-y-6">
+                        <template x-for="event in selectedEvents.filter(e => e.type === 'absence_request')" :key="event.id">
+                            <div class="space-y-6">
+                                <div class="rounded-3xl p-6 border text-left bg-gray-50/50 dark:bg-gray-800/20 border-gray-100 dark:border-gray-800">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <span class="text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full border bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800"
+                                              x-text="(event.request_type === 'early_leave' ? 'Early Leave Request from ' : 'Absence Request from ') + event.intern_name"></span>
+                                        <span class="text-[9px] font-black uppercase px-3 py-1.5 rounded-full border"
+                                              :class="{
+                                                  'bg-orange-50 text-orange-600 border-orange-100': event.status === 'pending',
+                                                  'bg-emerald-50 text-emerald-600 border-emerald-100': event.status === 'approved',
+                                                  'bg-rose-50 text-rose-600 border-rose-100': event.status === 'rejected'
+                                              }"
+                                              x-text="event.status"></span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed font-medium italic" x-text="'&quot;' + event.reason + '&quot;'"></p>
+                                </div>
+
+                                <template x-if="event.status === 'pending'">
+                                    <form :action="`/head-supervisor/schedule/absence/${event.id}`" method="POST" class="space-y-6">
+                                        @csrf
+                                        @method('PATCH')
+                                        <div>
+                                            <label class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3 block text-left">Head Supervisor Remarks</label>
+                                            <textarea name="supervisor_remarks" rows="3"
+                                                      class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-5 text-sm text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-[#0B5694] transition-all placeholder:text-gray-300 dark:placeholder:text-gray-700"
+                                                      placeholder="Optional remarks for the intern..."></textarea>
+                                        </div>
+                                        <div class="flex gap-3">
+                                            <button type="submit" name="status" value="rejected" class="flex-1 py-4 bg-rose-50 text-rose-600 border border-rose-100 rounded-2xl font-bold text-xs uppercase tracking-wider hover:bg-rose-100 transition-all">
+                                                Reject
+                                            </button>
+                                            <button type="submit" name="status" value="approved" class="flex-1 py-4 bg-[#0B5694] text-white rounded-2xl font-bold text-xs uppercase tracking-wider shadow-xl shadow-blue-500/20 hover:scale-[1.02] active:scale-95 transition-all">
+                                                Approve
+                                            </button>
+                                        </div>
+                                    </form>
+                                </template>
+
+                                <template x-if="event.status !== 'pending'">
+                                    <div class="p-6 bg-gray-50 dark:bg-gray-900/50 rounded-3xl border border-gray-100 dark:border-gray-800 text-left">
+                                        <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3 block">Review Remarks</span>
+                                        <p class="text-sm text-gray-700 dark:text-gray-200 font-bold" x-text="event.remarks || 'No remarks provided.'"></p>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- VIEW EXCEPTION MODAL --}}
+        <div x-show="showViewModal"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-950/80 backdrop-blur-md"
+             x-cloak>
+            <div @click.away="showViewModal = false"
+                 class="bg-white dark:bg-gray-900 w-full max-w-md rounded-[40px] shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300">
+                <header class="p-8 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-950">
+                    <div>
+                        <h3 class="text-xl font-black text-gray-800 dark:text-white uppercase tracking-tight">Exception Details</h3>
+                        <p class="text-xs text-[#0B5694] dark:text-blue-400 font-bold uppercase mt-1 tracking-widest" x-text="selectedDateStr"></p>
+                    </div>
+                    <button @click="showViewModal = false" class="p-3 bg-gray-200 dark:bg-gray-800/50 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-2xl transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                </header>
+                <div class="p-10">
+                    <template x-if="selectedEvent">
+                        <div class="space-y-6 text-left">
+                            <div class="rounded-3xl p-6 border"
+                                 :class="{
+                                     'bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border-emerald-100 dark:border-emerald-800/40': selectedEvent.type === 'holiday',
+                                     'bg-purple-50 dark:bg-purple-950/20 text-purple-700 dark:text-purple-400 border-purple-100 dark:border-gray-800/40': selectedEvent.type === 'suspension',
+                                     'bg-blue-50 dark:bg-blue-950/20 text-blue-700 dark:text-blue-400 border-blue-100 dark:border-gray-800/40': selectedEvent.type === 'work_day'
+                                 }">
+                                <span class="text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full border bg-white dark:bg-gray-900 border-inherit"
+                                      x-text="selectedEvent.type === 'holiday' ? 'Holiday Exemption' : (selectedEvent.type === 'suspension' ? 'Suspension Override' : 'Weekend Shift Override')"></span>
+                                <h5 class="text-xl font-black uppercase tracking-tight mt-6 leading-tight" x-text="selectedEvent.description"></h5>
+                            </div>
+                            
+                            <template x-if="!isPast(selectedDateStr)">
+                                <div class="flex flex-col gap-3">
+                                    <button @click="openEditModal()"
+                                            class="w-full py-4 bg-[#0B5694] dark:bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-blue-500/10 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                        Edit Details
+                                    </button>
+                                    <button @click="openDeleteModal()"
+                                            class="w-full py-4 bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/35 hover:bg-rose-100 dark:hover:bg-rose-900/30 rounded-2xl font-black text-xs uppercase tracking-widest active:scale-95 transition-all">
+                                        Withdraw Exemption
+                                    </button>
+                                </div>
+                            </template>
+
+                            <template x-if="isPast(selectedDateStr)">
+                                <div class="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-800 text-center">
+                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest italic">Historical records cannot be modified.</p>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        {{-- CREATE EXCEPTION MODAL --}}
+        <div x-show="showCreateModal"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-950/80 backdrop-blur-md"
+             x-cloak>
+            <div @click.away="showCreateModal = false"
+                 class="bg-white dark:bg-gray-900 w-full max-w-md rounded-[40px] shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300">
+                <header class="p-8 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-950">
+                    <div>
+                        <h3 class="text-xl font-black text-gray-800 dark:text-white uppercase tracking-tight">Calendar Override</h3>
+                        <p class="text-xs text-[#0B5694] dark:text-blue-400 font-bold uppercase mt-1 tracking-widest" x-text="selectedDateStr"></p>
+                    </div>
+                    <button @click="showCreateModal = false" class="p-3 bg-gray-200 dark:bg-gray-800/50 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-2xl transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                </header>
+                <div class="p-10">
+                    <form action="{{ route('head-supervisor.schedule.store') }}" method="POST" class="space-y-6">
+                        @csrf
+                        <input type="hidden" name="date" :value="selectedDateStr">
+                        <div class="space-y-2 text-left">
+                            <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Exemption Type</label>
+                            <select name="type" x-model="exceptionFormData.type" required
+                                    class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-300 shadow-none outline-none focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-400 transition-all">
+                                <option value="holiday">Official Holiday</option>
+                                <option value="suspension">Work Suspension</option>
+                                <option value="work_day">Weekend Work Day</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2 text-left">
+                            <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Description</label>
+                            <input type="text" name="description" x-model="exceptionFormData.description" required placeholder="e.g. Typhoon Suspension"
+                                   class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-300 shadow-none outline-none focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-400 transition-all placeholder-gray-400 dark:placeholder-gray-600">
+                        </div>
+                        <button type="submit"
+                                class="w-full px-6 py-4 bg-[#0B5694] dark:bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-500/10 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                            Log Exemption
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {{-- EDIT EXCEPTION MODAL --}}
+        <div x-show="showEditModal"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-950/80 backdrop-blur-md"
+             x-cloak>
+            <div @click.away="showEditModal = false"
+                 class="bg-white dark:bg-gray-900 w-full max-w-md rounded-[40px] shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300">
+                <header class="p-8 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-950">
+                    <div>
+                        <h3 class="text-xl font-black text-gray-800 dark:text-white uppercase tracking-tight">Refine Exception</h3>
+                        <p class="text-xs text-[#0B5694] dark:text-blue-400 font-bold uppercase mt-1 tracking-widest" x-text="selectedDateStr"></p>
+                    </div>
+                    <button @click="showEditModal = false" class="p-3 bg-gray-200 dark:bg-gray-800/50 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-2xl transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                </header>
+                <div class="p-10">
+                    <form :action="exceptionFormAction" method="POST" class="space-y-6">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="date" :value="selectedDateStr">
+                        <div class="space-y-2 text-left">
+                            <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Exemption Type</label>
+                            <select name="type" x-model="exceptionFormData.type" required
+                                    class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-300 shadow-none outline-none focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-400 transition-all">
+                                <option value="holiday">Official Holiday</option>
+                                <option value="suspension">Work Suspension</option>
+                                <option value="work_day">Weekend Work Day</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2 text-left">
+                            <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Description</label>
+                            <input type="text" name="description" x-model="exceptionFormData.description" required placeholder="e.g. Typhoon Suspension"
+                                   class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-300 shadow-none outline-none focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-400 transition-all">
+                        </div>
+                        <div class="flex flex-col gap-3">
+                            <button type="submit"
+                                    class="w-full px-6 py-4 bg-[#0B5694] dark:bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-500/10 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                                Update Override
+                            </button>
+                            <button type="button" @click="showEditModal = false; showViewModal = true"
+                                    class="w-full py-4 bg-gray-50 dark:bg-gray-800 text-gray-400 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gray-100 transition-all">
+                                Back to Summary
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {{-- DELETE EXCEPTION MODAL --}}
+        <div x-show="showDeleteModal"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-950/80 backdrop-blur-md"
+             x-cloak>
+            <div @click.away="showDeleteModal = false"
+                 class="bg-white dark:bg-gray-900 w-full max-w-sm rounded-[40px] shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300">
+                <div class="p-10 text-center">
+                    <div class="w-20 h-20 bg-rose-50 dark:bg-rose-950/30 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                    </div>
+                    <h4 class="text-xl font-black text-gray-850 dark:text-white uppercase tracking-tight mb-2">Withdraw Exemption?</h4>
+                    <p class="text-sm text-gray-400 dark:text-gray-500 font-medium italic mb-8">This will restore standard rules for <span class="font-bold text-gray-700 dark:text-gray-300" x-text="selectedDateStr"></span>. Are you sure?</p>
+                    
+                    <div class="flex flex-col gap-3">
+                        <form :action="deleteActionUrl" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="w-full py-4 bg-rose-500 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-rose-500/20 hover:bg-rose-600 active:scale-95 transition-all">
+                                Yes, Withdraw Exemption
+                            </button>
+                        </form>
+                        <button @click="showDeleteModal = false; showViewModal = true" class="w-full py-4 bg-gray-50 dark:bg-gray-800 text-gray-400 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gray-100 transition-all">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</x-page-layout>
+
+<script>
+    function calendarManager(initialEvents, schoolSchedules) {
+        return {
+            loading: true,
+            currentDate: new Date(),
+            daysInMonth: [],
+            blankDays: [],
+            events: initialEvents || {},
+            schoolSchedules: schoolSchedules || {},
+            selectedSchool: '',
+            
+            // Modal States
+            showSchoolModal: false,
+            showViewModal: false,
+            showCreateModal: false,
+            showEditModal: false,
+            showDeleteModal: false,
+            showAbsenceReviewModal: false,
+            
+            // School Form State
+            isEditingSchool: false,
+            schoolFormAction: '{{ route('head-supervisor.schedule.store') }}',
+            schoolFormData: {
+                school_name: '',
+                start_date: '',
+                target_end_date: '',
+                start_time: '08:00',
+                end_time: '17:00',
+                daily_hours: 8,
+                rounding_mode: 'none'
+            },
+
+            // Exception State
+            selectedDateStr: '',
+            selectedEvent: null,
+            selectedEvents: [],
+            exceptionFormAction: '{{ route('head-supervisor.schedule.store') }}',
+            exceptionFormData: {
+                type: 'holiday',
+                description: ''
+            },
+            
+            deleteActionUrl: '',
+
+            init() {
+                this.generateCalendar();
+                setTimeout(() => {
+                    this.loading = false;
+                }, 800);
+            },
+
+            isPast(dateStr) {
+                if (!dateStr) return false;
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                // Use T00:00:00 to ensure local midnight parsing
+                const date = new Date(dateStr + 'T00:00:00');
+                date.setHours(0, 0, 0, 0);
+                
+                return date < today;
+            },
+
+            resetExceptionForm(dayObj = null) {
+                this.exceptionFormAction = '{{ route('head-supervisor.schedule.store') }}';
+                this.exceptionFormData = {
+                    type: dayObj && dayObj.isWeekend ? 'work_day' : 'holiday',
+                    description: ''
+                };
+            },
+
+            openCreateModal(dayObj) {
+                if (this.isPast(dayObj.dateStr)) return;
+                this.selectedDateStr = dayObj.dateStr;
+                this.resetExceptionForm(dayObj);
+                this.showCreateModal = true;
+            },
+
+            openViewModal(dayObj) {
+                this.selectedDateStr = dayObj.dateStr;
+                this.selectedEvent = dayObj.events.find(e => e.type !== 'absence') || null;
+                if (this.selectedEvent) {
+                    this.deleteActionUrl = `/head-supervisor/schedule/${this.selectedEvent.id}`;
+                    this.showViewModal = true;
+                }
+            },
+
+            openEditModal() {
+                if (this.selectedEvent && !this.isPast(this.selectedDateStr)) {
+                    this.exceptionFormAction = `/head-supervisor/schedule/${this.selectedEvent.id}`;
+                    this.exceptionFormData = {
+                        type: this.selectedEvent.type,
+                        description: this.selectedEvent.description
+                    };
+                    this.showViewModal = false;
+                    this.showEditModal = true;
+                }
+            },
+
+            openDeleteModal() {
+                if (this.selectedEvent && !this.isPast(this.selectedDateStr)) {
+                    this.showViewModal = false;
+                    this.showDeleteModal = true;
+                }
+            },
+
+            selectDate(dayObj) {
+                this.selectedDateStr = dayObj.dateStr;
+                this.selectedEvents = dayObj.events;
+                const hasAbsence = dayObj.events.some(e => e.type === 'absence_request');
+                const hasEvent = dayObj.events.some(e => e.id !== undefined && e.type !== 'absence_request');
+
+                if (hasAbsence) {
+                    this.showAbsenceReviewModal = true;
+                } else if (hasEvent) {
+                    this.openViewModal(dayObj);
+                } else {
+                    if (!this.isPast(dayObj.dateStr)) {
+                        this.openCreateModal(dayObj);
+                    }
+                }
+            },
+
+            resetSchoolForm() {
+                this.isEditingSchool = false;
+                this.schoolFormAction = '{{ route('head-supervisor.schedule.store') }}';
+                this.schoolFormData = {
+                    school_name: '',
+                    start_time: '08:00',
+                    end_time: '17:00',
+                    daily_hours: 8,
+                    rounding_mode: 'none'
+                };
+            },
+
+            editSchoolSchedule(school) {
+                this.isEditingSchool = true;
+                this.schoolFormAction = `/head-supervisor/schedule/${school.id}`;
+                this.schoolFormData = {
+                    school_name: school.school_name,
+                    start_time: school.start_time,
+                    end_time: school.end_time,
+                    daily_hours: school.daily_hours,
+                    rounding_mode: school.rounding_mode
+                };
+                this.showSchoolModal = true;
+            },
+
+            prevMonth() {
+                const newDate = new Date(this.currentDate);
+                newDate.setMonth(newDate.getMonth() - 1);
+                this.currentDate = newDate;
+                this.generateCalendar();
+            },
+
+            nextMonth() {
+                const newDate = new Date(this.currentDate);
+                newDate.setMonth(newDate.getMonth() + 1);
+                this.currentDate = newDate;
+                this.generateCalendar();
+            },
+
+            monthName() {
+                return this.currentDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+            },
+
+            formatTime(timeStr) {
+                if (!timeStr) return '';
+                const [hours, minutes] = timeStr.split(':');
+                let h = parseInt(hours);
+                const ampm = h >= 12 ? 'PM' : 'AM';
+                h = h % 12;
+                h = h ? h : 12; // the hour '0' should be '12'
+                return `${h}:${minutes} ${ampm}`;
+            },
+
+            generateCalendar() {
+                const year = this.currentDate.getFullYear();
+                const month = this.currentDate.getMonth();
+                const firstDay = new Date(year, month, 1).getDay();
+                const totalDays = new Date(year, month + 1, 0).getDate();
+
+                this.blankDays = Array.from({ length: firstDay }, (_, i) => i);
+                this.daysInMonth = Array.from({ length: totalDays }, (_, i) => {
+                    const dayNum = i + 1;
+                    const dateObj = new Date(year, month, dayNum);
+                    const yyyy = dateObj.getFullYear();
+                    const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+                    const dd = String(dateObj.getDate()).padStart(2, '0');
+                    const dateStr = `${yyyy}-${mm}-${dd}`;
+                    return {
+                        day: dayNum,
+                        dateStr: dateStr,
+                        isWeekend: dateObj.getDay() === 0 || dateObj.getDay() === 6,
+                        events: this.events[dateStr] || []
+                    };
+                });
+            },
+
+            getCellLabel(day) {
+                if (day.events && day.events.length > 0) {
+                    const primary = day.events.find(e => e.type === 'holiday' || e.type === 'suspension' || e.type === 'work_day');
+                    if (primary) {
+                        return primary.type === 'holiday' ? 'Holiday' : (primary.type === 'suspension' ? 'Suspended' : 'Weekend Work');
+                    }
+                    const absence = day.events.find(e => e.type === 'absence_request');
+                    if (absence) {
+                        const prefix = absence.request_type === 'early_leave' ? 'Leave ' : 'Absence ';
+                        return prefix + (absence.status === 'pending' ? '(P)' : (absence.status === 'approved' ? '(A)' : '(R)'));
+                    }
+                }
+                return day.isWeekend ? 'Weekend' : 'Workday';
+            }
+        };
+    }
+</script>
+@endsection

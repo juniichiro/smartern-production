@@ -1,0 +1,26 @@
+office_id,rule_value,priority
+1,Laravel,5
+1,Tailwind CSS,4
+1,MySQL,4
+1,PHP,3
+1,Problem Solving,5
+2,Microsoft Excel,5
+2,Data Entry,4
+2,Technical Writing,3
+2,Communication,5
+2,Teamwork,4
+3,Python,5
+3,Java,4
+3,React,5
+3,API Development,4
+3,Critical Thinking,3
+4,Photoshop,5
+4,Video Editing,4
+4,Graphic Design,5
+4,Creativity,5
+4,Time Management,3
+5,Network Security,5
+5,Cisco,4
+5,Linux,4
+5,Penetration Testing,5
+5,Adaptability,3

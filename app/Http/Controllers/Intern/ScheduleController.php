@@ -1,0 +1,204 @@
+<?php
+
+namespace App\Http\Controllers\Intern;
+
+use App\Enums\TaskStatus;
+use App\Http\Controllers\Controller;
+use App\Models\AbsenceRequest;
+use App\Models\Schedule;
+use App\Models\Task;
+use App\Services\AttendanceService;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+
+class ScheduleController extends Controller
+{
+    public function index(AttendanceService $attendanceService)
+    {
+        $user = Auth::user();
+
+        $portalType = 'Intern';
+        $userName = $user->internDetails->first_name ?? $user->name;
+        $userRole = $user->internDetails->office->name ?? 'Intern';
+
+        // Fetch API holidays for current, prev, and next year
+        $currentYear = now()->year;
+        $apiHolidays = collect();
+        for ($y = $currentYear - 1; $y <= $currentYear + 1; $y++) {
+            $apiHolidays = $apiHolidays->merge($attendanceService->getPhilippineHolidays($y));
+        }
+
+        $eventsByDate = [];
+
+        // 1. Add API holidays
+        foreach ($apiHolidays as $dateStr => $holiday) {
+            $eventsByDate[$dateStr][] = [
+                'type' => 'holiday',
+                'description' => $holiday['description'],
+            ];
+        }
+
+        // 2. Add database overrides (takes precedence/clears API holiday for the date)
+        $schedules = Schedule::orderBy('date', 'desc')->get();
+        foreach ($schedules as $item) {
+            $dateStr = $item->date->toDateString();
+            $eventsByDate[$dateStr] = [
+                [
+                    'id' => $item->getRouteKey(),
+                    'type' => $item->type,
+                    'description' => $item->description,
+                ],
+            ];
+        }
+
+        // 3. Add Intern's tasks
+        $tasks = Task::where('intern_id', $user->id)->get();
+        foreach ($tasks as $task) {
+            $dateStr = $task->due_date->toDateString();
+
+            // Check if overdue: past due date AND not completed or submitted
+            $isOverdue = $task->due_date->isPast() &&
+                         $task->status !== TaskStatus::COMPLETED &&
+                         $task->status !== TaskStatus::SUBMITTED;
+
+            $eventsByDate[$dateStr][] = [
+                'id' => $task->getRouteKey(),
+                'type' => 'task',
+                'title' => $task->title,
+                'description' => $task->description,
+                'status' => $task->status->value ?? $task->status,
+                'is_overdue' => $isOverdue,
+            ];
+        }
+
+        // 4. Add Absence Requests
+        $absences = AbsenceRequest::where('intern_id', $user->id)->get();
+        foreach ($absences as $absence) {
+            $dateStr = $absence->date->toDateString();
+            $eventsByDate[$dateStr][] = [
+                'id' => $absence->getRouteKey(),
+                'type' => 'absence_request', // Keep consistent key but add sub-type
+                'request_type' => $absence->type,
+                'reason' => $absence->reason,
+                'status' => $absence->status,
+                'remarks' => $absence->supervisor_remarks,
+                'has_attachment' => (bool) $absence->attachment_path,
+            ];
+        }
+
+        $schedulesJson = json_encode($eventsByDate);
+
+        return view('shared.schedule-read-only', compact('portalType', 'userName', 'userRole', 'schedulesJson'));
+    }
+
+    public function storeAbsenceRequest(Request $request)
+    {
+        $validated = $request->validate([
+            'date' => 'required|date|after_or_equal:today',
+            'reason' => 'required|string|max:1000',
+            'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120', // 5MB Limit
+        ]);
+
+        $user = Auth::user();
+        $date = Carbon::parse($validated['date']);
+        $type = $date->isToday() ? 'early_leave' : 'absence';
+
+        // Check for existing request on this date
+        $exists = AbsenceRequest::where('intern_id', $user->id)
+            ->whereDate('date', $validated['date'])
+            ->exists();
+
+        if ($exists) {
+            return back()->with('error', 'Request already submitted for this date.');
+        }
+
+        $attachmentPath = null;
+        if ($request->hasFile('attachment')) {
+            $attachmentPath = $request->file('attachment')->store('absences', 'public');
+        }
+
+        AbsenceRequest::create([
+            'intern_id' => $user->id,
+            'date' => $validated['date'],
+            'type' => $type,
+            'reason' => $validated['reason'],
+            'attachment_path' => $attachmentPath,
+            'status' => 'pending',
+        ]);
+
+        $msg = $type === 'early_leave' ? 'Early leave request finalized & submitted.' : 'Absence request finalized & submitted.';
+
+        return back()->with('success', $msg);
+    }
+
+    public function updateAbsenceRequest(Request $request, AbsenceRequest $absence)
+    {
+        $this->authorize('update', $absence);
+
+        if ($absence->status !== 'pending') {
+            return back()->with('error', 'You can only modify pending requests.');
+        }
+
+        $validated = $request->validate([
+            'reason' => 'required|string|max:1000',
+            'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+        ]);
+
+        $updateData = ['reason' => $validated['reason']];
+
+        if ($request->hasFile('attachment')) {
+            // Delete old attachment if exists
+            if ($absence->attachment_path) {
+                Storage::disk('public')->delete($absence->attachment_path);
+            }
+            $updateData['attachment_path'] = $request->file('attachment')->store('absences', 'public');
+        }
+
+        $absence->update($updateData);
+
+        return back()->with('success', 'Absence request refined.');
+    }
+
+    public function destroyAbsenceRequest(AbsenceRequest $absence)
+    {
+        $this->authorize('delete', $absence);
+
+        if ($absence->status !== 'pending') {
+            return back()->with('error', 'Only pending requests can be revoked.');
+        }
+
+        if ($absence->attachment_path) {
+            Storage::disk('public')->delete($absence->attachment_path);
+        }
+
+        $absence->delete();
+
+        return back()->with('success', 'Absence request withdrawn.');
+    }
+
+    public function showAttachment(AbsenceRequest $absence, Request $request)
+    {
+        // Allow intern (owner) or supervisors to access
+        $user = Auth::user();
+        $isOwner = $user->id === $absence->intern_id;
+        $isManagement = in_array($user->role->name, ['supervisor', 'head_supervisor']);
+
+        if (! $isOwner && ! $isManagement) {
+            abort(403);
+        }
+
+        if (! $absence->attachment_path || ! Storage::disk('public')->exists($absence->attachment_path)) {
+            abort(404);
+        }
+
+        $path = Storage::disk('public')->path($absence->attachment_path);
+
+        if ($request->has('download')) {
+            return response()->download($path);
+        }
+
+        return response()->file($path);
+    }
+}

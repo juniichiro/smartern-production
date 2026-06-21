@@ -1,0 +1,224 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global Utilities */
+[x-cloak] { display: none !important; }
+
+/* Layout & Typography */
+body { font-family: 'Outfit', sans-serif; }
+
+@media (min-width: 1024px) {
+    body.sidebar-collapsed main { margin-left: 0 !important; padding-left: 6.5rem !important; }
+    body.notif-collapsed main { margin-right: 0 !important; padding-right: 6.5rem !important; }
+    main { transition: all 0.3s ease-in-out; }
+}
+
+/* --- Custom Scrollbar System --- */
+@layer base {
+    :root {
+        --scrollbar-width: 6px;
+        --scrollbar-thumb: #d1d5db; /* Gray-300 for better visibility in light mode */
+        --scrollbar-thumb-hover: #0B5694; /* SmarTern Primary Blue */
+    }
+
+    .dark {
+        --scrollbar-thumb: #1f2937; /* Gray-800 for dark mode */
+        --scrollbar-thumb-hover: #3b82f6; /* Blue-500 for dark mode */
+    }
+
+    /* Apply to whole system */
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: var(--scrollbar-thumb) transparent;
+    }
+
+    /* Webkit (Chrome, Safari, Edge) */
+    ::-webkit-scrollbar {
+        width: var(--scrollbar-width);
+        height: var(--scrollbar-width);
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: var(--scrollbar-thumb);
+        border-radius: 20px;
+        border: 1px solid transparent;
+        background-clip: content-box;
+        transition: background-color 0.3s ease;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: var(--scrollbar-thumb-hover);
+        background-clip: border-box;
+    }
+}
+
+/* Legacy Utility for explicit control if needed */
+.custom-scrollbar {
+    @apply scroll-smooth;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Animations */
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+.animate-shimmer {
+    background: linear-gradient(90deg, 
+        rgba(243, 244, 246, 0.4) 25%, 
+        rgba(229, 231, 235, 0.6) 50%, 
+        rgba(243, 244, 246, 0.4) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite linear;
+}
+
+.dark .animate-shimmer {
+    background: linear-gradient(90deg, 
+        rgba(31, 41, 55, 0.4) 25%, 
+        rgba(55, 65, 81, 0.6) 50%, 
+        rgba(31, 41, 55, 0.4) 75%
+    );
+    background-size: 200% 100%;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-10px); }
+    40% { transform: translateX(10px); }
+    60% { transform: translateX(-10px); }
+    80% { transform: translateX(10px); }
+}
+
+.animate-shake {
+    animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+/* Global Light Mode UI Enhancements */
+@layer base {
+    /* Make inputs, selects, and textareas more visible in light mode */
+    input[type="text"], 
+    input[type="email"], 
+    input[type="password"], 
+    input[type="number"], 
+    input[type="search"], 
+    input[type="tel"], 
+    input[type="url"],
+    input[type="date"],
+    input[type="datetime-local"],
+    select, 
+    textarea {
+        @apply border-gray-300 focus:border-[#0B5694] focus:ring-1 focus:ring-[#0B5694]/20 transition-all accent-[#0B5694] !important;
+    }
+
+    /* Custom Picker Icons (Calendar/Clock) */
+    ::-webkit-calendar-picker-indicator {
+        @apply cursor-pointer opacity-50 hover:opacity-100 transition-opacity;
+    }
+
+    /* Dark mode overrides for inputs to maintain original style */
+    .dark input[type="text"], 
+    .dark input[type="email"], 
+    .dark input[type="password"], 
+    .dark input[type="number"], 
+    .dark input[type="search"], 
+    .dark input[type="tel"], 
+    .dark input[type="url"],
+    .dark input[type="date"],
+    .dark input[type="datetime-local"],
+    .dark select, 
+    .dark textarea {
+        @apply border-gray-700 focus:border-blue-500 accent-blue-500 !important;
+    }
+
+    .dark ::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+    }
+
+    /* Hide Number Spinners */
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+}
+
+@layer utilities {
+    /* Slightly darken the faint gray-50 and gray-100 borders/dividers for containers in light mode to make them fully visible and pleasing */
+    .border-gray-50,
+    .border-gray-100 {
+        border-color: #e2e8f0 !important; /* Tailwind slate-200 / gray-200 outline */
+    }
+
+    .divide-gray-50 > :not([hidden]) ~ :not([hidden]),
+    .divide-gray-100 > :not([hidden]) ~ :not([hidden]) {
+        border-color: #e2e8f0 !important;
+    }
+
+    /* Keep appropriate dark borders for dark mode if explicitly used */
+    .dark .border-gray-50,
+    .dark .border-gray-100 {
+        border-color: #1f2937 !important; /* Tailwind gray-800 */
+    }
+
+    .dark .divide-gray-50 > :not([hidden]) ~ :not([hidden]),
+    .dark .divide-gray-100 > :not([hidden]) ~ :not([hidden]) {
+        border-color: #1f2937 !important;
+    }
+
+    /* Force a flat, 2D aesthetic in light mode by overriding heavy shadows */
+    :root:not(.dark) .shadow-md,
+    :root:not(.dark) .shadow-lg,
+    :root:not(.dark) .shadow-xl,
+    :root:not(.dark) .shadow-2xl {
+        --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
+        box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+    }
+
+    :root:not(.dark) .shadow-inner {
+        box-shadow: none !important;
+    }
+}
+
+/* Accessibility & Readability Enhancements */
+@layer utilities {
+    /* Map tiny/unreadable font utilities to 12px relative to root (0.75rem under standard 16px) */
+    .text-\[9px\], 
+    .text-\[10px\], 
+    .text-\[11px\],
+    .text-xs {
+        font-size: 0.75rem !important;
+    }
+    
+    /* Map body/item font utilities to 15px relative to root (0.9375rem under standard 16px) */
+    .text-\[13px\], 
+    .text-\[14px\],
+    .text-sm {
+        font-size: 0.9375rem !important;
+    }
+}
+
+/* Global Font Size Preference System */
+html.font-size-sm { font-size: 14px !important; }
+html.font-size-md { font-size: 16px !important; }
+html.font-size-lg { font-size: 18px !important; }
+html.font-size-xl { font-size: 20px !important; }
+
+

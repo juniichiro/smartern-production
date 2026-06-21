@@ -1,0 +1,94 @@
+<?php
+
+namespace App\Http\Controllers\HeadSupervisor;
+
+use App\Http\Controllers\Controller;
+use App\Models\InternDetail;
+use App\Models\Office;
+use App\Models\Schedule;
+use App\Models\User;
+use App\Services\AttendanceService;
+
+class InternManagementController extends Controller
+{
+    public function index()
+    {
+        // 1. Statistics
+        // Active: Not yet published certificate
+        $activeCount = InternDetail::whereDoesntHave('certificate', function ($q) {
+            $q->where('status', 'published');
+        })->count();
+
+        // Completed: Published certificate
+        $completedCount = InternDetail::whereHas('certificate', function ($q) {
+            $q->where('status', 'published');
+        })->count();
+
+        // Average progress calculation
+        $avgHours = InternDetail::avg('hours_rendered') ?? 0;
+        $avgProgress = min(100, ($avgHours / 480) * 100);
+
+        // 2. Main Intern Table (With Relationships)
+        $interns = InternDetail::with(['user', 'office', 'certificate'])
+            ->orderBy('last_name', 'asc')
+            ->get();
+
+        // 3. Department Distribution
+        $distribution = Office::withCount('internDetails')->get();
+
+        $offices = Office::orderBy('name', 'asc')->get();
+
+        return view('head-supervisor.interns', compact(
+            'activeCount',
+            'completedCount',
+            'avgProgress',
+            'interns',
+            'distribution',
+            'offices'
+        ));
+    }
+
+    /**
+     * Display the specified intern's profile and progress.
+     */
+    public function show(User $user, AttendanceService $attendanceService)
+    {
+        // Eager load ALL relationships needed for the tabs
+        $intern = InternDetail::where('user_id', $user->id)->with(['user', 'office', 'tasks', 'attendances', 'journals'])->firstOrFail();
+
+        $targetHours = 480;
+        $currentHours = $intern->hours_rendered ?? 0;
+        $hoursProgress = ($currentHours / $targetHours) * 100;
+
+        // Statistics for the progress overview cards
+        $totalTasks = $intern->tasks->count();
+        $completedTasks = $intern->tasks->where('status', 'completed')->count();
+        $taskCompletionRate = $totalTasks > 0 ? ($completedTasks / $totalTasks) * 100 : 0;
+
+        // Get Effective Schedule for Today
+        $effectiveSchedule = $attendanceService->getEffectiveSchedule($intern->user, now());
+
+        // Fetch official school schedule for timeline
+        $schoolSchedule = null;
+        if ($intern->school) {
+            $schoolSchedule = Schedule::where('type', 'school_default')
+                ->where('school_name', $intern->school)
+                ->first();
+        }
+
+        // Fetch Merged Logs for consistent history
+        $attendanceHistory = $attendanceService->getMergedLogs($intern->user);
+
+        return view('head-supervisor.intern-profile', compact(
+            'intern',
+            'targetHours',
+            'hoursProgress',
+            'totalTasks',
+            'completedTasks',
+            'taskCompletionRate',
+            'effectiveSchedule',
+            'schoolSchedule',
+            'attendanceHistory'
+        ));
+    }
+}
