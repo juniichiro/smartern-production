@@ -201,15 +201,17 @@
                                         $confidenceColor = 'text-amber-500'; $confidenceBg = 'bg-amber-50 dark:bg-amber-950/30';
                                     }
 
-                                    if (!$displayMatch) {
-                                        $scoreText = 'N/A'; $scoreColor = 'text-gray-400'; $barColor = 'bg-gray-200';
-                                    } elseif ($displayMatch->score >= 80) {
-                                        $scoreColor = 'text-blue-500'; $barColor = 'bg-blue-500';
-                                    } elseif ($displayMatch->score >= 60) {
-                                        $scoreColor = 'text-indigo-500'; $barColor = 'bg-indigo-500';
-                                    } else {
-                                        $scoreColor = 'text-amber-500'; $barColor = 'bg-amber-500';
-                                    }
+                                     if (!$displayMatch) {
+                                         $scoreText = 'N/A'; $scoreColor = 'text-gray-400'; $barColor = 'bg-gray-200';
+                                     } elseif ($displayMatch->score >= 80) {
+                                         $scoreColor = 'text-emerald-500'; $barColor = 'bg-emerald-500';
+                                     } elseif ($displayMatch->score >= 60) {
+                                         $scoreColor = 'text-blue-500'; $barColor = 'bg-blue-500';
+                                     } elseif ($displayMatch->score >= 40) {
+                                         $scoreColor = 'text-indigo-500'; $barColor = 'bg-indigo-500';
+                                     } else {
+                                         $scoreColor = 'text-amber-500'; $barColor = 'bg-amber-500';
+                                     }
                                 @endphp
                                 
                                 <tr class="transition-colors" :class="isSelected('{{ $applicant->full_name }}') ? 'bg-blue-50/30 dark:bg-blue-950/10' : ''">
@@ -343,7 +345,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="space-y-5 max-w-3xl">
+                                            <div class="space-y-5 max-w-3xl mx-auto">
                                                 @if($matches->count() > 0)
                                                     {{-- Statistical Vertical Bar Chart --}}
                                                     <div class="relative w-full max-w-xl mx-auto pt-4 pb-2">
