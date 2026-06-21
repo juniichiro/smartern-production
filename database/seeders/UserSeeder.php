@@ -223,5 +223,27 @@ class UserSeeder extends Seeder
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);
+        User::create([
+            'role_id' => UserRole::INTERN,
+            'display_id' => '202650009',
+            'public_id' => hash('sha256', '202650009'),
+            'email' => 'chloe.lim@smartern.com',
+            'password' => Hash::make('password'),
+            'google2fa_secret' => null,
+            'google2fa_enabled' => false,
+            'failed_attempts' => 0,
+            'is_first_login' => false,
+        ]);
+        User::create([
+            'role_id' => UserRole::INTERN,
+            'display_id' => '202650010',
+            'public_id' => hash('sha256', '202650010'),
+            'email' => 'david.tan@smartern.com',
+            'password' => Hash::make('password'),
+            'google2fa_secret' => null,
+            'google2fa_enabled' => false,
+            'failed_attempts' => 0,
+            'is_first_login' => false,
+        ]);
     }
 }

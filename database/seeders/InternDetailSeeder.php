@@ -97,6 +97,28 @@ class InternDetailSeeder extends Seeder
                 'phone_number' => '09123456789',
                 'hours_rendered' => 320,
             ],
+            [
+                'email' => 'chloe.lim@smartern.com',
+                'office_id' => 2, // HR (Filling to 5 capacity)
+                'first_name' => 'Chloe',
+                'last_name' => 'Lim',
+                'course' => 'Psychology',
+                'school' => 'UST',
+                'gender' => 'Female',
+                'phone_number' => '09123456790',
+                'hours_rendered' => 150,
+            ],
+            [
+                'email' => 'david.tan@smartern.com',
+                'office_id' => 2, // HR (Filling to 5 capacity)
+                'first_name' => 'David',
+                'last_name' => 'Tan',
+                'course' => 'Human Resource Management',
+                'school' => 'UP',
+                'gender' => 'Male',
+                'phone_number' => '09123456791',
+                'hours_rendered' => 200,
+            ],
         ];
 
         foreach ($interns as $data) {
