@@ -267,6 +267,9 @@
                                 <tr x-show="evaluating === '{{ $applicant->applicant_id }}'" x-cloak class="bg-blue-50/20 dark:bg-blue-900/10 border-b border-gray-100 dark:border-gray-800">
                                     <td colspan="6" class="px-12 py-10">
                                         <div class="bg-white dark:bg-gray-900 p-10 rounded-[35px] border border-blue-100 dark:border-blue-900/50 shadow-lg" x-data="{ skillFilter: 'all' }">
+                                            @php
+                                                $skillToCategory = \App\Models\AssessmentItem::active()->pluck('category', 'competency_text')->mapWithKeys(fn($cat, $txt) => [trim($txt) => $cat])->toArray();
+                                            @endphp
                                             <form action="{{ route('head-supervisor.matching.evaluate', $applicant) }}" method="POST" enctype="multipart/form-data">
                                                 @csrf
                                                 <div class="space-y-6">
@@ -275,12 +278,15 @@
                                                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                                                             <h5 class="text-xs font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400">Skill Verification</h5>
                                                             {{-- Category Filter Dropdown --}}
-                                                            <div class="relative w-full sm:w-56">
+                                                            <div class="relative w-full sm:w-72">
                                                                 <select x-model="skillFilter" 
                                                                         class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 text-xs font-bold uppercase tracking-wider rounded-xl px-4 py-3 shadow-sm focus:ring-2 focus:ring-[#0B5694]/20 outline-none transition-all cursor-pointer">
                                                                     <option value="all">All Sections</option>
-                                                                    <option value="tech">Technical Skills</option>
-                                                                    <option value="soft">Soft Skills</option>
+                                                                    <option value="I. Digital and Technical Skills">I. Digital & Technical Skills</option>
+                                                                    <option value="II. Administrative and Office Skills">II. Administrative & Office Skills</option>
+                                                                    <option value="III. Analytical and Problem-Solving Skills">III. Analytical & Problem-Solving</option>
+                                                                    <option value="IV. Communication and Interpersonal Skills">IV. Communication & Interpersonal</option>
+                                                                    <option value="V. Work Attitude and Professional Values">V. Work Attitude & Values</option>
                                                                 </select>
                                                             </div>
                                                         </div>
@@ -297,9 +303,9 @@
                                                                 <tbody class="divide-y divide-gray-100 dark:divide-gray-800 bg-white dark:bg-gray-900">
                                                                     @foreach(array_merge($applicant->tech_skills, $applicant->soft_skills) as $skill => $score)
                                                                         @php
-                                                                            $isTech = array_key_exists($skill, $applicant->tech_skills);
+                                                                            $itemCategory = $skillToCategory[trim($skill)] ?? 'Other';
                                                                         @endphp
-                                                                        <tr x-show="skillFilter === 'all' || (skillFilter === 'tech' && {{ $isTech ? 'true' : 'false' }}) || (skillFilter === 'soft' && {{ !$isTech ? 'true' : 'false' }})">
+                                                                        <tr x-show="skillFilter === 'all' || skillFilter === '{{ $itemCategory }}'">
                                                                             <td class="px-6 py-3.5 text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-tight">{{ $skill }}</td>
                                                                             <td class="px-6 py-3.5 text-xs font-bold text-gray-500 text-center">
                                                                                 <span class="inline-block bg-gray-100 dark:bg-gray-800 px-2.5 py-1 rounded-lg text-[10px] font-extrabold">{{ $score }} / 5</span>
