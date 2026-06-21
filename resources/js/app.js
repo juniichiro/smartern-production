@@ -83,6 +83,10 @@ Alpine.data('toastManager', (context = null) => ({
         }
     },
     enqueue(message, type = 'success') {
+        const isDuplicate = this.toasts.some(t => t.message === message && t.type === type) || 
+                            this.queue.some(q => q.message === message && q.type === type);
+        if (isDuplicate) return;
+
         const id = Date.now() + Math.random();
         this.queue.push({ id, message, type, show: false });
         this.processQueue();
