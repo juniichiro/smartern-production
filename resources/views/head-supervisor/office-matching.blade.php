@@ -263,7 +263,7 @@
                                 <tr x-show="evaluating === '{{ $applicant->applicant_id }}'" x-cloak class="bg-blue-50/20 dark:bg-blue-900/10 border-b border-gray-100 dark:border-gray-800">
                                     <td colspan="6" class="px-12 py-10">
                                         <div class="bg-white dark:bg-gray-900 p-10 rounded-[35px] border border-blue-100 dark:border-blue-900/50 shadow-lg">
-                                            <form action="{{ route('head-supervisor.matching.evaluate', $applicant) }}" method="POST">
+                                            <form action="{{ route('head-supervisor.matching.evaluate', $applicant) }}" method="POST" enctype="multipart/form-data">
                                                 @csrf
                                                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
                                                     <div class="space-y-8">
@@ -285,6 +285,19 @@
                                                     <div class="space-y-8">
                                                         <h5 class="text-xs font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400">Interview Notes & Performance</h5>
                                                         <textarea name="interview_notes" rows="4" class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl p-5 text-sm font-bold focus:ring-2 focus:ring-blue-500/20" placeholder="Add qualitative observations...">{{ $applicant->evaluation?->interview_notes }}</textarea>
+                                                        
+                                                        <div>
+                                                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">Resume Document</label>
+                                                            @if(!empty($applicant->resume_path))
+                                                                <div class="flex items-center gap-3 p-4 bg-emerald-50 dark:bg-emerald-950/20 rounded-2xl border border-emerald-100 dark:border-emerald-900/40 mb-3">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" class="text-emerald-500" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                                                    <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-tight">Resume PDF attached</span>
+                                                                </div>
+                                                            @endif
+                                                            <input type="file" name="resume_pdf" accept="application/pdf" class="w-full text-xs font-bold text-gray-500 dark:text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-extrabold file:bg-blue-50 file:text-[#0B5694] dark:file:bg-blue-900/30 dark:file:text-blue-400 hover:file:bg-blue-100 transition cursor-pointer">
+                                                            <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-2 italic">Accepts PDF only. Adding/updating a resume triggers automated text parsing to re-analyze matching compatibility score.</p>
+                                                        </div>
+
                                                         <div class="grid grid-cols-2 gap-5">
                                                             <select name="behavioral_score" class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-2xl p-5 text-xs font-bold uppercase tracking-wider focus:ring-2 focus:ring-[#0B5694]/20 outline-none transition-all cursor-pointer">
                                                                 @for($i=1; $i<=5; $i++)

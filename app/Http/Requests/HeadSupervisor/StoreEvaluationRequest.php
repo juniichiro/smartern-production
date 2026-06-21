@@ -28,6 +28,7 @@ class StoreEvaluationRequest extends FormRequest
             'verified_skills' => 'required|array',
             'behavioral_score' => 'required|integer|min:1|max:5',
             'is_recommended' => 'required|boolean',
+            'resume_pdf' => 'nullable|file|mimes:pdf|max:10240',
         ];
     }
 }

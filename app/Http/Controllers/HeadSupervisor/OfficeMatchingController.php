@@ -17,6 +17,7 @@ use App\Services\SmartMatchingService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Process\Process;
+use Illuminate\Support\Str;
 
 class OfficeMatchingController extends Controller
 {
@@ -57,6 +58,11 @@ class OfficeMatchingController extends Controller
 
     public function storeEvaluation(StoreEvaluationRequest $request, OnboardingApplicant $applicant)
     {
+        if ($request->hasFile('resume_pdf')) {
+            $resumePath = $request->file('resume_pdf')->store('resumes', 'public');
+            $applicant->update(['resume_path' => $resumePath]);
+        }
+
         $evaluation = ApplicantEvaluation::updateOrCreate(
             ['applicant_id' => $applicant->id],
             [
@@ -120,6 +126,56 @@ class OfficeMatchingController extends Controller
             $allSkills = [];
             $rawTech = ! empty($data[4]) ? explode(';', $data[4]) : [];
             $rawSoft = ! empty($data[5]) ? explode(';', $data[5]) : [];
+
+            if (! $applicant) {
+                $applicantId = 'APP-' . strtoupper(Str::random(8));
+                while (OnboardingApplicant::where('applicant_id', $applicantId)->exists()) {
+                    $applicantId = 'APP-' . strtoupper(Str::random(8));
+                }
+
+                $techSkillsFormatted = [];
+                foreach ($rawTech as $pair) {
+                    if (str_contains($pair, ':')) {
+                        [$skill, $score] = explode(':', $pair);
+                        $techSkillsFormatted[trim($skill)] = (int) $score;
+                    }
+                }
+
+                $softSkillsFormatted = [];
+                foreach ($rawSoft as $pair) {
+                    if (str_contains($pair, ':')) {
+                        [$skill, $score] = explode(':', $pair);
+                        $softSkillsFormatted[trim($skill)] = (int) $score;
+                    }
+                }
+
+                $parts = explode(' ', $applicantName);
+                $firstName = $parts[0] ?? 'Intern';
+                $middleName = '';
+                $lastName = 'Account';
+                if (count($parts) >= 3) {
+                    $firstName = $parts[0] . ' ' . $parts[1];
+                    $lastName = end($parts);
+                } elseif (count($parts) == 2) {
+                    $firstName = $parts[0];
+                    $lastName = $parts[1];
+                }
+
+                $applicant = OnboardingApplicant::create([
+                    'applicant_id' => $applicantId,
+                    'full_name' => $applicantName,
+                    'first_name' => $firstName,
+                    'middle_name' => $middleName,
+                    'last_name' => $lastName,
+                    'email' => ! empty($data[3]) ? $data[3] : 'pending_' . strtolower(Str::random(5)) . '@smarttern.com',
+                    'university' => ! empty($data[2]) ? $data[2] : 'N/A',
+                    'tech_skills' => $techSkillsFormatted,
+                    'soft_skills' => $softSkillsFormatted,
+                    'gender' => 'male',
+                    'phone_number' => '09000000000',
+                    'privacy_acknowledged_at' => now(),
+                ]);
+            }
 
             foreach (array_merge($rawTech, $rawSoft) as $pair) {
                 if (str_contains($pair, ':')) {
