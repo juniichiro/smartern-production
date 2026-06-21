@@ -359,38 +359,64 @@
 
                                                             {{-- Bars Container --}}
                                                             @foreach($top5Matches as $match)
-                                                                @php
-                                                                    if ($match->score >= 80) {
-                                                                        $barColor = 'bg-gradient-to-t from-emerald-600 to-emerald-400 hover:from-emerald-500 hover:to-emerald-300';
-                                                                        $textColor = 'text-emerald-500';
-                                                                    } elseif ($match->score >= 60) {
-                                                                        $barColor = 'bg-gradient-to-t from-blue-700 to-blue-500 hover:from-blue-600 hover:to-blue-400';
-                                                                        $textColor = 'text-[#0B5694] dark:text-blue-400';
-                                                                    } elseif ($match->score >= 40) {
-                                                                        $barColor = 'bg-gradient-to-t from-indigo-600 to-indigo-400 hover:from-indigo-500 hover:to-indigo-300';
-                                                                        $textColor = 'text-indigo-500';
-                                                                    } else {
-                                                                        $barColor = 'bg-gradient-to-t from-amber-600 to-amber-400 hover:from-amber-500 hover:to-amber-300';
-                                                                        $textColor = 'text-amber-500';
-                                                                    }
-                                                                @endphp
                                                                 <div x-show="activeMatchId === '{{ $match->id }}'" 
                                                                      x-transition.opacity.duration.300ms
                                                                      class="absolute inset-0 flex items-end justify-center z-10 pb-0.5">
                                                                     
                                                                     <div class="flex flex-col items-center w-24 justify-end group h-full relative">
-                                                                        {{-- Score display above the bar --}}
-                                                                        <span class="absolute text-xs font-black {{ $textColor }} pointer-events-none transform -translate-y-5 transition-all group-hover:scale-115"
-                                                                              style="bottom: {{ $match->score }}%;">
-                                                                            {{ $match->score }}%
-                                                                        </span>
-                                                                        
-                                                                        {{-- The Bar itself --}}
-                                                                        <div @click="showBreakdown = '{{ $match->id }}'; $nextTick(() => { if (window.MathJax) { MathJax.typesetPromise(); } })"
-                                                                             class="w-16 cursor-pointer rounded-t-2xl transition-all duration-500 ease-out shadow-xl hover:ring-8 hover:ring-blue-500/10 active:scale-95 {{ $barColor }}"
-                                                                             style="height: {{ max(5, $match->score) }}%;"
-                                                                             title="Click to view breakdown for {{ $match->office->name }}">
-                                                                        </div>
+                                                                        @if($match->score >= 80)
+                                                                            {{-- Score display above the bar --}}
+                                                                            <span class="absolute text-xs font-black text-emerald-500 pointer-events-none transform -translate-y-5 transition-all group-hover:scale-115"
+                                                                                  style="bottom: {{ $match->score }}%;">
+                                                                                {{ $match->score }}%
+                                                                            </span>
+                                                                            
+                                                                            {{-- The Bar itself --}}
+                                                                            <div @click="showBreakdown = '{{ $match->id }}'; $nextTick(() => { if (window.MathJax) { MathJax.typesetPromise(); } })"
+                                                                                 class="w-16 cursor-pointer rounded-t-2xl transition-all duration-500 ease-out shadow-xl hover:ring-8 hover:ring-blue-500/10 active:scale-95 bg-gradient-to-t from-emerald-600 to-emerald-400 hover:from-emerald-500 hover:to-emerald-300"
+                                                                                 style="height: {{ max(5, $match->score) }}%;"
+                                                                                 title="Click to view breakdown for {{ $match->office->name }}">
+                                                                            </div>
+                                                                        @elseif($match->score >= 60)
+                                                                            {{-- Score display above the bar --}}
+                                                                            <span class="absolute text-xs font-black text-[#0B5694] dark:text-blue-400 pointer-events-none transform -translate-y-5 transition-all group-hover:scale-115"
+                                                                                  style="bottom: {{ $match->score }}%;">
+                                                                                {{ $match->score }}%
+                                                                            </span>
+                                                                            
+                                                                            {{-- The Bar itself --}}
+                                                                            <div @click="showBreakdown = '{{ $match->id }}'; $nextTick(() => { if (window.MathJax) { MathJax.typesetPromise(); } })"
+                                                                                 class="w-16 cursor-pointer rounded-t-2xl transition-all duration-500 ease-out shadow-xl hover:ring-8 hover:ring-blue-500/10 active:scale-95 bg-gradient-to-t from-blue-700 to-blue-500 hover:from-blue-600 hover:to-blue-400"
+                                                                                 style="height: {{ max(5, $match->score) }}%;"
+                                                                                 title="Click to view breakdown for {{ $match->office->name }}">
+                                                                            </div>
+                                                                        @elseif($match->score >= 40)
+                                                                            {{-- Score display above the bar --}}
+                                                                            <span class="absolute text-xs font-black text-indigo-500 pointer-events-none transform -translate-y-5 transition-all group-hover:scale-115"
+                                                                                  style="bottom: {{ $match->score }}%;">
+                                                                                {{ $match->score }}%
+                                                                            </span>
+                                                                            
+                                                                            {{-- The Bar itself --}}
+                                                                            <div @click="showBreakdown = '{{ $match->id }}'; $nextTick(() => { if (window.MathJax) { MathJax.typesetPromise(); } })"
+                                                                                 class="w-16 cursor-pointer rounded-t-2xl transition-all duration-500 ease-out shadow-xl hover:ring-8 hover:ring-blue-500/10 active:scale-95 bg-gradient-to-t from-indigo-600 to-indigo-400 hover:from-indigo-500 hover:to-indigo-300"
+                                                                                 style="height: {{ max(5, $match->score) }}%;"
+                                                                                 title="Click to view breakdown for {{ $match->office->name }}">
+                                                                            </div>
+                                                                        @else
+                                                                            {{-- Score display above the bar --}}
+                                                                            <span class="absolute text-xs font-black text-amber-500 pointer-events-none transform -translate-y-5 transition-all group-hover:scale-115"
+                                                                                  style="bottom: {{ $match->score }}%;">
+                                                                                {{ $match->score }}%
+                                                                            </span>
+                                                                            
+                                                                            {{-- The Bar itself --}}
+                                                                            <div @click="showBreakdown = '{{ $match->id }}'; $nextTick(() => { if (window.MathJax) { MathJax.typesetPromise(); } })"
+                                                                                 class="w-16 cursor-pointer rounded-t-2xl transition-all duration-500 ease-out shadow-xl hover:ring-8 hover:ring-blue-500/10 active:scale-95 bg-gradient-to-t from-amber-600 to-amber-400 hover:from-amber-500 hover:to-amber-300"
+                                                                                 style="height: {{ max(5, $match->score) }}%;"
+                                                                                 title="Click to view breakdown for {{ $match->office->name }}">
+                                                                            </div>
+                                                                        @endif
                                                                     </div>
                                                                 </div>
                                                             @endforeach
