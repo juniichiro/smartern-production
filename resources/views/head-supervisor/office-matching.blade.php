@@ -266,13 +266,33 @@
                                 {{-- EVALUATION --}}
                                 <tr x-show="evaluating === '{{ $applicant->applicant_id }}'" x-cloak class="bg-blue-50/20 dark:bg-blue-900/10 border-b border-gray-100 dark:border-gray-800">
                                     <td colspan="6" class="px-12 py-10">
-                                        <div class="bg-white dark:bg-gray-900 p-10 rounded-[35px] border border-blue-100 dark:border-blue-900/50 shadow-lg">
+                                        <div class="bg-white dark:bg-gray-900 p-10 rounded-[35px] border border-blue-100 dark:border-blue-900/50 shadow-lg" x-data="{ skillFilter: 'all' }">
                                             <form action="{{ route('head-supervisor.matching.evaluate', $applicant) }}" method="POST" enctype="multipart/form-data">
                                                 @csrf
                                                 <div class="space-y-6">
                                                     {{-- Skills Verification Table --}}
                                                     <div class="space-y-4">
-                                                        <h5 class="text-xs font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400">Skill Verification</h5>
+                                                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                                                            <h5 class="text-xs font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400">Skill Verification</h5>
+                                                            {{-- Category Filter Buttons --}}
+                                                            <div class="flex items-center gap-2 bg-gray-50 dark:bg-gray-950 p-1.5 rounded-xl border border-gray-100 dark:border-gray-800/80">
+                                                                <button type="button" @click="skillFilter = 'all'"
+                                                                        :class="skillFilter === 'all' ? 'bg-[#0B5694] text-white shadow-sm' : 'text-gray-500 hover:text-gray-800 dark:hover:text-gray-200'"
+                                                                        class="px-3.5 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all">
+                                                                    All
+                                                                </button>
+                                                                <button type="button" @click="skillFilter = 'tech'"
+                                                                        :class="skillFilter === 'tech' ? 'bg-[#0B5694] text-white shadow-sm' : 'text-gray-500 hover:text-gray-800 dark:hover:text-gray-200'"
+                                                                        class="px-3.5 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all">
+                                                                    Technical
+                                                                </button>
+                                                                <button type="button" @click="skillFilter = 'soft'"
+                                                                        :class="skillFilter === 'soft' ? 'bg-[#0B5694] text-white shadow-sm' : 'text-gray-500 hover:text-gray-800 dark:hover:text-gray-200'"
+                                                                        class="px-3.5 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all">
+                                                                    Soft Skills
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                         @php $verifiedSkills = $applicant->evaluation?->verified_skills ?? []; @endphp
                                                         <div class="overflow-x-auto max-h-64 overflow-y-auto custom-scrollbar border border-gray-100 dark:border-gray-800 rounded-2xl">
                                                             <table class="w-full text-left border-collapse">
@@ -285,7 +305,10 @@
                                                                 </thead>
                                                                 <tbody class="divide-y divide-gray-100 dark:divide-gray-800 bg-white dark:bg-gray-900">
                                                                     @foreach(array_merge($applicant->tech_skills, $applicant->soft_skills) as $skill => $score)
-                                                                        <tr>
+                                                                        @php
+                                                                            $isTech = array_key_exists($skill, $applicant->tech_skills);
+                                                                        @endphp
+                                                                        <tr x-show="skillFilter === 'all' || (skillFilter === 'tech' && {{ $isTech ? 'true' : 'false' }}) || (skillFilter === 'soft' && {{ !$isTech ? 'true' : 'false' }})">
                                                                             <td class="px-6 py-3.5 text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-tight">{{ $skill }}</td>
                                                                             <td class="px-6 py-3.5 text-xs font-bold text-gray-500 text-center">
                                                                                 <span class="inline-block bg-gray-100 dark:bg-gray-800 px-2.5 py-1 rounded-lg text-[10px] font-extrabold">{{ $score }} / 5</span>
