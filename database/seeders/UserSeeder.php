@@ -14,15 +14,15 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create the basic Admin Account - MFA Enabled by default, Secret generated on first login
+        // 1. ADMINS (Original - Email MFA Enabled)
         User::create([
-            'role_id' => UserRole::ADMIN, // 'admin' role from RoleSeeder
+            'role_id' => UserRole::ADMIN,
             'display_id' => '2026101',
             'public_id' => hash('sha256', '2026101'),
             'email' => 'admin@smartern.com',
             'password' => Hash::make('password'),
             'google2fa_secret' => null,
-            'google2fa_enabled' => false,
+            'google2fa_enabled' => true, // Email MFA Enabled
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);
@@ -34,11 +34,12 @@ class UserSeeder extends Seeder
             'email' => 'britosranieljohn@gmail.com',
             'password' => Hash::make('password'),
             'google2fa_secret' => null,
-            'google2fa_enabled' => false,
+            'google2fa_enabled' => true, // Email MFA Enabled
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);
 
+        // 2. HEAD SUPERVISOR (Original - Email MFA Enabled)
         User::create([
             'role_id' => UserRole::HEAD_SUPERVISOR,
             'display_id' => '2026201',
@@ -46,11 +47,12 @@ class UserSeeder extends Seeder
             'email' => 'malin@smartern.com',
             'password' => Hash::make('password'),
             'google2fa_secret' => null,
-            'google2fa_enabled' => false,
+            'google2fa_enabled' => true, // Email MFA Enabled
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);
 
+        // 3. SUPERVISORS (All Email MFA Enabled)
         User::create([
             'role_id' => UserRole::SUPERVISOR,
             'display_id' => '20263001',
@@ -58,7 +60,7 @@ class UserSeeder extends Seeder
             'email' => 'supervisor@smartern.com',
             'password' => Hash::make('password'),
             'google2fa_secret' => null,
-            'google2fa_enabled' => false,
+            'google2fa_enabled' => true, // Email MFA Enabled
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);
@@ -70,7 +72,7 @@ class UserSeeder extends Seeder
             'email' => 'finance_super@smartern.com',
             'password' => Hash::make('password'),
             'google2fa_secret' => null,
-            'google2fa_enabled' => false,
+            'google2fa_enabled' => true, // Email MFA Enabled
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);
@@ -82,11 +84,12 @@ class UserSeeder extends Seeder
             'email' => 'admin_super@smartern.com',
             'password' => Hash::make('password'),
             'google2fa_secret' => null,
-            'google2fa_enabled' => false,
+            'google2fa_enabled' => true, // Email MFA Enabled
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);
 
+        // 4. SCHOOL COORDINATORS (All Email MFA Enabled)
         User::create([
             'role_id' => UserRole::SCHOOL_COORDINATOR,
             'display_id' => '20264001',
@@ -94,7 +97,7 @@ class UserSeeder extends Seeder
             'email' => 'sagsagat@smartern.com',
             'password' => Hash::make('password'),
             'google2fa_secret' => null,
-            'google2fa_enabled' => false,
+            'google2fa_enabled' => true, // Email MFA Enabled
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);
@@ -106,7 +109,7 @@ class UserSeeder extends Seeder
             'email' => 'dlsu_coord@smartern.com',
             'password' => Hash::make('password'),
             'google2fa_secret' => null,
-            'google2fa_enabled' => false,
+            'google2fa_enabled' => true, // Email MFA Enabled
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);
@@ -118,7 +121,7 @@ class UserSeeder extends Seeder
             'email' => 'ust_coord@smartern.com',
             'password' => Hash::make('password'),
             'google2fa_secret' => null,
-            'google2fa_enabled' => false,
+            'google2fa_enabled' => true, // Email MFA Enabled
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);
@@ -130,11 +133,14 @@ class UserSeeder extends Seeder
             'email' => 'up_coord@smartern.com',
             'password' => Hash::make('password'),
             'google2fa_secret' => null,
-            'google2fa_enabled' => false,
+            'google2fa_enabled' => true, // Email MFA Enabled
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);
 
+        // 5. INTERNS (1 MFA-Enabled User Per Office)
+        
+        // Intern 1 (Office 1: ICT) - Email MFA Enabled
         User::create([
             'role_id' => UserRole::INTERN,
             'display_id' => '202650001',
@@ -142,10 +148,12 @@ class UserSeeder extends Seeder
             'email' => 'raagustin@smartern.com',
             'password' => Hash::make('password'),
             'google2fa_secret' => null,
-            'google2fa_enabled' => false,
+            'google2fa_enabled' => true, // Enabled
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);
+
+        // Intern 2 (Office 2: HR) - Email MFA Enabled
         User::create([
             'role_id' => UserRole::INTERN,
             'display_id' => '202650002',
@@ -153,10 +161,12 @@ class UserSeeder extends Seeder
             'email' => 'rtbritos@smartern.com',
             'password' => Hash::make('password'),
             'google2fa_secret' => null,
-            'google2fa_enabled' => false,
+            'google2fa_enabled' => true, // Enabled
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);
+
+        // Intern 3 (Office 2: HR) - MFA Disabled
         User::create([
             'role_id' => UserRole::INTERN,
             'display_id' => '202650003',
@@ -168,6 +178,8 @@ class UserSeeder extends Seeder
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);
+
+        // Intern 4 (Office 2: HR) - MFA Disabled
         User::create([
             'role_id' => UserRole::INTERN,
             'display_id' => '202650004',
@@ -179,6 +191,8 @@ class UserSeeder extends Seeder
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);
+
+        // Intern 5 (Office 3: Finance) - Email MFA Enabled
         User::create([
             'role_id' => UserRole::INTERN,
             'display_id' => '202650005',
@@ -186,10 +200,12 @@ class UserSeeder extends Seeder
             'email' => 'john.doe@smartern.com',
             'password' => Hash::make('password'),
             'google2fa_secret' => null,
-            'google2fa_enabled' => false,
+            'google2fa_enabled' => true, // Enabled
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);
+
+        // Intern 6 (Office 3: Finance) - MFA Disabled
         User::create([
             'role_id' => UserRole::INTERN,
             'display_id' => '202650006',
@@ -201,6 +217,8 @@ class UserSeeder extends Seeder
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);
+
+        // Intern 7 (Office 4: Admin) - Email MFA Enabled
         User::create([
             'role_id' => UserRole::INTERN,
             'display_id' => '202650007',
@@ -208,10 +226,12 @@ class UserSeeder extends Seeder
             'email' => 'mark.santos@smartern.com',
             'password' => Hash::make('password'),
             'google2fa_secret' => null,
-            'google2fa_enabled' => false,
+            'google2fa_enabled' => true, // Enabled
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);
+
+        // Intern 8 (Office 1: ICT) - MFA Disabled
         User::create([
             'role_id' => UserRole::INTERN,
             'display_id' => '202650008',
@@ -223,6 +243,8 @@ class UserSeeder extends Seeder
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);
+
+        // Intern 9 (Office 2: HR) - MFA Disabled
         User::create([
             'role_id' => UserRole::INTERN,
             'display_id' => '202650009',
@@ -234,6 +256,8 @@ class UserSeeder extends Seeder
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);
+
+        // Intern 10 (Office 2: HR) - MFA Disabled
         User::create([
             'role_id' => UserRole::INTERN,
             'display_id' => '202650010',
