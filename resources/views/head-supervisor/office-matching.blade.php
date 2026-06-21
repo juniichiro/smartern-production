@@ -269,51 +269,85 @@
                                         <div class="bg-white dark:bg-gray-900 p-10 rounded-[35px] border border-blue-100 dark:border-blue-900/50 shadow-lg">
                                             <form action="{{ route('head-supervisor.matching.evaluate', $applicant) }}" method="POST" enctype="multipart/form-data">
                                                 @csrf
-                                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                                                    <div class="space-y-8">
+                                                <div class="space-y-6">
+                                                    {{-- Skills Verification Table --}}
+                                                    <div class="space-y-4">
                                                         <h5 class="text-xs font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400">Skill Verification</h5>
-                                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                                                            @php $verifiedSkills = $applicant->evaluation?->verified_skills ?? []; @endphp
-                                                            @foreach(array_merge($applicant->tech_skills, $applicant->soft_skills) as $skill => $score)
-                                                                <div class="flex items-center justify-between p-5 bg-gray-50 dark:bg-gray-950 rounded-2xl border border-gray-100 dark:border-gray-800">
-                                                                    <span class="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-tight">{{ $skill }}</span>
-                                                                    <select name="verified_skills[{{ $skill }}]" class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl px-4 py-2 text-xs font-bold focus:ring-2 focus:ring-[#0B5694]/20 outline-none transition-all cursor-pointer shadow-sm">
+                                                        @php $verifiedSkills = $applicant->evaluation?->verified_skills ?? []; @endphp
+                                                        <div class="overflow-x-auto max-h-64 overflow-y-auto custom-scrollbar border border-gray-100 dark:border-gray-800 rounded-2xl">
+                                                            <table class="w-full text-left border-collapse">
+                                                                <thead class="bg-gray-50 dark:bg-gray-950 sticky top-0 z-10">
+                                                                    <tr class="border-b border-gray-100 dark:border-gray-800">
+                                                                        <th class="px-6 py-4 text-[10px] font-black uppercase tracking-wider text-gray-500">Skill Name</th>
+                                                                        <th class="px-6 py-4 text-[10px] font-black uppercase tracking-wider text-gray-500 text-center">Self-Reported</th>
+                                                                        <th class="px-6 py-4 text-[10px] font-black uppercase tracking-wider text-gray-500 text-right">Verified Score</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody class="divide-y divide-gray-100 dark:divide-gray-800 bg-white dark:bg-gray-900">
+                                                                    @foreach(array_merge($applicant->tech_skills, $applicant->soft_skills) as $skill => $score)
+                                                                        <tr>
+                                                                            <td class="px-6 py-3.5 text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-tight">{{ $skill }}</td>
+                                                                            <td class="px-6 py-3.5 text-xs font-bold text-gray-500 text-center">
+                                                                                <span class="inline-block bg-gray-100 dark:bg-gray-800 px-2.5 py-1 rounded-lg text-[10px] font-extrabold">{{ $score }} / 5</span>
+                                                                            </td>
+                                                                            <td class="px-6 py-3.5 text-right">
+                                                                                <select name="verified_skills[{{ $skill }}]" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2 text-xs font-bold focus:ring-2 focus:ring-[#0B5694]/20 outline-none transition-all cursor-pointer shadow-sm">
+                                                                                    @for($i=1; $i<=5; $i++)
+                                                                                        <option value="{{ $i }}" {{ ($verifiedSkills[$skill] ?? $score) == $i ? 'selected' : '' }}>{{ $i }}</option>
+                                                                                    @endfor
+                                                                                </select>
+                                                                            </td>
+                                                                        </tr>
+                                                                    @endforeach
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+
+                                                    {{-- Interview Notes, Resume, and Behavioral Scores --}}
+                                                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 border-t border-gray-100 dark:border-gray-800 pt-6">
+                                                        {{-- Left Side: Interview Notes --}}
+                                                        <div class="space-y-4">
+                                                            <h5 class="text-xs font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400">Interview Notes</h5>
+                                                            <textarea name="interview_notes" rows="6" class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl p-5 text-sm font-bold focus:ring-2 focus:ring-[#0B5694]/20 outline-none transition-all" placeholder="Add qualitative observations...">{{ $applicant->evaluation?->interview_notes }}</textarea>
+                                                        </div>
+
+                                                        {{-- Right Side: Resume, Behavior Score & Action --}}
+                                                        <div class="space-y-6">
+                                                            <div>
+                                                                <h5 class="text-xs font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400 mb-3">Resume Document</h5>
+                                                                @if(!empty($applicant->resume_path))
+                                                                    <div class="flex items-center gap-3 p-4 bg-emerald-50 dark:bg-emerald-950/20 rounded-2xl border border-emerald-100 dark:border-emerald-900/40 mb-3">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" class="text-emerald-500" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                                                        <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-tight">Resume PDF attached</span>
+                                                                    </div>
+                                                                @endif
+                                                                <input type="file" name="resume_pdf" accept="application/pdf" class="w-full text-xs font-bold text-gray-500 dark:text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-extrabold file:bg-blue-50 file:text-[#0B5694] dark:file:bg-blue-900/30 dark:file:text-blue-400 hover:file:bg-blue-100 transition cursor-pointer">
+                                                                <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-2 italic">Accepts PDF only. Adding/updating a resume triggers automated parsing.</p>
+                                                            </div>
+
+                                                            <div class="grid grid-cols-2 gap-4">
+                                                                <div>
+                                                                    <label class="block text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-2">Behavioral Score</label>
+                                                                    <select name="behavioral_score" class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl p-3.5 text-xs font-bold uppercase tracking-wider focus:ring-2 focus:ring-[#0B5694]/20 outline-none transition-all cursor-pointer">
                                                                         @for($i=1; $i<=5; $i++)
-                                                                            <option value="{{ $i }}" {{ ($verifiedSkills[$skill] ?? $score) == $i ? 'selected' : '' }}>{{ $i }}</option>
+                                                                            <option value="{{ $i }}" {{ ($applicant->evaluation?->behavioral_score ?? 3) == $i ? 'selected' : '' }}>{{ $i }} - {{ ['Poor', 'Fair', 'Good', 'Excellent', 'Superior'][$i-1] }}</option>
                                                                         @endfor
                                                                     </select>
                                                                 </div>
-                                                            @endforeach
+                                                                <div>
+                                                                    <label class="block text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-2">Recommendation</label>
+                                                                    <select name="is_recommended" class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl p-3.5 text-xs font-bold uppercase tracking-wider focus:ring-2 focus:ring-[#0B5694]/20 outline-none transition-all cursor-pointer">
+                                                                        <option value="1" {{ ($applicant->evaluation?->is_recommended ?? true) ? 'selected' : '' }}>Recommended</option>
+                                                                        <option value="0" {{ !($applicant->evaluation?->is_recommended ?? true) ? 'selected' : '' }}>Needs Training</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    <div class="space-y-8">
-                                                        <h5 class="text-xs font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400">Interview Notes & Performance</h5>
-                                                        <textarea name="interview_notes" rows="4" class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl p-5 text-sm font-bold focus:ring-2 focus:ring-blue-500/20" placeholder="Add qualitative observations...">{{ $applicant->evaluation?->interview_notes }}</textarea>
-                                                        
-                                                        <div>
-                                                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">Resume Document</label>
-                                                            @if(!empty($applicant->resume_path))
-                                                                <div class="flex items-center gap-3 p-4 bg-emerald-50 dark:bg-emerald-950/20 rounded-2xl border border-emerald-100 dark:border-emerald-900/40 mb-3">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" class="text-emerald-500" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
-                                                                    <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-tight">Resume PDF attached</span>
-                                                                </div>
-                                                            @endif
-                                                            <input type="file" name="resume_pdf" accept="application/pdf" class="w-full text-xs font-bold text-gray-500 dark:text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-extrabold file:bg-blue-50 file:text-[#0B5694] dark:file:bg-blue-900/30 dark:file:text-blue-400 hover:file:bg-blue-100 transition cursor-pointer">
-                                                            <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-2 italic">Accepts PDF only. Adding/updating a resume triggers automated text parsing to re-analyze matching compatibility score.</p>
-                                                        </div>
 
-                                                        <div class="grid grid-cols-2 gap-5">
-                                                            <select name="behavioral_score" class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-2xl p-5 text-xs font-bold uppercase tracking-wider focus:ring-2 focus:ring-[#0B5694]/20 outline-none transition-all cursor-pointer">
-                                                                @for($i=1; $i<=5; $i++)
-                                                                    <option value="{{ $i }}" {{ ($applicant->evaluation?->behavioral_score ?? 3) == $i ? 'selected' : '' }}>{{ $i }} - {{ ['Poor', 'Fair', 'Good', 'Excellent', 'Superior'][$i-1] }}</option>
-                                                                @endfor
-                                                            </select>
-                                                            <select name="is_recommended" class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-2xl p-5 text-xs font-bold uppercase tracking-wider focus:ring-2 focus:ring-[#0B5694]/20 outline-none transition-all cursor-pointer">
-                                                                <option value="1" {{ ($applicant->evaluation?->is_recommended ?? true) ? 'selected' : '' }}>Recommended</option>
-                                                                <option value="0" {{ !($applicant->evaluation?->is_recommended ?? true) ? 'selected' : '' }}>Needs Training</option>
-                                                            </select>
-                                                        </div>
-                                                        <button type="submit" class="w-full bg-[#0B5694] dark:bg-blue-600 text-white py-5 rounded-2xl text-xs font-bold uppercase tracking-wider shadow-lg shadow-blue-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all">Update Evaluation</button>
+                                                    <div class="border-t border-gray-100 dark:border-gray-800 pt-6 flex justify-end">
+                                                        <button type="submit" class="px-8 py-4 bg-[#0B5694] dark:bg-blue-600 hover:bg-[#084577] dark:hover:bg-blue-500 text-white font-bold uppercase text-xs tracking-wider rounded-xl transition-all shadow-md active:scale-95 shadow-blue-500/10">Update Evaluation</button>
                                                     </div>
                                                 </div>
                                             </form>
