@@ -8,6 +8,7 @@ use App\Http\Requests\HeadSupervisor\FinalizeMatchBatchRequest;
 use App\Http\Requests\HeadSupervisor\StoreEvaluationRequest;
 use App\Http\Requests\HeadSupervisor\UploadAssessmentRequest;
 use App\Models\ApplicantEvaluation;
+use App\Models\AssessmentItem;
 use App\Models\MatchResult;
 use App\Models\Office;
 use App\Models\OfficeRule;
@@ -104,6 +105,7 @@ class OfficeMatchingController extends Controller
         fgetcsv($handle);
 
         $rules = OfficeRule::all()->groupBy('office_id');
+        $activeAssessments = AssessmentItem::active()->get();
         $allStudentData = [];
         $preassignments = [];
 
@@ -127,31 +129,44 @@ class OfficeMatchingController extends Controller
             // Check if we have this applicant in our DB (Smart Matching)
             $applicant = OnboardingApplicant::where('full_name', $applicantName)->first();
 
-            // Parse dynamic skills: "Skill:Score;Skill:Score"
-            $allSkills = [];
+            // Parse dynamic skills from CSV
             $rawTech = isset($data[4]) && ! empty($data[4]) ? explode(';', $data[4]) : [];
             $rawSoft = isset($data[5]) && ! empty($data[5]) ? explode(';', $data[5]) : [];
+
+            $techSkillsFormatted = [];
+            foreach ($rawTech as $pair) {
+                if (str_contains($pair, ':')) {
+                    [$skill, $score] = explode(':', $pair);
+                    $techSkillsFormatted[trim($skill)] = (int) $score;
+                }
+            }
+
+            $softSkillsFormatted = [];
+            foreach ($rawSoft as $pair) {
+                if (str_contains($pair, ':')) {
+                    [$skill, $score] = explode(':', $pair);
+                    $softSkillsFormatted[trim($skill)] = (int) $score;
+                }
+            }
+
+            // Fill in any active assessment items missing from the CSV, matching the onboarding requirement
+            foreach ($activeAssessments as $item) {
+                $compText = trim($item->competency_text);
+                if ($item->category === 'technical') {
+                    if (! isset($techSkillsFormatted[$compText])) {
+                        $techSkillsFormatted[$compText] = 3;
+                    }
+                } else {
+                    if (! isset($softSkillsFormatted[$compText])) {
+                        $softSkillsFormatted[$compText] = 3;
+                    }
+                }
+            }
 
             if (! $applicant) {
                 $applicantId = 'APP-' . strtoupper(Str::random(8));
                 while (OnboardingApplicant::where('applicant_id', $applicantId)->exists()) {
                     $applicantId = 'APP-' . strtoupper(Str::random(8));
-                }
-
-                $techSkillsFormatted = [];
-                foreach ($rawTech as $pair) {
-                    if (str_contains($pair, ':')) {
-                        [$skill, $score] = explode(':', $pair);
-                        $techSkillsFormatted[trim($skill)] = (int) $score;
-                    }
-                }
-
-                $softSkillsFormatted = [];
-                foreach ($rawSoft as $pair) {
-                    if (str_contains($pair, ':')) {
-                        [$skill, $score] = explode(':', $pair);
-                        $softSkillsFormatted[trim($skill)] = (int) $score;
-                    }
                 }
 
                 $parts = explode(' ', $applicantName);
@@ -182,14 +197,40 @@ class OfficeMatchingController extends Controller
                     'emergency_contact_number' => 'N/A',
                     'privacy_acknowledged_at' => now(),
                 ]);
+            } else {
+                // Ensure existing applicant also gets updated to contain all items if missing
+                $existingTech = is_array($applicant->tech_skills) ? $applicant->tech_skills : [];
+                $existingSoft = is_array($applicant->soft_skills) ? $applicant->soft_skills : [];
+                $updated = false;
+
+                foreach ($activeAssessments as $item) {
+                    $compText = trim($item->competency_text);
+                    if ($item->category === 'technical') {
+                        if (! isset($existingTech[$compText])) {
+                            $existingTech[$compText] = 3;
+                            $updated = true;
+                        }
+                    } else {
+                        if (! isset($existingSoft[$compText])) {
+                            $existingSoft[$compText] = 3;
+                            $updated = true;
+                        }
+                    }
+                }
+
+                if ($updated) {
+                    $applicant->update([
+                        'tech_skills' => $existingTech,
+                        'soft_skills' => $existingSoft,
+                    ]);
+                }
+
+                // Synchronize variables to pass correct values to processMatchingBatch
+                $techSkillsFormatted = $applicant->tech_skills;
+                $softSkillsFormatted = $applicant->soft_skills;
             }
 
-            foreach (array_merge($rawTech, $rawSoft) as $pair) {
-                if (str_contains($pair, ':')) {
-                    [$skill, $score] = explode(':', $pair);
-                    $allSkills[trim($skill)] = (int) $score;
-                }
-            }
+            $allSkills = array_merge($techSkillsFormatted, $softSkillsFormatted);
 
             // Smart Matching: Extract Resume Text if available
             $resumeText = '';

@@ -1,3 +1,3 @@
 student_id,student_name,university,email,tech_skills,soft_skills,office_id
-APP-TEST01,Alice Smith,Quezon University,alice.smith@example.com,PHP:5;Laravel:4;JavaScript:3,Communication:5;Teamwork:4,
-APP-TEST02,Bob Jones,Metro College,bob.jones@example.com,Python:4;Django:3;SQL:4,Leadership:4;Problem Solving:5,
+APP-TEST01,Alice Smith,Quezon University,alice.smith@example.com,"applying basic programming or system-related knowledge (python, html, php, etc.):4;using spreadsheet software for organizing, computing, and analyzing data (ms excel, google sheets, etc.):5","communicating ideas and information clearly in verbal discussions:5;preparing clear and accurate reports and summaries:4",
+APP-TEST02,Bob Jones,Metro College,bob.jones@example.com,"performing basic troubleshooting of computer hardware or software problems:4;managing digital files and folders using cloud storage (google drive, onedrive, etc.):5","handling confidential or sensitive information responsibly:5;assisting in scheduling meetings and coordinating tasks:4",
