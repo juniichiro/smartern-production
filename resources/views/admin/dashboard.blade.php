@@ -51,7 +51,7 @@
                     <span class="px-4 py-1.5 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold uppercase rounded-full border border-emerald-100 dark:border-emerald-800 tracking-wider animate-pulse">Operational Status</span>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 lg:gap-8">
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 lg:gap-8">
                     @foreach($services as $service)
                     @php
                         $dotColor = match($service['color']) {
