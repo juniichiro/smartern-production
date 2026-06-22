@@ -286,10 +286,28 @@ class OfficeMatchingController extends Controller
 
     public function finalizeBatch(FinalizeMatchBatchRequest $request)
     {
+        $office = Office::findOrFail($request->office_id);
+        $internLimit = $office->intern_limit;
+
+        // Count confirmed matches in this office, excluding current applicants being moved
+        $currentConfirmed = MatchResult::where('office_id', $office->id)
+            ->where('is_confirmed', true)
+            ->whereNotIn('applicant_name', $request->applicant_names)
+            ->count();
+
+        // Count active interns already assigned to this office
+        $activeInterns = $office->internDetails()->count();
+        $occupiedSlots = $currentConfirmed + $activeInterns;
+        $requestedCount = count($request->applicant_names);
+
+        if ($occupiedSlots + $requestedCount > $internLimit) {
+            $availableSlots = max(0, $internLimit - $occupiedSlots);
+            return back()->with('error', "Cannot finalize assignment. {$office->name} has a limit of {$internLimit} slots. {$occupiedSlots} slots are already taken. You are trying to assign {$requestedCount} applicants, but only {$availableSlots} slots are available.");
+        }
+
         MatchResult::whereIn('applicant_name', $request->applicant_names)
             ->update(['is_confirmed' => false]);
 
-        $office = Office::find($request->office_id);
         $count = count($request->applicant_names);
         $this->auditService->log('Match Finalized', "Assigned {$count} applicants to {$office->name}");
 
