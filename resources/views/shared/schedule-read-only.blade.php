@@ -75,8 +75,8 @@
 
                             {{-- Override Indicators & Tasks --}}
                             <div class="mt-4 space-y-2 flex-1 flex flex-col justify-end">
-                                <template x-for="event in day.events" :key="event.id || event.title">
-                                    <div>
+                                <template x-for="(event, index) in day.events" :key="event.id || event.title">
+                                    <div x-show="index < 2">
                                         {{-- 1. Render Tasks as Clickable Links --}}
                                         <template x-if="event.type === 'task'">
                                             <a :href="'{{ $portalType }}' === 'Intern' ? `/intern/tasks/${event.id}` : `/supervisor/tasks/review/${event.id}`"
@@ -125,6 +125,14 @@
                                         </template>
                                     </div>
                                 </template>
+
+                                {{-- More Events Indicator --}}
+                                <template x-if="day.events.length > 2">
+                                    <div class="rounded-2xl p-2 text-center text-[10px] font-black uppercase tracking-wider bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 border border-gray-100 dark:border-gray-800/80 mt-1 select-none">
+                                        + <span x-text="day.events.length - 2"></span> more requests
+                                    </div>
+                                </template>
+                            </div>
                             </div>
                         </div>
                     </template>

@@ -168,8 +168,8 @@
                                         </div>
                                     </template>
 
-                                    <template x-for="event in day.events" :key="event.id || event.description || event.reason">
-                                        <div>
+                                    <template x-for="(event, index) in day.events" :key="event.id || event.description || event.reason">
+                                        <div x-show="index < 2">
                                             <template x-if="event.type !== 'absence'">
                                                 <div class="rounded-2xl p-3 text-xs font-bold text-left leading-tight tracking-tight shadow-sm border"
                                                      :class="{
@@ -202,6 +202,14 @@
                                             </template>
                                         </div>
                                     </template>
+                                    
+                                    {{-- More Events Indicator --}}
+                                    <template x-if="day.events.length > 2">
+                                        <div class="rounded-2xl p-2 text-center text-[10px] font-black uppercase tracking-wider bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 border border-gray-100 dark:border-gray-800/80 mt-1 select-none">
+                                            + <span x-text="day.events.length - 2"></span> more requests
+                                        </div>
+                                    </template>
+                                </div>
                                 </div>
                             </div>
                         </template>
