@@ -135,7 +135,7 @@
                 } elseif ($log->supervisorDetails) {
                     $userName = $log->supervisorDetails->first_name . ' ' . $log->supervisorDetails->last_name . ' (Supervisor)';
                 } elseif ($log->user) {
-                    $userName = $log->user->email;
+                    $userName = ($log->user->role_id === \App\Enums\UserRole::ADMIN) ? 'SmarTern Admin' : $log->user->email;
                 }
             @endphp
             <tr>

@@ -167,7 +167,7 @@
                                         @elseif($log->supervisorDetails)
                                             {{ $log->supervisorDetails->first_name }} {{ $log->supervisorDetails->last_name }}
                                         @else
-                                            {{ $log->user->email ?? 'System' }}
+                                            {{ ($log->user && $log->user->role_id === \App\Enums\UserRole::ADMIN) ? 'SmarTern Admin' : ($log->user->email ?? 'System') }}
                                         @endif
                                     </span>
                                 </div>
@@ -280,7 +280,7 @@
                     <div>
                         <h5 class="text-gray-800 dark:text-gray-100 font-black uppercase tracking-tight">{{ $log->action }}</h5>
                         <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider mt-1">
-                            {{ $log->user->email ?? 'System' }}
+                            {{ ($log->user && $log->user->role_id === \App\Enums\UserRole::ADMIN) ? 'SmarTern Admin' : ($log->user->email ?? 'System') }}
                         </p>
                     </div>
                     <span class="bg-{{ $color }}-500 text-white text-[9px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
