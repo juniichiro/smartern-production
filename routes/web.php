@@ -35,7 +35,7 @@ use App\Http\Controllers\Supervisor\TaskController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn () => redirect()->route('login'));
+Route::get('/', fn () => view('welcome'));
 
 // Public Onboarding Microsite
 Route::get('/onboarding', [OnboardingController::class, 'create'])->name('onboarding.create');
