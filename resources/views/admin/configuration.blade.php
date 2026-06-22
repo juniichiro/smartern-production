@@ -35,9 +35,14 @@
             headerActionText="Maintenance Overview"
         >
             <x-slot name="headerAction">
-                <div class="flex flex-col sm:items-end gap-2 w-full sm:w-auto">
-                    <p class="text-[9px] sm:text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider bg-gray-50 dark:bg-gray-800 px-3 sm:px-4 py-2 rounded-2xl sm:rounded-full border border-gray-100 dark:border-gray-800 whitespace-nowrap overflow-hidden text-ellipsis max-w-full">
-                        Next Scheduled Backup: <span class="text-[#0B5694] dark:text-blue-400 ml-1">Daily at 12:00 AM</span>
+                <div class="flex w-full sm:w-auto">
+                    <p class="hidden sm:flex items-center gap-1.5 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider bg-gray-50 dark:bg-gray-800 px-4 py-2 rounded-full border border-gray-100 dark:border-gray-800 shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        Next Schedule: <span class="text-[#0B5694] dark:text-blue-400">Daily 12:00 AM</span>
+                    </p>
+                    <p class="flex sm:hidden items-center gap-1.5 text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <span class="text-[#0B5694] dark:text-blue-400">Daily 12:00 AM</span>
                     </p>
                 </div>
             </x-slot>
