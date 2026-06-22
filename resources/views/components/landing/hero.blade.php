@@ -1,54 +1,59 @@
-<section class="relative min-h-[100dvh] flex items-center overflow-hidden">
-    {{-- Background with gradient overlay --}}
-    <div class="absolute inset-0 bg-[#0B5694] dark:bg-blue-950">
-        <div class="absolute inset-0 bg-gradient-to-br from-[#0B5694]/90 via-[#0B5694]/70 to-[#0B5694]/50 dark:from-blue-950/95 dark:via-blue-950/80 dark:to-blue-950/60"></div>
-    </div>
+<section class="relative overflow-hidden bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
+    <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center min-h-[90dvh] py-16 lg:py-0">
+            {{-- Left: Text --}}
+            <div class="order-2 lg:order-1">
+                <span class="inline-block px-4 py-1.5 mb-5 text-[10px] font-bold text-[#0B5694] dark:text-blue-400 tracking-[0.18em] uppercase bg-[#0B5694]/8 dark:bg-blue-500/10 rounded-full">Schools Division Office — Quezon City</span>
 
-    <div class="relative z-10 w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div class="max-w-3xl">
-            <span class="inline-block px-4 py-2 mb-6 text-[10px] font-bold text-white/80 tracking-[0.2em] uppercase border border-white/20 rounded-full">Schools Division Office — Quezon City</span>
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 dark:text-white tracking-tight leading-[1.05] mb-5">
+                    Your Internship<br>Starts Here.
+                </h1>
 
-            <h1 class="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-white tracking-tight leading-none mb-6">
-                Internship Management,<br>
-                <span class="text-white/80">Reimagined.</span>
-            </h1>
+                <p class="text-lg font-extrabold text-[#0B5694] dark:text-blue-400 tracking-tight mb-3">SmarTern — Internship Management System</p>
 
-            <p class="text-base sm:text-lg text-white/70 max-w-2xl leading-relaxed mb-10 font-medium">
-                A secure, data-driven platform for managing student deployments, tracking accomplishments, and automating office placements across SDO Quezon City.
-            </p>
+                <p class="text-sm text-gray-500 dark:text-gray-400 font-medium leading-relaxed max-w-lg mb-8">
+                    The official internship portal of SDO Quezon City. Apply, get matched to an office, and track your progress — all in one place.
+                </p>
 
-            <div class="flex flex-wrap gap-4">
-                <a href="{{ route('onboarding.create') }}" class="inline-flex items-center px-8 py-4 bg-white text-[#0B5694] dark:bg-white/90 dark:text-blue-900 font-bold uppercase text-[11px] tracking-wider rounded-2xl transition-all hover:bg-white/90 hover:scale-[1.02] active:scale-[0.98] shadow-2xl shadow-black/20">
-                    Apply as Intern
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="ml-3"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                </a>
-                <a href="{{ route('login') }}" class="inline-flex items-center px-8 py-4 text-white font-bold uppercase text-[11px] tracking-wider rounded-2xl transition-all border-2 border-white/30 hover:border-white/50 hover:bg-white/10 active:scale-[0.98]">
-                    Log In to Portal
-                </a>
+                <div class="flex flex-wrap gap-3">
+                    <a href="{{ route('onboarding.create') }}" class="inline-flex items-center px-7 py-3.5 bg-[#0B5694] hover:bg-[#084577] dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-bold uppercase text-[10px] tracking-wider rounded-2xl transition-all active:scale-[0.98] shadow-lg shadow-blue-500/20">
+                        Start Your Application
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="ml-2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </a>
+                    <a href="{{ route('login') }}" class="inline-flex items-center px-7 py-3.5 border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-bold uppercase text-[10px] tracking-wider rounded-2xl transition-all hover:border-[#0B5694] hover:text-[#0B5694] dark:hover:border-blue-500 dark:hover:text-blue-400 active:scale-[0.98]">
+                        Log In
+                    </a>
+                </div>
+
+                {{-- Stats row --}}
+                <div class="flex flex-wrap gap-6 mt-10 pt-8 border-t border-gray-100 dark:border-gray-800">
+                    <div>
+                        <p class="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight">S.Y. 25–26</p>
+                        <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mt-1">Currently Open</p>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight">Multiple Offices</p>
+                        <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mt-1">Placement Available</p>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight">Online</p>
+                        <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mt-1">Application Mode</p>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Right: Visual Placeholder --}}
+            <div class="order-1 lg:order-2 flex items-center justify-center">
+                <div class="relative w-full max-w-md aspect-[4/3] bg-gradient-to-br from-[#0B5694]/10 via-[#0B5694]/5 to-gray-100 dark:from-blue-500/10 dark:via-blue-500/5 dark:to-gray-800 rounded-[40px] border border-gray-200 dark:border-gray-800 flex items-center justify-center overflow-hidden">
+                    <div class="text-center px-8">
+                        <div class="w-20 h-20 bg-[#0B5694]/10 dark:bg-blue-500/10 rounded-[24px] flex items-center justify-center mx-auto mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#0B5694" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        </div>
+                        <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">SDO Quezon City</p>
+                        <p class="text-xs text-gray-400 dark:text-gray-500 font-medium mt-1">Institutional photo placeholder</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
-    {{-- Bottom fade --}}
-    <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-gray-50 dark:from-gray-950 to-transparent"></div>
 </section>
-
-{{-- Contact Info Strip --}}
-<div class="bg-[#0B5694] dark:bg-blue-950 border-t border-white/10">
-    <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-5">
-        <div class="flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-white/70 text-sm font-medium">
-            <span class="flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                human.resource@depedqc.ph
-            </span>
-            <span class="flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                (02) 8538-6900 to (02) 8538-6919
-            </span>
-            <span class="flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                Nueva Ecija Street, Bago Bantay, Quezon City
-            </span>
-        </div>
-    </div>
-</div>
