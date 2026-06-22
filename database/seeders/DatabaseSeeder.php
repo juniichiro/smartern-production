@@ -28,6 +28,9 @@ class DatabaseSeeder extends Seeder
             TaskSeeder::class, // Completed, submitted, pending tasks
             AttendanceSeeder::class, // Attendance records mapping to hours_rendered
             JournalSeeder::class, // Daily and weekly log journals
+            ScheduleSeeder::class, // Default, holiday, suspension schedules per school
+            AbsenceRequestSeeder::class, // Absence and early leave requests + attendance updates
+            AnnouncementSeeder::class, // Office-scoped announcements
         ]);
     }
 }
