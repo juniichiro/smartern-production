@@ -86,9 +86,16 @@ class RunBackup extends Command
                 $config = config('database.connections.mysql');
                 $tempSqlPath = storage_path('app/temp_db_export.sql');
 
+                // Determine binary path
+                $mysqldumpBin = 'mysqldump';
+                if (file_exists('/usr/bin/mysqldump') && is_executable('/usr/bin/mysqldump')) {
+                    $mysqldumpBin = '/usr/bin/mysqldump';
+                }
+
                 // Construct mysqldump command
                 $command = sprintf(
-                    'mysqldump --user=%s --password=%s --host=%s --port=%s %s > %s',
+                    '%s --user=%s --password=%s --host=%s --port=%s %s > %s',
+                    escapeshellarg($mysqldumpBin),
                     escapeshellarg($config['username']),
                     escapeshellarg($config['password']),
                     escapeshellarg($config['host']),

@@ -142,9 +142,16 @@ class RestoreBackup extends Command
                 $extractedSql = $tempPath.'/database/database.sql';
 
                 if (file_exists($extractedSql)) {
+                    // Determine binary path
+                    $mysqlBin = 'mysql';
+                    if (file_exists('/usr/bin/mysql') && is_executable('/usr/bin/mysql')) {
+                        $mysqlBin = '/usr/bin/mysql';
+                    }
+
                     // Construct mysql import command
                     $command = sprintf(
-                        'mysql --user=%s --password=%s --host=%s --port=%s %s < %s',
+                        '%s --user=%s --password=%s --host=%s --port=%s %s < %s',
+                        escapeshellarg($mysqlBin),
                         escapeshellarg($config['username']),
                         escapeshellarg($config['password']),
                         escapeshellarg($config['host']),
