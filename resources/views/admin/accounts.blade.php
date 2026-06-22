@@ -62,12 +62,12 @@
                 subtitle="Searching across all pages..."
             >
             <x-slot name="headerAction">
-                <button @click="showImportModal = true" class="w-full sm:w-auto bg-emerald-500 text-white px-5 sm:px-6 py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 hover:bg-emerald-600 transition shadow-lg shadow-emerald-500/20 active:scale-95">
+                <button @click="showImportModal = true" class="w-full sm:w-auto bg-emerald-500 text-white px-5 sm:px-6 min-h-[44px] rounded-xl text-sm font-bold flex items-center justify-center gap-2 hover:bg-emerald-600 transition shadow-lg shadow-emerald-500/20 active:scale-95 cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                     Import Batch
                 </button>
                 
-                <button @click="showAddModal = true" class="w-full sm:w-auto bg-[#0B5694] text-white px-5 sm:px-6 py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#084577] transition shadow-lg shadow-blue-500/20 active:scale-95">
+                <button @click="showAddModal = true" class="w-full sm:w-auto bg-[#0B5694] text-white px-5 sm:px-6 min-h-[44px] rounded-xl text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#084577] transition shadow-lg shadow-blue-500/20 active:scale-95 cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                     Add User
                 </button>
@@ -155,15 +155,15 @@
                                         initials: '{{ $uInitials }}',
                                         is_hr_head: {{ $isHrHead ? 'true' : 'false' }},
                                         profile_picture: '{{ $details?->profile_picture ? asset($details->profile_picture) : '' }}'
-                                    }; showEditModal = true" class="text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition transform hover:scale-110">
+                                    }; showEditModal = true" class="text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition transform hover:scale-110 cursor-pointer">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
                                     </button>
                                     @if($userDeactivated)
-                                        <button @click="confirmDelete('{{ $user->getRouteKey() }}'); isDeactivated = true" class="text-emerald-400 dark:text-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition transform hover:scale-110" title="Reactivate Account">
+                                        <button @click="confirmDelete('{{ $user->getRouteKey() }}'); isDeactivated = true" class="text-emerald-400 dark:text-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition transform hover:scale-110 cursor-pointer" title="Reactivate Account">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
                                         </button>
                                     @else
-                                        <button @click="confirmDelete('{{ $user->getRouteKey() }}'); isDeactivated = false" class="text-red-400 dark:text-red-500 hover:text-red-600 dark:hover:text-red-400 transition transform hover:scale-110" title="Deactivate Account">
+                                        <button @click="confirmDelete('{{ $user->getRouteKey() }}'); isDeactivated = false" class="text-red-400 dark:text-red-500 hover:text-red-600 dark:hover:text-red-400 transition transform hover:scale-110 cursor-pointer" title="Deactivate Account">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                                         </button>
                                     @endif
@@ -236,17 +236,17 @@
                             initials: '{{ $uInitials }}',
                             is_hr_head: {{ $isHrHead ? 'true' : 'false' }},
                             profile_picture: '{{ $details?->profile_picture ? asset($details->profile_picture) : '' }}'
-                        }; showEditModal = true" class="flex-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-blue-600 dark:text-blue-400 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-2 shadow-sm">
+                        }; showEditModal = true" class="flex-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-blue-600 dark:text-blue-400 min-h-[44px] rounded-xl text-[10px] font-bold uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-2 shadow-sm cursor-pointer">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
                             Edit
                         </button>
                         @if($userDeactivated)
-                            <button @click="confirmDelete('{{ $user->getRouteKey() }}'); isDeactivated = true" class="flex-1 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/30 text-emerald-600 dark:text-emerald-500 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-2 shadow-sm">
+                            <button @click="confirmDelete('{{ $user->getRouteKey() }}'); isDeactivated = true" class="flex-1 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/30 text-emerald-600 dark:text-emerald-500 min-h-[44px] rounded-xl text-[10px] font-bold uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-2 shadow-sm cursor-pointer">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
                                 Reactivate
                             </button>
                         @else
-                            <button @click="confirmDelete('{{ $user->getRouteKey() }}'); isDeactivated = false" class="flex-1 bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/30 text-rose-600 dark:text-rose-500 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-2 shadow-sm">
+                            <button @click="confirmDelete('{{ $user->getRouteKey() }}'); isDeactivated = false" class="flex-1 bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/30 text-rose-600 dark:text-rose-500 min-h-[44px] rounded-xl text-[10px] font-bold uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-2 shadow-sm cursor-pointer">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                                 Deactivate
                             </button>
@@ -266,21 +266,21 @@
 
                 <div class="flex items-center gap-2">
                     @if ($users->onFirstPage())
-                        <span class="p-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-300 dark:text-gray-600 cursor-not-allowed"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
+                        <span class="p-3.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-300 dark:text-gray-600 cursor-not-allowed flex items-center justify-center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>
                     @else
-                        <a href="{{ $users->previousPageUrl() }}" class="p-3 rounded-xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-[#0B5694] dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition shadow-sm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></a>
+                        <a href="{{ $users->previousPageUrl() }}" class="p-3.5 rounded-xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-[#0B5694] dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition shadow-sm flex items-center justify-center cursor-pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></a>
                     @endif
 
                     <div class="flex items-center gap-1 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 p-1.5 rounded-2xl shadow-sm overflow-x-auto no-scrollbar">
                         @foreach ($users->getUrlRange(max(1, $users->currentPage() - 2), min($users->lastPage(), $users->currentPage() + 2)) as $page => $url)
-                            <a href="{{ $url }}" class="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-xl text-xs font-bold transition-all {{ $page == $users->currentPage() ? 'bg-[#0B5694] text-white shadow-lg' : 'text-gray-400 dark:text-gray-500 hover:text-[#0B5694] dark:hover:text-blue-400' }}">{{ $page }}</a>
+                            <a href="{{ $url }}" class="min-w-[44px] min-h-[44px] flex-shrink-0 flex items-center justify-center rounded-xl text-xs font-bold transition-all {{ $page == $users->currentPage() ? 'bg-[#0B5694] text-white shadow-lg' : 'text-gray-400 dark:text-gray-500 hover:text-[#0B5694] dark:hover:text-blue-400' }}">{{ $page }}</a>
                         @endforeach
                     </div>
 
                     @if ($users->hasMorePages())
-                        <a href="{{ $users->nextPageUrl() }}" class="p-3 rounded-xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-[#0B5694] dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition shadow-sm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a>
+                        <a href="{{ $users->nextPageUrl() }}" class="p-3.5 rounded-xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-[#0B5694] dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition shadow-sm flex items-center justify-center cursor-pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a>
                     @else
-                        <span class="p-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-300 dark:text-gray-600 cursor-not-allowed"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+                        <span class="p-3.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-300 dark:text-gray-600 cursor-not-allowed flex items-center justify-center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
                     @endif
                 </div>
             </div>
@@ -329,14 +329,14 @@
                                         <div class="flex justify-center gap-4">
                                             <form action="{{ route('admin.accounts.onboarding-approve', $applicant->id) }}" method="POST" class="inline">
                                                 @csrf
-                                                <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-xl text-xs font-bold transition active:scale-95 flex items-center gap-1 shadow-sm">
+                                                <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-xl text-xs font-bold transition active:scale-95 flex items-center gap-1 shadow-sm cursor-pointer">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                                                     Approve
                                                 </button>
                                             </form>
                                             <form action="{{ route('admin.accounts.onboarding-discard', $applicant->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to discard this application request?')">
                                                 @csrf
-                                                <button type="submit" class="bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/30 text-rose-600 dark:text-rose-500 px-4 py-2 rounded-xl text-xs font-bold transition active:scale-95 flex items-center gap-1 shadow-sm">
+                                                <button type="submit" class="bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/30 text-rose-600 dark:text-rose-500 px-4 py-2 rounded-xl text-xs font-bold transition active:scale-95 flex items-center gap-1 shadow-sm cursor-pointer">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                                                     Discard
                                                 </button>
@@ -377,14 +377,14 @@
                             <div class="flex gap-4 pt-4 border-t border-gray-200/50 dark:border-gray-700/50">
                                 <form action="{{ route('admin.accounts.onboarding-approve', $applicant->id) }}" method="POST" class="flex-1">
                                     @csrf
-                                    <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-2 shadow-sm">
+                                    <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white min-h-[44px] rounded-xl text-xs font-bold uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-2 shadow-sm cursor-pointer">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                                         Approve
                                     </button>
                                 </form>
                                 <form action="{{ route('admin.accounts.onboarding-discard', $applicant->id) }}" method="POST" class="flex-1" onsubmit="return confirm('Are you sure you want to discard this application request?')">
                                     @csrf
-                                    <button type="submit" class="w-full bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/30 text-rose-600 dark:text-rose-500 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-2 shadow-sm">
+                                    <button type="submit" class="w-full bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/30 text-rose-600 dark:text-rose-500 min-h-[44px] rounded-xl text-xs font-bold uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-2 shadow-sm cursor-pointer">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                                         Discard
                                     </button>

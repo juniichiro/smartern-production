@@ -221,4 +221,44 @@ html.font-size-md { font-size: 16px !important; }
 html.font-size-lg { font-size: 18px !important; }
 html.font-size-xl { font-size: 20px !important; }
 
+/* Mobile Responsive Admin Overrides */
+@media (max-width: 639px) {
+    /* Ensure modals span full width on very small screens */
+    .modal-content {
+        max-width: calc(100vw - 2rem) !important;
+    }
+    
+    /* Stack table-header action buttons vertically on mobile */
+    .table-header-actions {
+        flex-direction: column !important;
+        width: 100% !important;
+    }
+    
+    /* Improve grid gap for mobile */
+    .admin-grid-mobile {
+        gap: 1rem !important;
+    }
+}
+
+/* Tablet responsive improvements */
+@media (min-width: 640px) and (max-width: 1023px) {
+    .stat-card-tablet-horizontal {
+        flex-direction: row !important;
+        align-items: center !important;
+    }
+}
+
+/* Ensure horizontal scroll never happens on mobile */
+img, video, canvas, svg {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Better tap highlighting for mobile */
+@media (hover: none) and (pointer: coarse) {
+    button, a, [role="button"], input[type="submit"], input[type="button"] {
+        -webkit-tap-highlight-color: rgba(11, 86, 148, 0.15);
+    }
+}
+
 

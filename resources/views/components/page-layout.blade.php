@@ -5,7 +5,7 @@
         <x-sidebar :portalType="$portalType" :userName="$userName" :userRole="$userRole" />
     @endif
 
-    <main class="{{ $showSidebar ? 'lg:ml-64' : '' }} {{ $showNotifications ? 'lg:mr-80' : '' }} flex-1 p-4 sm:p-6 lg:p-10 text-left mt-16 lg:mt-0 transition-all duration-300 flex flex-col {{ $fullHeight ? 'overflow-hidden' : '' }}">
+    <main class="{{ $showSidebar ? 'lg:ml-64' : '' }} {{ $showNotifications ? 'lg:mr-80' : '' }} flex-1 p-3 sm:p-6 lg:p-10 text-left mt-16 lg:mt-0 transition-all duration-300 flex flex-col min-w-0 {{ $fullHeight ? 'overflow-hidden' : '' }}">
         {{ $slot }}
     </main>
 

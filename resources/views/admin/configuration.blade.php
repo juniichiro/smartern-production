@@ -45,7 +45,7 @@
             <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-10">
                 <button type="button" 
                         @click="showUploadModal = true"
-                        class="w-full sm:w-auto bg-white dark:bg-gray-800 text-[#0B5694] dark:text-blue-400 px-6 sm:px-8 py-4 rounded-2xl font-bold text-xs uppercase tracking-wider shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3">
+                        class="w-full sm:w-auto bg-white dark:bg-gray-800 text-[#0B5694] dark:text-blue-400 px-6 sm:px-8 min-h-[44px] rounded-2xl font-bold text-xs uppercase tracking-wider shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                     Upload Snapshot
                 </button>
@@ -53,7 +53,7 @@
                     @csrf
                     <button type="submit" 
                             :disabled="loading"
-                            class="w-full bg-[#0B5694] dark:bg-blue-600 text-white px-6 sm:px-8 py-4 rounded-2xl font-bold text-xs uppercase tracking-wider shadow-xl shadow-blue-500/20 hover:shadow-blue-500/40 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed">
+                            class="w-full bg-[#0B5694] dark:bg-blue-600 text-white px-6 sm:px-8 min-h-[44px] rounded-2xl font-bold text-xs uppercase tracking-wider shadow-xl shadow-blue-500/20 hover:shadow-blue-500/40 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer">
                         <template x-if="!loading">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                         </template>
@@ -113,14 +113,14 @@
                                                     @csrf
                                                     <button type="button" 
                                                             @click="confirmRollback('{{ $backup->getRouteKey() }}')"
-                                                            class="p-2.5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-400 hover:text-orange-500 rounded-xl transition shadow-sm transform hover:scale-110" 
+                                                            class="p-2.5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-400 hover:text-orange-500 rounded-xl transition shadow-sm transform hover:scale-110 cursor-pointer" 
                                                             title="Rollback to this Snapshot">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
                                                     </button>
                                                 </form>
 
                                                 <a href="{{ route('admin.backup.download', $backup) }}" 
-                                                   class="p-2.5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-400 hover:text-[#0B5694] dark:hover:text-blue-400 rounded-xl transition shadow-sm transform hover:scale-110"
+                                                   class="p-2.5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-400 hover:text-[#0B5694] dark:hover:text-blue-400 rounded-xl transition shadow-sm transform hover:scale-110 cursor-pointer"
                                                    title="Download Snapshot">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                                                 </a>
@@ -130,7 +130,7 @@
                                                 @method('DELETE')
                                                 <button type="button" 
                                                         @click="confirmDelete('{{ $backup->getRouteKey() }}')"
-                                                        class="p-2.5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-400 hover:text-rose-500 rounded-xl transition shadow-sm transform hover:scale-110" 
+                                                        class="p-2.5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-400 hover:text-rose-500 rounded-xl transition shadow-sm transform hover:scale-110 cursor-pointer" 
                                                         title="Delete Record">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
                                                 </button>
@@ -189,14 +189,14 @@
                                     @csrf
                                     <button type="button" 
                                             @click="confirmRollback('{{ $backup->getRouteKey() }}')"
-                                            class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-orange-500 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-2 shadow-sm hover:bg-orange-50 dark:hover:bg-orange-950/20">
+                                            class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-orange-500 min-h-[44px] rounded-xl text-[10px] font-bold uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-2 shadow-sm hover:bg-orange-50 dark:hover:bg-orange-950/20 cursor-pointer">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
                                         Rollback
                                     </button>
                                 </form>
 
                                 <a href="{{ route('admin.backup.download', $backup) }}" 
-                                   class="flex-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-[#0B5694] dark:text-blue-400 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-2 shadow-sm hover:bg-blue-50 dark:hover:bg-blue-950/20">
+                                   class="flex-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-[#0B5694] dark:text-blue-400 min-h-[44px] rounded-xl text-[10px] font-bold uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-2 shadow-sm hover:bg-blue-50 dark:hover:bg-blue-950/20 cursor-pointer">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                                     Download
                                 </a>
@@ -206,7 +206,7 @@
                                 @method('DELETE')
                                 <button type="button" 
                                         @click="confirmDelete('{{ $backup->getRouteKey() }}')"
-                                        class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-rose-500 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-2 shadow-sm hover:bg-rose-50 dark:hover:bg-rose-950/20">
+                                        class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-rose-500 min-h-[44px] rounded-xl text-[10px] font-bold uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-2 shadow-sm hover:bg-rose-50 dark:hover:bg-rose-950/20 cursor-pointer">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
                                     Delete
                                 </button>
@@ -270,10 +270,10 @@
                 <p class="mt-4 text-[9px] text-gray-400 font-bold uppercase tracking-wider text-center">Limit: 50MB</p>
 
                 <div class="mt-10 flex flex-col gap-4">
-                    <button type="submit" class="w-full bg-[#0B5694] dark:bg-blue-600 text-white py-4 rounded-2xl font-bold text-xs uppercase tracking-wider shadow-lg shadow-blue-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]">
+                    <button type="submit" class="w-full bg-[#0B5694] dark:bg-blue-600 text-white min-h-[44px] rounded-2xl font-bold text-xs uppercase tracking-wider shadow-lg shadow-blue-500/20 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer">
                         Confirm Upload
                     </button>
-                    <button type="button" @click="showUploadModal = false" class="w-full bg-gray-50 dark:bg-gray-800 text-gray-400 py-4 rounded-2xl font-bold text-xs uppercase tracking-wider hover:bg-gray-100 transition-all">
+                    <button type="button" @click="showUploadModal = false" class="w-full bg-gray-50 dark:bg-gray-800 text-gray-400 min-h-[44px] rounded-2xl font-bold text-xs uppercase tracking-wider hover:bg-gray-100 transition-all cursor-pointer">
                         Cancel
                     </button>
                 </div>
@@ -294,10 +294,10 @@
             </div>
 
             <div class="mt-10 flex flex-col gap-4">
-                <button @click="triggerRestore" class="w-full bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-2xl font-bold text-xs uppercase tracking-wider shadow-lg shadow-orange-500/20 transition-all active:scale-[0.98]">
+                <button @click="triggerRestore" class="w-full bg-orange-500 hover:bg-orange-600 text-white min-h-[44px] rounded-2xl font-bold text-xs uppercase tracking-wider shadow-lg shadow-orange-500/20 transition-all active:scale-[0.98] cursor-pointer">
                     Yes, Rollback System
                 </button>
-                <button @click="showRollbackModal = false" class="w-full bg-gray-50 dark:bg-gray-800 text-gray-400 py-4 rounded-2xl font-bold text-xs uppercase tracking-wider hover:bg-gray-100 transition-all">
+                <button @click="showRollbackModal = false" class="w-full bg-gray-50 dark:bg-gray-800 text-gray-400 min-h-[44px] rounded-2xl font-bold text-xs uppercase tracking-wider hover:bg-gray-100 transition-all cursor-pointer">
                     Cancel
                 </button>
             </div>
@@ -313,10 +313,10 @@
             <p class="mt-4 text-gray-400 dark:text-gray-500 text-center text-xs font-bold uppercase tracking-wider italic">This action is irreversible.</p>
 
             <div class="mt-10 flex flex-col gap-4">
-                <button @click="triggerDelete" class="w-full bg-rose-500 hover:bg-rose-600 text-white py-4 rounded-2xl font-bold text-xs uppercase tracking-wider shadow-lg shadow-rose-500/20 transition-all active:scale-[0.98]">
+                <button @click="triggerDelete" class="w-full bg-rose-500 hover:bg-rose-600 text-white min-h-[44px] rounded-2xl font-bold text-xs uppercase tracking-wider shadow-lg shadow-rose-500/20 transition-all active:scale-[0.98] cursor-pointer">
                     Delete Permanently
                 </button>
-                <button @click="showDeleteModal = false" class="w-full bg-gray-50 dark:bg-gray-800 text-gray-400 py-4 rounded-2xl font-bold text-xs uppercase tracking-wider hover:bg-gray-100 transition-all">
+                <button @click="showDeleteModal = false" class="w-full bg-gray-50 dark:bg-gray-800 text-gray-400 min-h-[44px] rounded-2xl font-bold text-xs uppercase tracking-wider hover:bg-gray-100 transition-all cursor-pointer">
                     Cancel
                 </button>
             </div>

@@ -102,7 +102,7 @@
                 }
             }" class="relative w-full sm:w-64">
                 <button @click="open = !open" 
-                        class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl px-6 py-3.5 text-[11px] font-bold text-gray-700 dark:text-gray-200 flex items-center justify-between hover:border-[#0B5694] transition-all uppercase tracking-wider shadow-sm">
+                        class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl px-6 min-h-[44px] text-[11px] font-bold text-gray-700 dark:text-gray-200 flex items-center justify-between hover:border-[#0B5694] transition-all uppercase tracking-wider shadow-sm cursor-pointer">
                     <span x-text="selected"></span>
                     <svg class="transition-transform duration-300" :class="open ? 'rotate-180' : ''" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
                 </button>
@@ -125,7 +125,7 @@
                     @endphp
                     @foreach($types as $val => $label)
                         <button @click="filter('{{ $val }}'); open = false" 
-                                class="w-full text-left px-5 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-[#0B5694] dark:hover:text-blue-400 rounded-xl transition-colors">
+                                class="w-full text-left px-5 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-[#0B5694] dark:hover:text-blue-400 rounded-xl transition-colors cursor-pointer">
                             {{ $label }}
                         </button>
                     @endforeach
@@ -134,7 +134,7 @@
         </x-slot>
 
         {{-- Desktop Table --}}
-        <div class="hidden lg:block border border-gray-100 dark:border-gray-800 rounded-3xl overflow-hidden shadow-inner">
+        <div class="hidden md:block border border-gray-100 dark:border-gray-800 rounded-3xl overflow-hidden shadow-inner">
             <div class="overflow-x-auto custom-scrollbar">
                 <table class="w-full text-left">
                     <thead class="bg-gray-50 dark:bg-gray-800/50 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider border-b border-gray-100 dark:border-gray-800">
@@ -207,7 +207,7 @@
                                             </span>
                                         @endif
                                         <div x-data="{ open: false }" class="relative inline-block text-left">
-                                            <button @click="open = !open" @click.away="open = false" type="button" class="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-indigo-100 dark:hover:bg-indigo-900/40 border border-indigo-100 dark:border-indigo-800 transition">
+                                            <button @click="open = !open" @click.away="open = false" type="button" class="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-indigo-100 dark:hover:bg-indigo-900/40 border border-indigo-100 dark:border-indigo-800 transition cursor-pointer">
                                                 Evaluate
                                                 <svg class="w-3.5 h-3.5 transition-transform duration-200" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
@@ -268,7 +268,7 @@
         </div>
 
         {{-- Mobile Cards --}}
-        <div class="lg:hidden space-y-6">
+        <div class="md:hidden space-y-6">
             @forelse($securityLogs as $log)
             @php
                 $score = $log->anomaly_score;
@@ -308,15 +308,15 @@
                             <div class="grid grid-cols-3 gap-2">
                                 <form method="POST" action="{{ route('admin.security.markSafe', [$log->user, $log]) }}" class="w-full">
                                     @csrf
-                                    <button type="submit" class="w-full py-2 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-lg text-[9px] font-bold uppercase tracking-wider hover:bg-emerald-100 dark:hover:bg-emerald-900/40 border border-emerald-100 dark:border-emerald-800 transition text-center">Safe</button>
+                                    <button type="submit" class="w-full min-h-[44px] bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-lg text-[9px] font-bold uppercase tracking-wider hover:bg-emerald-100 dark:hover:bg-emerald-900/40 border border-emerald-100 dark:border-emerald-800 transition text-center cursor-pointer">Safe</button>
                                 </form>
                                 <form method="POST" action="{{ route('admin.security.markCompromised', [$log->user, $log]) }}" class="w-full">
                                     @csrf
-                                    <button type="submit" class="w-full py-2 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 rounded-lg text-[9px] font-bold uppercase tracking-wider hover:bg-amber-100 dark:hover:bg-amber-900/40 border border-amber-100 dark:border-amber-800 transition text-center">Reset</button>
+                                    <button type="submit" class="w-full min-h-[44px] bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 rounded-lg text-[9px] font-bold uppercase tracking-wider hover:bg-amber-100 dark:hover:bg-amber-900/40 border border-amber-100 dark:border-amber-800 transition text-center cursor-pointer">Reset</button>
                                 </form>
                                 <form method="POST" action="{{ route('admin.security.markSuspended', [$log->user, $log]) }}" class="w-full">
                                     @csrf
-                                    <button type="submit" class="w-full py-2 bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 rounded-lg text-[9px] font-bold uppercase tracking-wider hover:bg-rose-100 dark:hover:bg-rose-900/40 border border-rose-100 dark:border-rose-800 transition text-center">Suspend</button>
+                                    <button type="submit" class="w-full min-h-[44px] bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 rounded-lg text-[9px] font-bold uppercase tracking-wider hover:bg-rose-100 dark:hover:bg-rose-900/40 border border-rose-100 dark:border-rose-800 transition text-center cursor-pointer">Suspend</button>
                                 </form>
                             </div>
                         </div>

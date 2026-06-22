@@ -28,9 +28,9 @@ x-init="
 @close-sidebar.window="sidebarOpen = false"
 class="relative">
     {{-- Mobile Header --}}
-    <div class="lg:hidden bg-[#0B5694] dark:bg-gray-950 text-white p-4 flex justify-between items-center fixed top-0 left-0 right-0 z-[60] shadow-md transition-colors duration-300">
+    <div class="lg:hidden bg-[#0B5694] dark:bg-gray-950 text-white p-3 sm:p-4 flex justify-between items-center fixed top-0 left-0 right-0 z-[60] shadow-md transition-colors duration-300">
         {{-- Sidebar Toggle (Left) --}}
-        <button @click="sidebarOpen = !sidebarOpen; if(sidebarOpen) $dispatch('close-notifications')" class="p-2 rounded-lg hover:bg-white/10 dark:hover:bg-gray-800 transition">
+        <button @click="sidebarOpen = !sidebarOpen; if(sidebarOpen) $dispatch('close-notifications')" class="min-w-[44px] min-h-[44px] flex items-center justify-center p-2 rounded-lg hover:bg-white/10 dark:hover:bg-gray-800 transition cursor-pointer">
             <svg x-show="!sidebarOpen" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
             <svg x-show="sidebarOpen" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
@@ -51,7 +51,7 @@ class="relative">
             x-transition:enter="transition ease-out duration-300"
             x-transition:enter-start="opacity-0 -translate-x-4"
             x-transition:enter-end="opacity-100 translate-x-0"
-            class="hidden lg:flex fixed top-[2.5rem] left-6 z-[90] p-2 bg-transparent text-[#0B5694] dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all active:scale-95 group"
+            class="hidden lg:flex fixed top-[2.5rem] left-6 z-[90] p-2 bg-transparent text-[#0B5694] dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all active:scale-95 group cursor-pointer"
             title="Expand Sidebar">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform">
             <polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline>
@@ -77,7 +77,7 @@ class="relative">
                 'lg:translate-x-0': !desktopCollapsed,
                 'lg:-translate-x-full': desktopCollapsed
            }" 
-           class="w-64 bg-[#0B5694] dark:bg-gray-900 text-white flex flex-col fixed h-full z-[80] shadow-xl text-left transition-all duration-300 ease-in-out border-r border-transparent dark:border-gray-800">
+           class="w-72 lg:w-64 bg-[#0B5694] dark:bg-gray-900 text-white flex flex-col fixed h-full z-[80] shadow-xl text-left transition-all duration-300 ease-in-out border-r border-transparent dark:border-gray-800">
         
         <div class="flex-grow overflow-y-auto custom-scrollbar">
             {{-- Logo Section --}}
@@ -94,7 +94,7 @@ class="relative">
 
                 {{-- Collapse Button (Desktop) --}}
                 <button @click="desktopCollapsed = true" 
-                        class="hidden lg:flex p-1.5 rounded-md hover:bg-white/10 dark:hover:bg-gray-800 text-blue-200 dark:text-gray-400 hover:text-white dark:hover:text-white transition-colors group"
+                        class="hidden lg:flex p-1.5 rounded-md hover:bg-white/10 dark:hover:bg-gray-800 text-blue-200 dark:text-gray-400 hover:text-white dark:hover:text-white transition-colors group cursor-pointer"
                         title="Collapse Sidebar">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:-translate-x-1 transition-transform">
                         <polyline points="11 17 6 12 11 7"></polyline><polyline points="18 17 13 12 18 7"></polyline>
@@ -133,7 +133,7 @@ class="relative">
     {{-- Settings Section --}}
     @if($sidebarType === 'Admin' || $sidebarType === 'Head Supervisor' || $sidebarType === 'Supervisor' || $sidebarType === 'Intern' || $sidebarType === 'School Coordinator' || $sidebarType === 'User')
     <div class="px-4 mb-2">
-        <div class="flex items-center px-3 py-2 rounded-xl hover:bg-white/10 dark:hover:bg-gray-800 transition-colors cursor-pointer text-white font-medium"
+        <div class="flex items-center px-3 min-h-[44px] rounded-xl hover:bg-white/10 dark:hover:bg-gray-800 transition-colors cursor-pointer text-white font-medium"
              @click="$dispatch('open-modal', 'system-settings-modal')">
             <div class="flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -150,7 +150,7 @@ class="relative">
     <div class="p-4 border-t border-white/10 dark:border-gray-800 mt-auto">
         <form action="{{ route('logout') }}" method="POST">
             @csrf
-            <button type="submit" class="w-full flex items-center justify-center gap-2 py-3 border border-white/30 dark:border-gray-700 rounded-xl text-sm font-semibold text-white hover:bg-red-500/20 hover:border-red-500/40 hover:text-red-100 dark:hover:text-red-400 transition-all active:scale-[0.98]">
+            <button type="submit" class="w-full flex items-center justify-center gap-2 min-h-[44px] border border-white/30 dark:border-gray-700 rounded-xl text-sm font-semibold text-white hover:bg-red-500/20 hover:border-red-500/40 hover:text-red-100 dark:hover:text-red-400 transition-all active:scale-[0.98] cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/>
                 </svg>
@@ -162,7 +162,7 @@ class="relative">
 
 {{-- SYSTEM SETTINGS MODAL --}}
 <x-modal name="system-settings-modal" maxWidth="4xl">
-    <div class="flex flex-col md:flex-row text-gray-900 dark:text-gray-100 min-h-[500px]"
+    <div class="flex flex-col md:flex-row text-gray-900 dark:text-gray-100 min-h-[400px] md:min-h-[500px]"
          x-data="{
              activeTab: 'general',
              darkMode: localStorage.getItem('darkMode') === 'true' || 
@@ -421,7 +421,7 @@ class="relative">
         </div>
 
         <!-- RIGHT CONTENT DISPLAY -->
-        <div class="flex-1 bg-white dark:bg-gray-900 p-6 md:p-8 flex flex-col justify-between min-h-[500px]">
+        <div class="flex-1 bg-white dark:bg-gray-900 p-5 sm:p-6 md:p-8 flex flex-col justify-between min-h-[400px] md:min-h-[500px]">
             <div>
                 <!-- Right Header -->
                 <div class="flex justify-between items-start mb-6">
@@ -431,7 +431,7 @@ class="relative">
                         <p class="text-[11px] text-gray-400 dark:text-gray-550 font-bold uppercase tracking-wider mt-1"
                            x-text="activeTab === 'general' ? 'Visual preferences & scaling' : 'Account access verification methods'"></p>
                     </div>
-                    <button type="button" @click="$dispatch('close-modal', 'system-settings-modal')" class="p-1.5 text-gray-405 hover:text-gray-800 dark:hover:text-gray-200 transition-colors focus:outline-none">
+                    <button type="button" @click="$dispatch('close-modal', 'system-settings-modal')" class="p-1.5 text-gray-405 hover:text-gray-800 dark:hover:text-gray-200 transition-colors focus:outline-none cursor-pointer">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                     </button>
                 </div>
@@ -462,7 +462,7 @@ class="relative">
                             <h5 class="text-xs font-bold text-gray-850 dark:text-gray-200">Text Display Scale</h5>
                             <p class="text-[11px] text-gray-400 dark:text-gray-555 font-medium">Adjust the readable text sizing of all elements</p>
                         </div>
-                        <div class="flex items-center gap-6 mt-1">
+                        <div class="flex flex-wrap items-center gap-4 sm:gap-6 mt-1">
                             @foreach(['sm' => 'Small', 'md' => 'Medium (Default)', 'lg' => 'Large', 'xl' => 'X-Large'] as $sizeKey => $sizeLabel)
                                 <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-gray-600 dark:text-gray-400">
                                     <input type="radio" name="fontSize" :checked="fontSize === '{{ $sizeKey }}'" @change="fontSize = '{{ $sizeKey }}'" class="text-[#0B5694] dark:text-blue-500 focus:ring-[#0B5694] dark:bg-gray-850 dark:border-gray-700">

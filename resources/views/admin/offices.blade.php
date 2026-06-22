@@ -25,7 +25,7 @@
                             longitude: '{{ $offices->first()->longitude ?? '' }}', 
                             radius_meters: '{{ $offices->first()->radius_meters ?? 100 }}'
                         }; initEditMap();"
-                        class="w-full sm:w-auto bg-[#0B5694] dark:bg-blue-600 text-white px-6 py-3 rounded-xl text-[10px] font-bold uppercase tracking-wider shadow-lg hover:bg-[#084577] dark:hover:bg-blue-700 transition active:scale-95 flex items-center justify-center gap-2">
+                        class="w-full sm:w-auto bg-[#0B5694] dark:bg-blue-600 text-white px-6 min-h-[44px] rounded-xl text-[10px] font-bold uppercase tracking-wider shadow-lg hover:bg-[#084577] dark:hover:bg-blue-700 transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
                     Update Global Geofence
                 </button>
@@ -156,7 +156,7 @@
                         </div>
 
                         <div class="flex flex-col sm:flex-row gap-4 mt-12">
-                            <button type="submit" class="flex-1 bg-[#0B5694] dark:bg-blue-600 text-white py-4 rounded-2xl font-bold text-[11px] uppercase tracking-wider shadow-lg hover:bg-[#084577] dark:hover:bg-blue-700 transition active:scale-95">
+                            <button type="submit" class="flex-1 bg-[#0B5694] dark:bg-blue-600 text-white min-h-[44px] rounded-2xl font-bold text-[11px] uppercase tracking-wider shadow-lg hover:bg-[#084577] dark:hover:bg-blue-700 transition active:scale-95 cursor-pointer">
                                 <span x-text="selectedOfficeId ? 'Apply to Selected Office' : 'Apply to All Offices'"></span>
                             </button>
                             <button type="button" @click="geofenceOfficeOpen = false" class="sm:w-32 bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 py-4 rounded-2xl font-bold text-[11px] uppercase tracking-wider hover:bg-gray-100 dark:hover:bg-gray-700 transition">

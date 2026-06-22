@@ -126,7 +126,7 @@
                             Risk Score: {{ number_format($anomaly->anomaly_score, 2) }} • {{ $anomaly->timestamp->diffForHumans() }}
                         </p>
                     </div>
-                    <a href="{{ route('admin.security') }}" class="px-5 py-2.5 bg-rose-500 text-white rounded-xl text-[10px] font-bold uppercase tracking-wider hover:scale-105 active:scale-95 transition-all shadow-lg shadow-rose-500/20">Inspect</a>
+                    <a href="{{ route('admin.security') }}" class="px-5 min-h-[44px] inline-flex items-center bg-rose-500 text-white rounded-xl text-[10px] font-bold uppercase tracking-wider hover:scale-105 active:scale-95 transition-all shadow-lg shadow-rose-500/20 cursor-pointer">Inspect</a>
                 </div>
                 @empty
                     <x-empty-state 
