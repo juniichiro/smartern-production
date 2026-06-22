@@ -41,7 +41,7 @@ class RestoreBackup extends Command
             return 1;
         }
 
-        if (! Storage::exists($backup->file_path)) {
+        if (! Storage::disk('local')->exists($backup->file_path)) {
             $msg = "Backup file not found at: {$backup->file_path}";
             $this->error($msg);
             Log::error($msg);
@@ -49,7 +49,7 @@ class RestoreBackup extends Command
             return 1;
         }
 
-        $fullPath = Storage::path($backup->file_path);
+        $fullPath = Storage::disk('local')->path($backup->file_path);
 
         // Calculate and validate SHA-256 hash to prevent tampering
         $calculatedHash = hash_file('sha256', $fullPath);
@@ -205,7 +205,7 @@ class RestoreBackup extends Command
             // 3. Update the restored database to mark THIS backup as success
             // This is needed because the DB inside the ZIP was captured while it was still 'in_progress'
             try {
-                $fileSize = $this->formatBytes(Storage::size($backup->file_path));
+                $fileSize = $this->formatBytes(Storage::disk('local')->size($backup->file_path));
                 SystemBackup::where('backup_id', $backupId)->update([
                     'status' => 'success',
                     'file_size' => $fileSize,

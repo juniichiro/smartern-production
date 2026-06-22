@@ -49,8 +49,8 @@ class RunBackup extends Command
         }
 
         // Ensure the backups directory exists
-        if (! Storage::exists('backups')) {
-            Storage::makeDirectory('backups');
+        if (! Storage::disk('local')->exists('backups')) {
+            Storage::disk('local')->makeDirectory('backups');
         }
 
         // 1. Create Initial Record (so it's in the DB backup)
@@ -62,7 +62,7 @@ class RunBackup extends Command
         ]);
 
         $zip = new ZipArchive;
-        $fullPath = Storage::path($backupPath);
+        $fullPath = Storage::disk('local')->path($backupPath);
 
         if ($zip->open($fullPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
 
@@ -139,7 +139,7 @@ class RunBackup extends Command
             Log::info("Backup SHA-256 integrity hash: {$hash}");
 
             // Update Record to Success
-            $fileSize = $this->formatBytes(Storage::size($backupPath));
+            $fileSize = $this->formatBytes(Storage::disk('local')->size($backupPath));
             $backupRecord->update([
                 'file_size' => $fileSize,
                 'status' => 'success',
