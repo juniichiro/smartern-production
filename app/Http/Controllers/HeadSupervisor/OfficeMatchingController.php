@@ -401,7 +401,7 @@ class OfficeMatchingController extends Controller
 
     public function downloadTemplate()
     {
-        $headers = ['student_id', 'student_name', 'university', 'email', 'tech_skills', 'soft_skills'];
+        $headers = ['student_id', 'student_name', 'university', 'email', 'tech_skills', 'soft_skills', 'office_id'];
         $fileName = 'SmarTern_Dynamic_Template.csv';
 
         $callback = function () use ($headers) {
