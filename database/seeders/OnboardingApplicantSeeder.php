@@ -102,5 +102,8 @@ class OnboardingApplicantSeeder extends Seeder
 
         // Auto-run the matching engine logic for seeded applicants
         \Illuminate\Support\Facades\Artisan::call('matching:run');
+
+        // Confirm seeded match results automatically so they appear in the Admin Onboarding Approvals list
+        \App\Models\MatchResult::query()->update(['is_confirmed' => true]);
     }
 }
