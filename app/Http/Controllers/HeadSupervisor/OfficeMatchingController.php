@@ -152,7 +152,7 @@ class OfficeMatchingController extends Controller
             // Fill in any active assessment items missing from the CSV, matching the onboarding requirement
             foreach ($activeAssessments as $item) {
                 $compText = trim($item->competency_text);
-                if ($item->category === 'technical') {
+                if (str_contains(strtolower($item->category), 'technical')) {
                     if (! isset($techSkillsFormatted[$compText])) {
                         $techSkillsFormatted[$compText] = 3;
                     }
@@ -205,7 +205,7 @@ class OfficeMatchingController extends Controller
 
                 foreach ($activeAssessments as $item) {
                     $compText = trim($item->competency_text);
-                    if ($item->category === 'technical') {
+                    if (str_contains(strtolower($item->category), 'technical')) {
                         if (! isset($existingTech[$compText])) {
                             $existingTech[$compText] = 3;
                             $updated = true;
