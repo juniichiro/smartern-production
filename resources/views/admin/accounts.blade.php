@@ -37,7 +37,14 @@
         '{{ old('role_id') }}',
         {{ $isUpdate ? 'true' : 'false' }},
         {{ $initialData ? json_encode($initialData) : 'null' }}
-    ), { isDeactivated: false }, tabManager('directory', true))" class="flex flex-col flex-1">
+    ), { 
+        isDeactivated: false,
+        activeTab: (window.location.hash && ['directory', 'onboarding'].includes(window.location.hash.replace('#', ''))) ? window.location.hash.replace('#', '') : 'directory',
+        setTab(tab) {
+            this.activeTab = tab;
+            window.location.hash = tab;
+        }
+    })" class="flex flex-col flex-1">
         {{-- Header --}}
         <x-page-header 
             title="Account Management" 
