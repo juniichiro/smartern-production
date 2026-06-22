@@ -32,20 +32,20 @@
         @endphp
 
         <div x-show="loading" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="flex flex-col flex-1">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 mb-6 lg:mb-10">
                 <x-skeleton type="metric" />
                 <x-skeleton type="metric" />
                 <x-skeleton type="metric" />
             </div>
             <x-table-container title="Neural Audit Registry" subtitle="Hydrating telemetry streams...">
-                <x-skeleton type="list" :rows="$logSkeletonCount" />
+                <x-skeleton type="list" :rows="min($logSkeletonCount, 3)" />
             </x-table-container>
         </div>
 
         {{-- ACTUAL CONTENT VIEW --}}
         <div x-show="!loading" x-cloak x-transition:enter="transition ease-out duration-500 delay-200" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" class="flex flex-col flex-1">
             {{-- Summary Cards --}}
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 mb-6 lg:mb-10">
         <x-stat-card 
             title="Normal Activity" 
             :value="number_format($normalCount ?? 0)" 
@@ -328,7 +328,7 @@
             @endforelse
         </div>
 
-        <div class="mt-10 pt-10 border-t border-gray-100 dark:border-gray-800 flex flex-col sm:flex-row justify-between items-center gap-8">
+        <div class="mt-6 lg:mt-10 pt-6 lg:pt-10 border-t border-gray-100 dark:border-gray-800 flex flex-col sm:flex-row justify-between items-center gap-6 lg:gap-8">
             <div class="text-left w-full sm:w-auto">
                 <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider italic">Event Registry Analysis</p>
                 <div class="mt-4">

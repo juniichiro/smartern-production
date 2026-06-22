@@ -51,7 +51,7 @@
         
         <div x-show="loading" x-transition:leave="transition ease-in duration-300 pointer-events-none" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="flex flex-col flex-1">
             <x-table-container title="User Directory" subtitle="Hydrating authenticated records...">
-                <x-skeleton type="list" :rows="$accountSkeletonCount" />
+                <x-skeleton type="list" :rows="min($accountSkeletonCount, 3)" />
             </x-table-container>
         </div>
 

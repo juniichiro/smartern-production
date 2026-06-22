@@ -33,8 +33,8 @@
         </x-page-header>
 
         {{-- SKELETON LOADING VIEW --}}
-        <div x-show="loading" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="flex-1 bg-white dark:bg-gray-900 rounded-[30px] shadow-sm border border-gray-100 dark:border-gray-800 p-2 overflow-hidden flex flex-col">
-            <x-skeleton type="block" class="w-full h-full flex-1 rounded-[25px]" />
+        <div x-show="loading" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="flex-1 bg-white dark:bg-gray-900 rounded-[20px] sm:rounded-[30px] shadow-sm border border-gray-100 dark:border-gray-800 p-1.5 sm:p-2 overflow-hidden flex flex-col">
+            <x-skeleton type="block" class="w-full h-full flex-1 rounded-[20px] sm:rounded-[25px]" />
         </div>
 
         {{-- Main Map Container (ACTUAL CONTENT) --}}
@@ -79,7 +79,7 @@
                     </div>
                 </header>
                 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10">
                     {{-- Map Container --}}
                     <div class="h-[300px] lg:h-auto min-h-[350px] rounded-[25px] overflow-hidden border border-gray-100 dark:border-gray-800 z-0 relative" id="edit-map">
                         <div class="absolute top-4 left-4 right-4 z-[40]">
@@ -135,7 +135,7 @@
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-2 gap-6">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                                 <div>
                                     <label class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3 block">Latitude</label>
                                     <input type="number" step="0.00000001" name="latitude" x-model="geofenceData.latitude" @input="updateFromInputs()" required 

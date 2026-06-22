@@ -13,26 +13,26 @@
             $anomalyCount = $highRiskAnomalies->isEmpty() ? 1 : min($highRiskAnomalies->count(), 5);
         @endphp
 
-        <div x-show="loading" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="flex flex-col flex-1">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-10">
-                <x-card-container class="lg:col-span-8 h-64" padding="p-10">
-                    <x-skeleton type="text" class="w-1/4 mb-10" />
-                    <div class="grid grid-cols-3 gap-8">
+            <div x-show="loading" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="flex flex-col flex-1">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 mb-6 lg:mb-10">
+                <x-card-container class="lg:col-span-8 h-48 lg:h-64" padding="p-6 lg:p-10">
+                    <x-skeleton type="text" class="w-1/3 lg:w-1/4 mb-6 lg:mb-10" />
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-8">
                         <x-skeleton type="text" rows="2" />
                         <x-skeleton type="text" rows="2" />
                         <x-skeleton type="text" rows="2" />
                     </div>
                 </x-card-container>
-                <x-skeleton type="metric" class="lg:col-span-4 h-64" />
+                <x-skeleton type="metric" class="lg:col-span-4 h-48 lg:h-64" />
             </div>
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-10">
-                <x-card-container class="lg:col-span-5 h-[400px]" padding="p-10">
-                    <x-skeleton type="text" class="w-1/3 mb-10" />
-                    <x-skeleton type="list" :rows="$newUserCount" />
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 mb-6 lg:mb-10">
+                <x-card-container class="lg:col-span-5 h-72 lg:h-[400px]" padding="p-6 lg:p-10">
+                    <x-skeleton type="text" class="w-1/3 lg:w-1/3 mb-6 lg:mb-10" />
+                    <x-skeleton type="list" :rows="min($newUserCount, 3)" />
                 </x-card-container>
-                <x-card-container class="lg:col-span-7 h-[400px]" padding="p-10">
-                    <x-skeleton type="text" class="w-1/3 mb-10" />
-                    <x-skeleton type="list" :rows="$anomalyCount" />
+                <x-card-container class="lg:col-span-7 h-72 lg:h-[400px]" padding="p-6 lg:p-10">
+                    <x-skeleton type="text" class="w-1/3 lg:w-1/3 mb-6 lg:mb-10" />
+                    <x-skeleton type="list" :rows="min($anomalyCount, 3)" />
                 </x-card-container>
             </div>
         </div>
@@ -40,7 +40,7 @@
         {{-- ACTUAL CONTENT VIEW --}}
         <div x-show="!loading" x-cloak x-transition:enter="transition ease-out duration-500 delay-200" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" class="flex flex-col flex-1">
             {{-- TOP ROW: SECURITY & HEALTH --}}
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-10">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 mb-6 lg:mb-10">
         {{-- SYSTEM HEALTH LIST --}}
         <x-card-container class="lg:col-span-8 relative overflow-hidden">
             <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50/20 dark:bg-emerald-900/5 rounded-bl-full -z-0"></div>
@@ -51,7 +51,7 @@
                     <span class="px-4 py-1.5 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold uppercase rounded-full border border-emerald-100 dark:border-emerald-800 tracking-wider animate-pulse">Operational Status</span>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 lg:gap-8">
                     @foreach($services as $service)
                     @php
                         $dotColor = match($service['color']) {
@@ -88,7 +88,7 @@
     </div>
 
     {{-- MIDDLE ROW: QUICK ACTIONS & USERS --}}
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-10">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 mb-6 lg:mb-10">
         {{-- RECENT USERS --}}
         <x-card-container 
             class="lg:col-span-5"
@@ -139,7 +139,7 @@
     </div>
 
     {{-- BOTTOM ROW: GLOBAL STATS --}}
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <x-stat-card 
             title="Total Users" 
             :value="number_format($totalUsers)" 
