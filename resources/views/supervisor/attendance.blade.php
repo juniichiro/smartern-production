@@ -308,8 +308,9 @@
                 
                 {{-- Pagination Links --}}
                 @if($attendances->hasPages())
-                <div class="px-6 py-4 bg-gray-50/50 dark:bg-gray-800/20 border-t border-gray-100 dark:border-gray-800">
-                    {{ $attendances->appends(request()->query())->links() }}
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-6 px-6 py-4 bg-gray-50/50 dark:bg-gray-800/20 border-t border-gray-100 dark:border-gray-800">
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Showing {{ $attendances->firstItem() }} to {{ $attendances->lastItem() }} of {{ $attendances->total() }} logs</p>
+                    {{ $attendances->appends(request()->query())->links('vendor.pagination.tailwind-custom') }}
                 </div>
                 @endif
             </div>
