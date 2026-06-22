@@ -303,23 +303,20 @@ class AccountController extends Controller
     public function destroy(User $user)
     {
         if ($user->id === auth()->id()) {
-            return redirect()->back()->withErrors(['error' => 'You cannot delete yourself.']);
-        }
-
-        $details = $user->internDetails ?? $user->supervisorDetails ?? $user->schoolCoordinatorDetails;
-
-        if ($details && $details->profile_picture) {
-            $fullPath = public_path($details->profile_picture);
-            if (File::exists($fullPath)) {
-                File::delete($fullPath);
-            }
+            return redirect()->back()->withErrors(['error' => 'You cannot deactivate yourself.']);
         }
 
         $email = $user->email;
-        $user->delete();
-        $this->auditService->log('Account Deleted', "User: {$email}");
 
-        return redirect()->route('admin.account')->with('success', 'Account withdrawn.');
+        if ($user->locked_until && now()->lessThan($user->locked_until)) {
+            $user->update(['locked_until' => null]);
+            $this->auditService->log('Account Reactivated', "User: {$email}");
+            return redirect()->route('admin.account')->with('success', 'Account reactivated.');
+        } else {
+            $user->update(['locked_until' => '9999-12-31 23:59:59']);
+            $this->auditService->log('Account Deactivated', "User: {$email}");
+            return redirect()->route('admin.account')->with('success', 'Account deactivated.');
+        }
     }
 
     public function approveOnboardingAccount(Request $request, $id)

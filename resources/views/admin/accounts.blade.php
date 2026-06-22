@@ -31,13 +31,13 @@
         }
     @endphp
 
-    <div x-data="accountsManager(
+    <div x-data="Object.assign(accountsManager(
         {{ $hasHrHead ? 'true' : 'false' }}, 
         {{ $errors->any() ? 'true' : 'false' }}, 
         '{{ old('role_id') }}',
         {{ $isUpdate ? 'true' : 'false' }},
         {{ $initialData ? json_encode($initialData) : 'null' }}
-    )" class="flex flex-col flex-1">
+    ), { isDeactivated: false })" class="flex flex-col flex-1">
         {{-- Header --}}
         <x-page-header 
             title="Account Management" 
@@ -120,10 +120,19 @@
                             </td>
                             <td class="px-8 py-6 text-gray-500 dark:text-gray-400 font-medium text-[13px]">{{ $user->email }}</td>
                             <td class="px-8 py-6 text-left">
-                                <span class="px-4 py-1.5 rounded-full font-bold uppercase tracking-wider text-[10px] {{ $user->role_id == 5 ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400' }}">
-
-                                    {{ $isHrHead ? 'head supervisor' : str_replace('_', ' ', $user->role->name) }}
-                                </span>
+                                @php
+                                    $userDeactivated = $user->locked_until && now()->lessThan($user->locked_until);
+                                @endphp
+                                <div class="flex flex-wrap gap-2 items-center">
+                                    <span class="px-4 py-1.5 rounded-full font-bold uppercase tracking-wider text-[10px] {{ $user->role_id == 5 ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400' }}">
+                                        {{ $isHrHead ? 'head supervisor' : str_replace('_', ' ', $user->role->name) }}
+                                    </span>
+                                    @if($userDeactivated)
+                                        <span class="px-4 py-1.5 rounded-full font-bold uppercase tracking-wider text-[10px] bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-800">
+                                            Deactivated
+                                        </span>
+                                    @endif
+                                </div>
                             </td>
                             <td class="px-8 py-6 text-center text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider text-[11px]">
                                 {{ $user->internDetails->office->name ?? $user->supervisorDetails->office->name ?? $user->schoolCoordinatorDetails->school ?? 'N/A' }}
@@ -149,9 +158,15 @@
                                     }; showEditModal = true" class="text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition transform hover:scale-110">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
                                     </button>
-                                    <button @click="confirmDelete('{{ $user->getRouteKey() }}')" class="text-red-400 dark:text-red-500 hover:text-red-600 dark:hover:text-red-400 transition transform hover:scale-110">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-                                    </button>
+                                    @if($userDeactivated)
+                                        <button @click="confirmDelete('{{ $user->getRouteKey() }}'); isDeactivated = true" class="text-emerald-400 dark:text-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition transform hover:scale-110" title="Reactivate Account">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+                                        </button>
+                                    @else
+                                        <button @click="confirmDelete('{{ $user->getRouteKey() }}'); isDeactivated = false" class="text-red-400 dark:text-red-500 hover:text-red-600 dark:hover:text-red-400 transition transform hover:scale-110" title="Deactivate Account">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                        </button>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
@@ -187,10 +202,18 @@
                         </div>
                     </div>
                     
+                    @php
+                        $userDeactivated = $user->locked_until && now()->lessThan($user->locked_until);
+                    @endphp
                     <div class="flex flex-wrap gap-2 mb-4">
                         <span class="px-3 py-1 rounded-full font-black uppercase tracking-widest text-[9px] {{ $user->role_id == 5 ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400' : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400' }}">
                             {{ $isHrHead ? 'head supervisor' : str_replace('_', ' ', $user->role->name) }}
                         </span>
+                        @if($userDeactivated)
+                            <span class="px-3 py-1 rounded-full font-black bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 text-[9px] border border-rose-100 dark:border-rose-800 uppercase tracking-wider">
+                                Deactivated
+                            </span>
+                        @endif
                         <span class="px-3 py-1 rounded-full font-black bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 text-[9px] border border-gray-100 dark:border-gray-800 uppercase tracking-wider">
                             {{ $user->internDetails->office->name ?? $user->supervisorDetails->office->name ?? $user->schoolCoordinatorDetails->school ?? 'N/A' }}
                         </span>
@@ -217,10 +240,17 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
                             Edit
                         </button>
-                        <button @click="confirmDelete('{{ $user->getRouteKey() }}')" class="flex-1 bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/30 text-rose-600 dark:text-rose-500 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-2 shadow-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-                            Delete
-                        </button>
+                        @if($userDeactivated)
+                            <button @click="confirmDelete('{{ $user->getRouteKey() }}'); isDeactivated = true" class="flex-1 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/30 text-emerald-600 dark:text-emerald-500 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-2 shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+                                Reactivate
+                            </button>
+                        @else
+                            <button @click="confirmDelete('{{ $user->getRouteKey() }}'); isDeactivated = false" class="flex-1 bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/30 text-rose-600 dark:text-rose-500 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-2 shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                Deactivate
+                            </button>
+                        @endif
                     </div>
                 </div>
                 @empty
@@ -723,20 +753,25 @@
             </form>
         </div>
 
-        {{-- Delete Modal --}}
+        {{-- Delete/Deactivate Modal --}}
         <div x-show="showDeleteModal" class="relative bg-white dark:bg-gray-900 rounded-[30px] sm:rounded-[35px] max-w-xl w-full p-6 sm:p-8 lg:p-12 shadow-2xl border border-gray-100 dark:border-gray-800">
             <header class="mb-8">
-                <h3 class="text-2xl lg:text-3xl font-bold text-gray-800 dark:text-gray-100 tracking-tight uppercase">Confirm Deletion</h3>
-                <p class="text-gray-400 dark:text-gray-500 text-sm mt-2 font-medium italic">This action will permanently remove the account and all associated data.</p>
+                <h3 class="text-2xl lg:text-3xl font-bold text-gray-800 dark:text-gray-100 tracking-tight uppercase" x-text="isDeactivated ? 'Confirm Reactivation' : 'Confirm Deactivation'">Confirm Action</h3>
+                <p class="text-gray-400 dark:text-gray-500 text-sm mt-2 font-medium italic" x-text="isDeactivated ? 'This action will restore system access for the account.' : 'This action will temporarily lock the account and prevent login access.'"></p>
             </header>
 
-            <div class="flex items-center gap-6 p-6 bg-rose-50 dark:bg-rose-500/10 rounded-[25px] border border-rose-100 dark:border-rose-500/30 mb-8 text-left">
-                <div class="w-14 h-14 bg-white dark:bg-gray-900 rounded-2xl flex items-center justify-center text-rose-500 shadow-sm border border-rose-100 dark:border-rose-500/30">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+            <div class="flex items-center gap-6 p-6 rounded-[25px] border mb-8 text-left" :class="isDeactivated ? 'bg-emerald-50 dark:bg-emerald-500/10 border-emerald-100 dark:border-emerald-500/30' : 'bg-rose-50 dark:bg-rose-500/10 border-rose-100 dark:border-rose-500/30'">
+                <div class="w-14 h-14 bg-white dark:bg-gray-900 rounded-2xl flex items-center justify-center shadow-sm border" :class="isDeactivated ? 'text-emerald-500 border-emerald-100 dark:border-emerald-500/30' : 'text-rose-500 border-rose-100 dark:border-rose-500/30'">
+                    <template x-if="isDeactivated">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+                    </template>
+                    <template x-if="!isDeactivated">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    </template>
                 </div>
                 <div>
-                    <h4 class="text-rose-600 dark:text-rose-400 font-bold uppercase tracking-tight">Irreversible Action</h4>
-                    <p class="text-xs text-rose-500/70 dark:text-rose-500/80 font-medium italic">Are you sure you want to proceed? You cannot undo this.</p>
+                    <h4 class="font-bold uppercase tracking-tight" :class="isDeactivated ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'" x-text="isDeactivated ? 'Reactivation Process' : 'Access Restricted'">Action Process</h4>
+                    <p class="text-xs font-medium italic" :class="isDeactivated ? 'text-emerald-500/70 dark:text-emerald-500/80' : 'text-rose-500/70 dark:text-rose-500/80'" x-text="isDeactivated ? 'Are you sure you want to reactivate this user account?' : 'Are you sure you want to deactivate this user account?'"></p>
                 </div>
             </div>
             
@@ -744,8 +779,8 @@
                 <form id="delete-confirm-form" :action="'/admin/accounts/' + userToDelete" method="POST" class="flex-1">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" @click.prevent="triggerDelete()" class="w-full bg-rose-500 text-white py-4 rounded-2xl font-bold text-sm uppercase tracking-wider shadow-lg shadow-rose-500/20 hover:bg-rose-600 transition active:scale-[0.98]">
-                        Yes, Delete User
+                    <button type="submit" @click.prevent="triggerDelete()" class="w-full text-white py-4 rounded-2xl font-bold text-sm uppercase tracking-wider shadow-lg transition active:scale-[0.98]" :class="isDeactivated ? 'bg-emerald-500 shadow-emerald-500/20 hover:bg-emerald-600' : 'bg-rose-500 shadow-rose-500/20 hover:bg-rose-600'" x-text="isDeactivated ? 'Yes, Reactivate User' : 'Yes, Deactivate User'">
+                        Confirm
                     </button>
                 </form>
                 <button @click="showDeleteModal = false" class="sm:w-32 bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 py-4 rounded-2xl font-bold text-sm uppercase tracking-widest hover:bg-gray-100 dark:hover:bg-gray-700 transition">
