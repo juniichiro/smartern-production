@@ -37,12 +37,31 @@
         '{{ old('role_id') }}',
         {{ $isUpdate ? 'true' : 'false' }},
         {{ $initialData ? json_encode($initialData) : 'null' }}
-    ), { isDeactivated: false })" class="flex flex-col flex-1">
+    ), { isDeactivated: false }, tabManager('directory', true))" class="flex flex-col flex-1">
         {{-- Header --}}
         <x-page-header 
             title="Account Management" 
             subtitle="System Access Control & Batch Processing" 
-        />
+        >
+            <x-slot:actions>
+                {{-- TAB NAVIGATION --}}
+                <nav class="flex items-center gap-1 p-1 bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl w-fit border border-gray-100 dark:border-gray-800 shrink-0">
+                    <button @click="setTab('directory')" 
+                            :class="activeTab === 'directory' ? 'bg-white dark:bg-gray-700 text-[#0B5694] dark:text-blue-400 shadow-sm border-gray-100 dark:border-gray-600' : 'text-gray-400 dark:text-slate-500 border-transparent hover:text-gray-600 dark:hover:text-gray-300'" 
+                            class="px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all whitespace-nowrap active:scale-95">
+                        User Directory
+                    </button>
+                    <button @click="setTab('onboarding')" 
+                            :class="activeTab === 'onboarding' ? 'bg-white dark:bg-gray-700 text-[#0B5694] dark:text-blue-400 shadow-sm border-gray-100 dark:border-gray-600' : 'text-gray-400 dark:text-slate-500 border-transparent hover:text-gray-600 dark:hover:text-gray-300'" 
+                            class="px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all whitespace-nowrap active:scale-95">
+                        Onboarding Approvals
+                        @if(isset($pendingOnboarding) && $pendingOnboarding->isNotEmpty())
+                            <span class="ml-2 px-2 py-0.5 rounded-full text-[9px] bg-red-500 text-white font-extrabold">{{ $pendingOnboarding->count() }}</span>
+                        @endif
+                    </button>
+                </nav>
+            </x-slot:actions>
+        </x-page-header>
 
         {{-- SKELETON LOADING VIEW --}}
         @php
@@ -50,60 +69,62 @@
         @endphp
         
         <div x-show="loading" x-transition:leave="transition ease-in duration-300 pointer-events-none" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="flex flex-col flex-1">
-            <x-table-container title="User Directory" subtitle="Hydrating authenticated records...">
-                <x-slot name="headerAction">
-                    <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
-                        <div class="h-[44px] sm:w-36 bg-gray-200 dark:bg-gray-700 rounded-xl animate-shimmer"></div>
-                        <div class="h-[44px] sm:w-32 bg-gray-200 dark:bg-gray-700 rounded-xl animate-shimmer"></div>
+            <div x-show="activeTab === 'directory'">
+                <x-table-container title="User Directory" subtitle="Hydrating authenticated records...">
+                    <x-slot name="headerAction">
+                        <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
+                            <div class="h-[44px] sm:w-36 bg-gray-200 dark:bg-gray-700 rounded-xl animate-shimmer"></div>
+                            <div class="h-[44px] sm:w-32 bg-gray-200 dark:bg-gray-700 rounded-xl animate-shimmer"></div>
+                        </div>
+                    </x-slot>
+
+                    <div class="mb-8">
+                        <div class="h-[52px] sm:h-[56px] bg-gray-200 dark:bg-gray-700 rounded-2xl animate-shimmer max-w-md"></div>
                     </div>
-                </x-slot>
 
-                <div class="mb-8">
-                    <div class="h-[52px] sm:h-[56px] bg-gray-200 dark:bg-gray-700 rounded-2xl animate-shimmer max-w-md"></div>
-                </div>
+                    <div class="hidden md:block">
+                        <div class="h-12 bg-gray-200/50 dark:bg-gray-700/30 rounded-t-2xl animate-shimmer mb-1"></div>
+                        <x-skeleton type="list" :rows="min($accountSkeletonCount, 5)" />
+                    </div>
 
-                <div class="hidden md:block">
-                    <div class="h-12 bg-gray-200/50 dark:bg-gray-700/30 rounded-t-2xl animate-shimmer mb-1"></div>
-                    <x-skeleton type="list" :rows="min($accountSkeletonCount, 5)" />
-                </div>
-
-                <div class="md:hidden space-y-4">
-                    @for($i = 0; $i < min($accountSkeletonCount, 4); $i++)
-                        <div class="bg-gray-200/30 dark:bg-gray-700/20 p-6 rounded-2xl animate-shimmer border border-gray-100/50 dark:border-gray-700/30">
-                            <div class="flex items-center gap-4 mb-4">
-                                <div class="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
-                                <div class="flex-1 space-y-2">
-                                    <div class="h-4 w-2/3 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                                    <div class="h-3 w-1/2 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                    <div class="md:hidden space-y-4">
+                        @for($i = 0; $i < min($accountSkeletonCount, 4); $i++)
+                            <div class="bg-gray-200/30 dark:bg-gray-700/20 p-6 rounded-2xl animate-shimmer border border-gray-100/50 dark:border-gray-700/30">
+                                <div class="flex items-center gap-4 mb-4">
+                                    <div class="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                                    <div class="flex-1 space-y-2">
+                                        <div class="h-4 w-2/3 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                                        <div class="h-3 w-1/2 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 mb-4">
+                                    <div class="h-6 w-20 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                                    <div class="h-6 w-24 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                                </div>
+                                <div class="flex gap-4 pt-4 border-t border-gray-100 dark:border-gray-700/50">
+                                    <div class="flex-1 h-[44px] bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
+                                    <div class="flex-1 h-[44px] bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
                                 </div>
                             </div>
-                            <div class="flex gap-2 mb-4">
-                                <div class="h-6 w-20 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
-                                <div class="h-6 w-24 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
-                            </div>
-                            <div class="flex gap-4 pt-4 border-t border-gray-100 dark:border-gray-700/50">
-                                <div class="flex-1 h-[44px] bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
-                                <div class="flex-1 h-[44px] bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
-                            </div>
-                        </div>
-                    @endfor
-                </div>
-
-                <div class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-6">
-                    <div class="h-4 w-44 bg-gray-200 dark:bg-gray-700 rounded animate-shimmer"></div>
-                    <div class="flex items-center gap-2">
-                        <div class="w-[44px] h-[44px] bg-gray-200 dark:bg-gray-700 rounded-xl animate-shimmer"></div>
-                        <div class="flex items-center gap-1 bg-gray-200/50 dark:bg-gray-700/30 p-1.5 rounded-2xl">
-                            <div class="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
-                            <div class="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
-                            <div class="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
-                        </div>
-                        <div class="w-[44px] h-[44px] bg-gray-200 dark:bg-gray-700 rounded-xl animate-shimmer"></div>
+                        @endfor
                     </div>
-                </div>
-            </x-table-container>
 
-            <div class="mt-12">
+                    <div class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+                        <div class="h-4 w-44 bg-gray-200 dark:bg-gray-700 rounded animate-shimmer"></div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-[44px] h-[44px] bg-gray-200 dark:bg-gray-700 rounded-xl animate-shimmer"></div>
+                            <div class="flex items-center gap-1 bg-gray-200/50 dark:bg-gray-700/30 p-1.5 rounded-2xl">
+                                <div class="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
+                                <div class="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
+                                <div class="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
+                            </div>
+                            <div class="w-[44px] h-[44px] bg-gray-200 dark:bg-gray-700 rounded-xl animate-shimmer"></div>
+                        </div>
+                    </div>
+                </x-table-container>
+            </div>
+
+            <div x-show="activeTab === 'onboarding'" x-cloak>
                 <div class="bg-white dark:bg-gray-900 rounded-[25px] sm:rounded-[30px] border border-gray-100 dark:border-gray-800 overflow-hidden">
                     <div class="p-6 sm:p-8 lg:p-10 border-b border-gray-50 dark:border-gray-800">
                         <div class="h-5 w-52 bg-gray-200 dark:bg-gray-700 rounded animate-shimmer"></div>
@@ -142,10 +163,11 @@
 
         {{-- ACTUAL CONTENT VIEW --}}
         <div x-show="!loading" x-cloak x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="flex flex-col flex-1 relative z-20">
-            <x-table-container 
-                title="User Directory" 
-                subtitle="Searching across all pages..."
-            >
+            <div x-show="activeTab === 'directory'" class="flex flex-col flex-1 animate-in fade-in duration-300">
+                <x-table-container 
+                    title="User Directory" 
+                    subtitle="Searching across all pages..."
+                >
             <x-slot name="headerAction">
                 <button @click="showImportModal = true" class="w-full sm:w-auto bg-emerald-500 text-white px-5 sm:px-6 min-h-[44px] rounded-xl text-sm font-bold flex items-center justify-center gap-2 hover:bg-emerald-600 transition shadow-lg shadow-emerald-500/20 active:scale-95 cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -370,14 +392,15 @@
                 </div>
             </div>
         </x-table-container>
+        </div>
 
         {{-- Pending Onboarding Accounts Section --}}
-        @if(isset($pendingOnboarding) && $pendingOnboarding->isNotEmpty())
-            <div class="mt-12 relative z-30">
-                <x-table-container 
-                    title="Pending Onboarding Approvals" 
-                    subtitle="Applications matching completed. Ready for account creation."
-                >
+        <div x-show="activeTab === 'onboarding'" x-cloak class="relative z-30 flex flex-col flex-1 animate-in fade-in duration-300">
+            <x-table-container 
+                title="Pending Onboarding Approvals" 
+                subtitle="Applications matching completed. Ready for account creation."
+            >
+                @if(isset($pendingOnboarding) && $pendingOnboarding->isNotEmpty())
                     {{-- Desktop Table --}}
                     <div class="hidden md:block overflow-x-auto border border-gray-100 dark:border-gray-800 rounded-2xl custom-scrollbar font-medium">
                         <table class="w-full text-left min-w-[800px]">
@@ -419,13 +442,26 @@
                                                     Approve
                                                 </button>
                                             </form>
-                                            <form action="{{ route('admin.accounts.onboarding-discard', $applicant->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to discard this application request?')">
-                                                @csrf
-                                                <button type="submit" class="bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/30 text-rose-600 dark:text-rose-500 px-4 py-2 rounded-xl text-xs font-bold transition active:scale-95 flex items-center gap-1 shadow-sm cursor-pointer">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                                                    Discard
-                                                </button>
-                                            </form>
+                                            <button @click="editData = { 
+                                                id: '{{ $applicant->id }}', 
+                                                email: '{{ $applicant->email }}',
+                                                role: 'intern',
+                                                first_name: '{{ $applicant->first_name }}',
+                                                middle_name: '{{ $applicant->middle_name ?? '' }}',
+                                                last_name: '{{ $applicant->last_name }}',
+                                                office_id: '{{ $applicant->office_id }}',
+                                                school: '{{ $applicant->university }}',
+                                                gender: '{{ strtolower($applicant->gender ?? 'male') }}',
+                                                gender_other_specify: '{{ $applicant->gender_other_specify ?? '' }}',
+                                                phone_number: '{{ $applicant->phone_number ?? '09000000000' }}',
+                                                emergency_contact: '{{ $applicant->emergency_contact ?? '' }}',
+                                                initials: '{{ strtoupper(substr($applicant->first_name, 0, 1) . substr($applicant->last_name, 0, 1)) }}',
+                                                isOnboarding: true,
+                                                profile_picture: '{{ $applicant->profile_picture ? asset($applicant->profile_picture) : '' }}'
+                                            }; showEditModal = true" class="bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/30 text-blue-600 dark:text-blue-400 px-4 py-2 rounded-xl text-xs font-bold transition active:scale-95 flex items-center gap-1 shadow-sm cursor-pointer">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                                                Edit
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -467,20 +503,35 @@
                                         Approve
                                     </button>
                                 </form>
-                                <form action="{{ route('admin.accounts.onboarding-discard', $applicant->id) }}" method="POST" class="flex-1" onsubmit="return confirm('Are you sure you want to discard this application request?')">
-                                    @csrf
-                                    <button type="submit" class="w-full bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/30 text-rose-600 dark:text-rose-500 min-h-[44px] rounded-xl text-xs font-bold uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-2 shadow-sm cursor-pointer">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                                        Discard
-                                    </button>
-                                </form>
+                                <button @click="editData = { 
+                                    id: '{{ $applicant->id }}', 
+                                    email: '{{ $applicant->email }}',
+                                    role: 'intern',
+                                    first_name: '{{ $applicant->first_name }}',
+                                    middle_name: '{{ $applicant->middle_name ?? '' }}',
+                                    last_name: '{{ $applicant->last_name }}',
+                                    office_id: '{{ $applicant->office_id }}',
+                                    school: '{{ $applicant->university }}',
+                                    gender: '{{ strtolower($applicant->gender ?? 'male') }}',
+                                    gender_other_specify: '{{ $applicant->gender_other_specify ?? '' }}',
+                                    phone_number: '{{ $applicant->phone_number ?? '09000000000' }}',
+                                    emergency_contact: '{{ $applicant->emergency_contact ?? '' }}',
+                                    initials: '{{ strtoupper(substr($applicant->first_name, 0, 1) . substr($applicant->last_name, 0, 1)) }}',
+                                    isOnboarding: true,
+                                    profile_picture: '{{ $applicant->profile_picture ? asset($applicant->profile_picture) : '' }}'
+                                }; showEditModal = true" class="flex-1 bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/30 text-blue-600 dark:text-blue-400 min-h-[44px] rounded-xl text-xs font-bold uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-2 shadow-sm cursor-pointer">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                                    Edit
+                                </button>
                             </div>
                         </div>
                         @endforeach
                     </div>
-                </x-table-container>
-            </div>
-        @endif
+                @else
+                    <x-empty-state title="No pending onboarding approvals." compact="true" />
+                @endif
+            </x-table-container>
+        </div>
     </div>
 
     {{-- MODALS --}}
@@ -678,8 +729,8 @@
         {{-- Edit User Modal --}}
         <div x-show="showEditModal" class="relative bg-white dark:bg-gray-900 rounded-[30px] sm:rounded-[35px] max-w-4xl w-full p-5 sm:p-8 lg:p-12 shadow-2xl overflow-y-auto max-h-[90vh] border border-gray-100 dark:border-gray-800 custom-scrollbar">
             <header class="mb-6 sm:mb-8 lg:mb-10">
-                <h3 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800 dark:text-gray-100 tracking-tight uppercase">Modify Account</h3>
-                <p class="text-gray-400 dark:text-gray-500 text-xs sm:text-sm mt-2 font-medium italic" x-text="'Updating details for ' + editData.email"></p>
+                <h3 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800 dark:text-gray-100 tracking-tight uppercase" x-text="editData.isOnboarding ? 'Modify Onboarding Request' : 'Modify Account'">Modify Account</h3>
+                <p class="text-gray-400 dark:text-gray-500 text-xs sm:text-sm mt-2 font-medium italic" x-text="editData.isOnboarding ? 'Updating details for onboarding request: ' + editData.email : 'Updating details for ' + editData.email"></p>
             </header>
 
             @if ($errors->any())
@@ -699,7 +750,7 @@
                 </div>
             @endif
 
-            <form :action="'/admin/accounts/' + editData.id" method="POST" enctype="multipart/form-data" class="space-y-6 lg:space-y-8">
+            <form :action="editData.isOnboarding ? '/admin/accounts/onboarding-update/' + editData.id : '/admin/accounts/' + editData.id" method="POST" enctype="multipart/form-data" class="space-y-6 lg:space-y-8">
                 @csrf
                 @method('PUT')
                 <input type="hidden" name="id" x-model="editData.id">
@@ -829,7 +880,7 @@
 
                 <div class="flex flex-col sm:flex-row gap-4 pt-6">
                     <button type="submit" class="flex-1 bg-[#0B5694] text-white py-4 rounded-2xl font-bold text-sm uppercase tracking-wider shadow-lg shadow-blue-500/20 hover:bg-[#084577] transition active:scale-[0.98]">
-                        Save Account Changes
+                        <span x-text="editData.isOnboarding ? 'Save Onboarding Changes' : 'Save Account Changes'"></span>
                     </button>
                     <button type="button" @click="showEditModal = false" class="sm:w-32 bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 py-4 rounded-2xl font-bold text-sm uppercase tracking-widest hover:bg-gray-100 dark:hover:bg-gray-700 transition">
                         Cancel

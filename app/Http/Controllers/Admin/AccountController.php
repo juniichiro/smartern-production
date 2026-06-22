@@ -385,18 +385,57 @@ class AccountController extends Controller
         }
     }
 
-    public function discardOnboardingAccount(Request $request, $id)
+    public function updateOnboardingAccount(Request $request, $id)
     {
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'middle_name' => 'nullable|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'school' => 'required|string|max:255',
+            'office_id' => 'required|exists:offices,id',
+            'phone_number' => 'nullable|string|max:255',
+            'gender' => 'nullable|string|in:male,female,other,Male,Female,Other',
+        ]);
+
         $applicant = OnboardingApplicant::findOrFail($id);
-        $email = $applicant->email;
-        
-        DB::transaction(function () use ($applicant) {
-            MatchResult::where('applicant_name', $applicant->full_name)->delete();
-            $applicant->delete();
+        $oldFullName = $applicant->full_name;
+
+        DB::transaction(function () use ($applicant, $request, $oldFullName) {
+            $newFullName = trim($request->first_name . ' ' . ($request->middle_name ? substr($request->middle_name, 0, 1) . '. ' : '') . $request->last_name);
+            
+            $updateData = [
+                'first_name' => $request->first_name,
+                'middle_name' => $request->middle_name,
+                'last_name' => $request->last_name,
+                'full_name' => $newFullName,
+                'email' => $request->email,
+                'university' => $request->school,
+            ];
+
+            if ($request->has('phone_number')) {
+                $updateData['phone_number'] = $request->phone_number;
+            }
+            if ($request->has('gender')) {
+                $updateData['gender'] = $request->gender;
+            }
+
+            if ($request->hasFile('profile_picture')) {
+                $imagePath = $request->file('profile_picture')->store('profiles', 'public');
+                $updateData['profile_picture'] = 'storage/' . $imagePath;
+            }
+
+            $applicant->update($updateData);
+
+            // Update MatchResult to sync the new office and full name
+            MatchResult::where('applicant_name', $oldFullName)->update([
+                'applicant_name' => $newFullName,
+                'office_id' => $request->office_id,
+            ]);
         });
-        
-        $this->auditService->log('Account Request Discarded', "Discarded onboarding application for: {$email}");
-        
-        return redirect()->back()->with('success', 'Onboarding application discarded.');
+
+        $this->auditService->log('Onboarding Request Updated', "Updated onboarding application for: {$request->email}");
+
+        return redirect()->back()->with('success', 'Onboarding request updated successfully.');
     }
 }

@@ -102,7 +102,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/accounts', [AccountController::class, 'index'])->name('account');
         Route::post('/accounts/import', [AccountController::class, 'importCsv'])->name('accounts.import');
         Route::post('/accounts/onboarding-approve/{id}', [AccountController::class, 'approveOnboardingAccount'])->name('accounts.onboarding-approve');
-        Route::post('/accounts/onboarding-discard/{id}', [AccountController::class, 'discardOnboardingAccount'])->name('accounts.onboarding-discard');
+        Route::put('/accounts/onboarding-update/{id}', [AccountController::class, 'updateOnboardingAccount'])->name('accounts.onboarding-update');
         Route::post('/users', [AccountController::class, 'store'])->name('account.store');
         Route::put('/accounts/{user}', [AccountController::class, 'update'])->name('account.update');
         Route::delete('/accounts/{user}', [AccountController::class, 'destroy'])->name('account.destroy');
