@@ -28,17 +28,54 @@
 
         {{-- SKELETON LOADING VIEW --}}
         @php
-            $logSkeletonCount = $securityLogs->isEmpty() ? 1 : min($securityLogs->count(), 10);
+            $logSkeletonCount = $securityLogs->isEmpty() ? 3 : min($securityLogs->count(), 5);
         @endphp
 
-        <div x-show="loading" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="flex flex-col flex-1">
+        <div x-show="loading" x-transition:leave="transition ease-in duration-300 pointer-events-none" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="flex flex-col flex-1">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 mb-6 lg:mb-10">
                 <x-skeleton type="metric" />
                 <x-skeleton type="metric" />
                 <x-skeleton type="metric" />
             </div>
-            <x-table-container title="Neural Audit Registry" subtitle="Hydrating telemetry streams...">
-                <x-skeleton type="list" :rows="min($logSkeletonCount, 3)" />
+            
+            <x-table-container 
+                title="Security Alerts Registry" 
+                subtitle="Real-time system activity analysis"
+            >
+                <x-slot name="headerAction">
+                    <div class="h-[44px] w-full sm:w-64 bg-gray-100 dark:bg-gray-800 rounded-2xl animate-shimmer"></div>
+                </x-slot>
+
+                <div class="hidden md:block">
+                    <div class="h-12 bg-gray-50/50 dark:bg-gray-800/30 rounded-t-3xl animate-shimmer mb-2 border border-gray-100 dark:border-gray-800"></div>
+                    <div class="space-y-4">
+                        @for($i = 0; $i < $logSkeletonCount; $i++)
+                            <div class="flex items-center justify-between p-6 bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800/50 animate-shimmer">
+                                <div class="w-1/5 h-4 bg-gray-100 dark:bg-gray-800 rounded"></div>
+                                <div class="w-1/4 flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800"></div>
+                                    <div class="w-1/2 h-4 bg-gray-100 dark:bg-gray-800 rounded"></div>
+                                </div>
+                                <div class="w-1/4 h-4 bg-gray-100 dark:bg-gray-800 rounded"></div>
+                                <div class="w-1/6 h-4 bg-gray-100 dark:bg-gray-800 rounded"></div>
+                                <div class="w-1/6 h-4 bg-gray-100 dark:bg-gray-800 rounded"></div>
+                                <div class="w-1/12 h-6 bg-gray-100 dark:bg-gray-800 rounded-full"></div>
+                            </div>
+                        @endfor
+                    </div>
+                </div>
+
+                <div class="md:hidden space-y-4">
+                    @for($i = 0; $i < min($logSkeletonCount, 3); $i++)
+                        <div class="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-3xl border border-gray-100 dark:border-gray-700 animate-shimmer space-y-4">
+                            <div class="flex justify-between items-center">
+                                <div class="w-1/2 h-5 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                                <div class="w-12 h-6 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                            </div>
+                            <div class="h-20 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800"></div>
+                        </div>
+                    @endfor
+                </div>
             </x-table-container>
         </div>
 
