@@ -174,7 +174,7 @@
                             </td>
                             <td class="px-8 py-6">
                                 <p class="text-xs text-gray-400 dark:text-gray-500 font-medium italic leading-relaxed line-clamp-1">{{ $log->resource }}</p>
-                                <span class="text-[9px] text-gray-300 dark:text-gray-600 font-bold uppercase tracking-wider mt-1 block">IP: {{ $log->ip_address ?? 'Unknown' }} • {{ $log->timestamp ? $log->timestamp->format('l, H:i') : 'N/A' }}</span>
+                                <span class="text-[9px] text-gray-300 dark:text-gray-600 font-bold uppercase tracking-wider mt-1 block">IP: {{ $log->ip_address ?? 'Unknown' }} • {{ $log->timestamp ? $log->timestamp->format('m/d, H:i') : 'N/A' }}</span>
                             </td>
                             <td class="px-8 py-6">
                                 <div class="flex items-center gap-4">
@@ -290,7 +290,7 @@
                 <div class="bg-white/50 dark:bg-gray-900/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-700">
                     <p class="text-xs text-gray-500 dark:text-gray-400 font-medium italic leading-relaxed">{{ $log->resource }}</p>
                     <p class="text-[9px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider mt-2">
-                        IP: {{ $log->ip_address ?? 'Unknown' }} • {{ $log->timestamp ? $log->timestamp->format('l, H:i') : 'N/A' }}
+                        IP: {{ $log->ip_address ?? 'Unknown' }} • {{ $log->timestamp ? $log->timestamp->format('m/d, H:i') : 'N/A' }}
                     </p>
                     <div class="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800 flex justify-between items-center text-[9px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
                         <p class="line-clamp-1" title="{{ $log->user_agent }}">Device: {{ str_replace('|', ' • ', $log->device ?? 'System') }}</p>
