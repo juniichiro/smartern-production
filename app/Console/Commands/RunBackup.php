@@ -121,9 +121,9 @@ class RunBackup extends Command
 
             // 3. Backup Storage
             $this->info('Backing up storage files...');
-            $files = Storage::allFiles('public');
+            $files = Storage::disk('public')->allFiles();
             foreach ($files as $file) {
-                $zip->addFile(Storage::path($file), 'storage/'.$file);
+                $zip->addFile(Storage::disk('public')->path($file), 'storage/'.$file);
             }
 
             $zip->close();

@@ -190,12 +190,12 @@ class RestoreBackup extends Command
             for ($i = 0; $i < $zip->numFiles; $i++) {
                 $zipFilename = $zip->getNameIndex($i);
                 if (strpos($zipFilename, 'storage/') === 0 && substr($zipFilename, -1) !== '/') {
-                    // Extract to storage/app but strip the 'storage/' prefix from the filename
+                    // Extract to public disk but strip the 'storage/' prefix from the filename
                     $targetPath = substr($zipFilename, strlen('storage/'));
 
                     $content = $zip->getFromIndex($i);
                     if ($content !== false) {
-                        Storage::disk('local')->put($targetPath, $content);
+                        Storage::disk('public')->put($targetPath, $content);
                     }
                 }
             }
