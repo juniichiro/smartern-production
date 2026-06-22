@@ -3,13 +3,13 @@
     'headerAction' => null, 
     'headerActionLink' => null, 
     'headerActionText' => 'View All',
-    'padding' => 'p-8 md:p-10',
+    'padding' => 'p-5 sm:p-8 md:p-10',
     'overflow' => 'overflow-hidden'
 ])
 
 <div {{ $attributes->merge(['class' => "bg-white dark:bg-gray-900 rounded-[40px] shadow-sm dark:shadow-none border border-gray-100 dark:border-gray-800 flex flex-col transition-all duration-300 hover:shadow-md dark:hover:shadow-none hover:border-gray-200 dark:hover:border-gray-700 " . $overflow]) }}>
     @if($title || $headerAction)
-        <div class="px-4 sm:px-8 min-h-[60px] sm:min-h-[76px] py-3 border-b border-gray-50 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/30 shrink-0">
+        <div class="px-5 sm:px-8 min-h-[60px] sm:min-h-[76px] py-3 border-b border-gray-50 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/30 shrink-0">
             @if($title)
                 <h4 class="text-[11px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">{{ $title }}</h4>
             @endif
