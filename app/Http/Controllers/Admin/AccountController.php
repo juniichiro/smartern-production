@@ -38,7 +38,8 @@ class AccountController extends Controller
 
     public function index(Request $request)
     {
-        $query = User::with(['role', 'internDetails.office', 'supervisorDetails.office', 'schoolCoordinatorDetails']);
+        $query = User::with(['role', 'internDetails.office', 'supervisorDetails.office', 'schoolCoordinatorDetails'])
+            ->where('role_id', '!=', UserRole::ADMIN);
 
         // Server-side search logic
         if ($request->filled('search')) {
