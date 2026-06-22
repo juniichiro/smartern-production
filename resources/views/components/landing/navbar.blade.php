@@ -7,8 +7,12 @@
                 <span class="text-lg font-extrabold text-[#0B5694] dark:text-blue-400 tracking-tight">SmarTern</span>
             </a>
 
-            <div class="hidden sm:flex items-center gap-3">
-                <a href="{{ route('login') }}" class="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider hover:text-[#0B5694] dark:hover:text-blue-400 transition-colors px-2">Log In</a>
+            <div class="hidden sm:flex items-center gap-2">
+                <button x-data="{ darkMode: document.documentElement.classList.contains('dark') }" @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode); document.documentElement.classList.toggle('dark', darkMode)" class="p-2.5 rounded-xl text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-[#0B5694] dark:hover:text-blue-400 transition-all">
+                    <svg x-show="!darkMode" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                    <svg x-show="darkMode" x-cloak xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+                <a href="{{ route('login') }}" class="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider hover:text-[#0B5694] dark:hover:text-blue-400 transition-colors px-1.5">Log In</a>
                 <a href="{{ route('onboarding.create') }}" class="inline-flex items-center px-5 py-2.5 bg-[#0B5694] hover:bg-[#084577] dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-bold uppercase text-[10px] tracking-wider rounded-2xl transition-all active:scale-[0.98]">
                     Apply as Intern
                 </a>
@@ -24,6 +28,12 @@
             <div class="flex flex-col gap-3">
                 <a @click="open = false" href="{{ route('login') }}" class="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider py-2">Log In</a>
                 <a @click="open = false" href="{{ route('onboarding.create') }}" class="inline-flex items-center justify-center px-5 py-3 bg-[#0B5694] hover:bg-[#084577] dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-bold uppercase text-[10px] tracking-wider rounded-2xl transition-all active:scale-[0.98] text-center">Apply as Intern</a>
+                <hr class="border-gray-100 dark:border-gray-800 my-1">
+                <button x-data="{ darkMode: document.documentElement.classList.contains('dark') }" @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode); document.documentElement.classList.toggle('dark', darkMode)" class="flex items-center gap-2 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider py-2">
+                    <svg x-show="!darkMode" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                    <svg x-show="darkMode" x-cloak xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    Toggle Dark Mode
+                </button>
             </div>
         </div>
     </div>

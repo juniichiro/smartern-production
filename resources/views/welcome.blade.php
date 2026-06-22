@@ -1,6 +1,6 @@
 @extends('layouts.guest')
 
-@section('title', 'SmarTern — SDO QC Internship Management System')
+@section('title', 'SmarTern')
 
 @section('content')
     <x-landing.navbar />
