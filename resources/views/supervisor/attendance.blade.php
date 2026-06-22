@@ -8,7 +8,7 @@
     userName="{{ Auth::user()->supervisorDetails->first_name }}" 
     userRole="{{ Auth::user()->supervisorDetails->office->name }}"
 >
-    <div class="flex flex-col h-full" x-data="supervisorAttendanceManager">
+    <div class="flex flex-col h-full" x-data="{ ...supervisorAttendanceManager(), activeTab: '{{ request('tab', 'all') }}', searchQuery: '{{ request('search', '') }}' }">
         {{-- Header --}}
         <x-page-header 
             title="Attendance Logs"
@@ -16,9 +16,9 @@
         />
 
         @php
-            $activeNowLogs = $attendances->filter(fn($log) => $log['type'] === 'actual' && empty($log['clock_out']) && $log['clock_in'] && $log['clock_in']->isToday());
-            $uniqueInterns = $attendances->pluck('intern')->unique('user_id');
-            $groupedLogs = $attendances->groupBy(fn($log) => $log['intern']->user_id);
+            $activeNowLogs = $allLogs->filter(fn($log) => $log['type'] === 'actual' && empty($log['clock_out']) && $log['clock_in'] && $log['clock_in']->isToday());
+            $uniqueInterns = $allLogs->pluck('intern')->unique('user_id');
+            $groupedLogs = $allLogs->groupBy(fn($log) => $log['intern']->user_id);
             $startOfWeek = now()->startOfWeek();
             $endOfWeek = now()->endOfWeek();
         @endphp
@@ -64,7 +64,7 @@
 
                 {{-- Card 3: Punctuality Health --}}
                 @php
-                    $thisWeeksLogs = $attendances->filter(fn($l) => $l['date']->gte($startOfWeek) && $l['date']->lte($endOfWeek));
+                    $thisWeeksLogs = $allLogs->filter(fn($l) => $l['date']->gte($startOfWeek) && $l['date']->lte($endOfWeek));
                     $weeklyLates = $thisWeeksLogs->filter(fn($l) => $l['type'] === 'actual' && $l['status'] === 'late')->count();
                     $weeklyAbsents = $thisWeeksLogs->filter(fn($l) => $l['type'] === 'workday' && $l['status'] === 'absent')->count();
                 @endphp
@@ -117,40 +117,42 @@
         <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white dark:bg-gray-900 p-4 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm">
             <!-- Left side: Tabs for filtering -->
             <div x-show="activeView === 'timeline'" x-transition class="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 custom-scrollbar">
-                <button @click="activeTab = 'all'" 
+                <a href="{{ route('supervisor.attendance', ['tab' => 'all', 'search' => request('search')]) }}" 
                         :class="activeTab === 'all' ? 'bg-[#0B5694] dark:bg-blue-600 text-white shadow-md shadow-blue-500/10' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'" 
-                        class="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap active:scale-95">
+                        class="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap active:scale-95 flex items-center justify-center">
                     All Logs
-                </button>
-                <button @click="activeTab = 'active'" 
+                </a>
+                <a href="{{ route('supervisor.attendance', ['tab' => 'active', 'search' => request('search')]) }}" 
                         :class="activeTab === 'active' ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/10' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'" 
-                        class="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap active:scale-95">
+                        class="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap active:scale-95 flex items-center justify-center">
                     Active Now
-                </button>
-                <button @click="activeTab = 'exceptions'" 
+                </a>
+                <a href="{{ route('supervisor.attendance', ['tab' => 'exceptions', 'search' => request('search')]) }}" 
                         :class="activeTab === 'exceptions' ? 'bg-orange-500 text-white shadow-md shadow-orange-500/10' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'" 
-                        class="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap active:scale-95">
+                        class="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap active:scale-95 flex items-center justify-center">
                     Exceptions
-                </button>
-                <button @click="activeTab = 'offdays'" 
+                </a>
+                <a href="{{ route('supervisor.attendance', ['tab' => 'offdays', 'search' => request('search')]) }}" 
                         :class="activeTab === 'offdays' ? 'bg-purple-500 text-white shadow-md shadow-purple-500/10' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'" 
-                        class="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap active:scale-95">
+                        class="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap active:scale-95 flex items-center justify-center">
                     Off-days
-                </button>
+                </a>
             </div>
 
             <!-- Right side: Search and View Switcher -->
             <div class="flex items-center gap-3 md:ml-auto">
                 <!-- Search bar -->
-                <div class="relative flex-1 md:w-64">
+                <form method="GET" action="{{ route('supervisor.attendance') }}" class="relative flex-1 md:w-64">
+                    <input type="hidden" name="tab" value="{{ request('tab', 'all') }}">
                     <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 dark:text-gray-500">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                     </span>
                     <input type="text" 
+                           name="search"
                            x-model="searchQuery" 
                            placeholder="Search intern name or ID..." 
                            class="w-full pl-9 pr-4 py-2.5 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-200 text-xs rounded-xl border border-gray-100 dark:border-gray-700/50 focus:outline-none focus:border-[#0B5694] dark:focus:border-blue-500 transition-all font-semibold uppercase tracking-wider">
-                </div>
+                </form>
 
                 <!-- View Switcher -->
                 <div class="flex items-center bg-gray-100 dark:bg-gray-800 p-1 rounded-xl border border-gray-100 dark:border-gray-700/50 shrink-0">
@@ -182,7 +184,7 @@
             <div class="border border-gray-100 dark:border-gray-800 rounded-3xl overflow-hidden shadow-inner">
                 <template x-if="loading">
                     <div class="space-y-4 p-6">
-                        @for($i = 0; $i < min(count($attendances) ?: 5, 5); $i++)
+                        @for($i = 0; $i < min(count($allLogs) ?: 5, 5); $i++)
                             <x-skeleton class="h-16 w-full rounded-xl" />
                         @endfor
                     </div>
@@ -303,6 +305,13 @@
                         </tbody>
                     </table>
                 </div>
+                
+                {{-- Pagination Links --}}
+                @if($attendances->hasPages())
+                <div class="px-6 py-4 bg-gray-50/50 dark:bg-gray-800/20 border-t border-gray-100 dark:border-gray-800">
+                    {{ $attendances->appends(request()->query())->links() }}
+                </div>
+                @endif
             </div>
         </div>
 
