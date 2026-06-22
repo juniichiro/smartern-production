@@ -221,7 +221,7 @@
                                     </thead>
                                     <tbody class="text-sm divide-y divide-gray-50 dark:divide-gray-800 flex-1 overflow-y-auto">
                                         @forelse($intern->attendances as $attendance)
-                                        <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors flex">
+                                        <tr x-show="attendancePage === Math.ceil({{ $loop->iteration }} / attendancePerPage)" class="hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors flex">
                                             <td class="px-3 sm:px-4 py-5 sm:py-6 font-bold text-gray-500 dark:text-gray-400 uppercase tracking-tighter w-24 sm:w-36 flex items-center">
                                                 {{ $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('M d, Y') : '--' }}
                                             </td>
@@ -262,6 +262,53 @@
                                     </tbody>
                                 </table>
                             </div>
+                            
+                            {{-- Pagination Controls --}}
+                            @if($intern->attendances->count() > 10)
+                            <div class="mt-4 flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-gray-800/40 border border-gray-100 dark:border-gray-800 rounded-2xl">
+                                <div class="flex-1 flex justify-between sm:hidden">
+                                    <button @click="if(attendancePage > 1) attendancePage--" 
+                                            :disabled="attendancePage === 1"
+                                            class="relative inline-flex items-center px-4 py-2 border border-gray-200 dark:border-gray-700 text-[10px] font-black uppercase tracking-widest rounded-xl text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 transition active:scale-95">
+                                        Previous
+                                    </button>
+                                    <button @click="if(attendancePage < Math.ceil({{ $intern->attendances->count() }} / attendancePerPage)) attendancePage++" 
+                                            :disabled="attendancePage >= Math.ceil({{ $intern->attendances->count() }} / attendancePerPage)"
+                                            class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-200 dark:border-gray-700 text-[10px] font-black uppercase tracking-widest rounded-xl text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 transition active:scale-95">
+                                        Next
+                                    </button>
+                                </div>
+                                <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                                    <div>
+                                        <p class="text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-tight">
+                                            Showing page <span class="font-extrabold text-[#0B5694] dark:text-blue-400" x-text="attendancePage"></span> of <span class="font-extrabold text-gray-800 dark:text-gray-200" x-text="Math.ceil({{ $intern->attendances->count() }} / attendancePerPage)"></span>
+                                            (<span class="font-semibold" x-text="{{ $intern->attendances->count() }}"></span> total logs)
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                                            <button @click="if(attendancePage > 1) attendancePage--" 
+                                                    :disabled="attendancePage === 1"
+                                                    class="relative inline-flex items-center px-3 py-2 rounded-l-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[10px] font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-750 disabled:opacity-40 transition shrink-0 active:scale-95">
+                                                <span class="sr-only">Previous</span>
+                                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                                </svg>
+                                            </button>
+                                            
+                                            <button @click="if(attendancePage < Math.ceil({{ $intern->attendances->count() }} / attendancePerPage)) attendancePage++" 
+                                                    :disabled="attendancePage >= Math.ceil({{ $intern->attendances->count() }} / attendancePerPage)"
+                                                    class="relative inline-flex items-center px-3 py-2 rounded-r-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[10px] font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-750 disabled:opacity-40 transition shrink-0 active:scale-95">
+                                                <span class="sr-only">Next</span>
+                                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                                </svg>
+                                            </button>
+                                        </nav>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
                         </div>
 
                         {{-- Journals Content --}}

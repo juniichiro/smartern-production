@@ -1140,6 +1140,8 @@ Alpine.data('headSupervisorInternProfile', () => ({
     activeTab: 'tasks',
     modalOpen: false,
     selectedJournal: {title: '', date: '', content: ''},
+    attendancePage: 1,
+    attendancePerPage: 10,
     init() {
         setTimeout(() => {
             this.loading = false;
