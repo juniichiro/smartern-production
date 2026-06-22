@@ -195,7 +195,7 @@ class AttendanceService
             });
 
         // 3. Fetch all schedule overrides (holidays, suspensions, extra workdays)
-        $schedules = Schedule::all()->keyBy(function ($item) {
+        $schedules = Schedule::whereNotNull('date')->get()->keyBy(function ($item) {
             return $item->date->toDateString();
         });
 

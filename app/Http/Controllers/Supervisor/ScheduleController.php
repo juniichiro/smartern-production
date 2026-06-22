@@ -40,7 +40,7 @@ class ScheduleController extends Controller
         }
 
         // 2. Add database overrides (takes precedence/clears API holiday for the date)
-        $schedules = Schedule::orderBy('date', 'desc')->get();
+        $schedules = Schedule::whereNotNull('date')->orderBy('date', 'desc')->get();
         foreach ($schedules as $item) {
             $dateStr = $item->date->toDateString();
             $eventsByDate[$dateStr] = [
