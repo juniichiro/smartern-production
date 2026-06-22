@@ -35,8 +35,8 @@
             headerActionText="Maintenance Overview"
         >
             <x-slot name="headerAction">
-                <div class="flex flex-col sm:items-end gap-2 w-full lg:w-auto">
-                    <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider bg-gray-50 dark:bg-gray-800 px-4 py-2 rounded-full border border-gray-100 dark:border-gray-800">
+                <div class="flex flex-col sm:items-end gap-2 w-full sm:w-auto">
+                    <p class="text-[9px] sm:text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider bg-gray-50 dark:bg-gray-800 px-3 sm:px-4 py-2 rounded-2xl sm:rounded-full border border-gray-100 dark:border-gray-800 whitespace-nowrap overflow-hidden text-ellipsis max-w-full">
                         Next Scheduled Backup: <span class="text-[#0B5694] dark:text-blue-400 ml-1">Daily at 12:00 AM</span>
                     </p>
                 </div>
