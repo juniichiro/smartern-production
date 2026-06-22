@@ -301,8 +301,7 @@ class OfficeMatchingController extends Controller
         $requestedCount = count($request->applicant_names);
 
         if ($occupiedSlots + $requestedCount > $internLimit) {
-            $availableSlots = max(0, $internLimit - $occupiedSlots);
-            return back()->with('error', "Cannot finalize assignment. {$office->name} has a limit of {$internLimit} slots. {$occupiedSlots} slots are already taken. You are trying to assign {$requestedCount} applicants, but only {$availableSlots} slots are available.");
+            return back()->with('error', "Cannot finalize assignment. {$office->name} has already reached its maximum limit of {$internLimit} interns.");
         }
 
         MatchResult::whereIn('applicant_name', $request->applicant_names)
