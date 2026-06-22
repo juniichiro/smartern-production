@@ -137,15 +137,15 @@
         <div class="hidden md:block border border-gray-100 dark:border-gray-800 rounded-3xl overflow-hidden shadow-inner">
             <div class="overflow-x-auto custom-scrollbar">
                 <table class="w-full text-left">
-                    <thead class="bg-gray-50 dark:bg-gray-800/50 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider border-b border-gray-100 dark:border-gray-800">
+                    <thead class="bg-gray-50 dark:bg-gray-800/50 text-[10px] lg:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider border-b border-gray-100 dark:border-gray-800">
                         <tr>
-                            <th class="px-8 py-5">Activity Type</th>
-                            <th class="px-8 py-5">User Account</th>
-                            <th class="px-8 py-5">Incident Details</th>
-                            <th class="px-8 py-5">Anomaly Analysis</th>
-                            <th class="px-8 py-5">Device</th>
-                            <th class="px-8 py-5 text-center">Status</th>
-                            <th class="px-8 py-5 text-right">Action</th>
+                            <th class="px-6 lg:px-8 py-5">Activity Type</th>
+                            <th class="px-6 lg:px-8 py-5">User Account</th>
+                            <th class="px-6 lg:px-8 py-5">Incident Details</th>
+                            <th class="px-6 lg:px-8 py-5">Anomaly Analysis</th>
+                            <th class="px-6 lg:px-8 py-5">Device</th>
+                            <th class="px-6 lg:px-8 py-5 text-center">Status</th>
+                            <th class="px-6 lg:px-8 py-5 text-right">Action</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
@@ -155,13 +155,13 @@
                             $color = $score > 0.7 ? 'rose' : ($score > 0.5 ? 'orange' : 'emerald');
                         @endphp
                         <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors group">
-                            <td class="px-8 py-6">
-                                <span class="font-black text-gray-800 dark:text-gray-200 text-sm uppercase tracking-tight">{{ $log->action }}</span>
+                            <td class="px-6 lg:px-8 py-6">
+                                <span class="font-black text-gray-800 dark:text-gray-200 text-xs lg:text-sm uppercase tracking-tight">{{ $log->action }}</span>
                             </td>
-                            <td class="px-8 py-6">
+                            <td class="px-6 lg:px-8 py-6">
                                 <div class="flex items-center gap-3">
                                     <x-avatar :user="$log->internDetails ?? $log->supervisorDetails ?? $log->user" size="8" border="1" circular="true" textSize="xs" />
-                                    <span class="text-xs font-bold text-gray-500 dark:text-gray-400">
+                                    <span class="text-xs lg:text-sm font-bold text-gray-500 dark:text-gray-400">
                                         @if($log->internDetails)
                                             {{ $log->internDetails->first_name }} {{ $log->internDetails->last_name }}
                                         @elseif($log->supervisorDetails)
@@ -172,25 +172,25 @@
                                     </span>
                                 </div>
                             </td>
-                            <td class="px-8 py-6">
-                                <p class="text-xs text-gray-400 dark:text-gray-500 font-medium italic leading-relaxed line-clamp-1">{{ $log->resource }}</p>
-                                <span class="text-[9px] text-gray-300 dark:text-gray-600 font-bold uppercase tracking-wider mt-1 block">IP: {{ $log->ip_address ?? 'Unknown' }} • {{ $log->timestamp ? $log->timestamp->format('m/d, H:i') : 'N/A' }}</span>
+                            <td class="px-6 lg:px-8 py-6">
+                                <p class="text-xs lg:text-sm text-gray-400 dark:text-gray-500 font-medium italic leading-relaxed line-clamp-1">{{ $log->resource }}</p>
+                                <span class="text-[9px] lg:text-[10px] text-gray-300 dark:text-gray-600 font-bold uppercase tracking-wider mt-1 block">IP: {{ $log->ip_address ?? 'Unknown' }} • {{ $log->timestamp ? $log->timestamp->format('m/d, H:i') : 'N/A' }}</span>
                             </td>
-                            <td class="px-8 py-6">
+                            <td class="px-6 lg:px-8 py-6">
                                 <div class="flex items-center gap-4">
-                                    <div class="w-32 h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden shadow-inner shrink-0 border border-gray-50 dark:border-gray-700">
+                                    <div class="w-24 lg:w-32 h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden shadow-inner shrink-0 border border-gray-50 dark:border-gray-700">
                                         <div class="bg-{{ $color }}-500 h-full shadow-lg transition-all duration-1000" style="width: {{ $score * 100 }}%"></div>
                                     </div>
-                                    <span class="text-[11px] font-bold text-gray-700 dark:text-gray-300 tracking-tighter">{{ number_format($score, 2) }}</span>
+                                    <span class="text-[11px] lg:text-xs font-bold text-gray-700 dark:text-gray-300 tracking-tighter">{{ number_format($score, 2) }}</span>
                                 </div>
                             </td>
-                            <td class="px-8 py-6">
-                                <span class="text-xs text-gray-400 dark:text-gray-500 font-medium leading-relaxed line-clamp-1 max-w-[200px]" title="{{ $log->user_agent ?? 'Direct System Access' }}">
+                            <td class="px-6 lg:px-8 py-6">
+                                <span class="text-xs lg:text-sm text-gray-400 dark:text-gray-500 font-medium leading-relaxed line-clamp-1 max-w-[140px] lg:max-w-[200px]" title="{{ $log->user_agent ?? 'Direct System Access' }}">
                                     {{ str_replace('|', ' • ', $log->device ?? 'System') }}
                                 </span>
                             </td>
-                            <td class="px-8 py-6 text-center">
-                                <span class="px-4 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-wider border {{ $score > 0.7 ? 'bg-rose-50 text-rose-500 border-rose-100' : ($score > 0.5 ? 'bg-orange-50 text-orange-500 border-orange-100' : 'bg-emerald-50 text-emerald-500 border-emerald-100') }} dark:bg-opacity-10">
+                            <td class="px-6 lg:px-8 py-6 text-center">
+                                <span class="px-3 lg:px-4 py-1.5 rounded-full text-[9px] lg:text-[10px] font-bold uppercase tracking-wider border {{ $score > 0.7 ? 'bg-rose-50 text-rose-500 border-rose-100' : ($score > 0.5 ? 'bg-orange-50 text-orange-500 border-orange-100' : 'bg-emerald-50 text-emerald-500 border-emerald-100') }} dark:bg-opacity-10">
                                     {{ $score > 0.7 ? 'Critical' : ($score > 0.5 ? 'Warning' : 'Normal') }}
                                 </span>
                             </td>

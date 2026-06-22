@@ -68,13 +68,13 @@
             
             <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" @click="geofenceOfficeOpen = false"></div>
             
-            <div class="relative bg-white dark:bg-gray-900 w-full max-w-4xl rounded-[35px] shadow-2xl p-6 sm:p-8 lg:p-12 border border-gray-100 dark:border-gray-800 transition-all max-h-[90vh] overflow-y-auto custom-scrollbar">
-                <header class="mb-8 lg:mb-10 flex items-center gap-4">
-                    <div class="p-3 bg-blue-50 dark:bg-blue-900/30 text-[#0B5694] dark:text-blue-400 rounded-2xl">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            <div class="relative bg-white dark:bg-gray-900 w-full max-w-4xl rounded-[35px] shadow-2xl p-5 sm:p-8 lg:p-12 border border-gray-100 dark:border-gray-800 transition-all max-h-[90vh] overflow-y-auto custom-scrollbar">
+                <header class="mb-6 sm:mb-8 lg:mb-10 flex items-center gap-3 sm:gap-4">
+                    <div class="p-2 sm:p-3 bg-blue-50 dark:bg-blue-900/30 text-[#0B5694] dark:text-blue-400 rounded-2xl shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
                     </div>
-                    <div>
-                        <h3 class="text-2xl font-extrabold text-gray-800 dark:text-white tracking-normal uppercase">Geofence Settings</h3>
+                    <div class="min-w-0">
+                        <h3 class="text-xl sm:text-2xl font-extrabold text-gray-800 dark:text-white tracking-normal uppercase">Geofence Settings</h3>
                         <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest mt-0.5 italic">Configure boundaries for all offices</p>
                     </div>
                 </header>

@@ -69,7 +69,7 @@
             <div class="hidden md:block border border-gray-100 dark:border-gray-800 rounded-3xl custom-scrollbar">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left min-w-[600px]">
-                        <thead class="bg-gray-50 dark:bg-gray-800 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider border-b border-gray-100 dark:border-gray-800">
+                        <thead class="bg-gray-50 dark:bg-gray-800 text-[9px] lg:text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider border-b border-gray-100 dark:border-gray-800">
                             <tr>
                                 <th class="px-6 lg:px-8 py-5">Date & Time</th>
                                 <th class="px-6 lg:px-8 py-5">Type</th>
@@ -81,32 +81,32 @@
                         <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
                             @forelse($backups as $backup)
                                 <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors group">
-                                    <td class="px-6 lg:px-8 py-6">
+                                    <td class="px-4 sm:px-6 lg:px-8 py-6">
                                         <div class="flex flex-col text-left">
-                                            <span class="font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider">{{ $backup->created_at->format('M d, Y') }}</span>
-                                            <span class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider mt-0.5">{{ $backup->created_at->format('h:i A') }}</span>
+                                            <span class="font-bold text-gray-800 dark:text-gray-200 text-xs lg:text-sm uppercase tracking-wider">{{ $backup->created_at->format('M d, Y') }}</span>
+                                            <span class="text-[9px] lg:text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider mt-0.5">{{ $backup->created_at->format('h:i A') }}</span>
                                             @if($backup->sha256_hash)
-                                                <span class="text-[8px] text-gray-400 dark:text-gray-600 font-mono tracking-tighter mt-1 block select-all" title="SHA-256 Integrity Hash">SHA-256: {{ substr($backup->sha256_hash, 0, 10) }}...</span>
+                                                <span class="text-[7px] sm:text-[8px] text-gray-400 dark:text-gray-600 font-mono tracking-tighter mt-1 block select-all" title="SHA-256 Integrity Hash">SHA-256: {{ substr($backup->sha256_hash, 0, 10) }}...</span>
                                             @endif
                                         </div>
                                     </td>
-                                    <td class="px-6 lg:px-8 py-6">
-                                        <span class="px-3 lg:px-4 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-wider {{ $backup->backup_type === 'auto' ? 'bg-purple-50 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400' : 'bg-blue-50 text-[#0B5694] dark:bg-blue-900/30 dark:text-blue-400' }} border border-transparent dark:border-current">
+                                    <td class="px-4 sm:px-6 lg:px-8 py-6">
+                                        <span class="px-2 sm:px-3 lg:px-4 py-1.5 rounded-full text-[8px] sm:text-[9px] font-bold uppercase tracking-wider {{ $backup->backup_type === 'auto' ? 'bg-purple-50 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400' : 'bg-blue-50 text-[#0B5694] dark:bg-blue-900/30 dark:text-blue-400' }} border border-transparent dark:border-current">
                                             {{ $backup->backup_type }}
                                         </span>
                                     </td>
-                                    <td class="px-6 lg:px-8 py-6">
-                                        <span class="font-bold text-gray-700 dark:text-gray-300 text-xs tracking-wider uppercase">{{ $backup->file_size ?? 'N/A' }}</span>
+                                    <td class="px-4 sm:px-6 lg:px-8 py-6">
+                                        <span class="font-bold text-gray-700 dark:text-gray-300 text-[11px] sm:text-xs tracking-wider uppercase">{{ $backup->file_size ?? 'N/A' }}</span>
                                     </td>
-                                    <td class="px-6 lg:px-8 py-6">
+                                    <td class="px-4 sm:px-6 lg:px-8 py-6">
                                         <div class="flex items-center justify-center gap-2">
                                             <span class="w-2 h-2 rounded-full {{ $backup->status === 'success' ? 'bg-emerald-500' : ($backup->status === 'failed' ? 'bg-rose-500' : 'bg-orange-400 animate-pulse') }}"></span>
-                                            <span class="text-[10px] font-bold uppercase tracking-wider {{ $backup->status === 'success' ? 'text-emerald-600 dark:text-emerald-400' : ($backup->status === 'failed' ? 'text-rose-600 dark:text-rose-400' : 'text-orange-500 dark:text-orange-400') }}">
+                                            <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider {{ $backup->status === 'success' ? 'text-emerald-600 dark:text-emerald-400' : ($backup->status === 'failed' ? 'text-rose-600 dark:text-rose-400' : 'text-orange-500 dark:text-orange-400') }}">
                                                 {{ $backup->status }}
                                             </span>
                                         </div>
                                     </td>
-                                    <td class="px-6 lg:px-8 py-6">
+                                    <td class="px-4 sm:px-6 lg:px-8 py-6">
                                         <div class="flex justify-end items-center gap-4">
                                             @if($backup->status === 'success')
                                                 <form id="rollback-form-{{ $backup->getRouteKey() }}" action="{{ route('admin.backup.restore', $backup) }}" method="POST">
@@ -246,14 +246,14 @@
         </div>
 
         {{-- Upload Modal --}}
-        <div x-show="showUploadModal" class="relative bg-white dark:bg-gray-900 rounded-[35px] w-full max-w-md p-10 shadow-2xl border border-gray-100 dark:border-gray-800"
+        <div x-show="showUploadModal" class="relative bg-white dark:bg-gray-900 rounded-[35px] w-full max-w-md p-6 sm:p-10 shadow-2xl border border-gray-100 dark:border-gray-800"
              x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100">
             <form action="{{ route('admin.backup.upload') }}" method="POST" enctype="multipart/form-data" @submit="isUploading = true; showUploadModal = false">
                 @csrf
-                <div class="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center mb-8 mx-auto text-[#0B5694] dark:text-blue-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <div class="w-12 sm:w-16 h-12 sm:h-16 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center mb-6 sm:mb-8 mx-auto text-[#0B5694] dark:text-blue-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                 </div>
-                <h3 class="text-2xl font-extrabold text-gray-800 dark:text-gray-100 text-center uppercase tracking-normal">Upload Snapshot</h3>
+                <h3 class="text-xl sm:text-2xl font-extrabold text-gray-800 dark:text-gray-100 text-center uppercase tracking-normal">Upload Snapshot</h3>
                 <p class="mt-4 text-gray-400 dark:text-gray-500 text-center leading-relaxed text-xs font-bold uppercase tracking-wider italic">Select a SmarTern backup .zip file</p>
 
                 <div class="mt-10 group relative">
@@ -281,12 +281,12 @@
         </div>
 
         {{-- Rollback Modal --}}
-        <div x-show="showRollbackModal" class="relative bg-white dark:bg-gray-900 rounded-[35px] w-full max-w-md p-10 shadow-2xl border border-gray-100 dark:border-gray-800"
+        <div x-show="showRollbackModal" class="relative bg-white dark:bg-gray-900 rounded-[35px] w-full max-w-md p-6 sm:p-10 shadow-2xl border border-gray-100 dark:border-gray-800"
              x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100">
-            <div class="w-16 h-16 bg-orange-50 dark:bg-orange-950/20 rounded-2xl flex items-center justify-center mb-8 mx-auto">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+            <div class="w-12 sm:w-16 h-12 sm:h-16 bg-orange-50 dark:bg-orange-950/20 rounded-2xl flex items-center justify-center mb-6 sm:mb-8 mx-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
             </div>
-            <h3 class="text-2xl font-extrabold text-gray-800 dark:text-gray-100 text-center uppercase tracking-normal">Confirm Rollback</h3>
+            <h3 class="text-xl sm:text-2xl font-extrabold text-gray-800 dark:text-gray-100 text-center uppercase tracking-normal">Confirm Rollback</h3>
             <div class="mt-6 bg-orange-50 dark:bg-orange-950/20 p-5 rounded-2xl border border-orange-100 dark:border-orange-900/30 text-left">
                 <p class="text-xs text-orange-700 dark:text-orange-400 font-bold uppercase tracking-wider leading-relaxed">
                     This will overwrite the current system state. All active sessions will be terminated.
@@ -304,12 +304,12 @@
         </div>
 
         {{-- Delete Modal --}}
-        <div x-show="showDeleteModal" class="relative bg-white dark:bg-gray-900 rounded-[35px] w-full max-w-md p-10 shadow-2xl border border-gray-100 dark:border-gray-800"
+        <div x-show="showDeleteModal" class="relative bg-white dark:bg-gray-900 rounded-[35px] w-full max-w-md p-6 sm:p-10 shadow-2xl border border-gray-100 dark:border-gray-800"
              x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100">
-            <div class="w-16 h-16 bg-rose-50 dark:bg-rose-950/20 rounded-2xl flex items-center justify-center mb-8 mx-auto text-rose-500">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+            <div class="w-12 sm:w-16 h-12 sm:h-16 bg-rose-50 dark:bg-rose-950/20 rounded-2xl flex items-center justify-center mb-6 sm:mb-8 mx-auto text-rose-500">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
             </div>
-            <h3 class="text-2xl font-extrabold text-gray-800 dark:text-gray-100 text-center uppercase tracking-normal">Delete Backup</h3>
+            <h3 class="text-xl sm:text-2xl font-extrabold text-gray-800 dark:text-gray-100 text-center uppercase tracking-normal">Delete Backup</h3>
             <p class="mt-4 text-gray-400 dark:text-gray-500 text-center text-xs font-bold uppercase tracking-wider italic">This action is irreversible.</p>
 
             <div class="mt-10 flex flex-col gap-4">

@@ -65,7 +65,7 @@
                         <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-3">{{ $service['name'] }}</span>
                         <div class="flex items-center gap-3">
                             <div class="w-2.5 h-2.5 rounded-full {{ $dotColor }} shadow-sm"></div>
-                            <span class="text-[15px] font-extrabold text-gray-800 dark:text-gray-100 uppercase tracking-normal">{{ $service['status'] }}</span>
+                            <span class="text-[13px] sm:text-base font-extrabold text-gray-800 dark:text-gray-100 uppercase tracking-normal">{{ $service['status'] }}</span>
                         </div>
                     </div>
                     @endforeach

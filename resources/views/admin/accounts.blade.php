@@ -91,13 +91,13 @@
             <div class="hidden md:block overflow-x-auto border border-gray-100 dark:border-gray-800 rounded-2xl custom-scrollbar">
                 <table class="w-full text-left min-w-[800px]">
                     <thead>
-                        <tr class="bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 text-[11px] font-bold uppercase tracking-wider">
+                        <tr class="bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 text-[10px] lg:text-xs font-bold uppercase tracking-wider">
 
-                            <th class="px-8 py-5">User</th>
-                            <th class="px-8 py-5">Email Address</th>
-                            <th class="px-8 py-5">System Role</th>
-                            <th class="px-8 py-5 text-center">Department/School</th>
-                            <th class="px-8 py-5 text-center">Actions</th>
+                            <th class="px-6 lg:px-8 py-5">User</th>
+                            <th class="px-6 lg:px-8 py-5">Email Address</th>
+                            <th class="px-6 lg:px-8 py-5">System Role</th>
+                            <th class="px-6 lg:px-8 py-5 text-center">Department/School</th>
+                            <th class="px-6 lg:px-8 py-5 text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
@@ -112,14 +112,14 @@
                             $isHrHead = optional($user->supervisorDetails)->is_hr_head || $user->role_id == 2;
                         @endphp
                         <tr x-show="!deletingIds.includes('{{ $user->getRouteKey() }}')" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" class="hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors group/row">
-                            <td class="px-8 py-6">
+                            <td class="px-6 lg:px-8 py-6">
                                 <div class="flex items-center gap-4">
                                     <x-avatar :user="$user" size="10" border="1" circular="true" textSize="xs" />
-                                    <div class="text-gray-800 dark:text-gray-200 font-bold text-[14px] uppercase tracking-normal">{{ $fullName }}</div>
+                                    <div class="text-gray-800 dark:text-gray-200 font-bold text-[13px] lg:text-[14px] uppercase tracking-normal">{{ $fullName }}</div>
                                 </div>
                             </td>
-                            <td class="px-8 py-6 text-gray-500 dark:text-gray-400 font-medium text-[13px]">{{ $user->email }}</td>
-                            <td class="px-8 py-6 text-left">
+                            <td class="px-6 lg:px-8 py-6 text-gray-500 dark:text-gray-400 font-medium text-xs lg:text-sm">{{ $user->email }}</td>
+                            <td class="px-6 lg:px-8 py-6 text-left">
                                 @php
                                     $userDeactivated = $user->locked_until && now()->lessThan($user->locked_until);
                                 @endphp
@@ -406,9 +406,9 @@
         
         {{-- Add User Modal --}}
         <div x-show="showAddModal" class="relative bg-white dark:bg-gray-900 rounded-[30px] sm:rounded-[35px] max-w-4xl w-full p-6 sm:p-8 lg:p-12 shadow-2xl overflow-y-auto max-h-[90vh] border border-gray-100 dark:border-gray-800 custom-scrollbar">
-            <header class="mb-8 lg:mb-10">
-                <h3 class="text-2xl lg:text-3xl font-bold text-gray-800 dark:text-gray-100 tracking-tight uppercase">Create New Account</h3>
-                <p class="text-gray-400 dark:text-gray-500 text-sm mt-2 font-medium italic">Fill in the details to register a new user</p>
+            <header class="mb-6 sm:mb-8 lg:mb-10">
+                <h3 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800 dark:text-gray-100 tracking-tight uppercase">Create New Account</h3>
+                <p class="text-gray-400 dark:text-gray-500 text-xs sm:text-sm mt-2 font-medium italic">Fill in the details to register a new user</p>
             </header>
 
             @if ($errors->any())
@@ -556,10 +556,10 @@
         </div>
 
         {{-- Import Batch Modal --}}
-        <div x-show="showImportModal" class="relative bg-white dark:bg-gray-900 rounded-[30px] sm:rounded-[35px] max-w-xl w-full p-6 sm:p-8 lg:p-12 shadow-2xl border border-gray-100 dark:border-gray-800">
-            <header class="mb-8">
-                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-100 tracking-tight uppercase">Import Intern Accounts</h3>
-                <p class="text-gray-400 dark:text-gray-500 text-sm mt-2 font-medium italic">Upload a CSV file containing multiple intern details</p>
+        <div x-show="showImportModal" class="relative bg-white dark:bg-gray-900 rounded-[30px] sm:rounded-[35px] max-w-xl w-full p-5 sm:p-8 lg:p-12 shadow-2xl border border-gray-100 dark:border-gray-800">
+            <header class="mb-6 sm:mb-8">
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100 tracking-tight uppercase">Import Intern Accounts</h3>
+                <p class="text-gray-400 dark:text-gray-500 text-xs sm:text-sm mt-2 font-medium italic">Upload a CSV file containing multiple intern details</p>
             </header>
 
             <form action="{{ route('admin.accounts.import') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
@@ -591,10 +591,10 @@
         </div>
 
         {{-- Edit User Modal --}}
-        <div x-show="showEditModal" class="relative bg-white dark:bg-gray-900 rounded-[30px] sm:rounded-[35px] max-w-4xl w-full p-6 sm:p-8 lg:p-12 shadow-2xl overflow-y-auto max-h-[90vh] border border-gray-100 dark:border-gray-800 custom-scrollbar">
-            <header class="mb-8 lg:mb-10">
-                <h3 class="text-2xl lg:text-3xl font-bold text-gray-800 dark:text-gray-100 tracking-tight uppercase">Modify Account</h3>
-                <p class="text-gray-400 dark:text-gray-500 text-sm mt-2 font-medium italic" x-text="'Updating details for ' + editData.email"></p>
+        <div x-show="showEditModal" class="relative bg-white dark:bg-gray-900 rounded-[30px] sm:rounded-[35px] max-w-4xl w-full p-5 sm:p-8 lg:p-12 shadow-2xl overflow-y-auto max-h-[90vh] border border-gray-100 dark:border-gray-800 custom-scrollbar">
+            <header class="mb-6 sm:mb-8 lg:mb-10">
+                <h3 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800 dark:text-gray-100 tracking-tight uppercase">Modify Account</h3>
+                <p class="text-gray-400 dark:text-gray-500 text-xs sm:text-sm mt-2 font-medium italic" x-text="'Updating details for ' + editData.email"></p>
             </header>
 
             @if ($errors->any())
@@ -754,10 +754,10 @@
         </div>
 
         {{-- Delete/Deactivate Modal --}}
-        <div x-show="showDeleteModal" class="relative bg-white dark:bg-gray-900 rounded-[30px] sm:rounded-[35px] max-w-xl w-full p-6 sm:p-8 lg:p-12 shadow-2xl border border-gray-100 dark:border-gray-800">
-            <header class="mb-8">
-                <h3 class="text-2xl lg:text-3xl font-bold text-gray-800 dark:text-gray-100 tracking-tight uppercase" x-text="isDeactivated ? 'Confirm Reactivation' : 'Confirm Deactivation'">Confirm Action</h3>
-                <p class="text-gray-400 dark:text-gray-500 text-sm mt-2 font-medium italic" x-text="isDeactivated ? 'This action will restore system access for the account.' : 'This action will temporarily lock the account and prevent login access.'"></p>
+        <div x-show="showDeleteModal" class="relative bg-white dark:bg-gray-900 rounded-[30px] sm:rounded-[35px] max-w-xl w-full p-5 sm:p-8 lg:p-12 shadow-2xl border border-gray-100 dark:border-gray-800">
+            <header class="mb-6 sm:mb-8">
+                <h3 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800 dark:text-gray-100 tracking-tight uppercase" x-text="isDeactivated ? 'Confirm Reactivation' : 'Confirm Deactivation'">Confirm Action</h3>
+                <p class="text-gray-400 dark:text-gray-500 text-xs sm:text-sm mt-2 font-medium italic" x-text="isDeactivated ? 'This action will restore system access for the account.' : 'This action will temporarily lock the account and prevent login access.'"></p>
             </header>
 
             <div class="flex items-center gap-6 p-6 rounded-[25px] border mb-8 text-left" :class="isDeactivated ? 'bg-emerald-50 dark:bg-emerald-500/10 border-emerald-100 dark:border-emerald-500/30' : 'bg-rose-50 dark:bg-rose-500/10 border-rose-100 dark:border-rose-500/30'">
