@@ -46,13 +46,98 @@
 
         {{-- SKELETON LOADING VIEW --}}
         @php
-            $accountSkeletonCount = $users->isEmpty() ? 1 : min($users->count(), 10);
+            $accountSkeletonCount = $users->isEmpty() ? 5 : min($users->count(), 10);
         @endphp
         
         <div x-show="loading" x-transition:leave="transition ease-in duration-300 pointer-events-none" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="flex flex-col flex-1">
             <x-table-container title="User Directory" subtitle="Hydrating authenticated records...">
-                <x-skeleton type="list" :rows="min($accountSkeletonCount, 3)" />
+                <x-slot name="headerAction">
+                    <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
+                        <div class="h-[44px] sm:w-36 bg-gray-200 dark:bg-gray-700 rounded-xl animate-shimmer"></div>
+                        <div class="h-[44px] sm:w-32 bg-gray-200 dark:bg-gray-700 rounded-xl animate-shimmer"></div>
+                    </div>
+                </x-slot>
+
+                <div class="mb-8">
+                    <div class="h-[52px] sm:h-[56px] bg-gray-200 dark:bg-gray-700 rounded-2xl animate-shimmer max-w-md"></div>
+                </div>
+
+                <div class="hidden md:block">
+                    <div class="h-12 bg-gray-200/50 dark:bg-gray-700/30 rounded-t-2xl animate-shimmer mb-1"></div>
+                    <x-skeleton type="list" :rows="min($accountSkeletonCount, 5)" />
+                </div>
+
+                <div class="md:hidden space-y-4">
+                    @for($i = 0; $i < min($accountSkeletonCount, 4); $i++)
+                        <div class="bg-gray-200/30 dark:bg-gray-700/20 p-6 rounded-2xl animate-shimmer border border-gray-100/50 dark:border-gray-700/30">
+                            <div class="flex items-center gap-4 mb-4">
+                                <div class="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                                <div class="flex-1 space-y-2">
+                                    <div class="h-4 w-2/3 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                                    <div class="h-3 w-1/2 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                                </div>
+                            </div>
+                            <div class="flex gap-2 mb-4">
+                                <div class="h-6 w-20 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                                <div class="h-6 w-24 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                            </div>
+                            <div class="flex gap-4 pt-4 border-t border-gray-100 dark:border-gray-700/50">
+                                <div class="flex-1 h-[44px] bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
+                                <div class="flex-1 h-[44px] bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
+                            </div>
+                        </div>
+                    @endfor
+                </div>
+
+                <div class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+                    <div class="h-4 w-44 bg-gray-200 dark:bg-gray-700 rounded animate-shimmer"></div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-[44px] h-[44px] bg-gray-200 dark:bg-gray-700 rounded-xl animate-shimmer"></div>
+                        <div class="flex items-center gap-1 bg-gray-200/50 dark:bg-gray-700/30 p-1.5 rounded-2xl">
+                            <div class="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
+                            <div class="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
+                            <div class="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
+                        </div>
+                        <div class="w-[44px] h-[44px] bg-gray-200 dark:bg-gray-700 rounded-xl animate-shimmer"></div>
+                    </div>
+                </div>
             </x-table-container>
+
+            <div class="mt-12">
+                <div class="bg-white dark:bg-gray-900 rounded-[25px] sm:rounded-[30px] border border-gray-100 dark:border-gray-800 overflow-hidden">
+                    <div class="p-6 sm:p-8 lg:p-10 border-b border-gray-50 dark:border-gray-800">
+                        <div class="h-5 w-52 bg-gray-200 dark:bg-gray-700 rounded animate-shimmer"></div>
+                        <div class="h-4 w-36 bg-gray-200 dark:bg-gray-700 rounded animate-shimmer mt-2"></div>
+                    </div>
+                    <div class="p-4 sm:p-6 lg:p-10">
+                        <div class="hidden md:block">
+                            <div class="h-12 bg-gray-200/50 dark:bg-gray-700/30 rounded-t-2xl animate-shimmer mb-1"></div>
+                            <x-skeleton type="list" :rows="3" />
+                        </div>
+                        <div class="md:hidden space-y-4">
+                            @for($i = 0; $i < 2; $i++)
+                                <div class="bg-gray-200/30 dark:bg-gray-700/20 p-6 rounded-2xl animate-shimmer border border-gray-100/50 dark:border-gray-700/30">
+                                    <div class="flex items-center gap-4 mb-4">
+                                        <div class="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                                        <div class="flex-1 space-y-2">
+                                            <div class="h-4 w-1/2 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                                            <div class="h-3 w-1/3 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2 mb-4">
+                                        <div class="h-6 w-28 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                                        <div class="h-6 w-20 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                                    </div>
+                                    <div class="flex gap-4 pt-4 border-t border-gray-100 dark:border-gray-700/50">
+                                        <div class="flex-1 h-[44px] bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
+                                        <div class="flex-1 h-[44px] bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
+                                    </div>
+                                </div>
+                            @endfor
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         {{-- ACTUAL CONTENT VIEW --}}
