@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Storage;
 use PragmaRX\Google2FALaravel\Google2FA;
 use ZipArchive;
 
+use Vinkla\Hashids\Facades\Hashids;
+
 class AdminController extends Controller
 {
     protected $auditService;
@@ -61,8 +63,14 @@ class AdminController extends Controller
         $highRiskAnomalies = AuditLog::with(['user', 'internDetails', 'supervisorDetails'])
             ->where('anomaly_score', '>', 0.7)
             ->latest('timestamp')
-            ->limit(5)
-            ->get();
+            ->get()
+            ->filter(function ($log) {
+                $encodedLogId = Hashids::encode($log->log_id);
+                return !AuditLog::where('action', 'like', 'Evaluated Anomaly:%')
+                    ->where('resource', 'like', '%' . $encodedLogId . '%')
+                    ->exists();
+            })
+            ->take(5);
 
         // 5. Recently Created Users
         $newUsers = User::with('role')
