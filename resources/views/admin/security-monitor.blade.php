@@ -292,9 +292,9 @@
                     <p class="text-[9px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider mt-2">
                         IP: {{ $log->ip_address ?? 'Unknown' }} • {{ $log->timestamp ? $log->timestamp->format('m/d, H:i') : 'N/A' }}
                     </p>
-                    <div class="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800 flex justify-between items-center text-[9px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-                        <p class="line-clamp-1" title="{{ $log->user_agent }}">Device: {{ str_replace('|', ' • ', $log->device ?? 'System') }}</p>
-                        <p class="line-clamp-1 shrink-0 ml-4" title="{{ $log->user_agent }}">UA: {{ $log->user_agent ?? 'System' }}</p>
+                    <div class="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-0 text-[9px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+                        <p class="line-clamp-1 overflow-hidden" title="{{ $log->user_agent }}">Device: {{ str_replace('|', ' • ', $log->device ?? 'System') }}</p>
+                        <p class="line-clamp-1 sm:ml-4 overflow-hidden" title="{{ $log->user_agent }}">UA: {{ $log->user_agent ?? 'System' }}</p>
                     </div>
                     @if($log->user && $log->user->role_id !== \App\Enums\UserRole::ADMIN && $log->anomaly_score > 0.7 && $log->user->locked_until && now()->lessThan($log->user->locked_until))
                         <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 space-y-2">
