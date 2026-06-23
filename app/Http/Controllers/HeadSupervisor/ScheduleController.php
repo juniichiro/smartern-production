@@ -82,7 +82,17 @@ class ScheduleController extends Controller
         $schedulesJson = json_encode($eventsByDate);
         $schoolSchedulesJson = json_encode($schoolSchedules->keyBy('school_name'));
 
-        return view('head-supervisor.schedule', compact('dateExceptions', 'schoolSchedules', 'schedulesJson', 'schoolSchedulesJson', 'universities'));
+        $interns = InternDetail::with('user')->orderBy('last_name', 'asc')->get();
+        $internsJson = json_encode($interns->map(function ($i) {
+            return [
+                'id' => $i->user->getRouteKey(),
+                'name' => "{$i->first_name} {$i->last_name}",
+                'email' => $i->user->email ?? '',
+                'schedule_assignment' => $i->schedule_assignment ?? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+            ];
+        }));
+
+        return view('head-supervisor.schedule', compact('dateExceptions', 'schoolSchedules', 'schedulesJson', 'schoolSchedulesJson', 'universities', 'internsJson'));
     }
 
     public function showAttachment(AbsenceRequest $absence, Request $request)
