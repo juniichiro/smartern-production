@@ -115,11 +115,7 @@ class AttendanceService
         // 1. Check for date-specific global overrides (holiday, suspension)
         $dateStatus = $this->checkDateStatus($date);
         if ($dateStatus['blocked']) {
-            if ($dateStatus['type'] === 'weekend' && $this->isInternScheduled($user, $date)) {
-                // Do not block - this is a scheduled day for the intern
-            } else {
-                return $dateStatus;
-            }
+            return $dateStatus;
         }
 
         // 2. Check for approved FULL-DAY absence for this user
