@@ -1,7 +1,7 @@
 <section class="relative min-h-[92dvh] flex flex-col justify-between bg-gray-50 dark:bg-gray-950 overflow-hidden select-none transition-colors duration-300">
-    {{-- Immersive Hero Background visual with brand-aligned gradient overlay --}}
+    {{-- Immersive Hero Background visual with brand-aligned gradient overlay and blur filter to mask low resolution --}}
     <div class="absolute inset-0 z-0 overflow-hidden">
-        <img src="{{ asset('images/sdoqc.webp') }}" alt="Schools Division Office of Quezon City" class="w-full h-full object-cover">
+        <img src="{{ asset('images/sdoqc.webp') }}" alt="Schools Division Office of Quezon City" class="w-full h-full object-cover blur-[6px] scale-105">
         <div class="absolute inset-0 bg-gradient-to-b from-[#07365c]/95 via-[#0b5694]/65 to-gray-50 dark:from-[#031c30]/95 dark:via-blue-950/80 dark:to-gray-950 transition-colors duration-300"></div>
     </div>
 
