@@ -156,6 +156,7 @@ class AttendanceService
                     'end_time' => $schoolSchedule->end_time,
                     'daily_hours' => (int) $schoolSchedule->daily_hours,
                     'rounding_mode' => $schoolSchedule->rounding_mode ?? 'none',
+                    'late_policy' => $schoolSchedule->late_policy ?? 'actual',
                     'description' => "Schedule for {$school}",
                 ];
             }
@@ -169,6 +170,7 @@ class AttendanceService
             'end_time' => '17:00:00',
             'daily_hours' => 8,
             'rounding_mode' => 'none',
+            'late_policy' => 'actual',
             'description' => 'Standard Office Hours',
         ];
     }
@@ -271,7 +273,8 @@ class AttendanceService
                 if ($log->status === 'excused') {
                     $duration = 0.00;
                 } elseif ($log->clock_out) {
-                    $minutes = $log->clock_in->diffInMinutes($log->clock_out);
+                    $effectiveClockIn = $this->getEffectiveClockIn($log->clock_in, $effectiveSchedule);
+                    $minutes = $effectiveClockIn->diffInMinutes($log->clock_out);
                     $hours = $minutes / 60;
 
                     // Deduct lunch break if > 5 hours (standard practice in SmarTern)
@@ -488,17 +491,18 @@ class AttendanceService
                 ];
             }
 
+            // Rounding mode based on effective schedule
+            $effectiveSchedule = $this->getEffectiveSchedule($user, now());
+            $roundingMode = $effectiveSchedule['rounding_mode'] ?? 'none';
+
             // Calculate hours rendered
-            $minutes = $todayRecord->clock_in->diffInMinutes(now());
+            $effectiveClockIn = $this->getEffectiveClockIn($todayRecord->clock_in, $effectiveSchedule);
+            $minutes = $effectiveClockIn->diffInMinutes(now());
             $hours = $minutes / 60;
 
             if ($hours > 5.0) {
                 $hours = max(0.0, $hours - 1.0); // deduct 1 hour lunch break
             }
-
-            // Rounding mode based on effective schedule
-            $effectiveSchedule = $this->getEffectiveSchedule($user, now());
-            $roundingMode = $effectiveSchedule['rounding_mode'] ?? 'none';
 
             if ($roundingMode === 'floor') {
                 $hoursRendered = floor($hours);
@@ -639,5 +643,40 @@ class AttendanceService
             'type' => 'in',
             'message' => 'Clock-in successful. Welcome to the office.',
         ];
+    }
+
+    /**
+     * Get the effective clock-in time based on the late policy.
+     */
+    private function getEffectiveClockIn(Carbon $clockIn, array $effectiveSchedule)
+    {
+        $latePolicy = $effectiveSchedule['late_policy'] ?? 'actual';
+        $startTimeStr = $effectiveSchedule['start_time'] ?? null;
+
+        if ($latePolicy === 'actual' || !$startTimeStr) {
+            return $clockIn;
+        }
+
+        $schedStart = Carbon::parse($clockIn->toDateString() . ' ' . $startTimeStr);
+
+        // If they clocked in after the scheduled start time, apply the penalty/adjustment policy
+        if ($clockIn->greaterThan($schedStart)) {
+            $effectiveClockIn = $clockIn->copy();
+            if ($latePolicy === 'next_hour') {
+                if ($effectiveClockIn->minute > 0 || $effectiveClockIn->second > 0) {
+                    $effectiveClockIn->addHour()->startOfHour();
+                }
+            } elseif ($latePolicy === 'next_half_hour') {
+                $minute = $effectiveClockIn->minute;
+                if ($minute > 0 && $minute < 30) {
+                    $effectiveClockIn->minute(30)->second(0);
+                } elseif ($minute > 30) {
+                    $effectiveClockIn->addHour()->minute(0)->second(0);
+                }
+            }
+            return $effectiveClockIn;
+        }
+
+        return $clockIn;
     }
 }

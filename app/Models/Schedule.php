@@ -20,6 +20,7 @@ class Schedule extends Model
         'end_time',
         'daily_hours',
         'rounding_mode',
+        'late_policy',
         'description',
     ];
 

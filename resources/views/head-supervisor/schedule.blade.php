@@ -239,6 +239,10 @@
                             <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Daily Credit</span>
                             <p class="text-sm font-black text-gray-800 dark:text-white tracking-widest" x-text="(schoolSchedules[selectedSchool].daily_hours % 1 === 0 ? schoolSchedules[selectedSchool].daily_hours : schoolSchedules[selectedSchool].daily_hours) + ' HRS (' + schoolSchedules[selectedSchool].rounding_mode.toUpperCase() + ')'"></p>
                         </div>
+                        <div class="text-left">
+                            <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Late Policy</span>
+                            <p class="text-sm font-black text-gray-800 dark:text-white tracking-widest" x-text="schoolSchedules[selectedSchool].late_policy === 'next_hour' ? 'NEXT HOUR' : (schoolSchedules[selectedSchool].late_policy === 'next_half_hour' ? 'NEXT 30 MINS' : 'ACTUAL MINUTES')"></p>
+                        </div>
                         <div class="flex gap-2 ml-auto">
                              <button @click="editSchoolSchedule(schoolSchedules[selectedSchool])" class="p-3 sm:p-4 bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 rounded-2xl hover:bg-blue-100 transition-all border border-blue-100 dark:border-blue-900/50">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
@@ -357,6 +361,31 @@
                                 </label>
                             </div>
                             <p class="text-[10px] text-gray-400 font-medium italic mt-2 px-1">Calculations are rounded to the nearest whole hour. Floor ignores extra minutes; Ceil rounds up.</p>
+                        </div>
+
+                        <div class="space-y-2 text-left">
+                            <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Late Clock-In Policy</label>
+                            <div class="grid grid-cols-3 gap-3">
+                                <label class="cursor-pointer group">
+                                    <input type="radio" name="late_policy" value="actual" x-model="schoolFormData.late_policy" class="hidden peer">
+                                    <div class="p-3 text-center border border-gray-100 dark:border-gray-800 rounded-xl peer-checked:bg-[#0B5694] peer-checked:text-white transition-all">
+                                        <p class="text-[10px] font-black uppercase tracking-widest">Actual Mins</p>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer group">
+                                    <input type="radio" name="late_policy" value="next_half_hour" x-model="schoolFormData.late_policy" class="hidden peer">
+                                    <div class="p-3 text-center border border-gray-100 dark:border-gray-800 rounded-xl peer-checked:bg-[#0B5694] peer-checked:text-white transition-all">
+                                        <p class="text-[10px] font-black uppercase tracking-widest">Next 30m</p>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer group">
+                                    <input type="radio" name="late_policy" value="next_hour" x-model="schoolFormData.late_policy" class="hidden peer">
+                                    <div class="p-3 text-center border border-gray-100 dark:border-gray-800 rounded-xl peer-checked:bg-[#0B5694] peer-checked:text-white transition-all">
+                                        <p class="text-[10px] font-black uppercase tracking-widest">Next Hour</p>
+                                    </div>
+                                </label>
+                            </div>
+                            <p class="text-[10px] text-gray-400 font-medium italic mt-2 px-1">Defines how to count hours if an intern is late. E.g., 8:15 AM check-in starts counting at 9:00 AM with 'Next Hour'.</p>
                         </div>
 
                         <button type="submit"
@@ -671,7 +700,8 @@
                 start_time: '08:00',
                 end_time: '17:00',
                 daily_hours: 8,
-                rounding_mode: 'none'
+                rounding_mode: 'none',
+                late_policy: 'actual'
             },
 
             // Exception State
@@ -773,7 +803,8 @@
                     start_time: '08:00',
                     end_time: '17:00',
                     daily_hours: 8,
-                    rounding_mode: 'none'
+                    rounding_mode: 'none',
+                    late_policy: 'actual'
                 };
             },
 
@@ -785,7 +816,8 @@
                     start_time: school.start_time,
                     end_time: school.end_time,
                     daily_hours: school.daily_hours,
-                    rounding_mode: school.rounding_mode
+                    rounding_mode: school.rounding_mode,
+                    late_policy: school.late_policy || 'actual'
                 };
                 this.showSchoolModal = true;
             },

@@ -22,6 +22,7 @@ return new class extends Migration
             $table->time('end_time')->nullable();
             $table->integer('daily_hours')->nullable();
             $table->enum('rounding_mode', ['none', 'floor', 'ceil'])->default('none');
+            $table->enum('late_policy', ['actual', 'next_hour', 'next_half_hour'])->default('actual');
             $table->string('description')->nullable();
             $table->timestamps();
         });

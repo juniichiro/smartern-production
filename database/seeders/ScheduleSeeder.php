@@ -21,6 +21,7 @@ class ScheduleSeeder extends Seeder
                 'end_time' => '17:00:00',
                 'daily_hours' => 8,
                 'rounding_mode' => 'none',
+                'late_policy' => 'actual',
                 'description' => "Default work schedule for {$school} interns.",
             ]);
 

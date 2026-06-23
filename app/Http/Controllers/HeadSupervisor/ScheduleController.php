@@ -136,6 +136,7 @@ class ScheduleController extends Controller
             $rules['end_time'] = 'required';
             $rules['daily_hours'] = 'required|integer|min:0|max:24';
             $rules['rounding_mode'] = 'required|string|in:none,floor,ceil';
+            $rules['late_policy'] = 'required|string|in:actual,next_hour,next_half_hour';
         } else {
             $rules['date'] = 'required|date|unique:schedules,date';
         }
@@ -184,6 +185,7 @@ class ScheduleController extends Controller
             $rules['end_time'] = 'required';
             $rules['daily_hours'] = 'required|integer|min:0|max:24';
             $rules['rounding_mode'] = 'required|string|in:none,floor,ceil';
+            $rules['late_policy'] = 'required|string|in:actual,next_hour,next_half_hour';
         } else {
             $rules['date'] = 'required|date|unique:schedules,date,'.$schedule->id;
         }
