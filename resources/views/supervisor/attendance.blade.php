@@ -249,7 +249,7 @@
                                     <td class="py-5 px-4 text-center font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap text-sm">
                                         @if($log['type'] === 'actual')
                                             @if($log['clock_out'])
-                                                {{ round($log['duration']) }} HRS
+                                                {{ $log['duration'] % 1 === 0 ? (int)$log['duration'] : round($log['duration'], 2) }} HRS
                                             @else
                                                 <span class="text-blue-500 dark:text-blue-400 italic text-xs font-semibold animate-pulse">In Progress</span>
                                             @endif
@@ -565,7 +565,7 @@
                                                             <td class="py-4 px-3 text-center font-bold whitespace-nowrap text-gray-900 dark:text-gray-100">
                                                                 @if($log['type'] === 'actual')
                                                                     @if($log['clock_out'])
-                                                                        {{ round($log['duration']) }}
+                                                                        {{ $log['duration'] % 1 === 0 ? (int)$log['duration'] : round($log['duration'], 2) }}
                                                                     @else
                                                                         <span class="text-blue-500 dark:text-blue-400 italic text-[11px] font-semibold animate-pulse">In Progress</span>
                                                                     @endif

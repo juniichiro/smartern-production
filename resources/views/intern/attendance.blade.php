@@ -297,7 +297,7 @@
                                             @php
                                                 $isCredited = in_array($log['status'], ['on_time', 'late']) && $log['clock_out'];
                                                 $hourClass = $isCredited ? 'text-emerald-500' : ($status === 'active' ? 'text-blue-500 animate-pulse' : 'text-gray-300 dark:text-gray-600');
-                                                $hourValue = $log['type'] === 'actual' ? ($log['clock_out'] ? (int)round($log['duration']) . 'H' : 'Active') : '0H';
+                                                $hourValue = $log['type'] === 'actual' ? ($log['clock_out'] ? ($log['duration'] % 1 === 0 ? (int)$log['duration'] : round($log['duration'], 2)) . 'H' : 'Active') : '0H';
                                                 
                                                 // Holidays/Suspensions/Excused are technically 0H but we show them clearly
                                                 if (in_array($log['type'], ['holiday', 'suspension', 'excused'])) {
