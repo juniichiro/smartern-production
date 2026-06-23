@@ -39,33 +39,38 @@
                 <p class="text-[10px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mt-1">Manage intern assignments and analyze compatibility</p>
             </div>
             <div class="flex flex-wrap items-center gap-2 sm:gap-3 w-full lg:w-auto">
-                {{-- Import Button (New Position) --}}
+                {{-- Import Button --}}
                 <button @click="showImport = !showImport" 
-                        class="flex-1 sm:flex-none flex items-center justify-center gap-2 sm:gap-3 bg-gray-50 dark:bg-gray-800 px-4 sm:px-6 py-3 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl text-[8px] sm:text-[10px] lg:text-xs font-bold text-gray-500 dark:text-gray-400 hover:border-[#0B5694]/30 hover:text-[#0B5694] dark:hover:text-blue-400 transition uppercase tracking-wider active:scale-95"
+                        title="Import CSV"
+                        class="flex-none flex items-center justify-center bg-gray-50 dark:bg-gray-800 p-3 sm:px-6 sm:py-3 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl font-bold text-gray-500 dark:text-gray-400 hover:border-[#0B5694]/30 hover:text-[#0B5694] dark:hover:text-blue-400 transition uppercase tracking-wider active:scale-95"
                         :class="showImport ? 'border-[#0B5694] text-[#0B5694] bg-blue-50' : ''">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-[18px] sm:h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
-                    Import CSV
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                    <span class="hidden sm:inline ml-2 text-[10px] lg:text-xs">Import CSV</span>
                 </button>
 
                 {{-- Algorithm Guide Button --}}
-                <a href="{{ route('head-supervisor.matching.guide') }}" class="flex-1 sm:flex-none flex items-center justify-center gap-2 sm:gap-3 bg-blue-50 dark:bg-blue-900/20 px-4 sm:px-6 py-3 border border-blue-100 dark:border-blue-800 rounded-xl text-[8px] sm:text-[10px] lg:text-xs font-bold text-[#0B5694] dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition uppercase tracking-wider active:scale-95">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-[18px] sm:h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-                    Algorithm Guide
+                <a href="{{ route('head-supervisor.matching.guide') }}" title="Algorithm Guide"
+                   class="flex-none flex items-center justify-center bg-blue-50 dark:bg-blue-900/20 p-3 sm:px-6 sm:py-3 border border-blue-100 dark:border-blue-800 rounded-xl font-bold text-[#0B5694] dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition uppercase tracking-wider active:scale-95">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    <span class="hidden sm:inline ml-2 text-[10px] lg:text-xs">Algorithm Guide</span>
                 </a>
 
-                <a href="{{ route('head-supervisor.matching.export') }}" class="flex-1 sm:flex-none flex items-center justify-center gap-2 sm:gap-3 bg-white dark:bg-gray-900 px-4 sm:px-6 py-3 border border-gray-200 dark:border-gray-800 rounded-xl text-[8px] sm:text-[10px] lg:text-xs font-bold text-[#0B5694] dark:text-blue-400 shadow-sm hover:bg-blue-50 dark:hover:bg-blue-950/30 transition uppercase tracking-wider active:scale-95">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-[18px] sm:h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg> 
-                    Export Data
+                {{-- Export Data Button --}}
+                <a href="{{ route('head-supervisor.matching.export') }}" title="Export Data"
+                   class="flex-none flex items-center justify-center bg-white dark:bg-gray-900 p-3 sm:px-6 sm:py-3 border border-gray-200 dark:border-gray-800 rounded-xl font-bold text-[#0B5694] dark:text-blue-400 shadow-sm hover:bg-blue-50 dark:hover:bg-blue-950/30 transition uppercase tracking-wider active:scale-95">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    <span class="hidden sm:inline ml-2 text-[10px] lg:text-xs">Export Data</span>
                 </a>
 
-                <form action="{{ route('head-supervisor.matching.clear') }}" method="POST" onsubmit="return confirm('Clear all pending results? Finalized assignments will be saved.')" class="flex-1 sm:flex-none">
+                {{-- Reset Pending Button --}}
+                <form action="{{ route('head-supervisor.matching.clear') }}" method="POST" onsubmit="return confirm('Clear all pending results? Finalized assignments will be saved.')" class="flex-none">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="group flex items-center justify-center gap-2 sm:gap-3 text-red-400 hover:text-red-600 transition-colors w-full sm:w-auto">
-                        <div class="p-2 sm:p-2.5 rounded-xl bg-red-50 dark:bg-red-950/30 group-hover:bg-red-100 dark:group-hover:bg-red-900/50 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-[18px] sm:h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    <button type="submit" title="Reset Pending" class="group flex items-center justify-center text-red-400 hover:text-red-600 transition-colors">
+                        <div class="p-3 rounded-xl bg-red-50 dark:bg-red-950/30 group-hover:bg-red-100 dark:group-hover:bg-red-900/50 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                         </div>
-                        <span class="text-[8px] sm:text-[10px] lg:text-xs font-bold uppercase tracking-wider text-red-500">Reset Pending</span>
+                        <span class="hidden sm:inline ml-2 text-[10px] lg:text-xs font-bold uppercase tracking-wider text-red-500">Reset Pending</span>
                     </button>
                 </form>
             </div>
