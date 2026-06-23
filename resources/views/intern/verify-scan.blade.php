@@ -26,7 +26,7 @@
                     console.warn("GPS Denied or Unavailable, proceeding without location data.");
                     sendAttendance(token, null, null);
                 },
-                { timeout: 5000 }
+                { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 }
             );
         } else {
             sendAttendance(token, null, null);

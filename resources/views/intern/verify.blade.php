@@ -91,7 +91,7 @@
                     (error) => {
                         this.handleError('Location access denied. Please enable GPS and try again.');
                     },
-                    { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+                    { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 }
                 );
             },
 
