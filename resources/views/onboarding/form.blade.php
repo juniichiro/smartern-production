@@ -27,7 +27,7 @@
 
     <div class="w-full max-w-4xl">
         {{-- Header Section --}}
-        <div class="text-center mb-10" x-show="step < 4">
+        <div class="text-center mb-10" x-show="step > 0 && step < 4">
             <div class="inline-flex items-center justify-center p-4 bg-[#0B5694] rounded-[24px] mb-6 shadow-xl shadow-blue-500/20 border border-white/10">
                 <img src="{{ asset('images/white-smartern.png') }}" alt="SmarTern Logo" class="h-10">
             </div>
@@ -42,7 +42,7 @@
         </div>
 
         {{-- Progress Indicator --}}
-        <div class="flex items-center justify-between max-w-lg mx-auto mb-12 relative px-4" x-show="step < 4">
+        <div class="flex items-center justify-between max-w-lg mx-auto mb-12 relative px-4" x-show="step > 0 && step < 4">
             <div class="absolute top-1/2 left-0 w-full h-0.5 bg-gray-200 dark:bg-gray-800 -translate-y-1/2 z-0"></div>
             <div class="absolute top-1/2 left-0 h-0.5 bg-[#0B5694] dark:bg-blue-500 -translate-y-1/2 z-0 transition-all duration-500"
                  :style="'width: ' + ((step - 1) / 2 * 100) + '%'"></div>
@@ -90,6 +90,52 @@
                 @csrf
                 <input type="file" id="hiddenResumeInput" name="resume_pdf" class="hidden">
                 <input type="file" x-ref="profileInput" name="profile_picture" class="hidden" @change="handleProfileUpload">
+
+                {{-- STEP 0: WELCOME & INTRODUCTION --}}
+                <div x-show="step === 0" class="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-2xl mx-auto">
+                    <div class="bg-white dark:bg-gray-900 rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 p-8 md:p-12 text-center space-y-8">
+                        <div class="space-y-6">
+                            <div class="inline-flex items-center justify-center p-4 bg-[#0B5694] rounded-[24px] mb-4 shadow-xl shadow-blue-500/20 border border-white/10">
+                                <img src="{{ asset('images/white-smartern.png') }}" alt="SmarTern Logo" class="h-10">
+                            </div>
+                            <h2 class="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Become a SmarTern Intern</h2>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto font-medium leading-relaxed">
+                                Join our smart internship matching ecosystem. Our AI-driven engine parses your profile and matches you with the ideal host office based on your skills and preferences.
+                            </p>
+                        </div>
+
+                        {{-- Steps Outline Grid --}}
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left my-8">
+                            <div class="p-5 bg-gray-50 dark:bg-gray-800/30 rounded-3xl border border-gray-100/50 dark:border-gray-800/50 space-y-2">
+                                <div class="w-8 h-8 rounded-full bg-[#0B5694]/10 dark:bg-blue-500/10 flex items-center justify-center text-[#0B5694] dark:text-blue-400 font-bold text-sm">1</div>
+                                <h4 class="text-xs font-black text-gray-900 dark:text-white uppercase tracking-wider">Upload Reference</h4>
+                                <p class="text-[11px] text-gray-500 dark:text-gray-400">Upload your PDF resume to auto-fill details.</p>
+                            </div>
+                            <div class="p-5 bg-gray-50 dark:bg-gray-800/30 rounded-3xl border border-gray-100/50 dark:border-gray-800/50 space-y-2">
+                                <div class="w-8 h-8 rounded-full bg-[#0B5694]/10 dark:bg-blue-500/10 flex items-center justify-center text-[#0B5694] dark:text-blue-400 font-bold text-sm">2</div>
+                                <h4 class="text-xs font-black text-gray-900 dark:text-white uppercase tracking-wider">Refine Profile</h4>
+                                <p class="text-[11px] text-gray-500 dark:text-gray-400">Review details and self-assess competencies.</p>
+                            </div>
+                            <div class="p-5 bg-gray-50 dark:bg-gray-800/30 rounded-3xl border border-gray-100/50 dark:border-gray-800/50 space-y-2">
+                                <div class="w-8 h-8 rounded-full bg-[#0B5694]/10 dark:bg-blue-500/10 flex items-center justify-center text-[#0B5694] dark:text-blue-400 font-bold text-sm">3</div>
+                                <h4 class="text-xs font-black text-gray-900 dark:text-white uppercase tracking-wider">Submit & Match</h4>
+                                <p class="text-[11px] text-gray-500 dark:text-gray-400">Publish your application to matching queue.</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4 pt-4">
+                            <button type="button" @click="step = 1" class="w-full bg-[#0B5694] dark:bg-blue-600 text-white py-5 rounded-[30px] font-black text-sm uppercase tracking-widest shadow-xl shadow-blue-500/20 hover:shadow-blue-500/40 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3">
+                                <span>Get Started</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </button>
+
+                            <div class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
+                                Already have an account? 
+                                <a href="{{ route('login') }}" class="text-[#0B5694] dark:text-blue-400 hover:underline ml-1">Log in here</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 {{-- STEP 1: RESUME UPLOAD --}}
                 <div x-show="step === 1" class="animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -493,7 +539,7 @@
 <script>
     function smartOnboardingManager(assessmentItems) {
         return {
-            step: {{ session('success') ? 4 : ($errors->any() ? 2 : 1) }},
+            step: {{ session('success') ? 4 : ($errors->any() ? 2 : 0) }},
             isParsing: false,
             resumeFile: null,
             resumeFileName: '',
