@@ -214,6 +214,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/schedule', [ScheduleController::class, 'store'])->name('schedule.store');
         Route::patch('/schedule/absence/{absence}', [ScheduleController::class, 'reviewAbsenceRequest'])->name('schedule.absence.review');
         Route::get('/schedule/absence/{absence}/attachment', [ScheduleController::class, 'showAttachment'])->name('schedule.absence.show');
+        Route::put('/schedule/{schedule}', [ScheduleController::class, 'update'])->name('schedule.update');
         Route::delete('/schedule/{schedule}', [ScheduleController::class, 'destroy'])->name('schedule.destroy');
     });
 
