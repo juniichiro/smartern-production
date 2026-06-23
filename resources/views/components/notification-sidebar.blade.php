@@ -61,7 +61,7 @@
                 'lg:translate-x-0': !desktopNotifCollapsed,
                 'lg:translate-x-full': desktopNotifCollapsed
            }" 
-           class="w-80 bg-white dark:bg-gray-900 border-l border-gray-100 dark:border-gray-800 p-8 fixed right-0 h-full text-left overflow-y-auto z-[110] transition-all duration-300 ease-in-out">
+           class="w-80 bg-white dark:bg-gray-900 border-l border-gray-100 dark:border-gray-800 p-8 fixed right-0 top-0 h-full text-left overflow-y-auto z-[110] transition-all duration-300 ease-in-out">
         
         {{-- Header --}}
         <div class="flex justify-between items-center mb-12 mt-4">

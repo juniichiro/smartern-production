@@ -87,7 +87,7 @@ class="relative">
                 'lg:translate-x-0': !desktopCollapsed,
                 'lg:-translate-x-full': desktopCollapsed
            }" 
-           class="w-72 lg:w-64 bg-[#0B5694] dark:bg-gray-900 text-white flex flex-col fixed h-full z-[80] shadow-xl text-left transition-all duration-300 ease-in-out border-r border-transparent dark:border-gray-800">
+           class="w-72 lg:w-64 bg-[#0B5694] dark:bg-gray-900 text-white flex flex-col fixed h-full top-0 z-[80] shadow-xl text-left transition-all duration-300 ease-in-out border-r border-transparent dark:border-gray-800">
         
         <div class="flex-grow overflow-y-auto custom-scrollbar">
             {{-- Logo Section --}}
