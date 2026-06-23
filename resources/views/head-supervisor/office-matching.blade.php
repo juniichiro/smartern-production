@@ -38,34 +38,34 @@
                 <h3 class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight uppercase">Office Matching</h3>
                 <p class="text-[10px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mt-1">Manage intern assignments and analyze compatibility</p>
             </div>
-            <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+            <div class="flex flex-wrap items-center gap-2 sm:gap-3 w-full lg:w-auto">
                 {{-- Import Button (New Position) --}}
                 <button @click="showImport = !showImport" 
-                        class="flex-1 sm:flex-none flex items-center justify-center gap-3 bg-gray-50 dark:bg-gray-800 px-6 py-3 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl text-[10px] font-bold text-gray-500 dark:text-gray-400 hover:border-[#0B5694]/30 hover:text-[#0B5694] dark:hover:text-blue-400 transition uppercase tracking-wider active:scale-95"
+                        class="flex-1 sm:flex-none flex items-center justify-center gap-2 sm:gap-3 bg-gray-50 dark:bg-gray-800 px-4 sm:px-6 py-3 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl text-[8px] sm:text-[10px] lg:text-xs font-bold text-gray-500 dark:text-gray-400 hover:border-[#0B5694]/30 hover:text-[#0B5694] dark:hover:text-blue-400 transition uppercase tracking-wider active:scale-95"
                         :class="showImport ? 'border-[#0B5694] text-[#0B5694] bg-blue-50' : ''">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-[18px] sm:h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
                     Import CSV
                 </button>
 
                 {{-- Algorithm Guide Button --}}
-                <a href="{{ route('head-supervisor.matching.guide') }}" class="flex-1 sm:flex-none flex items-center justify-center gap-3 bg-blue-50 dark:bg-blue-900/20 px-6 py-3 border border-blue-100 dark:border-blue-800 rounded-xl text-[10px] font-bold text-[#0B5694] dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition uppercase tracking-wider active:scale-95">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                <a href="{{ route('head-supervisor.matching.guide') }}" class="flex-1 sm:flex-none flex items-center justify-center gap-2 sm:gap-3 bg-blue-50 dark:bg-blue-900/20 px-4 sm:px-6 py-3 border border-blue-100 dark:border-blue-800 rounded-xl text-[8px] sm:text-[10px] lg:text-xs font-bold text-[#0B5694] dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition uppercase tracking-wider active:scale-95">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-[18px] sm:h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                     Algorithm Guide
                 </a>
 
-                <a href="{{ route('head-supervisor.matching.export') }}" class="flex-1 sm:flex-none flex items-center justify-center gap-3 bg-white dark:bg-gray-900 px-6 py-3 border border-gray-200 dark:border-gray-800 rounded-xl text-[10px] font-bold text-[#0B5694] dark:text-blue-400 shadow-sm hover:bg-blue-50 dark:hover:bg-blue-950/30 transition uppercase tracking-wider active:scale-95">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg> 
+                <a href="{{ route('head-supervisor.matching.export') }}" class="flex-1 sm:flex-none flex items-center justify-center gap-2 sm:gap-3 bg-white dark:bg-gray-900 px-4 sm:px-6 py-3 border border-gray-200 dark:border-gray-800 rounded-xl text-[8px] sm:text-[10px] lg:text-xs font-bold text-[#0B5694] dark:text-blue-400 shadow-sm hover:bg-blue-50 dark:hover:bg-blue-950/30 transition uppercase tracking-wider active:scale-95">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-[18px] sm:h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg> 
                     Export Data
                 </a>
 
                 <form action="{{ route('head-supervisor.matching.clear') }}" method="POST" onsubmit="return confirm('Clear all pending results? Finalized assignments will be saved.')" class="flex-1 sm:flex-none">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="group flex items-center justify-center gap-3 text-red-400 hover:text-red-600 transition-colors w-full sm:w-auto">
-                        <div class="p-2.5 rounded-xl bg-red-50 dark:bg-red-950/30 group-hover:bg-red-100 dark:group-hover:bg-red-900/50 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    <button type="submit" class="group flex items-center justify-center gap-2 sm:gap-3 text-red-400 hover:text-red-600 transition-colors w-full sm:w-auto">
+                        <div class="p-2 sm:p-2.5 rounded-xl bg-red-50 dark:bg-red-950/30 group-hover:bg-red-100 dark:group-hover:bg-red-900/50 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-[18px] sm:h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                         </div>
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-red-500">Reset Pending</span>
+                        <span class="text-[8px] sm:text-[10px] lg:text-xs font-bold uppercase tracking-wider text-red-500">Reset Pending</span>
                     </button>
                 </form>
             </div>
@@ -135,33 +135,33 @@
                 </div>
 
                 {{-- LEGENDS --}}
-                <div class="flex flex-col gap-4 sm:gap-6 mb-6 sm:mb-10 px-0 sm:px-2">
-                    <div class="flex flex-wrap items-center gap-4 sm:gap-6 overflow-x-auto no-scrollbar pb-2">
-                        <span class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider border-r border-gray-200 dark:border-gray-800 pr-6 whitespace-nowrap">Recommendation</span>
-                        <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-500 whitespace-nowrap">
-                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div> Strong (80%+): Highly Recommended
+                <div class="flex flex-col gap-3 sm:gap-4 lg:gap-6 mb-4 sm:mb-8 lg:mb-10 px-0 sm:px-2">
+                    <div class="flex flex-wrap items-center gap-2 sm:gap-4 lg:gap-6 overflow-x-auto no-scrollbar pb-2">
+                        <span class="text-[9px] sm:text-[10px] lg:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider border-r border-gray-200 dark:border-gray-800 pr-3 sm:pr-6 whitespace-nowrap">Recommendation</span>
+                        <div class="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] lg:text-xs font-bold uppercase tracking-wider text-emerald-500 whitespace-nowrap">
+                            <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-500 shrink-0"></div> Strong (80%+): Highly Recommended
                         </div>
-                        <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400 whitespace-nowrap">
-                            <div class="w-2.5 h-2.5 rounded-full bg-[#0B5694] dark:bg-blue-400"></div> Good (60-79%): Recommended
+                        <div class="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] lg:text-xs font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400 whitespace-nowrap">
+                            <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#0B5694] dark:bg-blue-400 shrink-0"></div> Good (60-79%): Recommended
                         </div>
-                        <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-indigo-500 whitespace-nowrap">
-                            <div class="w-2.5 h-2.5 rounded-full bg-indigo-500"></div> Fair (40-59%): Needs Training
+                        <div class="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] lg:text-xs font-bold uppercase tracking-wider text-indigo-500 whitespace-nowrap">
+                            <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-indigo-500 shrink-0"></div> Fair (40-59%): Needs Training
                         </div>
-                        <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-500 whitespace-nowrap">
-                            <div class="w-2.5 h-2.5 rounded-full bg-amber-500"></div> Poor (< 40%): Not Recommended
+                        <div class="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] lg:text-xs font-bold uppercase tracking-wider text-amber-500 whitespace-nowrap">
+                            <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-amber-500 shrink-0"></div> Poor (< 40%): Not Recommended
                         </div>
                     </div>
 
-                    <div class="flex flex-wrap items-center gap-4 sm:gap-6 overflow-x-auto no-scrollbar pb-2">
-                        <span class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider border-r border-gray-200 dark:border-gray-800 pr-6 whitespace-nowrap">Verification</span>
-                        <div class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-gray-500">
-                            <span class="bg-emerald-50 dark:bg-emerald-950/30 text-emerald-500 px-2.5 py-1 rounded border border-emerald-500/20">High</span> Interviewed
+                    <div class="flex flex-wrap items-center gap-2 sm:gap-4 lg:gap-6 overflow-x-auto no-scrollbar pb-2">
+                        <span class="text-[9px] sm:text-[10px] lg:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider border-r border-gray-200 dark:border-gray-800 pr-3 sm:pr-6 whitespace-nowrap">Verification</span>
+                        <div class="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] lg:text-[11px] font-bold uppercase tracking-wider text-gray-500 whitespace-nowrap">
+                            <span class="bg-emerald-50 dark:bg-emerald-950/30 text-emerald-500 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded text-[8px] sm:text-[9px] lg:text-[10px] border border-emerald-500/20">High</span> Interviewed
                         </div>
-                        <div class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-gray-500">
-                            <span class="bg-blue-50 dark:bg-blue-950/30 text-blue-500 px-2.5 py-1 rounded border border-blue-500/20">Med</span> Resume Found
+                        <div class="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] lg:text-[11px] font-bold uppercase tracking-wider text-gray-500 whitespace-nowrap">
+                            <span class="bg-blue-50 dark:bg-blue-950/30 text-blue-500 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded text-[8px] sm:text-[9px] lg:text-[10px] border border-blue-500/20">Med</span> Resume Found
                         </div>
-                        <div class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-gray-500">
-                            <span class="bg-amber-50 dark:bg-amber-950/30 text-amber-500 px-2.5 py-1 rounded border border-amber-500/20">Low</span> Self-Reported
+                        <div class="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] lg:text-[11px] font-bold uppercase tracking-wider text-gray-500 whitespace-nowrap">
+                            <span class="bg-amber-50 dark:bg-amber-950/30 text-amber-500 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded text-[8px] sm:text-[9px] lg:text-[10px] border border-amber-500/20">Low</span> Self-Reported
                         </div>
                     </div>
                 </div>
