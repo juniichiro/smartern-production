@@ -41,8 +41,18 @@ class="relative">
             <h1 class="font-bold text-lg tracking-normal text-white">SmarTern</h1>
         </div>
 
-        {{-- Notif Toggle Placeholder --}}
-        <div class="w-10"></div> 
+        {{-- Notification Toggle (Right) --}}
+        <button @click="$dispatch('toggle-notifications'); sidebarOpen = false" class="min-w-[44px] min-h-[44px] flex items-center justify-center p-2 rounded-lg hover:bg-white/10 dark:hover:bg-gray-800 transition cursor-pointer relative" title="Notifications">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+            </svg>
+            <span x-data="{ mobileUnread: {{ isset($notifications) ? $notifications->where('is_read', false)->count() : 0 }} }" 
+                  @update-unread.window="mobileUnread = $event.detail.count"
+                  x-show="mobileUnread > 0"
+                  x-text="mobileUnread"
+                  class="absolute -top-0.5 -right-0.5 bg-rose-600 text-white text-[9px] min-w-[16px] h-[16px] px-1 flex items-center justify-center rounded-full font-bold shadow-[0_0_10px_rgba(225,29,72,0.6)]"
+                  x-cloak></span>
+        </button>
     </div>
 
     {{-- Desktop Toggle Button (Visible when sidebar is collapsed) --}}

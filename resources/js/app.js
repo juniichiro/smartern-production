@@ -887,6 +887,9 @@ Alpine.data('notificationManager', (userId, initialCount) => ({
     allRead: false,
     desktopNotifCollapsed: localStorage.getItem('notifCollapsed') === 'true',
     init() {
+        this.$watch('unreadCount', value => {
+            window.dispatchEvent(new CustomEvent('update-unread', { detail: { count: value } }));
+        });
         this.$watch('desktopNotifCollapsed', value => {
             localStorage.setItem('notifCollapsed', value);
             document.body.classList.toggle('notif-collapsed', value);
@@ -896,6 +899,9 @@ Alpine.data('notificationManager', (userId, initialCount) => ({
             if (value) this.clearNotifications();
         });
         document.body.classList.toggle('notif-collapsed', this.desktopNotifCollapsed);
+
+        // Dispatch initial unread count so mobile header badge renders correctly
+        window.dispatchEvent(new CustomEvent('update-unread', { detail: { count: this.unreadCount } }));
 
         // Real-Time Listener
         if (window.Echo) {

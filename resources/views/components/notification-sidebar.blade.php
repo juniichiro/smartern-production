@@ -17,27 +17,26 @@
         });
         document.body.classList.toggle('notif-collapsed', desktopNotifCollapsed);
      "
-     @close-notifications.window="notifOpen = false">
+     @close-notifications.window="notifOpen = false"
+     @toggle-notifications.window="notifOpen = !notifOpen; if(notifOpen) $dispatch('close-sidebar')">
     
-    {{-- Notif Toggle (Mobile & Desktop Collapsed) --}}
-    <button @click="if(window.innerWidth >= 1024) { desktopNotifCollapsed = !desktopNotifCollapsed } else { notifOpen = !notifOpen; if(notifOpen) $dispatch('close-sidebar') }" 
+    {{-- Notif Toggle (Desktop only) --}}
+    <button @click="desktopNotifCollapsed = !desktopNotifCollapsed" 
             :class="{
-                'lg:bg-transparent lg:border-none lg:shadow-none text-[#0B5694] dark:text-blue-400': desktopNotifCollapsed && window.innerWidth >= 1024,
-                'lg:bg-white lg:border lg:border-gray-100 lg:shadow-lg text-[#0B5694] dark:bg-gray-900 dark:border-gray-800 dark:text-blue-400': !desktopNotifCollapsed && window.innerWidth >= 1024
+                'bg-transparent border-none shadow-none text-[#0B5694] dark:text-blue-400': desktopNotifCollapsed,
+                'bg-white border border-gray-100 shadow-lg text-[#0B5694] dark:bg-gray-900 dark:border-gray-800 dark:text-blue-400': !desktopNotifCollapsed
             }"
-            class="fixed top-4 right-4 lg:top-[2.5rem] lg:right-6 z-[90] p-2 lg:p-3 rounded-lg lg:rounded-xl bg-transparent lg:bg-white dark:lg:bg-gray-900 border-none lg:border lg:border-gray-100 dark:lg:border-gray-800 shadow-none lg:shadow-lg text-white lg:text-[#0B5694] dark:lg:text-blue-400 hover:bg-white/10 lg:hover:bg-white dark:lg:hover:bg-gray-800 transition-all active:scale-95 group"
+            class="hidden lg:flex fixed top-[2.5rem] right-6 z-[90] p-3 rounded-xl transition-all active:scale-95 group"
             title="Toggle Notifications">
         <div class="relative">
-            {{-- Using 'fill' and 'stroke' for the 'Filled' version when on desktop --}}
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" 
-                 :fill="(desktopNotifCollapsed && window.innerWidth >= 1024) ? 'currentColor' : 'none'" 
+                 :fill="desktopNotifCollapsed ? 'currentColor' : 'none'" 
                  stroke="currentColor" stroke-width="2.5" 
                  class="transition-colors group-hover:scale-110">
                 <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
             </svg>
             <template x-if="unreadCount > 0">
                 <span class="absolute -top-1.5 -right-1.5 bg-rose-600 text-white text-[10px] min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full font-bold border-2 border-white dark:border-gray-900 shadow-[0_0_12px_rgba(225,29,72,0.5)] z-10"
-
                       x-text="unreadCount">
                 </span>
             </template>
