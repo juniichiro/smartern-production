@@ -218,10 +218,10 @@
                                      }
                                 @endphp
                                 
-                                <tr class="transition-colors" :class="isSelected('{{ $applicant->full_name }}') ? 'bg-blue-50/30 dark:bg-blue-950/10' : ''">
+                                <tr class="transition-colors" :class="isSelected(@js($applicant->full_name)) ? 'bg-blue-50/30 dark:bg-blue-950/10' : ''">
                                     <td class="px-3 sm:px-6 py-4 sm:py-5 text-center">
                                         @if(!$confirmedMatch)
-                                            <input type="checkbox" :value="'{{ $applicant->full_name }}'" x-model="selectedApplicants" class="w-5 h-5 rounded-lg border-gray-300 accent-[#0B5694] cursor-pointer shadow-sm transition-all">
+                                            <input type="checkbox" value="{{ $applicant->full_name }}" x-model="selectedApplicants" class="w-5 h-5 rounded-lg border-gray-300 accent-[#0B5694] cursor-pointer shadow-sm transition-all">
                                         @else
                                             <div class="flex justify-center text-emerald-600" title="Assigned">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -803,13 +803,13 @@
                         @endphp
 
                         <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden transition-all"
-                             :class="isSelected('{{ $applicant->full_name }}') ? 'ring-2 ring-[#0B5694] dark:ring-blue-500 bg-blue-50/20 dark:bg-blue-950/20' : ''">
+                             :class="isSelected(@js($applicant->full_name)) ? 'ring-2 ring-[#0B5694] dark:ring-blue-500 bg-blue-50/20 dark:bg-blue-950/20' : ''">
                             
                             {{-- Card Header: Select + Name + Score --}}
                             <div class="p-4 flex items-start gap-3">
                                 <div class="shrink-0 mt-0.5">
                                     @if(!$confirmedMatch)
-                                        <input type="checkbox" :value="'{{ $applicant->full_name }}'" x-model="selectedApplicants" class="w-5 h-5 rounded-lg border-gray-300 accent-[#0B5694] cursor-pointer">
+                                        <input type="checkbox" value="{{ $applicant->full_name }}" x-model="selectedApplicants" class="w-5 h-5 rounded-lg border-gray-300 accent-[#0B5694] cursor-pointer">
                                     @else
                                         <div class="flex justify-center text-emerald-600" title="Assigned">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
