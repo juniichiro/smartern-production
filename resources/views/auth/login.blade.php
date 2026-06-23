@@ -6,7 +6,7 @@
 <div class="min-h-screen w-full flex flex-col lg:flex-row relative overflow-hidden bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
     
     {{-- Back to Landing --}}
-    <a href="{{ url('/') }}" class="absolute top-6 left-6 z-[100] p-3 bg-white/90 dark:bg-white/10 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl text-gray-500 dark:text-gray-400 hover:text-[#0B5694] dark:hover:text-blue-400 hover:bg-white dark:hover:bg-white/20 transition-all active:scale-95 shadow-xl flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider">
+    <a href="{{ url('/') }}" class="absolute top-6 left-6 z-[100] p-3 bg-white/80 dark:bg-gray-900/80 lg:bg-white/10 lg:dark:bg-white/10 backdrop-blur-md border border-gray-200 dark:border-gray-800 lg:border-white/20 lg:dark:border-white/10 rounded-2xl text-gray-700 dark:text-gray-200 lg:text-white/90 lg:dark:text-white/90 hover:bg-white dark:hover:bg-gray-800 hover:lg:bg-white hover:lg:text-[#0B5694] transition-all active:scale-95 shadow-xl flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
         <span class="hidden sm:inline">Back</span>
     </a>
@@ -38,7 +38,7 @@
         <div class="relative z-10 max-w-lg my-auto space-y-6">
             <span class="text-[11px] font-extrabold uppercase tracking-[0.25em] text-blue-200">Welcome To</span>
             <h2 class="text-6xl font-black tracking-tight leading-none text-white font-sans drop-shadow-md">SmarTern</h2>
-            <p class="text-sm font-medium leading-relaxed text-blue-100/90 max-w-md">
+            <p class="text-sm font-medium leading-relaxed text-white/95 max-w-md">
                 A centralized platform for qualification-based placement, real-time progress tracking, secure documentation, and data-driven reporting—built for a smoother internship experience.
             </p>
             <div class="pt-4">
