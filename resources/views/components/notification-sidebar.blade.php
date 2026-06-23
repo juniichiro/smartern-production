@@ -18,7 +18,7 @@
         document.body.classList.toggle('notif-collapsed', desktopNotifCollapsed);
      "
      @close-notifications.window="notifOpen = false"
-     @toggle-notifications.window="notifOpen = !notifOpen; if(notifOpen) $dispatch('close-sidebar')">
+      @toggle-notifications.window="notifOpen = !notifOpen; if(notifOpen) window.dispatchEvent(new CustomEvent('close-sidebar'))">
     
     {{-- Notif Toggle (Desktop only) --}}
     <button @click="desktopNotifCollapsed = !desktopNotifCollapsed" 
@@ -46,7 +46,7 @@
     {{-- Notif Overlay for Mobile --}}
     <div x-show="notifOpen" 
          @click="notifOpen = false" 
-         class="fixed inset-0 bg-black/50 z-[95] lg:hidden backdrop-blur-sm transition-opacity"
+          class="fixed inset-0 bg-black/50 z-[105] lg:hidden backdrop-blur-sm transition-opacity"
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="opacity-0"
          x-transition:enter-end="opacity-100"
@@ -61,7 +61,7 @@
                 'lg:translate-x-0': !desktopNotifCollapsed,
                 'lg:translate-x-full': desktopNotifCollapsed
            }" 
-           class="w-80 bg-white dark:bg-gray-900 border-l border-gray-100 dark:border-gray-800 p-8 fixed right-0 h-full text-left overflow-y-auto z-[100] transition-all duration-300 ease-in-out">
+           class="w-80 bg-white dark:bg-gray-900 border-l border-gray-100 dark:border-gray-800 p-8 fixed right-0 h-full text-left overflow-y-auto z-[110] transition-all duration-300 ease-in-out">
         
         {{-- Header --}}
         <div class="flex justify-between items-center mb-12 mt-4">
