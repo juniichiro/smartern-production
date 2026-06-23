@@ -68,7 +68,7 @@
 
                     {{-- Reset Pending Button --}}
                     @if(\App\Models\MatchResult::where('is_confirmed', false)->exists())
-                    <button @click="showResetModal = true" title="Reset Pending" class="group flex items-center justify-center text-red-400 hover:text-red-600 transition-colors min-w-[44px] min-h-[44px]">
+                    <button type="button" @click.stop="showResetModal = true" title="Reset Pending" class="group flex items-center justify-center text-red-400 hover:text-red-600 transition-colors min-w-[44px] min-h-[44px]">
                         <div class="p-2.5 sm:p-3 rounded-xl bg-red-50 dark:bg-red-950/30 group-hover:bg-red-100 dark:group-hover:bg-red-900/50 transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                         </div>
