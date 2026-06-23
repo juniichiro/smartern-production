@@ -274,7 +274,11 @@ class AttendanceService
                     $duration = 0.00;
                 } elseif ($log->clock_out) {
                     $effectiveClockIn = $this->getEffectiveClockIn($log->clock_in, $effectiveSchedule);
-                    $minutes = $effectiveClockIn->diffInMinutes($log->clock_out);
+                    if ($log->clock_out->lt($effectiveClockIn)) {
+                        $minutes = 0;
+                    } else {
+                        $minutes = $effectiveClockIn->diffInMinutes($log->clock_out);
+                    }
                     $hours = $minutes / 60;
 
                     // Deduct lunch break if > 5 hours (standard practice in SmarTern)
@@ -497,7 +501,11 @@ class AttendanceService
 
             // Calculate hours rendered
             $effectiveClockIn = $this->getEffectiveClockIn($todayRecord->clock_in, $effectiveSchedule);
-            $minutes = $effectiveClockIn->diffInMinutes(now());
+            if (now()->lt($effectiveClockIn)) {
+                $minutes = 0;
+            } else {
+                $minutes = $effectiveClockIn->diffInMinutes(now());
+            }
             $hours = $minutes / 60;
 
             if ($hours > 5.0) {
