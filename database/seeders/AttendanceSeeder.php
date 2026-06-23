@@ -33,6 +33,11 @@ class AttendanceSeeder extends Seeder
                     continue;
                 }
 
+                // Skip today or future dates to leave today open for testing
+                if ($currentDate->greaterThanOrEqualTo(Carbon::today())) {
+                    continue;
+                }
+
                 // Randomize clock in/out slightly around 8:00 AM and 5:00 PM
                 $clockIn = $currentDate->copy()->hour(8)->minute(rand(0, 15))->second(rand(0, 59));
                 $clockOut = $currentDate->copy()->hour(17)->minute(rand(0, 10))->second(rand(0, 59));
