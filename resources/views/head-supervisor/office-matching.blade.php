@@ -19,6 +19,7 @@
         resumeUrl: '',
         showResumePreview: false,
         showBreakdown: null,
+        showLegends: false,
         isSelected(name) { return this.selectedApplicants.includes(name); },
         selectAll(allNames) {
             if (this.selectedApplicants.length === allNames.length) {
@@ -38,41 +39,44 @@
                 <h3 class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight uppercase">Office Matching</h3>
                 <p class="text-[10px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mt-1">Manage intern assignments and analyze compatibility</p>
             </div>
-            <div class="flex flex-wrap items-center justify-between sm:justify-start gap-2 sm:gap-3 w-full lg:w-auto">
-                {{-- Import Button --}}
-                <button @click="showImport = !showImport" 
-                        title="Import CSV"
-                        class="flex-none flex items-center justify-center bg-gray-50 dark:bg-gray-800 p-3 sm:px-6 sm:py-3 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl font-bold text-gray-500 dark:text-gray-400 hover:border-[#0B5694]/30 hover:text-[#0B5694] dark:hover:text-blue-400 transition uppercase tracking-wider active:scale-95"
-                        :class="showImport ? 'border-[#0B5694] text-[#0B5694] bg-blue-50' : ''">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
-                    <span class="hidden sm:inline ml-2 text-[10px] lg:text-xs">Import CSV</span>
-                </button>
-
-                {{-- Algorithm Guide Button --}}
-                <a href="{{ route('head-supervisor.matching.guide') }}" title="Algorithm Guide"
-                   class="flex-none flex items-center justify-center bg-blue-50 dark:bg-blue-900/20 p-3 sm:px-6 sm:py-3 border border-blue-100 dark:border-blue-800 rounded-xl font-bold text-[#0B5694] dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition uppercase tracking-wider active:scale-95">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-                    <span class="hidden sm:inline ml-2 text-[10px] lg:text-xs">Algorithm Guide</span>
-                </a>
-
-                {{-- Export Data Button --}}
-                <a href="{{ route('head-supervisor.matching.export') }}" title="Export Data"
-                   class="flex-none flex items-center justify-center bg-white dark:bg-gray-900 p-3 sm:px-6 sm:py-3 border border-gray-200 dark:border-gray-800 rounded-xl font-bold text-[#0B5694] dark:text-blue-400 shadow-sm hover:bg-blue-50 dark:hover:bg-blue-950/30 transition uppercase tracking-wider active:scale-95">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
-                    <span class="hidden sm:inline ml-2 text-[10px] lg:text-xs">Export Data</span>
-                </a>
-
-                {{-- Reset Pending Button --}}
-                <form action="{{ route('head-supervisor.matching.clear') }}" method="POST" onsubmit="return confirm('Clear all pending results? Finalized assignments will be saved.')" class="flex-none">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" title="Reset Pending" class="group flex items-center justify-center text-red-400 hover:text-red-600 transition-colors">
-                        <div class="p-3 rounded-xl bg-red-50 dark:bg-red-950/30 group-hover:bg-red-100 dark:group-hover:bg-red-900/50 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                        </div>
-                        <span class="hidden sm:inline ml-2 text-[10px] lg:text-xs font-bold uppercase tracking-wider text-red-500">Reset Pending</span>
+            <div class="flex items-center gap-1.5 sm:gap-2 w-full lg:w-auto">
+                {{-- Mobile: action buttons as icon bar --}}
+                <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                    {{-- Import Button --}}
+                    <button @click="showImport = !showImport" 
+                            title="Import CSV"
+                            class="flex items-center justify-center bg-gray-50 dark:bg-gray-800 p-2.5 sm:px-5 sm:py-3 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl font-bold text-gray-500 dark:text-gray-400 hover:border-[#0B5694]/30 hover:text-[#0B5694] dark:hover:text-blue-400 transition uppercase tracking-wider active:scale-95 min-w-[44px] min-h-[44px]"
+                            :class="showImport ? 'border-[#0B5694] text-[#0B5694] bg-blue-50' : ''">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                        <span class="hidden md:inline ml-2 text-[10px] lg:text-xs">Import CSV</span>
                     </button>
-                </form>
+
+                    {{-- Algorithm Guide Button --}}
+                    <a href="{{ route('head-supervisor.matching.guide') }}" title="Algorithm Guide"
+                       class="flex items-center justify-center bg-blue-50 dark:bg-blue-900/20 p-2.5 sm:px-5 sm:py-3 border border-blue-100 dark:border-blue-800 rounded-xl font-bold text-[#0B5694] dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition uppercase tracking-wider active:scale-95 min-w-[44px] min-h-[44px]">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                        <span class="hidden md:inline ml-2 text-[10px] lg:text-xs">Algorithm Guide</span>
+                    </a>
+
+                    {{-- Export Data Button --}}
+                    <a href="{{ route('head-supervisor.matching.export') }}" title="Export Data"
+                       class="flex items-center justify-center bg-white dark:bg-gray-900 p-2.5 sm:px-5 sm:py-3 border border-gray-200 dark:border-gray-800 rounded-xl font-bold text-[#0B5694] dark:text-blue-400 shadow-sm hover:bg-blue-50 dark:hover:bg-blue-950/30 transition uppercase tracking-wider active:scale-95 min-w-[44px] min-h-[44px]">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        <span class="hidden md:inline ml-2 text-[10px] lg:text-xs">Export Data</span>
+                    </a>
+
+                    {{-- Reset Pending Button --}}
+                    <form action="{{ route('head-supervisor.matching.clear') }}" method="POST" onsubmit="return confirm('Clear all pending results? Finalized assignments will be saved.')" class="flex-none">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" title="Reset Pending" class="group flex items-center justify-center text-red-400 hover:text-red-600 transition-colors min-w-[44px] min-h-[44px]">
+                            <div class="p-2.5 sm:p-3 rounded-xl bg-red-50 dark:bg-red-950/30 group-hover:bg-red-100 dark:group-hover:bg-red-900/50 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                            </div>
+                            <span class="hidden md:inline ml-1.5 sm:ml-2 text-[10px] lg:text-xs font-bold uppercase tracking-wider text-red-500">Reset Pending</span>
+                        </button>
+                    </form>
+                </div>
             </div>
         </header>
 
@@ -109,64 +113,74 @@
                     <h4 class="text-lg sm:text-xl font-extrabold text-gray-900 dark:text-white tracking-tight uppercase">Applicant Analysis</h4>
 
                     {{-- Batch Finalize --}}
-                    <form action="{{ route('head-supervisor.matching.finalize') }}" method="POST" x-show="selectedApplicants.length > 0" x-cloak class="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
+                    <form action="{{ route('head-supervisor.matching.finalize') }}" method="POST" x-show="selectedApplicants.length > 0" x-cloak class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
                         @csrf
                         <template x-for="name in selectedApplicants" :key="name">
                             <input type="hidden" name="applicant_names[]" :value="name">
                         </template>
                         
-                        <div class="relative w-full sm:w-72">
+                        <div class="relative w-full sm:w-72" @keydown.escape.window="isDropdownOpen = false">
                             <input type="hidden" name="office_id" :value="batchOfficeId" required>
                             <button type="button" @click="isDropdownOpen = !isDropdownOpen" @click.away="isDropdownOpen = false"
-                                    class="w-full flex items-center justify-between bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-[#0B5694] dark:text-blue-400 text-[11px] font-bold uppercase tracking-wider rounded-xl focus:ring-2 focus:ring-[#0B5694]/20 px-5 py-4 shadow-sm transition-all hover:border-gray-300">
-                                <span x-text="batchOfficeName"></span>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" :class="isDropdownOpen ? 'rotate-180' : ''" class="transition-transform duration-200"><path d="M6 9l6 6 6-6"/></svg>
+                                    class="w-full flex items-center justify-between bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-[#0B5694] dark:text-blue-400 text-[11px] font-bold uppercase tracking-wider rounded-xl focus:ring-2 focus:ring-[#0B5694]/20 px-5 min-h-[48px] shadow-sm transition-all hover:border-gray-300">
+                                <span class="truncate" x-text="batchOfficeName"></span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" :class="isDropdownOpen ? 'rotate-180' : ''" class="shrink-0 transition-transform duration-200 ml-2"><path d="M6 9l6 6 6-6"/></svg>
                             </button>
-                            <div x-show="isDropdownOpen" x-transition.opacity class="absolute z-50 left-0 right-0 sm:right-auto w-full mt-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-2xl overflow-hidden py-2 min-w-[280px] lg:min-w-0">
+                            <div x-show="isDropdownOpen" x-transition.opacity class="absolute z-50 left-0 right-0 sm:right-auto w-full mt-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-2xl overflow-hidden py-2 min-w-0">
                                 @foreach($offices as $office)
                                     <div @click="batchOfficeId = '{{ $office->id }}'; batchOfficeName = '{{ $office->name }}'; isDropdownOpen = false"
-                                         class="px-6 py-4 text-[11px] font-bold uppercase tracking-[0.1em] text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/40 hover:text-[#0B5694] dark:hover:text-blue-400 cursor-pointer transition-all border-b border-gray-50 dark:border-gray-800/50 last:border-none flex items-center justify-between group">
-                                        <span>{{ $office->name }}</span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-hover:opacity-100 transition-opacity"><polyline points="20 6 9 17 4 12"/></svg>
+                                         class="px-5 sm:px-6 py-3.5 sm:py-4 text-[11px] font-bold uppercase tracking-[0.1em] text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/40 hover:text-[#0B5694] dark:hover:text-blue-400 cursor-pointer transition-all border-b border-gray-50 dark:border-gray-800/50 last:border-none flex items-center justify-between group min-h-[48px]">
+                                        <span class="truncate">{{ $office->name }}</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity ml-3"><polyline points="20 6 9 17 4 12"/></svg>
                                     </div>
                                 @endforeach
                             </div>
                         </div>
 
-                        <button type="submit" class="w-full sm:w-auto bg-[#0B5694] dark:bg-blue-600 text-white px-8 py-4 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-[#084577] transition shadow-lg shadow-blue-500/20 disabled:opacity-50" :disabled="!batchOfficeId">
+                        <button type="submit" class="w-full sm:w-auto bg-[#0B5694] dark:bg-blue-600 text-white px-8 min-h-[48px] rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-[#084577] transition shadow-lg shadow-blue-500/20 disabled:opacity-50 active:scale-95" :disabled="!batchOfficeId">
                             Confirm Selected (<span x-text="selectedApplicants.length"></span>)
                         </button>
                     </form>
                 </div>
 
                 {{-- LEGENDS --}}
-                <div class="flex flex-col gap-3 sm:gap-4 lg:gap-6 mb-4 sm:mb-8 lg:mb-10 px-0 sm:px-2">
-                    <div class="flex flex-nowrap lg:flex-wrap items-center gap-2 sm:gap-4 lg:gap-6 overflow-x-auto lg:overflow-x-visible pb-2">
-                        <span class="text-[9px] sm:text-[10px] lg:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider border-r border-gray-200 dark:border-gray-800 pr-3 sm:pr-6 whitespace-nowrap shrink-0">Recommendation</span>
-                        <div class="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] lg:text-xs font-bold uppercase tracking-wider text-emerald-500 whitespace-nowrap">
-                            <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-500 shrink-0"></div> Strong (80%+): Highly Recommended
-                        </div>
-                        <div class="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] lg:text-xs font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400 whitespace-nowrap">
-                            <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#0B5694] dark:bg-blue-400 shrink-0"></div> Good (60-79%): Recommended
-                        </div>
-                        <div class="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] lg:text-xs font-bold uppercase tracking-wider text-indigo-500 whitespace-nowrap">
-                            <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-indigo-500 shrink-0"></div> Fair (40-59%): Needs Training
-                        </div>
-                        <div class="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] lg:text-xs font-bold uppercase tracking-wider text-amber-500 whitespace-nowrap">
-                            <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-amber-500 shrink-0"></div> Poor (< 40%): Not Recommended
-                        </div>
-                    </div>
+                <div class="mb-4 sm:mb-8 lg:mb-10 px-0 sm:px-2">
+                    <button @click="showLegends = !showLegends" 
+                            class="flex md:hidden items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-2 active:scale-95 transition-transform min-h-[44px]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                        <span x-text="showLegends ? 'Hide Legend' : 'Show Legend'"></span>
+                        <span class="ml-1 text-[9px] text-gray-400">(Recommendations & Verification)</span>
+                    </button>
 
-                    <div class="flex flex-nowrap lg:flex-wrap items-center gap-2 sm:gap-4 lg:gap-6 overflow-x-auto lg:overflow-x-visible pb-2">
-                        <span class="text-[9px] sm:text-[10px] lg:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider border-r border-gray-200 dark:border-gray-800 pr-3 sm:pr-6 whitespace-nowrap shrink-0">Verification</span>
-                        <div class="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] lg:text-[11px] font-bold uppercase tracking-wider text-gray-500 whitespace-nowrap">
-                            <span class="bg-emerald-50 dark:bg-emerald-950/30 text-emerald-500 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded text-[8px] sm:text-[9px] lg:text-[10px] border border-emerald-500/20">High</span> Interviewed
+                    <div :class="showLegends ? 'flex' : 'hidden md:flex'"
+                         class="flex-col gap-3 sm:gap-4 lg:gap-6">
+                        <div class="flex flex-wrap items-center gap-x-3 sm:gap-x-4 lg:gap-x-6 gap-y-2">
+                            <span class="text-[9px] sm:text-[10px] lg:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider border-r border-gray-200 dark:border-gray-800 pr-3 sm:pr-6 shrink-0">Recommendation</span>
+                            <div class="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] lg:text-xs font-bold uppercase tracking-wider text-emerald-500">
+                                <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-500 shrink-0"></div> Strong (80%+)
+                            </div>
+                            <div class="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] lg:text-xs font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400">
+                                <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#0B5694] dark:bg-blue-400 shrink-0"></div> Good (60-79%)
+                            </div>
+                            <div class="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] lg:text-xs font-bold uppercase tracking-wider text-indigo-500">
+                                <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-indigo-500 shrink-0"></div> Fair (40-59%)
+                            </div>
+                            <div class="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] lg:text-xs font-bold uppercase tracking-wider text-amber-500">
+                                <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-amber-500 shrink-0"></div> Poor (&lt; 40%)
+                            </div>
                         </div>
-                        <div class="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] lg:text-[11px] font-bold uppercase tracking-wider text-gray-500 whitespace-nowrap">
-                            <span class="bg-blue-50 dark:bg-blue-950/30 text-blue-500 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded text-[8px] sm:text-[9px] lg:text-[10px] border border-blue-500/20">Med</span> Resume Found
-                        </div>
-                        <div class="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] lg:text-[11px] font-bold uppercase tracking-wider text-gray-500 whitespace-nowrap">
-                            <span class="bg-amber-50 dark:bg-amber-950/30 text-amber-500 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded text-[8px] sm:text-[9px] lg:text-[10px] border border-amber-500/20">Low</span> Self-Reported
+
+                        <div class="flex flex-wrap items-center gap-x-3 sm:gap-x-4 lg:gap-x-6 gap-y-2">
+                            <span class="text-[9px] sm:text-[10px] lg:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider border-r border-gray-200 dark:border-gray-800 pr-3 sm:pr-6 shrink-0">Verification</span>
+                            <div class="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] lg:text-[11px] font-bold uppercase tracking-wider text-gray-500">
+                                <span class="bg-emerald-50 dark:bg-emerald-950/30 text-emerald-500 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded text-[8px] sm:text-[9px] lg:text-[10px] border border-emerald-500/20">High</span> Interviewed
+                            </div>
+                            <div class="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] lg:text-[11px] font-bold uppercase tracking-wider text-gray-500">
+                                <span class="bg-blue-50 dark:bg-blue-950/30 text-blue-500 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded text-[8px] sm:text-[9px] lg:text-[10px] border border-blue-500/20">Med</span> Resume Found
+                            </div>
+                            <div class="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] lg:text-[11px] font-bold uppercase tracking-wider text-gray-500">
+                                <span class="bg-amber-50 dark:bg-amber-950/30 text-amber-500 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded text-[8px] sm:text-[9px] lg:text-[10px] border border-amber-500/20">Low</span> Self-Reported
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -767,8 +781,8 @@
                 {{-- CLOSE hidden lg:block wrapper --}}
                 </div>
 
-                {{-- MOBILE CARD LAYOUT (lg:hidden) --}}
-                <div class="lg:hidden space-y-3 sm:space-y-4">
+                {{-- MOBILE & TABLET CARD LAYOUT (hidden lg:block is the table) --}}
+                <div class="lg:hidden grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                     @foreach($applicants as $applicant)
                         @php 
                             $matches = $results->get($applicant->full_name, collect());
@@ -802,72 +816,72 @@
                             $verifiedSkills = $applicant->evaluation?->verified_skills ?? [];
                         @endphp
 
-                        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden transition-all"
+                        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden transition-all flex flex-col"
                              :class="isSelected(@js($applicant->full_name)) ? 'ring-2 ring-[#0B5694] dark:ring-blue-500 bg-blue-50/20 dark:bg-blue-950/20' : ''">
                             
                             {{-- Card Header: Select + Name + Score --}}
-                            <div class="p-4 flex items-start gap-3">
-                                <div class="shrink-0 mt-0.5">
+                            <div class="p-3 sm:p-4 flex items-start gap-2 sm:gap-3">
+                                <div class="shrink-0 mt-0.5 min-w-[22px] min-h-[22px] flex items-center justify-center">
                                     @if(!$confirmedMatch)
-                                        <input type="checkbox" value="{{ $applicant->full_name }}" x-model="selectedApplicants" class="w-5 h-5 rounded-lg border-gray-300 accent-[#0B5694] cursor-pointer">
+                                        <input type="checkbox" value="{{ $applicant->full_name }}" x-model="selectedApplicants" class="w-[22px] h-[22px] rounded-lg border-gray-300 accent-[#0B5694] cursor-pointer">
                                     @else
-                                        <div class="flex justify-center text-emerald-600" title="Assigned">
+                                        <div class="text-emerald-600" title="Assigned">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                                         </div>
                                     @endif
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <div class="flex items-center gap-2">
-                                        <p class="text-sm font-extrabold text-gray-800 dark:text-gray-100 truncate uppercase tracking-tight">{{ $applicant->full_name }}</p>
+                                    <div class="flex items-center gap-1.5 sm:gap-2">
+                                        <p class="text-xs sm:text-sm font-extrabold text-gray-800 dark:text-gray-100 truncate uppercase tracking-tight">{{ $applicant->full_name }}</p>
                                         @if(!empty($applicant->resume_path))
-                                            <button @click="openResume('{{ route('head-supervisor.matching.resume', $applicant) }}')" class="shrink-0 text-blue-500 active:scale-90 transition-transform min-w-[44px] min-h-[44px] flex items-center justify-center">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                            <button @click="openResume('{{ route('head-supervisor.matching.resume', $applicant) }}')" class="shrink-0 text-blue-500 active:scale-90 transition-transform min-w-[44px] min-h-[44px] flex items-center justify-center -m-2 sm:-m-1.5" aria-label="Preview resume">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
                                             </button>
                                         @endif
                                     </div>
-                                    <p class="text-[11px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider mt-0.5">{{ $applicant->university }}</p>
+                                    <p class="text-[10px] sm:text-[11px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider mt-0.5 truncate">{{ $applicant->university }}</p>
                                 </div>
                                 @if($displayMatch)
                                     <div class="shrink-0 text-right">
-                                        <span class="text-lg font-black {{ $scoreColor }}">{{ $displayMatch->score }}%</span>
+                                        <span class="text-base sm:text-lg font-black {{ $scoreColor }}">{{ $displayMatch->score }}%</span>
                                     </div>
                                 @endif
                             </div>
 
                             {{-- Card Body: Match + Score Bar + Verification --}}
-                            <div class="px-4 pb-2 space-y-2">
+                            <div class="px-3 sm:px-4 pb-1 sm:pb-2 space-y-1.5 sm:space-y-2 flex-1">
                                 <div class="flex items-center justify-between">
-                                    <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Department Match</span>
-                                    <span class="text-xs font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight">{{ $displayMatch ? $displayMatch->office->name : 'No Results' }}</span>
+                                    <span class="text-[9px] sm:text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Match</span>
+                                    <span class="text-[10px] sm:text-xs font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight truncate ml-2">{{ $displayMatch ? $displayMatch->office->name : 'No Results' }}</span>
                                 </div>
                                 
                                 @if($displayMatch)
                                 <div class="flex items-center gap-2">
-                                    <div class="flex-1 h-2.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                                    <div class="flex-1 h-2 sm:h-2.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
                                         <div class="h-full {{ $barColor }} rounded-full transition-all duration-700" style="width: {{ $displayMatch->score }}%"></div>
                                     </div>
                                 </div>
                                 @endif
 
-                                <div class="flex items-center justify-between pt-1">
-                                    <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Verification</span>
-                                    <span class="{{ $confidenceBg }} {{ $confidenceColor }} text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-current">{{ $confidenceText }}</span>
+                                <div class="flex items-center justify-between pt-0.5 sm:pt-1">
+                                    <span class="text-[9px] sm:text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Verification</span>
+                                    <span class="{{ $confidenceBg }} {{ $confidenceColor }} text-[9px] sm:text-[10px] font-bold px-2 sm:px-3 py-0.5 sm:py-1 rounded-full uppercase tracking-wider border border-current">{{ $confidenceText }}</span>
                                 </div>
                             </div>
 
-                            {{-- Card Footer: Action Buttons --}}
-                            <div class="px-4 pb-4 flex gap-2">
+                            {{-- Card Footer: Action Buttons (Thumb Zone at bottom) --}}
+                            <div class="px-3 sm:px-4 pb-3 sm:pb-4 pt-2 sm:pt-3 mt-auto flex gap-2 border-t border-gray-50 dark:border-gray-800/50">
                                 <button @click="if (expanded === '{{ $applicant->applicant_id }}') { expanded = null; } else { expanded = '{{ $applicant->applicant_id }}'; evaluating = null; }" 
-                                        class="flex-1 min-h-[44px] flex items-center justify-center gap-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-[10px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider active:bg-gray-100 dark:active:bg-gray-700 transition"
-                                        :class="expanded === '{{ $applicant->applicant_id }}' ? 'border-[#0B5694] text-[#0B5694] dark:text-blue-400 dark:border-blue-500' : ''">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
-                                    Analysis
+                                        class="flex-1 min-h-[44px] flex items-center justify-center gap-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-[9px] sm:text-[10px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider active:bg-gray-100 dark:active:bg-gray-700 transition active:scale-[0.97]"
+                                        :class="expanded === '{{ $applicant->applicant_id }}' ? 'border-[#0B5694] text-[#0B5694] dark:text-blue-400 dark:border-blue-500 bg-blue-50 dark:bg-blue-950/20' : ''">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+                                    <span>Analysis</span>
                                 </button>
                                 @if(!$confirmedMatch)
                                 <button @click="if (evaluating === '{{ $applicant->applicant_id }}') { evaluating = null; } else { evaluating = '{{ $applicant->applicant_id }}'; expanded = null; }" 
-                                        class="flex-1 min-h-[44px] flex items-center justify-center gap-2 bg-[#0B5694] dark:bg-blue-600 text-white rounded-xl text-[10px] font-bold uppercase tracking-wider active:bg-[#084577] dark:active:bg-blue-700 transition shadow-sm"
+                                        class="flex-1 min-h-[44px] flex items-center justify-center gap-1.5 bg-[#0B5694] dark:bg-blue-600 text-white rounded-xl text-[9px] sm:text-[10px] font-bold uppercase tracking-wider active:bg-[#084577] dark:active:bg-blue-700 transition shadow-sm active:scale-[0.97]"
                                         :class="evaluating === '{{ $applicant->applicant_id }}' ? 'ring-2 ring-[#0B5694]/30' : ''">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                                     Evaluate
                                 </button>
                                 @endif
@@ -875,12 +889,12 @@
 
                             {{-- Evaluation Expandable (Mobile) --}}
                             <div x-show="evaluating === '{{ $applicant->applicant_id }}'" x-cloak class="border-t border-gray-100 dark:border-gray-800 bg-blue-50/20 dark:bg-blue-900/10">
-                                <div class="p-4">
+                                <div class="p-3 sm:p-4">
                                     <form action="{{ route('head-supervisor.matching.evaluate', $applicant) }}" method="POST" enctype="multipart/form-data">
                                         @csrf
-                                        <div class="space-y-4" x-data="{ skillFilter: 'all' }">
-                                            <div class="flex flex-col gap-2">
-                                                <h5 class="text-[11px] font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400">Skill Verification</h5>
+                                        <div class="space-y-3 sm:space-y-4" x-data="{ skillFilter: 'all' }">
+                                            <div class="flex flex-col gap-1.5 sm:gap-2">
+                                                <h5 class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400">Skill Verification</h5>
                                                 <select x-model="skillFilter" 
                                                         class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 text-[10px] font-bold uppercase tracking-wider rounded-xl px-4 py-2.5 shadow-sm focus:ring-2 focus:ring-[#0B5694]/20 outline-none transition-all">
                                                     <option value="all">All Sections</option>
@@ -920,7 +934,7 @@
                                                 </table>
                                             </div>
 
-                                            <div class="space-y-3">
+                                            <div class="space-y-2 sm:space-y-3">
                                                 <div>
                                                     <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">Interview Notes</label>
                                                     <textarea name="interview_notes" rows="3" class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl p-3 text-xs font-bold focus:ring-2 focus:ring-[#0B5694]/20 outline-none" placeholder="Add observations...">{{ $applicant->evaluation?->interview_notes }}</textarea>
@@ -929,18 +943,18 @@
                                                     <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">Resume (PDF)</label>
                                                     <input type="file" name="resume_pdf" accept="application/pdf" class="w-full text-[10px] font-bold text-gray-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-[10px] file:font-extrabold file:bg-blue-50 file:text-[#0B5694] dark:file:bg-blue-900/30 dark:file:text-blue-400">
                                                 </div>
-                                                <div class="grid grid-cols-2 gap-3">
+                                                <div class="grid grid-cols-2 gap-2 sm:gap-3">
                                                     <div>
-                                                        <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">Behavioral</label>
-                                                        <select name="behavioral_score" class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg p-2.5 text-[10px] font-bold uppercase focus:ring-2 focus:ring-[#0B5694]/20 outline-none">
+                                                        <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">Behavioral</label>
+                                                        <select name="behavioral_score" class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg p-2.5 text-[10px] font-bold uppercase focus:ring-2 focus:ring-[#0B5694]/20 outline-none min-h-[44px]">
                                                             @for($i=1; $i<=5; $i++)
                                                                 <option value="{{ $i }}" {{ ($applicant->evaluation?->behavioral_score ?? 3) == $i ? 'selected' : '' }}>{{ $i }}</option>
                                                             @endfor
                                                         </select>
                                                     </div>
                                                     <div>
-                                                        <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">Recommend</label>
-                                                        <select name="is_recommended" class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg p-2.5 text-[10px] font-bold uppercase focus:ring-2 focus:ring-[#0B5694]/20 outline-none">
+                                                        <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">Recommend</label>
+                                                        <select name="is_recommended" class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg p-2.5 text-[10px] font-bold uppercase focus:ring-2 focus:ring-[#0B5694]/20 outline-none min-h-[44px]">
                                                             <option value="1" {{ ($applicant->evaluation?->is_recommended ?? true) ? 'selected' : '' }}>Yes</option>
                                                             <option value="0" {{ !($applicant->evaluation?->is_recommended ?? true) ? 'selected' : '' }}>No</option>
                                                         </select>
@@ -948,7 +962,7 @@
                                                 </div>
                                             </div>
 
-                                            <button type="submit" class="w-full min-h-[44px] bg-[#0B5694] dark:bg-blue-600 hover:bg-[#084577] dark:hover:bg-blue-500 text-white font-bold uppercase text-[11px] tracking-wider rounded-xl transition-all active:scale-95 shadow-md shadow-blue-500/10 flex items-center justify-center gap-2">
+                                            <button type="submit" class="w-full min-h-[48px] bg-[#0B5694] dark:bg-blue-600 hover:bg-[#084577] dark:hover:bg-blue-500 text-white font-bold uppercase text-[11px] tracking-wider rounded-xl transition-all active:scale-95 shadow-md shadow-blue-500/10 flex items-center justify-center gap-2">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                                                 Update Evaluation
                                             </button>
@@ -957,13 +971,13 @@
                                 </div>
                             </div>
 
-                            {{-- Analysis Expandable (Mobile - Compact) --}}
+                            {{-- Analysis Expandable (Mobile & Tablet - Compact) --}}
                             <div x-show="expanded === '{{ $applicant->applicant_id }}'" x-cloak class="border-t border-gray-100 dark:border-gray-800 bg-gray-50/30 dark:bg-gray-950/30">
-                                <div class="p-4" x-data="{ activeMatchId: 'all' }">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <h5 class="text-[11px] font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400">Match Analysis</h5>
+                                <div class="p-3 sm:p-4" x-data="{ activeMatchId: 'all' }">
+                                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 mb-3">
+                                        <h5 class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400">Match Analysis</h5>
                                         <select x-model="activeMatchId" 
-                                                class="bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 text-[10px] font-bold uppercase tracking-wider rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#0B5694]/20 outline-none">
+                                                class="w-full sm:w-auto bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 text-[10px] font-bold uppercase tracking-wider rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-[#0B5694]/20 outline-none min-h-[44px]">
                                             <option value="all">All Top 5</option>
                                             @foreach($top5Matches as $match)
                                                 <option value="{{ $match->id }}">{{ $match->office->name }} ({{ $match->score }}%)</option>
@@ -973,15 +987,15 @@
 
                                     @if($matches->count() > 0)
                                         <div class="relative w-full max-w-sm mx-auto pt-2 pb-2">
-                                            <div class="relative h-36 w-full">
-                                                <div class="absolute inset-0 flex flex-col justify-between pointer-events-none text-[8px] font-bold text-gray-400 dark:text-gray-500 pb-0.5">
+                                            <div class="relative h-32 sm:h-36 w-full">
+                                                <div class="absolute inset-0 flex flex-col justify-between pointer-events-none text-[7px] sm:text-[8px] font-bold text-gray-400 dark:text-gray-500 pb-0.5">
                                                     <div class="w-full border-t border-dashed border-gray-150 dark:border-gray-800/60 pt-0.5">100%</div>
                                                     <div class="w-full border-t border-dashed border-gray-150 dark:border-gray-800/60 pt-0.5">50%</div>
                                                     <div class="w-full border-b border-gray-200 dark:border-gray-800 pb-0.5">0%</div>
                                                 </div>
 
                                                 <div x-show="activeMatchId === 'all'" x-transition.opacity.duration.300ms
-                                                     class="absolute inset-0 flex items-end justify-around z-10 pb-0.5 px-4">
+                                                     class="absolute inset-0 flex items-end justify-around z-10 pb-0.5 px-3 sm:px-4">
                                                     @foreach($top5Matches as $match)
                                                         @php
                                                             if ($match->score >= 80) {
@@ -998,11 +1012,11 @@
                                                                 $textColorMobile = 'text-amber-500';
                                                             }
                                                         @endphp
-                                                        <div class="flex flex-col items-center w-10 justify-end group h-full relative">
-                                                            <span class="absolute text-[8px] font-black {{ $textColorMobile }} transform -translate-y-4"
+                                                        <div class="flex flex-col items-center w-8 sm:w-10 justify-end group h-full relative">
+                                                            <span class="absolute text-[7px] sm:text-[8px] font-black {{ $textColorMobile }} transform -translate-y-3 sm:-translate-y-4"
                                                                   style="bottom: {{ $match->score }}%;">{{ $match->score }}%</span>
                                                             <div @click="showBreakdown = '{{ $match->id }}'; $nextTick(() => { if (window.MathJax) { MathJax.typesetPromise(); } })"
-                                                                 class="w-8 cursor-pointer rounded-t-md transition-all shadow-sm active:scale-95"
+                                                                 class="w-6 sm:w-8 cursor-pointer rounded-t-md transition-all shadow-sm active:scale-95"
                                                                  style="height: {{ max(5, $match->score) }}%; {{ $barBgMobile }}"
                                                                  title="Tap for breakdown"></div>
                                                         </div>
@@ -1027,11 +1041,11 @@
                                                     @endphp
                                                     <div x-show="activeMatchId === '{{ $match->id }}'" x-transition.opacity.duration.300ms
                                                          class="absolute inset-0 flex items-end justify-center z-10 pb-0.5">
-                                                        <div class="flex flex-col items-center w-16 justify-end group h-full relative">
-                                                            <span class="absolute text-[10px] font-black {{ $textColorMobile }} transform -translate-y-5"
+                                                        <div class="flex flex-col items-center w-12 sm:w-16 justify-end group h-full relative">
+                                                            <span class="absolute text-[9px] sm:text-[10px] font-black {{ $textColorMobile }} transform -translate-y-4 sm:-translate-y-5"
                                                                   style="bottom: {{ $match->score }}%;">{{ $match->score }}%</span>
                                                             <div @click="showBreakdown = '{{ $match->id }}'; $nextTick(() => { if (window.MathJax) { MathJax.typesetPromise(); } })"
-                                                                 class="w-12 cursor-pointer rounded-t-lg transition-all shadow-md active:scale-95"
+                                                                 class="w-10 sm:w-12 cursor-pointer rounded-t-lg transition-all shadow-md active:scale-95"
                                                                  style="height: {{ max(5, $match->score) }}%; {{ $barBgMobile }}"
                                                                  title="Tap for breakdown"></div>
                                                         </div>
@@ -1039,10 +1053,10 @@
                                                 @endforeach
                                             </div>
 
-                                            <div class="mt-4 border-t border-gray-200 dark:border-gray-800 pt-3 text-center">
-                                                <div class="flex justify-around text-[8px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
+                                            <div class="mt-3 sm:mt-4 border-t border-gray-200 dark:border-gray-800 pt-2 sm:pt-3 text-center">
+                                                <div class="flex justify-around text-[7px] sm:text-[8px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
                                                     @foreach($top5Matches as $match)
-                                                        <span class="truncate max-w-[60px]">{{ $match->office->name }}</span>
+                                                        <span class="truncate max-w-[45px] sm:max-w-[60px]" title="{{ $match->office->name }}">{{ $match->office->name }}</span>
                                                     @endforeach
                                                 </div>
                                             </div>
@@ -1057,9 +1071,11 @@
                 </div>
 
                 @if ($applicants->hasPages())
-                    <div class="flex flex-col sm:flex-row items-center justify-between gap-6 mt-10 pt-8 border-t border-gray-100 dark:border-gray-800">
-                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Showing {{ $applicants->firstItem() }} to {{ $applicants->lastItem() }} of {{ $applicants->total() }} applicants</p>
-                        {{ $applicants->links() }}
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6 mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-gray-100 dark:border-gray-800">
+                        <p class="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider text-center sm:text-left">Showing {{ $applicants->firstItem() }} to {{ $applicants->lastItem() }} of {{ $applicants->total() }} applicants</p>
+                        <div class="w-full sm:w-auto overflow-x-auto">
+                            {{ $applicants->links() }}
+                        </div>
                     </div>
                 @endif
             </div>
@@ -1118,6 +1134,20 @@
 </x-page-layout>
 
 <style>
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 99px;
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #4b5563;
+}
 .markdown-content h3 {
     font-size: 13px;
     font-weight: 800;
