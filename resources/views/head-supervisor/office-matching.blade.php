@@ -67,12 +67,14 @@
                     </a>
 
                     {{-- Reset Pending Button --}}
+                    @if(\App\Models\MatchResult::where('is_confirmed', false)->exists())
                     <button @click="showResetModal = true" title="Reset Pending" class="group flex items-center justify-center text-red-400 hover:text-red-600 transition-colors min-w-[44px] min-h-[44px]">
                         <div class="p-2.5 sm:p-3 rounded-xl bg-red-50 dark:bg-red-950/30 group-hover:bg-red-100 dark:group-hover:bg-red-900/50 transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                         </div>
                         <span class="hidden md:inline ml-1.5 sm:ml-2 text-[10px] lg:text-xs font-bold uppercase tracking-wider text-red-500">Reset Pending</span>
                     </button>
+                    @endif
                 </div>
             </div>
         </header>
@@ -1121,9 +1123,16 @@
         @endif
 
     {{-- RESET PENDING MODAL --}}
-    <div :class="showResetModal ? 'flex' : 'hidden'"
-         class="fixed inset-0 z-[300] items-center justify-center p-4 sm:p-6 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm"
-         @keydown.escape.window="showResetModal = false">
+    <div x-show="showResetModal"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-[300] flex items-center justify-center p-4 sm:p-6 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm"
+         @keydown.escape.window="showResetModal = false"
+         x-cloak>
         <div class="w-full max-w-md bg-white dark:bg-gray-900 rounded-[24px] sm:rounded-[32px] border border-gray-100 dark:border-gray-800 shadow-2xl overflow-hidden"
              @click.away="showResetModal = false">
             <div class="px-6 sm:px-8 py-5 sm:py-6 text-center">
