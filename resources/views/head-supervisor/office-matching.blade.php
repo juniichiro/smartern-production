@@ -32,6 +32,9 @@
         openResume(url) {
             this.resumeUrl = url;
             this.showResumePreview = true;
+        },
+        openResetModal() {
+            this.showResetModal = true;
         }
      }" class="flex flex-col h-full transition-all duration-300 ease-out">
         
@@ -68,7 +71,7 @@
 
                     {{-- Reset Pending Button --}}
                     @if(\App\Models\MatchResult::where('is_confirmed', false)->exists())
-                    <button type="button" @click="showResetModal = true" title="Reset Pending" class="group flex items-center justify-center text-red-400 hover:text-red-600 transition-colors min-w-[44px] min-h-[44px]">
+                    <button type="button" @click="openResetModal()" title="Reset Pending" class="group flex items-center justify-center text-red-400 hover:text-red-600 transition-colors min-w-[44px] min-h-[44px]">
                         <div class="p-2.5 sm:p-3 rounded-xl bg-red-50 dark:bg-red-950/30 group-hover:bg-red-100 dark:group-hover:bg-red-900/50 transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                         </div>
@@ -1132,9 +1135,9 @@
          x-transition:leave-end="opacity-0"
          class="fixed inset-0 z-[300] flex items-center justify-center p-4 sm:p-6 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm"
          @keydown.escape.window="showResetModal = false"
-         @click.self="showResetModal = false"
          x-cloak>
-        <div class="w-full max-w-md bg-white dark:bg-gray-900 rounded-[24px] sm:rounded-[32px] border border-gray-100 dark:border-gray-800 shadow-2xl overflow-hidden">
+        <div @click.away="showResetModal = false"
+             class="w-full max-w-md bg-white dark:bg-gray-900 rounded-[24px] sm:rounded-[32px] border border-gray-100 dark:border-gray-800 shadow-2xl overflow-hidden">
             <div class="px-6 sm:px-8 py-5 sm:py-6 text-center">
                 <div class="w-14 h-14 sm:w-16 sm:h-16 bg-red-50 dark:bg-red-950/30 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-5">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 sm:w-8 sm:h-8 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
