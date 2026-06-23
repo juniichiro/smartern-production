@@ -28,7 +28,7 @@
     <div class="relative hidden lg:flex lg:w-7/12 flex-col justify-between px-24 py-16 z-10 select-none overflow-hidden">
         {{-- Background image layer with local sdo.png and brand gradient --}}
         <div class="absolute inset-0 z-0">
-            <img src="{{ asset('images/sdo.png') }}" alt="SDO Background" class="w-full h-full object-cover">
+            <img src="{{ asset('images/sdo.png') }}" alt="SDO Background" class="w-full h-full object-cover brightness-[0.45] dark:brightness-[0.3]">
             <div class="absolute inset-0 bg-gradient-to-b from-[#07365c]/95 via-[#0b5694]/85 to-[#0b5694]/75 dark:from-[#031c30]/95 dark:via-blue-950/90 dark:to-blue-900/80 transition-colors duration-300"></div>
         </div>
 
@@ -59,8 +59,8 @@
         
         {{-- For mobile views, we can display the background image as overlay so mobile login doesn't feel plain --}}
         <div class="absolute inset-0 z-0 lg:hidden">
-            <img src="{{ asset('images/sdo.png') }}" alt="SDO Background" class="w-full h-full object-cover brightness-[0.7]">
-            <div class="absolute inset-0 bg-gradient-to-t from-gray-50/90 via-gray-50/70 to-gray-50/95 dark:from-gray-950/90 dark:via-gray-950/70 dark:to-gray-950/95 transition-colors duration-300"></div>
+            <img src="{{ asset('images/sdo.png') }}" alt="SDO Background" class="w-full h-full object-cover brightness-[0.4] dark:brightness-[0.25]">
+            <div class="absolute inset-0 bg-gradient-to-t from-gray-50/95 via-gray-50/75 to-gray-50/95 dark:from-gray-950/95 dark:via-gray-950/75 dark:to-gray-950/95 transition-colors duration-300"></div>
         </div>
 
         {{-- Login form envelope card --}}
