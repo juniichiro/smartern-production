@@ -28,7 +28,7 @@
     <div class="absolute inset-0 z-0">
         <div class="absolute left-0 top-0 w-1/2 h-full bg-[#0B5694] dark:bg-blue-900 opacity-90 dark:opacity-80 skew-x-[-12deg] -translate-x-32 transition-colors duration-300"></div>
         <div class="absolute right-0 top-0 w-full h-full bg-cover bg-center" 
-             style="background-image: url('/images/school-bg.jpg'); filter: brightness(0.7);"></div>
+             style="background-image: url('{{ asset('images/sdo.png') }}'); filter: brightness(0.7);"></div>
     </div>
 
     @if(request()->has('timeout'))
