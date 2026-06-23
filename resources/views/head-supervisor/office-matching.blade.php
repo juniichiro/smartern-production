@@ -34,7 +34,9 @@
             this.showResumePreview = true;
         },
         openResetModal() {
+            console.log('openResetModal called. Current showResetModal:', this.showResetModal);
             this.showResetModal = true;
+            console.log('Updated showResetModal:', this.showResetModal);
         }
      }" class="flex flex-col h-full transition-all duration-300 ease-out">
         
