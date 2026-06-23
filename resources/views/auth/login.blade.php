@@ -24,14 +24,12 @@
         </button>
     </div>
 
-    {{-- LEFT COLUMN: Welcome message & Onboarding Link (following image.png) --}}
-    <div class="relative hidden lg:flex lg:w-7/12 bg-[#0b5694] dark:bg-[#07365c] text-white flex-col justify-between p-16 z-10 transition-colors duration-300 overflow-hidden select-none">
-        {{-- Large watermark of the SmarTern double-chevron logo --}}
-        <div class="absolute right-[-10%] bottom-[-5%] w-[70%] h-[70%] opacity-[0.08] pointer-events-none z-0 text-white">
-            <svg class="w-full h-full" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path d="M 0 10 L 40 50 L 0 90 L 20 90 L 60 50 L 20 10 Z" />
-                <path d="M 30 10 L 70 50 L 30 90 L 50 90 L 90 50 L 50 10 Z" />
-            </svg>
+    {{-- LEFT COLUMN: Image background with brand gradient overlay --}}
+    <div class="relative hidden lg:flex lg:w-7/12 flex-col justify-between p-16 z-10 select-none overflow-hidden">
+        {{-- Background image layer with local sdo.png and brand gradient --}}
+        <div class="absolute inset-0 z-0">
+            <img src="{{ asset('images/sdo.png') }}" alt="SDO Background" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-b from-[#07365c]/95 via-[#0b5694]/85 to-[#0b5694]/75 dark:from-[#031c30]/95 dark:via-blue-950/90 dark:to-blue-900/80 transition-colors duration-300"></div>
         </div>
 
         <div></div>
@@ -56,13 +54,13 @@
         </div>
     </div>
 
-    {{-- RIGHT COLUMN: Login card (following image.png overlay style) --}}
-    <div class="relative flex-1 flex items-center justify-center p-6 sm:p-12 z-10">
+    {{-- RIGHT COLUMN: Solid background with Login form --}}
+    <div class="relative flex-1 flex items-center justify-center p-6 sm:p-12 z-10 bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
         
-        {{-- Background image layer with local sdo.png --}}
-        <div class="absolute inset-0 z-0">
-            <img src="{{ asset('images/sdo.png') }}" alt="SDO Background" class="w-full h-full object-cover brightness-[0.7] lg:brightness-95">
-            <div class="absolute inset-0 bg-gradient-to-t from-gray-50/90 via-gray-50/70 to-gray-50/95 dark:from-gray-950/90 dark:via-gray-950/70 dark:to-gray-950/95 lg:bg-black/20 lg:dark:bg-black/45 transition-colors duration-300"></div>
+        {{-- For mobile views, we can display the background image as overlay so mobile login doesn't feel plain --}}
+        <div class="absolute inset-0 z-0 lg:hidden">
+            <img src="{{ asset('images/sdo.png') }}" alt="SDO Background" class="w-full h-full object-cover brightness-[0.7]">
+            <div class="absolute inset-0 bg-gradient-to-t from-gray-50/90 via-gray-50/70 to-gray-50/95 dark:from-gray-950/90 dark:via-gray-950/70 dark:to-gray-950/95 transition-colors duration-300"></div>
         </div>
 
         {{-- Login form envelope card --}}
