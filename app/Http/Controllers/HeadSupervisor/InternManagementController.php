@@ -91,4 +91,22 @@ class InternManagementController extends Controller
             'attendanceHistory'
         ));
     }
+
+    /**
+     * Update the reporting schedule for the specified intern.
+     */
+    public function updateSchedule(\Illuminate\Http\Request $request, User $user)
+    {
+        $request->validate([
+            'schedule_assignment' => 'nullable|array',
+            'schedule_assignment.*' => 'string|in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday',
+        ]);
+
+        $intern = InternDetail::where('user_id', $user->id)->firstOrFail();
+        $intern->update([
+            'schedule_assignment' => $request->input('schedule_assignment'),
+        ]);
+
+        return redirect()->back()->with('success', 'Intern reporting schedule updated successfully.');
+    }
 }

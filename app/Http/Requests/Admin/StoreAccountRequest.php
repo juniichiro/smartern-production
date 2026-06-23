@@ -43,6 +43,8 @@ class StoreAccountRequest extends FormRequest
                 $rules['school'] = 'required|string|max:100';
                 $rules['office_id'] = 'required|exists:offices,id';
                 $rules['emergency_contact'] = 'nullable|string|max:100';
+                $rules['schedule_assignment'] = 'nullable|array';
+                $rules['schedule_assignment.*'] = 'string|in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday';
             }
 
             // SUPERVISOR SPECIFIC

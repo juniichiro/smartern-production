@@ -290,7 +290,12 @@ class AccountController extends Controller
             $profileData['gender_other_specify'] = $request->gender_other_specify;
             $profileData['emergency_contact'] = $request->emergency_contact;
             $profileData['course'] = 'N/A';
-            $profileData['hours_rendered'] = 0;
+            $profileData['schedule_assignment'] = $request->input('schedule_assignment');
+            
+            $exists = InternDetail::where('user_id', $user->id)->exists();
+            if (!$exists) {
+                $profileData['hours_rendered'] = 0;
+            }
             InternDetail::updateOrCreate(['user_id' => $user->id], $profileData);
         } elseif ($roleName === 'supervisor' || $roleName === 'head_supervisor') {
             $profileData['is_hr_head'] = ($roleName === 'head_supervisor' || $request->boolean('is_hr_head'));

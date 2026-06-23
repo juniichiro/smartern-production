@@ -115,7 +115,11 @@ class AttendanceService
         // 1. Check for date-specific global overrides (holiday, suspension)
         $dateStatus = $this->checkDateStatus($date);
         if ($dateStatus['blocked']) {
-            return $dateStatus;
+            if ($dateStatus['type'] === 'weekend' && $this->isInternScheduled($user, $date)) {
+                // Do not block - this is a scheduled day for the intern
+            } else {
+                return $dateStatus;
+            }
         }
 
         // 2. Check for approved FULL-DAY absence for this user
@@ -408,7 +412,7 @@ class AttendanceService
                 }
             } else {
                 // Case C: Standard weekday check
-                if (! $isWeekend) {
+                if ($this->isInternScheduled($user, $date)) {
                     if (! $date->isToday()) {
                         $mergedLogs->push([
                             'type' => 'absent',
@@ -690,5 +694,26 @@ class AttendanceService
         }
 
         return $clockIn;
+    }
+
+    /**
+     * Check if the intern is scheduled to work on a specific date.
+     */
+    public function isInternScheduled(User $user, Carbon $date): bool
+    {
+        $intern = $user->internDetails;
+        if (! $intern) {
+            return false;
+        }
+
+        $scheduleAssignment = $intern->schedule_assignment;
+
+        // If no custom schedule is assigned, default to Monday-Friday (standard weekdays)
+        if (empty($scheduleAssignment) || !is_array($scheduleAssignment)) {
+            return ! $date->isWeekend();
+        }
+
+        $dayName = $date->format('l'); // e.g. "Monday"
+        return in_array($dayName, $scheduleAssignment);
     }
 }

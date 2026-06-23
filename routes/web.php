@@ -178,6 +178,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Intern Management
         Route::get('/interns', [InternManagementController::class, 'index'])->name('interns');
         Route::get('/interns/{user}', [InternManagementController::class, 'show'])->name('interns.show');
+        Route::put('/interns/{user}/schedule', [InternManagementController::class, 'updateSchedule'])->name('interns.update-schedule');
 
         // Assessment Form Management
         Route::resource('assessment-items', AssessmentItemController::class)

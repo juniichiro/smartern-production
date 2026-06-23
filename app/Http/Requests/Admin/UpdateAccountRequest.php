@@ -34,6 +34,8 @@ class UpdateAccountRequest extends FormRequest
             'school' => 'sometimes|required|string|max:100',
             'gender' => 'sometimes|required|in:male,female,other',
             'is_hr_head' => 'sometimes|boolean',
+            'schedule_assignment' => 'nullable|array',
+            'schedule_assignment.*' => 'string|in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday',
         ];
     }
 }

@@ -28,6 +28,10 @@ class InternDetail extends Model
         'hours_rendered',
     ];
 
+    protected $casts = [
+        'schedule_assignment' => 'array',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

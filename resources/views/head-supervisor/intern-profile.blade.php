@@ -92,6 +92,38 @@
                         </div>
                     </div>
 
+                    {{-- Reporting Schedule Configuration --}}
+                    <div class="bg-white dark:bg-gray-900 rounded-[20px] sm:rounded-[30px] border border-gray-100 dark:border-gray-800 shadow-sm p-4 sm:p-8 transition-all">
+                        <p class="text-[10px] sm:text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Configure Weekly Schedule</p>
+                        
+                        <form action="{{ route('head-supervisor.interns.update-schedule', $intern->user) }}" method="POST">
+                            @csrf
+                            @method('PUT')
+                            
+                            <div class="space-y-4">
+                                <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Active Reporting Days</span>
+                                
+                                <div class="grid grid-cols-4 gap-2">
+                                    @php
+                                        $assignedDays = $intern->schedule_assignment ?? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+                                    @endphp
+                                    @foreach(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as $day)
+                                        <label class="flex items-center gap-2 p-2.5 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-700 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                                            <input type="checkbox" name="schedule_assignment[]" value="{{ $day }}" 
+                                                {{ in_array($day, $assignedDays) ? 'checked' : '' }}
+                                                class="rounded text-[#0B5694] focus:ring-[#0B5694]/20 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700">
+                                            <span class="text-[10px] font-bold text-gray-700 dark:text-gray-200">{{ substr($day, 0, 3) }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
+                                
+                                <button type="submit" class="w-full bg-[#0B5694] hover:bg-[#084577] text-white py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition active:scale-95 shadow-lg shadow-blue-500/10 cursor-pointer">
+                                    Save Weekly Schedule
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
                     @if($schoolSchedule && $schoolSchedule->start_date)
                     <div class="bg-blue-50/50 dark:bg-blue-900/10 rounded-[20px] sm:rounded-[30px] border border-blue-100/50 dark:border-blue-800/50 p-4 sm:p-6 shadow-sm">
                         <div class="flex items-center gap-3 mb-4">
