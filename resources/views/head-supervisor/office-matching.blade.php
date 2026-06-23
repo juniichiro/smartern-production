@@ -1121,8 +1121,8 @@
         @endif
 
     {{-- RESET PENDING MODAL --}}
-    <div x-show="showResetModal" 
-         class="fixed inset-0 z-[300] flex items-center justify-center p-4 sm:p-6 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm"
+    <div :class="showResetModal ? 'flex' : 'hidden'"
+         class="fixed inset-0 z-[300] items-center justify-center p-4 sm:p-6 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm"
          @keydown.escape.window="showResetModal = false">
         <div class="w-full max-w-md bg-white dark:bg-gray-900 rounded-[24px] sm:rounded-[32px] border border-gray-100 dark:border-gray-800 shadow-2xl overflow-hidden"
              @click.away="showResetModal = false">
