@@ -42,16 +42,11 @@
                 </div>
             </div>
 
-            {{-- Right: Visual Placeholder --}}
+            {{-- Right: Institutional Photo --}}
             <div class="order-1 lg:order-2 flex items-center justify-center">
-                <div class="relative w-full max-w-md aspect-[4/3] bg-gradient-to-br from-[#0B5694]/10 via-[#0B5694]/5 to-gray-100 dark:from-blue-500/10 dark:via-blue-500/5 dark:to-gray-800 rounded-[40px] border border-gray-200 dark:border-gray-800 flex items-center justify-center overflow-hidden">
-                    <div class="text-center px-8">
-                        <div class="w-20 h-20 bg-[#0B5694]/10 dark:bg-blue-500/10 rounded-[24px] flex items-center justify-center mx-auto mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#0B5694" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                        </div>
-                        <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">SDO Quezon City</p>
-                        <p class="text-xs text-gray-400 dark:text-gray-500 font-medium mt-1">Institutional photo placeholder</p>
-                    </div>
+                <div class="relative w-full max-w-md rounded-[40px] border border-gray-200 dark:border-gray-800 overflow-hidden shadow-lg">
+                    <img src="{{ asset('images/sdoqc.webp') }}" alt="Schools Division Office of Quezon City" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0B5694]/30 to-transparent pointer-events-none"></div>
                 </div>
             </div>
         </div>
