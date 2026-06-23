@@ -26,12 +26,11 @@
 
     {{-- LEFT COLUMN: Welcome message & Onboarding Link (following image.png) --}}
     <div class="relative hidden lg:flex lg:w-7/12 bg-[#0b5694] dark:bg-[#07365c] text-white flex-col justify-between p-16 z-10 transition-colors duration-300 overflow-hidden select-none">
-        {{-- Diagonal brand pattern overlays (chevrons) using SVG --}}
-        <div class="absolute inset-0 opacity-15 pointer-events-none z-0">
-            <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none">
-                <path d="M-20,0 L20,50 L-20,100 Z" fill="none" stroke="currentColor" stroke-width="8"/>
-                <path d="M10,0 L50,50 L10,100 Z" fill="none" stroke="currentColor" stroke-width="8"/>
-                <path d="M40,0 L80,50 L40,100 Z" fill="none" stroke="currentColor" stroke-width="8"/>
+        {{-- Large watermark of the SmarTern double-chevron logo --}}
+        <div class="absolute right-[-10%] bottom-[-5%] w-[70%] h-[70%] opacity-[0.08] pointer-events-none z-0 text-white">
+            <svg class="w-full h-full" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 0 10 L 40 50 L 0 90 L 20 90 L 60 50 L 20 10 Z" />
+                <path d="M 30 10 L 70 50 L 30 90 L 50 90 L 90 50 L 50 10 Z" />
             </svg>
         </div>
 
