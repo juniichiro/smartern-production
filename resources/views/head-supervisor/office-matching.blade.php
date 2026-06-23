@@ -1077,11 +1077,22 @@
                                             </div>
 
                                             <div class="mt-3 sm:mt-4 border-t border-gray-200 dark:border-gray-800 pt-2 sm:pt-3 text-center">
-                                                <div class="flex justify-around text-[7px] sm:text-[8px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
+                                                <div x-show="activeMatchId === 'all'" 
+                                                     x-transition.opacity.duration.200ms
+                                                     class="flex justify-around text-[7px] sm:text-[8px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                                     @foreach($top5Matches as $match)
                                                         <span class="truncate max-w-[45px] sm:max-w-[60px]" title="{{ $match->office->name }}">{{ $match->office->name }}</span>
                                                     @endforeach
                                                 </div>
+                                                @foreach($top5Matches as $match)
+                                                    <div x-show="activeMatchId === '{{ $match->id }}'" 
+                                                         x-transition.opacity.duration.200ms
+                                                         class="w-full text-center">
+                                                        <span class="text-[9px] sm:text-[10px] font-black text-gray-700 dark:text-gray-200 uppercase tracking-widest truncate block" title="{{ $match->office->name }}">
+                                                            {{ $match->office->name }}
+                                                        </span>
+                                                    </div>
+                                                @endforeach
                                             </div>
                                         </div>
                                     @else
