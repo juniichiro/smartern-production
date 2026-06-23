@@ -782,6 +782,29 @@
                 </div>
 
                 {{-- MOBILE & TABLET CARD LAYOUT (hidden lg:block is the table) --}}
+                @php
+                    $unconfirmedNames = $applicants->filter(fn($a) => !\App\Models\MatchResult::where('applicant_name', $a->full_name)->where('is_confirmed', true)->exists())->pluck('full_name')->toArray();
+                    $unconfirmedCount = count($unconfirmedNames);
+                @endphp
+                @if($unconfirmedCount > 0)
+                <div class="lg:hidden flex items-center justify-between gap-3 mb-3 sm:mb-4 px-1 transition-all duration-300 ease-out">
+                    <label class="flex items-center gap-2.5 sm:gap-3 cursor-pointer min-h-[44px] select-none">
+                        <input type="checkbox"
+                               @click="selectAll({{ json_encode($unconfirmedNames) }})"
+                               :checked="selectedApplicants.length === {{ $unconfirmedCount }} && selectedApplicants.length > 0"
+                               class="w-[22px] h-[22px] rounded-lg border-gray-300 accent-[#0B5694] cursor-pointer shadow-sm transition-all">
+                        <span class="text-[10px] sm:text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Select All</span>
+                        <span class="text-[9px] sm:text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider" x-show="selectedApplicants.length > 0">
+                            (<span x-text="selectedApplicants.length"></span> selected)
+                        </span>
+                    </label>
+                    <button @click="selectedApplicants = []" 
+                            x-show="selectedApplicants.length > 0"
+                            class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-red-400 hover:text-red-600 transition-colors min-h-[44px] flex items-center px-2 active:scale-95">
+                        Clear
+                    </button>
+                </div>
+                @endif
                 <div class="lg:hidden grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 transition-all duration-300 ease-out">
                     @foreach($applicants as $applicant)
                         @php 
