@@ -24,7 +24,7 @@
             {{-- Top Row: Identity & Progress --}}
             <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
                 {{-- Intern Header Section --}}
-                <div class="xl:col-span-7 bg-white dark:bg-gray-900 rounded-[25px] sm:rounded-[30px] border border-gray-100 dark:border-gray-800 shadow-sm p-6 sm:p-8 lg:p-10 flex flex-col sm:flex-row items-center gap-6 sm:gap-8 transition-all">
+                <div class="xl:col-span-7 bg-white dark:bg-gray-900 rounded-[20px] sm:rounded-[30px] border border-gray-100 dark:border-gray-800 shadow-sm p-4 sm:p-8 lg:p-10 flex flex-col sm:flex-row items-center gap-4 sm:gap-8 transition-all">
                     <x-avatar :user="$intern" size="32" circular="false" border="4" textSize="4xl" />
 
                     <div class="text-center sm:text-left flex-1 min-w-0">
@@ -61,7 +61,7 @@
 
                 {{-- Schedule Quick View --}}
                 <div class="xl:col-span-5 flex flex-col gap-4">
-                    <div class="bg-white dark:bg-gray-900 rounded-[25px] sm:rounded-[30px] border border-gray-100 dark:border-gray-800 shadow-sm p-6 sm:p-8 transition-all">
+                    <div class="bg-white dark:bg-gray-900 rounded-[20px] sm:rounded-[30px] border border-gray-100 dark:border-gray-800 shadow-sm p-4 sm:p-8 transition-all">
                         <p class="text-[10px] sm:text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Current Deployment Schedule</p>
                         <div class="flex items-center gap-4">
                             <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center text-[#0B5694] dark:text-blue-400">
@@ -93,7 +93,7 @@
                     </div>
 
                     @if($schoolSchedule && $schoolSchedule->start_date)
-                    <div class="bg-blue-50/50 dark:bg-blue-900/10 rounded-[25px] sm:rounded-[30px] border border-blue-100/50 dark:border-blue-800/50 p-6 shadow-sm">
+                    <div class="bg-blue-50/50 dark:bg-blue-900/10 rounded-[20px] sm:rounded-[30px] border border-blue-100/50 dark:border-blue-800/50 p-4 sm:p-6 shadow-sm">
                         <div class="flex items-center gap-3 mb-4">
                             <div class="w-8 h-8 bg-blue-100 dark:bg-blue-800/30 rounded-xl flex items-center justify-center text-[#0B5694] dark:text-blue-400">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
@@ -126,7 +126,7 @@
                     $isCompleted = optional($intern->certificate)->status === 'published';
                 @endphp
                 
-                <div class="bg-white dark:bg-gray-900 rounded-[25px] sm:rounded-[30px] border border-gray-100 dark:border-gray-800 shadow-sm p-6 sm:p-8 lg:p-10 transition-all">
+                <div class="bg-white dark:bg-gray-900 rounded-[20px] sm:rounded-[30px] border border-gray-100 dark:border-gray-800 shadow-sm p-4 sm:p-8 lg:p-10 transition-all">
                     <div class="flex justify-between items-start mb-6">
                         <p class="text-[10px] sm:text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Hours Rendered</p>
                         <span class="text-[10px] sm:text-xs font-black {{ $isCompleted ? 'text-emerald-500' : 'text-[#0B5694] dark:text-blue-400' }}">
@@ -142,7 +142,7 @@
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-gray-900 rounded-[25px] sm:rounded-[30px] border border-gray-100 dark:border-gray-800 shadow-sm p-6 sm:p-8 lg:p-10 transition-all">
+                <div class="bg-white dark:bg-gray-900 rounded-[20px] sm:rounded-[30px] border border-gray-100 dark:border-gray-800 shadow-sm p-4 sm:p-8 lg:p-10 transition-all">
                     <div class="flex justify-between items-start mb-6">
                         <p class="text-[10px] sm:text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Task Completion</p>
                         <span class="text-[10px] sm:text-xs font-black text-[#0B5694] dark:text-blue-400">{{ $completedTasks }} / {{ $totalTasks }} Tasks</span>
@@ -157,7 +157,7 @@
             {{-- Bottom Row: Details Tabs & Action Center --}}
             <div class="grid grid-cols-1 xl:grid-cols-12 gap-8 items-stretch">
                 {{-- Details Tabs --}}
-                <div class="xl:col-span-8 bg-white dark:bg-gray-900 rounded-[25px] sm:rounded-[30px] border border-gray-100 dark:border-gray-800 shadow-sm p-6 sm:p-8 lg:p-10 transition-all flex flex-col h-[500px]">
+                 <div class="xl:col-span-8 bg-white dark:bg-gray-900 rounded-[20px] sm:rounded-[30px] border border-gray-100 dark:border-gray-800 shadow-sm p-4 sm:p-8 lg:p-10 transition-all flex flex-col h-[400px] sm:h-[500px]">
                     <div class="flex items-center gap-4 sm:gap-8 border-b border-gray-100 dark:border-gray-800 mb-8 pb-4 overflow-x-auto no-scrollbar flex-shrink-0">
                         <button @click="activeTab = 'tasks'" :class="activeTab === 'tasks' ? 'text-[#0B5694] dark:text-blue-400 border-b-2 border-[#0B5694] dark:border-blue-400' : 'text-gray-400 dark:text-gray-500 border-transparent hover:text-gray-600 dark:hover:text-gray-300'" class="pb-4 -mb-[17px] text-[10px] sm:text-xs font-black uppercase tracking-widest transition-colors whitespace-nowrap">
                             Tasks ({{ $intern->tasks->count() }})
@@ -355,7 +355,7 @@
 
                 {{-- Action Center --}}
                 <div class="xl:col-span-4">
-                    <div class="bg-white dark:bg-gray-900 rounded-[25px] sm:rounded-[30px] border border-gray-100 dark:border-gray-800 shadow-sm p-8 lg:p-10 h-full flex flex-col">
+                    <div class="bg-white dark:bg-gray-900 rounded-[20px] sm:rounded-[30px] border border-gray-100 dark:border-gray-800 shadow-sm p-4 sm:p-8 lg:p-10 h-full flex flex-col">
                         <div class="mb-8">
                             <h4 class="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Action Center</h4>
                             <p class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mt-1 italic">Quick Administrative Shortcuts</p>

@@ -73,7 +73,7 @@
         {{-- Analytics Content Tab --}}
         <div x-show="activeTab === 'analytics'" class="space-y-8 animate-in fade-in duration-300">
             {{-- Summary Stats --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-10">
                 {{-- Skeletons --}}
                 <template x-if="loading">
                     <div class="contents">
@@ -245,10 +245,10 @@
 
         {{-- Reports Content Tab --}}
         <div x-show="activeTab === 'reports'" x-cloak class="space-y-8 animate-in fade-in duration-300">
-            <div class="w-full bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[35px] p-6 shadow-sm mb-6">
-                <form action="{{ route('head-supervisor.analytics') }}" method="GET" class="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
+            <div class="w-full bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[25px] sm:rounded-[35px] p-4 sm:p-6 shadow-sm mb-6">
+                <form action="{{ route('head-supervisor.analytics') }}" method="GET" class="grid grid-cols-2 lg:grid-cols-12 gap-3 sm:gap-4 items-end">
                     {{-- Search Name --}}
-                    <div class="md:col-span-4 relative group">
+                    <div class="col-span-2 lg:col-span-3 relative group">
                         <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Search Intern</label>
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-[#0B5694] transition-colors">
@@ -260,7 +260,7 @@
                     </div>
 
                     {{-- Discretionary Filter Type --}}
-                    <div class="md:col-span-3">
+                    <div class="lg:col-span-3">
                         <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Discretionary Filter</label>
                         <select name="filter_type" 
                                 class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl px-4 py-3.5 text-sm font-medium focus:ring-2 focus:ring-[#0B5694] outline-none transition-all tracking-tight text-gray-700 dark:text-gray-300">
@@ -271,7 +271,7 @@
                     </div>
 
                     {{-- Month Selection --}}
-                    <div class="md:col-span-2">
+                    <div class="lg:col-span-2">
                         <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Month</label>
                         <select name="month" 
                                 class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl px-4 py-3.5 text-sm font-medium focus:ring-2 focus:ring-[#0B5694] outline-none transition-all tracking-tight text-gray-700 dark:text-gray-300">
@@ -285,7 +285,7 @@
                     </div>
 
                     {{-- Year Selection --}}
-                    <div class="md:col-span-2">
+                    <div class="lg:col-span-2">
                         <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Year</label>
                         <select name="year" 
                                 class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl px-4 py-3.5 text-sm font-medium focus:ring-2 focus:ring-[#0B5694] outline-none transition-all tracking-tight text-gray-700 dark:text-gray-300">
@@ -298,7 +298,7 @@
                     </div>
 
                     {{-- Filter Action Button --}}
-                    <div class="md:col-span-1">
+                    <div class="col-span-2 sm:col-span-1 lg:col-span-2">
                         <button type="submit" class="w-full bg-[#0B5694] dark:bg-blue-600 hover:bg-[#084577] dark:hover:bg-blue-700 text-white font-bold rounded-xl py-3.5 text-sm transition-all shadow-md active:scale-95 flex items-center justify-center">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
                         </button>

@@ -56,7 +56,7 @@
             subtitle="Real-time tracking of student internship hours"
         >
             <x-slot name="headerAction">
-                <div class="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto">
+                <div class="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full lg:w-auto">
                     {{-- Search --}}
                     <div class="relative w-full sm:w-64 group">
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-[#0B5694] transition-colors">
@@ -201,7 +201,7 @@
 
         {{-- Bottom Sections --}}
         <div class="mt-10">
-            <x-card-container title="Department Distribution" subtitle="Intern allocation across division units" padding="p-10">
+            <x-card-container title="Department Distribution" subtitle="Intern allocation across division units" padding="p-6 sm:p-10">
                 {{-- Skeletons --}}
                 <div x-show="loading" class="{{ count($distribution) > 3 ? 'flex overflow-x-auto pb-4 gap-6 custom-scrollbar' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' }}">
                     @for($i = 0; $i < 6; $i++)

@@ -150,9 +150,9 @@
         {{-- Office Configuration Section --}}
         <template x-if="activeTab === 'offices'">
             <div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
                     @forelse($offices as $office)
-                        <div class="bg-white dark:bg-gray-900 rounded-[30px] shadow-sm border border-gray-100 dark:border-gray-800 p-8 flex flex-col justify-between transition-all hover:shadow-md group">
+                        <div class="bg-white dark:bg-gray-900 rounded-[20px] sm:rounded-[30px] shadow-sm border border-gray-100 dark:border-gray-800 p-5 sm:p-8 flex flex-col justify-between transition-all hover:shadow-md group">
                             <div>
                                 <div class="flex justify-between items-start mb-6">
                                     <div class="p-3 bg-blue-50 dark:bg-blue-950/30 text-[#0B5694] dark:text-blue-400 rounded-2xl border border-blue-100 dark:border-blue-900/50">
@@ -207,9 +207,9 @@
              x-cloak>
             <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" @click="showResumePreview = false"></div>
             
-            <div class="relative bg-white dark:bg-gray-900 w-full max-w-6xl h-full rounded-[40px] shadow-2xl flex flex-col overflow-hidden border border-gray-100 dark:border-gray-800">
-                <div class="px-10 py-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-950/50">
-                    <div class="flex items-center gap-4">
+            <div class="relative bg-white dark:bg-gray-900 w-full max-w-6xl h-[85vh] sm:h-full rounded-[25px] sm:rounded-[40px] shadow-2xl flex flex-col overflow-hidden border border-gray-100 dark:border-gray-800">
+                <div class="px-6 sm:px-10 py-4 sm:py-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-950/50">
+                    <div class="flex items-center gap-3 sm:gap-4">
                         <div class="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-2xl text-blue-600 dark:text-blue-400">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
                         </div>
@@ -234,19 +234,19 @@
         <div x-show="geofenceOfficeOpen" 
              class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm"
              x-cloak>
-            <div class="bg-white dark:bg-gray-900 w-full max-w-4xl rounded-[40px] shadow-2xl p-8 border border-gray-100 dark:border-gray-800 transition-all" @click.away="geofenceOfficeOpen = false">
+            <div class="bg-white dark:bg-gray-900 w-full max-w-4xl mx-4 rounded-[25px] sm:rounded-[40px] shadow-2xl p-5 sm:p-8 border border-gray-100 dark:border-gray-800 transition-all" @click.away="geofenceOfficeOpen = false">
                 <div class="flex items-center gap-4 mb-6">
-                    <div class="p-3 bg-blue-50 dark:bg-blue-900/30 text-[#0B5694] dark:text-blue-400 rounded-2xl">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <div class="p-3 bg-blue-50 dark:bg-blue-900/30 text-[#0B5694] dark:text-blue-400 rounded-2xl shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
                     </div>
                     <div>
-                        <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">SDO Geofence View</h3>
-                        <p class="text-xs text-gray-400 dark:text-gray-500 font-medium tracking-tight">Visual boundary for attendance verification (Read-only)</p>
+                        <h3 class="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-white">SDO Geofence View</h3>
+                        <p class="text-[10px] sm:text-xs text-gray-400 dark:text-gray-500 font-medium tracking-tight">Visual boundary for attendance verification (Read-only)</p>
                     </div>
                 </div>
                 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div class="h-[350px] rounded-[25px] overflow-hidden border border-gray-100 dark:border-gray-800 z-0" id="map"></div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+                    <div class="h-[250px] sm:h-[350px] rounded-[20px] sm:rounded-[25px] overflow-hidden border border-gray-100 dark:border-gray-800 z-0" id="map"></div>
 
                     <div class="space-y-6">
                         <div>
@@ -286,9 +286,9 @@
         <div x-show="addOfficeOpen" 
              class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm"
              x-cloak>
-            <div class="bg-white dark:bg-gray-900 w-full max-w-md rounded-[40px] shadow-2xl p-10 border border-gray-100 dark:border-gray-800 transition-all" @click.away="addOfficeOpen = false">
-                <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white mb-2">Add New Office</h3>
-                <p class="text-sm text-gray-400 dark:text-gray-500 mb-8 font-medium tracking-tight">Create a new department. You can define matching rules later.</p>
+            <div class="bg-white dark:bg-gray-900 w-full max-w-md mx-4 rounded-[25px] sm:rounded-[40px] shadow-2xl p-6 sm:p-10 border border-gray-100 dark:border-gray-800 transition-all" @click.away="addOfficeOpen = false">
+                <h3 class="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-white mb-2">Add New Office</h3>
+                <p class="text-xs sm:text-sm text-gray-400 dark:text-gray-500 mb-6 sm:mb-8 font-medium tracking-tight">Create a new department. You can define matching rules later.</p>
                 
                 <form action="{{ route('head-supervisor.offices.store') }}" method="POST">
                     @csrf
@@ -313,9 +313,9 @@
         <div x-show="editOfficeOpen" 
              class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm"
              x-cloak>
-            <div class="bg-white dark:bg-gray-900 w-full max-w-md rounded-[40px] shadow-2xl p-10 border border-gray-100 dark:border-gray-800 transition-all" @click.away="editOfficeOpen = false">
-                <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white mb-2">Edit Office</h3>
-                <p class="text-sm text-gray-400 dark:text-gray-500 mb-8 font-medium tracking-tight">Update the department name.</p>
+            <div class="bg-white dark:bg-gray-900 w-full max-w-md mx-4 rounded-[25px] sm:rounded-[40px] shadow-2xl p-6 sm:p-10 border border-gray-100 dark:border-gray-800 transition-all" @click.away="editOfficeOpen = false">
+                <h3 class="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-white mb-2">Edit Office</h3>
+                <p class="text-xs sm:text-sm text-gray-400 dark:text-gray-500 mb-6 sm:mb-8 font-medium tracking-tight">Update the department name.</p>
                 
                 <form :action="`/head-supervisor/offices/${editOffice.id}`" method="POST">
                     @csrf
@@ -341,7 +341,7 @@
         <div x-show="deleteOfficeOpen" 
              class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm"
              x-cloak>
-            <div class="bg-white dark:bg-gray-900 w-full max-w-md rounded-[40px] shadow-2xl p-10 border border-gray-100 dark:border-gray-800 transition-all text-center" @click.away="deleteOfficeOpen = false">
+            <div class="bg-white dark:bg-gray-900 w-full max-w-md mx-4 rounded-[25px] sm:rounded-[40px] shadow-2xl p-6 sm:p-10 border border-gray-100 dark:border-gray-800 transition-all text-center" @click.away="deleteOfficeOpen = false">
                 <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 mb-6">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                 </div>

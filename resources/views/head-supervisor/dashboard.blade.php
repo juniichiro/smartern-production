@@ -45,8 +45,8 @@
         {{-- DEPARTMENT OVERSIGHT PANEL --}}
         @if($deptStats)
         <div x-show="activeTab === 'department'" x-cloak x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" class="mb-12">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
-                <div class="bg-white dark:bg-gray-900 p-8 rounded-[40px] border border-gray-100 dark:border-gray-800 shadow-sm flex items-center gap-6 group hover:border-blue-500/30 transition-all">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 mb-10">
+                <div class="bg-white dark:bg-gray-900 p-5 sm:p-8 rounded-[25px] sm:rounded-[40px] border border-gray-100 dark:border-gray-800 shadow-sm flex items-center gap-4 sm:gap-6 group hover:border-blue-500/30 transition-all">
                     <div class="w-14 h-14 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center text-[#0B5694] dark:text-blue-400 group-hover:scale-110 transition-transform">
                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                     </div>
@@ -56,7 +56,7 @@
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-gray-900 p-8 rounded-[40px] border border-gray-100 dark:border-gray-800 shadow-sm flex items-center gap-6 group hover:border-amber-500/30 transition-all">
+                <div class="bg-white dark:bg-gray-900 p-5 sm:p-8 rounded-[25px] sm:rounded-[40px] border border-gray-100 dark:border-gray-800 shadow-sm flex items-center gap-4 sm:gap-6 group hover:border-amber-500/30 transition-all">
                     <div class="w-14 h-14 bg-amber-50 dark:bg-amber-900/20 rounded-2xl flex items-center justify-center text-amber-600 dark:text-amber-400 group-hover:scale-110 transition-transform">
                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="4" y="4" rx="2"/><path d="m9 12 2 2 4-4"/></svg>
                     </div>
@@ -66,7 +66,7 @@
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-gray-900 p-8 rounded-[40px] border border-gray-100 dark:border-gray-800 shadow-sm flex items-center gap-6 group hover:border-rose-500/30 transition-all">
+                <div class="bg-white dark:bg-gray-900 p-5 sm:p-8 rounded-[25px] sm:rounded-[40px] border border-gray-100 dark:border-gray-800 shadow-sm flex items-center gap-4 sm:gap-6 group hover:border-rose-500/30 transition-all">
                     <div class="w-14 h-14 bg-rose-50 dark:bg-rose-950/30 rounded-2xl flex items-center justify-center text-rose-600 dark:text-rose-400 group-hover:scale-110 transition-transform">
                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                     </div>
@@ -219,9 +219,9 @@
 
             {{-- COHORT PERFORMANCE --}}
             <x-card-container title="Cohort Performance Monitoring" padding="p-8 lg:p-10" class="shrink-0 rounded-[50px]">
-                <div x-show="loading" class="flex overflow-x-auto custom-scrollbar pb-4 gap-10">
+                <div x-show="loading" class="flex overflow-x-auto custom-scrollbar pb-4 gap-6 sm:gap-10">
                     @for($i = 0; $i < 3; $i++)
-                        <div class="min-w-[300px] md:min-w-[340px] lg:min-w-[calc(33.33%-2rem)] bg-gray-50/50 dark:bg-gray-800/30 p-6 rounded-[35px] border border-gray-100 dark:border-gray-700 space-y-4">
+                        <div class="min-w-[260px] sm:min-w-[300px] md:min-w-[340px] lg:min-w-[calc(33.33%-2rem)] bg-gray-50/50 dark:bg-gray-800/30 p-5 sm:p-6 rounded-[25px] sm:rounded-[35px] border border-gray-100 dark:border-gray-700 space-y-4">
                             <div class="flex justify-between items-start">
                                 <div class="flex-1 space-y-2">
                                     <x-skeleton class="h-5 w-3/4 rounded-lg" />
@@ -239,7 +239,7 @@
                     @endfor
                 </div>
 
-                <div x-show="!loading" x-transition.opacity.duration.500ms class="flex overflow-x-auto custom-scrollbar pb-4 gap-10 snap-x snap-mandatory">
+                <div x-show="!loading" x-transition.opacity.duration.500ms class="flex overflow-x-auto custom-scrollbar pb-4 gap-6 sm:gap-10 snap-x snap-mandatory">
                     @forelse($deptInterns as $intern)
                         @php
                             $total = $intern->tasks->count();
@@ -248,7 +248,7 @@
                             $hoursPercent = round(($intern->hours_rendered / 480) * 100);
                             $statusColor = 'text-[#0B5694] dark:text-blue-400';
                         @endphp
-                        <div class="flex flex-col group min-w-[300px] md:min-w-[340px] lg:min-w-[calc(33.33%-2rem)] snap-start bg-gray-50/50 dark:bg-gray-800/30 p-6 rounded-[35px] border border-gray-100 dark:border-gray-700 transition-all hover:border-[#0B5694]/10 hover:shadow-xl hover:bg-white dark:hover:bg-gray-800/50">
+                        <div class="flex flex-col group min-w-[260px] sm:min-w-[300px] md:min-w-[340px] lg:min-w-[calc(33.33%-2rem)] snap-start bg-gray-50/50 dark:bg-gray-800/30 p-5 sm:p-6 rounded-[25px] sm:rounded-[35px] border border-gray-100 dark:border-gray-700 transition-all hover:border-[#0B5694]/10 hover:shadow-xl hover:bg-white dark:hover:bg-gray-800/50">
                             <div class="flex justify-between items-start mb-6">
                                 <div class="min-w-0 flex-1 pr-6">
                                     <p class="text-[15px] font-black text-gray-800 dark:text-gray-100 group-hover:text-[#0B5694] transition-colors uppercase tracking-tight truncate leading-tight">

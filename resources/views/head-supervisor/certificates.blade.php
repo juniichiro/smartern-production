@@ -44,7 +44,7 @@
 
         {{-- Certification Management --}}
         <x-table-container title="Fulfillment Dispatch">
-            <div class="border border-gray-100 dark:border-gray-800 rounded-3xl overflow-hidden shadow-inner">
+                <div class="border border-gray-100 dark:border-gray-800 rounded-2xl sm:rounded-3xl overflow-hidden shadow-inner">
                 <div class="overflow-x-auto custom-scrollbar">
                     <table class="w-full text-left">
                         <thead class="bg-gray-50 dark:bg-gray-800/50 text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest border-b border-gray-100 dark:border-gray-800">

@@ -3,8 +3,12 @@
 @section('title', 'Office Matching')
 
 @section('content')
-<div class="flex min-h-screen bg-gray-50 dark:bg-gray-950 font-sans text-[15px] transition-colors duration-300" 
-     x-data="{ 
+<x-page-layout 
+    portalType="Head Supervisor" 
+    userName="{{ Auth::user()->supervisorDetails->first_name }}" 
+    userRole="{{ Auth::user()->supervisorDetails->office->name }}"
+>
+    <div x-data="{ 
         expanded: null, 
         evaluating: null, 
         selectedApplicants: [], 
@@ -27,19 +31,14 @@
             this.resumeUrl = url;
             this.showResumePreview = true;
         }
-     }">
-
-
-    <x-sidebar portalType="Head Supervisor" :userName="Auth::user()->supervisorDetails->first_name" :userRole="Auth::user()->supervisorDetails->office->name" />
-
-    <main class="lg:ml-64 lg:mr-80 flex-1 p-4 sm:p-6 lg:p-10 text-left mt-16 lg:mt-0 transition-all duration-300">
+     }" class="flex flex-col h-full">
         
-        <header class="flex flex-col sm:flex-row justify-between items-start gap-6 mb-10">
-            <div>
-                <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight uppercase">Office Matching</h3>
-                <p class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mt-1">Manage intern assignments and analyze compatibility</p>
+        <header class="flex flex-col lg:flex-row justify-between items-start gap-6 mb-10">
+            <div class="min-w-0">
+                <h3 class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight uppercase">Office Matching</h3>
+                <p class="text-[10px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mt-1">Manage intern assignments and analyze compatibility</p>
             </div>
-            <div class="flex flex-wrap items-center gap-4 w-full sm:w-auto">
+            <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
                 {{-- Import Button (New Position) --}}
                 <button @click="showImport = !showImport" 
                         class="flex-1 sm:flex-none flex items-center justify-center gap-3 bg-gray-50 dark:bg-gray-800 px-6 py-3 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl text-[10px] font-bold text-gray-500 dark:text-gray-400 hover:border-[#0B5694]/30 hover:text-[#0B5694] dark:hover:text-blue-400 transition uppercase tracking-wider active:scale-95"
@@ -73,8 +72,8 @@
         </header>
 
         {{-- BATCH IMPORT SECTION (Moved to top) --}}
-        <div x-show="showImport" x-transition.scale.95.duration.300ms x-cloak class="mb-10 bg-white dark:bg-gray-900 rounded-[35px] border-2 border-dashed border-[#0B5694]/20 dark:border-blue-500/20 p-8 sm:p-10 shadow-2xl shadow-blue-500/5">
-            <div class="flex flex-col md:flex-row items-center gap-10">
+        <div x-show="showImport" x-transition.scale.95.duration.300ms x-cloak class="mb-10 bg-white dark:bg-gray-900 rounded-[25px] sm:rounded-[35px] border-2 border-dashed border-[#0B5694]/20 dark:border-blue-500/20 p-6 sm:p-10 shadow-2xl shadow-blue-500/5">
+            <div class="flex flex-col md:flex-row items-center gap-6 sm:gap-10">
                 <div class="flex-1 text-center md:text-left">
                     <h5 class="text-sm font-black uppercase tracking-widest text-[#0B5694] dark:text-blue-400">Batch Import Tool</h5>
                     <p class="text-xs font-bold text-gray-400 mt-2">Upload a CSV file to analyze multiple intern applicants at once. Use this for legacy data or external lists.</p>
@@ -85,12 +84,12 @@
                         </a>
                     </div>
                 </div>
-                <div class="w-full md:w-auto">
+                    <div class="w-full md:w-auto">
                     <form action="{{ route('head-supervisor.upload') }}" method="POST" enctype="multipart/form-data">
                         @csrf
-                        <div class="bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-3xl p-8 text-center">
+                        <div class="bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-3xl p-6 sm:p-8 text-center">
                             <input type="file" name="assessment_csv" id="importInput" class="hidden" accept=".csv" onchange="this.form.submit()">
-                            <button type="button" onclick="document.getElementById('importInput').click()" class="bg-[#0B5694] dark:bg-blue-600 text-white px-10 py-4 rounded-2xl text-xs font-bold uppercase tracking-wider shadow-xl shadow-blue-500/20 active:scale-95 transition-all">Select CSV File</button>
+                            <button type="button" onclick="document.getElementById('importInput').click()" class="bg-[#0B5694] dark:bg-blue-600 text-white px-8 sm:px-10 py-3 sm:py-4 rounded-2xl text-[10px] sm:text-xs font-bold uppercase tracking-wider shadow-xl shadow-blue-500/20 active:scale-95 transition-all w-full sm:w-auto">Select CSV File</button>
                         </div>
                     </form>
                 </div>
@@ -99,10 +98,10 @@
 
         @if(isset($applicants) && $applicants->count() > 0)
             {{-- MAIN ANALYSIS TABLE --}}
-            <div class="bg-white dark:bg-gray-900 rounded-[35px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 p-6 sm:p-8 lg:p-10 mb-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div class="bg-white dark:bg-gray-900 rounded-[25px] sm:rounded-[35px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 p-4 sm:p-8 lg:p-10 mb-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 
                 <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
-                    <h4 class="text-xl font-extrabold text-gray-900 dark:text-white tracking-tight uppercase">Applicant Analysis</h4>
+                    <h4 class="text-lg sm:text-xl font-extrabold text-gray-900 dark:text-white tracking-tight uppercase">Applicant Analysis</h4>
 
                     {{-- Batch Finalize --}}
                     <form action="{{ route('head-supervisor.matching.finalize') }}" method="POST" x-show="selectedApplicants.length > 0" x-cloak class="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
@@ -136,7 +135,7 @@
                 </div>
 
                 {{-- LEGENDS --}}
-                <div class="flex flex-col gap-6 mb-10 px-2">
+                <div class="flex flex-col gap-4 sm:gap-6 mb-6 sm:mb-10 px-0 sm:px-2">
                     <div class="flex flex-wrap items-center gap-4 sm:gap-6 overflow-x-auto no-scrollbar pb-2">
                         <span class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider border-r border-gray-200 dark:border-gray-800 pr-6 whitespace-nowrap">Recommendation</span>
                         <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-500 whitespace-nowrap">
@@ -167,24 +166,24 @@
                     </div>
                 </div>
 
-                <div class="overflow-x-auto -mx-6 lg:-mx-10 px-6 lg:px-10">
-                    <table class="min-w-full text-left">
-                        <thead class="bg-gray-50 dark:bg-gray-950 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 dark:border-gray-800">
+                <div class="overflow-x-auto -mx-4 sm:-mx-8 lg:-mx-10 px-4 sm:px-8 lg:px-10">
+                    <table class="min-w-[700px] w-full text-left">
+                        <thead class="bg-gray-50 dark:bg-gray-950 text-[9px] sm:text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 dark:border-gray-800">
                             <tr>
-                                <th class="px-6 py-6 w-12 text-center">
+                                <th class="px-3 sm:px-6 py-4 sm:py-6 w-10 sm:w-12 text-center">
                                     <input type="checkbox" 
                                            @click="selectAll({{ json_encode($applicants->filter(fn($a) => !\App\Models\MatchResult::where('applicant_name', $a->full_name)->where('is_confirmed', true)->exists())->pluck('full_name')->toArray()) }})"
                                            :checked="selectedApplicants.length === {{ $applicants->filter(fn($a) => !\App\Models\MatchResult::where('applicant_name', $a->full_name)->where('is_confirmed', true)->exists())->count() }} && selectedApplicants.length > 0"
                                            class="w-5 h-5 rounded-lg border-gray-300 accent-[#0B5694] cursor-pointer shadow-sm transition-all">
                                 </th>
-                                <th class="px-6 py-6">Applicant</th>
-                                <th class="px-6 py-6">Department Match</th>
-                                <th class="px-6 py-5">Score</th>
-                                <th class="px-6 py-5">Verification</th>
-                                <th class="px-6 py-6 text-right">Actions</th>
+                                <th class="px-3 sm:px-6 py-4 sm:py-6">Applicant</th>
+                                <th class="px-3 sm:px-6 py-4 sm:py-6">Department Match</th>
+                                <th class="px-3 sm:px-6 py-4 sm:py-6">Score</th>
+                                <th class="px-3 sm:px-6 py-4 sm:py-6">Verification</th>
+                                <th class="px-3 sm:px-6 py-4 sm:py-6 text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody class="text-[15px] divide-y divide-gray-50 dark:divide-gray-800">
+                        <tbody class="text-[13px] sm:text-[15px] divide-y divide-gray-50 dark:divide-gray-800">
                             @foreach($applicants as $applicant)
                                 @php 
                                     $matches = $results->get($applicant->full_name, collect());
@@ -215,7 +214,7 @@
                                 @endphp
                                 
                                 <tr class="transition-colors" :class="isSelected('{{ $applicant->full_name }}') ? 'bg-blue-50/30 dark:bg-blue-950/10' : ''">
-                                    <td class="px-6 py-5 text-center">
+                                    <td class="px-3 sm:px-6 py-4 sm:py-5 text-center">
                                         @if(!$confirmedMatch)
                                             <input type="checkbox" :value="'{{ $applicant->full_name }}'" x-model="selectedApplicants" class="w-5 h-5 rounded-lg border-gray-300 accent-[#0B5694] cursor-pointer shadow-sm transition-all">
                                         @else
@@ -224,7 +223,7 @@
                                             </div>
                                         @endif
                                     </td>
-                                    <td class="px-6 py-6 font-bold text-gray-800 dark:text-gray-100">
+                                    <td class="px-3 sm:px-6 py-4 sm:py-6 font-bold text-gray-800 dark:text-gray-100">
                                         <div class="flex items-center gap-2">
                                             {{ $applicant->full_name }}
                                             @if(!empty($applicant->resume_path))
@@ -235,10 +234,10 @@
                                         </div>
                                         <p class="text-xs text-gray-500 font-bold uppercase tracking-tight mt-1">{{ $applicant->university }}</p>
                                     </td>
-                                    <td class="px-6 py-6 font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight text-sm">
+                                    <td class="px-3 sm:px-6 py-4 sm:py-6 font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight text-xs sm:text-sm">
                                         {{ $displayMatch ? $displayMatch->office->name : 'No Results' }}
                                     </td>
-                                    <td class="px-6 py-6">
+                                    <td class="px-3 sm:px-6 py-4 sm:py-6">
                                         @if($displayMatch)
                                             <div class="flex items-center gap-3">
                                                 <div class="w-24 h-2.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden border border-gray-100 dark:border-gray-800">
@@ -248,16 +247,16 @@
                                             </div>
                                         @endif
                                     </td>
-                                    <td class="px-6 py-6">
-                                        <span class="{{ $confidenceBg }} {{ $confidenceColor }} text-[11px] font-bold px-4 py-2 rounded-full uppercase tracking-wider border border-current shadow-sm whitespace-nowrap">
+                                    <td class="px-3 sm:px-6 py-4 sm:py-6">
+                                        <span class="{{ $confidenceBg }} {{ $confidenceColor }} text-[10px] sm:text-[11px] font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full uppercase tracking-wider border border-current shadow-sm whitespace-nowrap">
                                             {{ $confidenceText }}
                                         </span>
                                     </td>
-                                    <td class="px-6 py-6 text-right">
-                                        <div class="flex justify-end gap-3">
-                                            <button @click="if (expanded === '{{ $applicant->applicant_id }}') { expanded = null; } else { expanded = '{{ $applicant->applicant_id }}'; evaluating = null; }" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 px-5 py-2.5 rounded-xl text-xs font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white dark:hover:border-gray-500 transition shadow-sm uppercase tracking-wider active:scale-95">Analysis</button>
+                                    <td class="px-3 sm:px-6 py-4 sm:py-6 text-right">
+                                        <div class="flex justify-end gap-2 sm:gap-3">
+                                            <button @click="if (expanded === '{{ $applicant->applicant_id }}') { expanded = null; } else { expanded = '{{ $applicant->applicant_id }}'; evaluating = null; }" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl text-[10px] sm:text-xs font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white dark:hover:border-gray-500 transition shadow-sm uppercase tracking-wider active:scale-95">Analysis</button>
                                             @if(!$confirmedMatch)
-                                                <button @click="if (evaluating === '{{ $applicant->applicant_id }}') { evaluating = null; } else { evaluating = '{{ $applicant->applicant_id }}'; expanded = null; }" class="bg-[#0B5694] dark:bg-blue-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-[#084577] transition shadow-sm uppercase tracking-wider active:scale-95">Evaluate</button>
+                                                <button @click="if (evaluating === '{{ $applicant->applicant_id }}') { evaluating = null; } else { evaluating = '{{ $applicant->applicant_id }}'; expanded = null; }" class="bg-[#0B5694] dark:bg-blue-600 text-white px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl text-[10px] sm:text-xs font-bold hover:bg-[#084577] transition shadow-sm uppercase tracking-wider active:scale-95">Evaluate</button>
                                             @endif
                                         </div>
                                     </td>
@@ -265,8 +264,8 @@
 
                                 {{-- EVALUATION --}}
                                 <tr x-show="evaluating === '{{ $applicant->applicant_id }}'" x-cloak class="bg-blue-50/20 dark:bg-blue-900/10 border-b border-gray-100 dark:border-gray-800">
-                                    <td colspan="6" class="px-12 py-10">
-                                        <div class="bg-white dark:bg-gray-900 p-10 rounded-[35px] border border-blue-100 dark:border-blue-900/50 shadow-lg" x-data="{ skillFilter: 'all' }">
+                                    <td colspan="6" class="px-4 sm:px-12 py-6 sm:py-10">
+                                        <div class="bg-white dark:bg-gray-900 p-6 sm:p-10 rounded-[25px] sm:rounded-[35px] border border-blue-100 dark:border-blue-900/50 shadow-lg" x-data="{ skillFilter: 'all' }">
                                             @php
                                                 $skillToCategory = \App\Models\AssessmentItem::active()->pluck('category', 'competency_text')->mapWithKeys(fn($cat, $txt) => [trim($txt) => $cat])->toArray();
                                             @endphp
@@ -325,7 +324,7 @@
                                                     </div>
 
                                                     {{-- Interview Notes, Resume, and Behavioral Scores --}}
-                                                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 border-t border-gray-100 dark:border-gray-800 pt-6">
+                                                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 border-t border-gray-100 dark:border-gray-800 pt-6">
                                                         {{-- Left Side: Interview Notes --}}
                                                         <div class="space-y-4">
                                                             <h5 class="text-xs font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400">Interview Notes</h5>
@@ -377,11 +376,11 @@
 
                                 {{-- ANALYSIS --}}
                                 <tr x-show="expanded === '{{ $applicant->applicant_id }}'" x-cloak class="bg-gray-50/50 dark:bg-gray-950/50 border-b border-gray-100 dark:border-gray-800">
-                                    <td colspan="6" class="px-12 py-8">
+                                    <td colspan="6" class="px-4 sm:px-12 py-6 sm:py-8">
                                         @php
                                             $top5Matches = $matches->sortByDesc('score')->take(5);
                                         @endphp
-                                        <div class="bg-white dark:bg-gray-900 p-8 rounded-[35px] border border-gray-100 dark:border-gray-800 shadow-lg space-y-8"
+                                        <div class="bg-white dark:bg-gray-900 p-6 sm:p-8 rounded-[25px] sm:rounded-[35px] border border-gray-100 dark:border-gray-800 shadow-lg space-y-6 sm:space-y-8"
                                              x-data="{ activeMatchId: 'all' }">
                                             <div class="text-left border-b border-gray-50 dark:border-gray-800 pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                                                 <div>
@@ -769,7 +768,7 @@
                 @endif
             </div>
         @else
-            <div class="bg-white dark:bg-gray-900 rounded-[35px] border border-gray-100 dark:border-gray-800 p-24 text-center">
+            <div class="bg-white dark:bg-gray-900 rounded-[25px] sm:rounded-[35px] border border-gray-100 dark:border-gray-800 p-12 sm:p-24 text-center">
                 <div class="w-24 h-24 bg-gray-50 dark:bg-gray-950 rounded-[35px] flex items-center justify-center mx-auto mb-8 text-gray-300 border border-gray-100 dark:border-gray-800">
                     <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
                 </div>
@@ -778,9 +777,7 @@
             </div>
         @endif
 
-    </main>
-
-    <x-notification-sidebar :notifications="$notifications" />
+    </div>
 
     {{-- RESUME PREVIEW MODAL --}}
     <div x-show="showResumePreview" 
@@ -823,7 +820,7 @@
             </div>
         </div>
     </div>
-</div>
+</x-page-layout>
 
 <style>
 .markdown-content h3 {

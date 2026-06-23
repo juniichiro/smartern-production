@@ -3,23 +3,21 @@
 @section('title', 'Manage Assessment Form')
 
 @section('content')
-<div class="flex min-h-screen bg-gray-50 dark:bg-gray-950 font-sans text-[14px] transition-colors duration-300" 
-     x-data="assessmentManager">
-    
-    <x-sidebar portalType="Head Supervisor" 
-               userName="{{ Auth::user()->supervisorDetails->first_name }}" 
-               userRole="Head Supervisor"/>
-
-    <main class="lg:ml-64 flex-1 p-4 sm:p-6 lg:p-10 text-left mt-16 lg:mt-0 transition-all duration-300">
+<x-page-layout 
+    portalType="Head Supervisor" 
+    userName="{{ Auth::user()->supervisorDetails->first_name }}" 
+    userRole="Head Supervisor"
+>
+    <div x-data="assessmentManager" class="flex flex-col">
         <header class="mb-8 lg:mb-12 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
             <div>
                 <div class="flex items-center gap-3 mb-2">
-                    <a href="{{ route('head-supervisor.onboarding.index', ['#offices']) }}" class="p-2 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl text-gray-400 hover:text-[#0B5694] transition-colors shadow-sm">
+                    <a href="{{ route('head-supervisor.onboarding.index', ['#offices']) }}" class="p-2 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl text-gray-400 hover:text-[#0B5694] transition-colors shadow-sm shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                     </a>
-                    <h2 class="text-3xl lg:text-4xl font-extrabold text-gray-800 dark:text-gray-100 tracking-normal">Assessment Items</h2>
+                    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-800 dark:text-gray-100 tracking-normal">Assessment Items</h2>
                 </div>
-                <p class="text-sm lg:text-base text-gray-500 dark:text-gray-400 font-medium tracking-tight ml-12">Manage competencies used for intern matching</p>
+                <p class="text-xs sm:text-sm lg:text-base text-gray-500 dark:text-gray-400 font-medium tracking-tight ml-12">Manage competencies used for intern matching</p>
             </div>
             <button @click="addItemOpen = true" class="bg-[#0B5694] dark:bg-blue-600 text-white px-8 py-3.5 rounded-xl text-[10px] sm:text-xs font-bold uppercase tracking-wider shadow-lg hover:bg-[#084577] dark:hover:bg-blue-700 transition active:scale-95 flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
@@ -76,10 +74,10 @@
         {{-- Add Item Modal --}}
         <div x-show="addItemOpen" x-cloak class="fixed inset-0 z-[150] flex items-center justify-center p-4 sm:p-6">
             <div @click="addItemOpen = false" class="absolute inset-0 bg-gray-950/60 backdrop-blur-sm"></div>
-            <div class="relative bg-white dark:bg-gray-900 w-full max-w-xl rounded-[35px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 text-left">
-                <div class="p-8 sm:p-10">
-                    <h3 class="text-2xl font-extrabold text-gray-800 dark:text-gray-100 tracking-normal uppercase mb-2">Add Competency</h3>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 font-medium mb-8">Create a new item for the assessment form.</p>
+            <div class="relative bg-white dark:bg-gray-900 w-full max-w-xl mx-4 rounded-[25px] sm:rounded-[35px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 text-left">
+                <div class="p-6 sm:p-10">
+                    <h3 class="text-xl sm:text-2xl font-extrabold text-gray-800 dark:text-gray-100 tracking-normal uppercase mb-2">Add Competency</h3>
+                    <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 font-medium mb-6 sm:mb-8">Create a new item for the assessment form.</p>
 
                     <form action="{{ route('head-supervisor.assessment-items.store') }}" method="POST" class="space-y-6">
                         @csrf
@@ -118,10 +116,10 @@
         {{-- Edit Item Modal --}}
         <div x-show="editItemOpen" x-cloak class="fixed inset-0 z-[150] flex items-center justify-center p-4 sm:p-6">
             <div @click="editItemOpen = false" class="absolute inset-0 bg-gray-950/60 backdrop-blur-sm"></div>
-            <div class="relative bg-white dark:bg-gray-900 w-full max-w-xl rounded-[35px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 text-left">
-                <div class="p-8 sm:p-10">
-                    <h3 class="text-2xl font-extrabold text-gray-800 dark:text-gray-100 tracking-normal uppercase mb-2">Edit Competency</h3>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 font-medium mb-8">Update the assessment item details.</p>
+            <div class="relative bg-white dark:bg-gray-900 w-full max-w-xl mx-4 rounded-[25px] sm:rounded-[35px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 text-left">
+                <div class="p-6 sm:p-10">
+                    <h3 class="text-xl sm:text-2xl font-extrabold text-gray-800 dark:text-gray-100 tracking-normal uppercase mb-2">Edit Competency</h3>
+                    <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 font-medium mb-6 sm:mb-8">Update the assessment item details.</p>
 
                     <form :action="'{{ route('head-supervisor.assessment-items.index') }}/' + editItem.id" method="POST" class="space-y-6">
                         @csrf
@@ -164,8 +162,8 @@
                 </div>
             </div>
         </div>
-    </main>
-</div>
+    </div>
+</x-page-layout>
 
 <script>
     document.addEventListener('alpine:init', () => {

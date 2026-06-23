@@ -92,10 +92,10 @@
         <div x-show="!loading" x-transition.opacity.duration.500ms class="flex flex-col gap-8 items-start">
             
             {{-- CALENDAR CONTAINER --}}
-            <div class="w-full bg-white dark:bg-gray-900 rounded-[35px] shadow-sm border border-gray-100 dark:border-gray-800 p-6 lg:p-10 overflow-hidden flex flex-col">
+            <div class="w-full bg-white dark:bg-gray-900 rounded-[25px] sm:rounded-[35px] shadow-sm border border-gray-100 dark:border-gray-800 p-4 sm:p-6 lg:p-10 overflow-hidden flex flex-col">
                 
                 {{-- CALENDAR MONTH NAVIGATION HEADER --}}
-                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 mb-6 sm:mb-8">
                     <div class="flex items-center gap-6">
                         <div>
                             <h3 class="text-xl md:text-2xl font-black text-gray-800 dark:text-gray-100 tracking-tight uppercase" x-text="monthName()"></h3>
@@ -144,17 +144,17 @@
 
                     <div class="grid grid-cols-7 divide-x divide-y divide-gray-100 dark:divide-gray-850">
                         <template x-for="blank in blankDays">
-                            <div class="min-h-[120px] bg-gray-100/30 dark:bg-gray-900/10"></div>
+                            <div class="min-h-[70px] sm:min-h-[100px] lg:min-h-[120px] bg-gray-100/30 dark:bg-gray-900/10"></div>
                         </template>
 
                         <template x-for="day in daysInMonth" :key="day.dateStr">
                             <div @click="selectDate(day)"
-                                 class="min-h-[120px] p-4 bg-white dark:bg-gray-900 cursor-pointer flex flex-col justify-between hover:bg-blue-50/20 dark:hover:bg-blue-900/5 transition-all group border-t border-l border-gray-100 dark:border-gray-850 first-of-type:border-t-0"
+                                 class="min-h-[70px] sm:min-h-[100px] lg:min-h-[120px] p-2 sm:p-3 lg:p-4 bg-white dark:bg-gray-900 cursor-pointer flex flex-col justify-between hover:bg-blue-50/20 dark:hover:bg-blue-900/5 transition-all group border-t border-l border-gray-100 dark:border-gray-850 first-of-type:border-t-0"
                                  :class="{'opacity-60 bg-gray-50/50 dark:bg-gray-950/20': isPast(day.dateStr)}">
                                 <div class="flex justify-between items-start">
-                                    <span class="text-xs font-bold text-gray-400 dark:text-gray-500 group-hover:text-[#0B5694] dark:group-hover:text-blue-400 transition-colors uppercase tracking-[0.1em]"
+                                    <span class="text-[9px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 group-hover:text-[#0B5694] dark:group-hover:text-blue-400 transition-colors uppercase tracking-[0.1em]"
                                           x-text="getCellLabel(day)"></span>
-                                    <span class="text-lg font-black text-gray-850 dark:text-gray-100 leading-none group-hover:scale-110 transition-transform"
+                                    <span class="text-base sm:text-lg font-black text-gray-850 dark:text-gray-100 leading-none group-hover:scale-110 transition-transform"
                                           x-text="day.day"></span>
                                 </div>
 
@@ -219,7 +219,7 @@
 
             {{-- SCHOOL SCHEDULE SETTINGS SUMMARY (Shown only when filtered) --}}
             <template x-if="selectedSchool && schoolSchedules[selectedSchool]">
-                <div class="w-full bg-white dark:bg-gray-900 rounded-[35px] shadow-sm border border-gray-100 dark:border-gray-800 p-8 flex items-center justify-between">
+                <div class="w-full bg-white dark:bg-gray-900 rounded-[25px] sm:rounded-[35px] shadow-sm border border-gray-100 dark:border-gray-800 p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
                     <div class="flex items-center gap-6">
                         <div class="w-14 h-14 bg-blue-50 dark:bg-blue-900/30 text-[#0B5694] dark:text-blue-400 rounded-2xl flex items-center justify-center">
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
@@ -230,7 +230,7 @@
                         </div>
                     </div>
                     
-                    <div class="flex items-center gap-10">
+                    <div class="flex flex-wrap items-center gap-4 sm:gap-10">
                         <div class="text-left">
                             <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Shift Hours</span>
                             <p class="text-sm font-black text-gray-800 dark:text-white tracking-widest" x-text="formatTime(schoolSchedules[selectedSchool].start_time) + ' - ' + formatTime(schoolSchedules[selectedSchool].end_time)"></p>
@@ -239,15 +239,15 @@
                             <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Daily Credit</span>
                             <p class="text-sm font-black text-gray-800 dark:text-white tracking-widest" x-text="(schoolSchedules[selectedSchool].daily_hours % 1 === 0 ? schoolSchedules[selectedSchool].daily_hours : schoolSchedules[selectedSchool].daily_hours) + ' HRS (' + schoolSchedules[selectedSchool].rounding_mode.toUpperCase() + ')'"></p>
                         </div>
-                        <div class="flex gap-2">
-                             <button @click="editSchoolSchedule(schoolSchedules[selectedSchool])" class="p-4 bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 rounded-2xl hover:bg-blue-100 transition-all border border-blue-100 dark:border-blue-900/50">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        <div class="flex gap-2 ml-auto">
+                             <button @click="editSchoolSchedule(schoolSchedules[selectedSchool])" class="p-3 sm:p-4 bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 rounded-2xl hover:bg-blue-100 transition-all border border-blue-100 dark:border-blue-900/50">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                              </button>
                              <form :action="`/head-supervisor/schedule/${schoolSchedules[selectedSchool].id}`" method="POST" onsubmit="return confirm('Withdraw this school schedule? Standard office hours will apply.');">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="p-4 bg-rose-50 dark:bg-rose-900/20 text-rose-500 rounded-2xl hover:bg-rose-100 transition-all border border-rose-100 dark:border-rose-900/50">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                                <button type="submit" class="p-3 sm:p-4 bg-rose-50 dark:bg-rose-900/20 text-rose-500 rounded-2xl hover:bg-rose-100 transition-all border border-rose-100 dark:border-rose-900/50">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                                 </button>
                             </form>
                         </div>

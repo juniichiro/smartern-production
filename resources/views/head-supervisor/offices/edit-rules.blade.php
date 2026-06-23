@@ -3,14 +3,12 @@
 @section('title', 'Manage Rules - ' . $office->name)
 
 @section('content')
-<div class="flex min-h-screen bg-gray-50 dark:bg-gray-950 font-sans text-[14px] transition-colors duration-300">
-    
-    <x-sidebar portalType="Head Supervisor" 
-               userName="{{ Auth::user()->supervisorDetails->first_name }}" 
-               userRole="Head Supervisor"/>
-
-    <main class="lg:ml-64 flex-1 p-4 sm:p-6 lg:p-10 text-left mt-16 lg:mt-0 transition-all duration-300" 
-          x-data="officeRulesManager(@js($assessmentItems), @js($rules))">
+<x-page-layout 
+    portalType="Head Supervisor" 
+    userName="{{ Auth::user()->supervisorDetails->first_name }}" 
+    userRole="Head Supervisor"
+>
+    <div x-data="officeRulesManager(@js($assessmentItems), @js($rules))" class="flex flex-col">
         
         <header class="mb-8 lg:mb-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div class="flex items-center gap-4 sm:gap-6">
@@ -109,17 +107,17 @@
                 </template>
             </div>
 
-            <div class="mt-12 flex justify-end gap-4 bg-white dark:bg-gray-900 p-8 rounded-[30px] border border-gray-100 dark:border-gray-800 sticky bottom-8 shadow-xl z-10 animate-in slide-in-from-bottom-4 duration-500">
-                <a href="{{ route('head-supervisor.onboarding.index', ['#offices']) }}" class="px-10 py-4 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded-2xl font-bold text-xs uppercase tracking-wider hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+            <div class="mt-10 sm:mt-12 flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 bg-white dark:bg-gray-900 p-6 sm:p-8 rounded-[25px] sm:rounded-[30px] border border-gray-100 dark:border-gray-800 sticky bottom-4 sm:bottom-8 shadow-xl z-10 animate-in slide-in-from-bottom-4 duration-500">
+                <a href="{{ route('head-supervisor.onboarding.index', ['#offices']) }}" class="px-8 sm:px-10 py-3 sm:py-4 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded-2xl font-bold text-[10px] sm:text-xs uppercase tracking-wider hover:bg-gray-200 dark:hover:bg-gray-700 transition text-center">
                     Discard
                 </a>
-                <button type="submit" class="px-10 py-4 bg-[#0B5694] dark:bg-blue-600 text-white rounded-2xl font-bold text-xs uppercase tracking-wider hover:bg-[#084577] dark:hover:bg-blue-700 transition shadow-lg shadow-blue-500/20 active:scale-95">
+                <button type="submit" class="px-8 sm:px-10 py-3 sm:py-4 bg-[#0B5694] dark:bg-blue-600 text-white rounded-2xl font-bold text-[10px] sm:text-xs uppercase tracking-wider hover:bg-[#084577] dark:hover:bg-blue-700 transition shadow-lg shadow-blue-500/20 active:scale-95">
                     Update Office Requirements
                 </button>
             </div>
         </form>
-    </main>
-</div>
+    </div>
+</x-page-layout>
 
 <script>
     document.addEventListener('alpine:init', () => {

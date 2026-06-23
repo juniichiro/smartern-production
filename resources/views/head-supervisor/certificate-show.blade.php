@@ -10,7 +10,7 @@
 >
     <div x-data="headSupervisorCertificatePreviewManager" class="flex flex-col h-full">
         {{-- Header & Back Navigation --}}
-        <header class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+        <header class="mb-6 sm:mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-4 sm:gap-6">
             <div>
                 <a href="{{ route('head-supervisor.certificates.index') }}" class="flex items-center gap-2 text-gray-400 hover:text-[#0B5694] dark:hover:text-blue-400 transition font-bold uppercase tracking-widest text-xs mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
@@ -45,7 +45,7 @@
             <x-skeleton class="w-[215.9mm] max-w-full h-[279.4mm] rounded-none shadow-2xl" />
         </div>
 
-        <div x-show="!loading" x-transition.opacity.duration.500ms class="my-10 flex justify-center overflow-x-auto pb-10">
+        <div x-show="!loading" x-transition.opacity.duration.500ms class="my-6 sm:my-10 flex justify-center overflow-x-auto pb-10 -mx-3 sm:-mx-6 lg:-mx-10 px-3 sm:px-6 lg:px-10">
             <style>
                 /* 1. Exact Font Mapping for Browser Preview */
                 @font-face {
