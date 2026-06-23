@@ -20,6 +20,7 @@
         showResumePreview: false,
         showBreakdown: null,
         showLegends: false,
+        showResetModal: false,
         isSelected(name) { return this.selectedApplicants.includes(name); },
         selectAll(allNames) {
             if (this.selectedApplicants.length === allNames.length) {
@@ -66,16 +67,12 @@
                     </a>
 
                     {{-- Reset Pending Button --}}
-                    <form action="{{ route('head-supervisor.matching.clear') }}" method="POST" onsubmit="return confirm('Clear all pending results? Finalized assignments will be saved.')" class="flex-none">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" title="Reset Pending" class="group flex items-center justify-center text-red-400 hover:text-red-600 transition-colors min-w-[44px] min-h-[44px]">
-                            <div class="p-2.5 sm:p-3 rounded-xl bg-red-50 dark:bg-red-950/30 group-hover:bg-red-100 dark:group-hover:bg-red-900/50 transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                            </div>
-                            <span class="hidden md:inline ml-1.5 sm:ml-2 text-[10px] lg:text-xs font-bold uppercase tracking-wider text-red-500">Reset Pending</span>
-                        </button>
-                    </form>
+                    <button @click="showResetModal = true" title="Reset Pending" class="group flex items-center justify-center text-red-400 hover:text-red-600 transition-colors min-w-[44px] min-h-[44px]">
+                        <div class="p-2.5 sm:p-3 rounded-xl bg-red-50 dark:bg-red-950/30 group-hover:bg-red-100 dark:group-hover:bg-red-900/50 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        </div>
+                        <span class="hidden md:inline ml-1.5 sm:ml-2 text-[10px] lg:text-xs font-bold uppercase tracking-wider text-red-500">Reset Pending</span>
+                    </button>
                 </div>
             </div>
         </header>
@@ -1122,6 +1119,44 @@
                 <p class="text-sm font-bold text-gray-400 uppercase tracking-wider mt-3">New applications will appear here automatically.</p>
             </div>
         @endif
+
+    {{-- RESET PENDING MODAL --}}
+    <div x-show="showResetModal" 
+         x-cloak
+         class="fixed inset-0 z-[300] flex items-center justify-center p-4 sm:p-6 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         @keydown.escape.window="showResetModal = null">
+        <div class="w-full max-w-md bg-white dark:bg-gray-900 rounded-[24px] sm:rounded-[32px] border border-gray-100 dark:border-gray-800 shadow-2xl overflow-hidden"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 scale-95 translate-y-4"
+             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+             @click.away="showResetModal = null">
+            <div class="px-6 sm:px-8 py-5 sm:py-6 text-center">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 bg-red-50 dark:bg-red-950/30 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 sm:w-8 sm:h-8 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </div>
+                <h3 class="text-sm sm:text-base font-black text-gray-900 dark:text-white uppercase tracking-tight">Reset Pending Results?</h3>
+                <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 mt-2 leading-relaxed">This will clear all pending match results. Finalized assignments will be saved and unaffected.</p>
+            </div>
+            <div class="px-6 sm:px-8 py-4 sm:py-5 border-t border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-950/50 flex flex-col sm:flex-row-reverse gap-2 sm:gap-3">
+                <form action="{{ route('head-supervisor.matching.clear') }}" method="POST" class="w-full sm:w-auto">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="w-full sm:w-auto px-6 py-3 sm:py-3.5 bg-red-500 hover:bg-red-600 text-white font-bold uppercase text-[10px] sm:text-xs tracking-wider rounded-xl transition-all active:scale-95 shadow-md min-h-[44px]">
+                        Yes, Reset Pending
+                    </button>
+                </form>
+                <button @click="showResetModal = null" type="button" class="w-full sm:w-auto px-6 py-3 sm:py-3.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold uppercase text-[10px] sm:text-xs tracking-wider rounded-xl transition-all active:scale-95 shadow-sm min-h-[44px]">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
 
     {{-- RESUME PREVIEW MODAL --}}
     <div x-show="showResumePreview" 
