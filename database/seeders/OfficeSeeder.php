@@ -20,6 +20,9 @@ class OfficeSeeder extends Seeder
                     'building' => 'Main Building',
                     'floor' => '3rd Floor',
                 ]),
+                'latitude' => 14.61504850,
+                'longitude' => 121.01059830,
+                'radius_meters' => 100,
             ],
             [
                 'id' => 2, // This matches Michelle's office_id from the payload
@@ -28,6 +31,9 @@ class OfficeSeeder extends Seeder
                     'building' => 'Main Building',
                     'floor' => '2nd Floor',
                 ]),
+                'latitude' => 14.61504850,
+                'longitude' => 121.01059830,
+                'radius_meters' => 100,
             ],
             [
                 'id' => 3,
@@ -36,6 +42,9 @@ class OfficeSeeder extends Seeder
                     'building' => 'Annex Building',
                     'floor' => '1st Floor',
                 ]),
+                'latitude' => 14.61504850,
+                'longitude' => 121.01059830,
+                'radius_meters' => 100,
             ],
             [
                 'id' => 4,
@@ -44,6 +53,9 @@ class OfficeSeeder extends Seeder
                     'building' => 'Annex Building',
                     'floor' => '2nd Floor',
                 ]),
+                'latitude' => 14.61504850,
+                'longitude' => 121.01059830,
+                'radius_meters' => 100,
             ],
         ]);
     }
