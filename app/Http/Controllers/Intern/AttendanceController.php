@@ -225,6 +225,18 @@ class AttendanceController extends Controller
                 ->first();
 
             if ($todayRecord && ! $todayRecord->clock_out) {
+                // Require daily journal entry before clock-out
+                $hasDailyJournal = \App\Models\Journal::where('intern_id', $userId)
+                    ->where('journal_type', 'daily')
+                    ->where('entry_date', now()->format('Y-m-d'))
+                    ->exists();
+
+                if (! $hasDailyJournal) {
+                    return response()->json([
+                        'message' => 'You must submit your Daily Journal entry for today before clocking out.',
+                    ], 403);
+                }
+
                 $statusData = $this->attendanceService->getInternStatus($userId);
                 $effectiveSchedule = $statusData['effectiveSchedule'];
 
