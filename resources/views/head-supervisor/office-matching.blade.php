@@ -122,7 +122,7 @@
                                 <span x-text="batchOfficeName"></span>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" :class="isDropdownOpen ? 'rotate-180' : ''" class="transition-transform duration-200"><path d="M6 9l6 6 6-6"/></svg>
                             </button>
-                            <div x-show="isDropdownOpen" x-transition.opacity class="absolute z-50 w-full mt-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-2xl overflow-hidden py-2">
+                            <div x-show="isDropdownOpen" x-transition.opacity class="absolute z-50 left-0 right-0 sm:right-auto w-full mt-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-2xl overflow-hidden py-2 min-w-[280px] lg:min-w-0">
                                 @foreach($offices as $office)
                                     <div @click="batchOfficeId = '{{ $office->id }}'; batchOfficeName = '{{ $office->name }}'; isDropdownOpen = false"
                                          class="px-6 py-4 text-[11px] font-bold uppercase tracking-[0.1em] text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/40 hover:text-[#0B5694] dark:hover:text-blue-400 cursor-pointer transition-all border-b border-gray-50 dark:border-gray-800/50 last:border-none flex items-center justify-between group">
@@ -141,8 +141,8 @@
 
                 {{-- LEGENDS --}}
                 <div class="flex flex-col gap-3 sm:gap-4 lg:gap-6 mb-4 sm:mb-8 lg:mb-10 px-0 sm:px-2">
-                    <div class="flex flex-wrap items-center gap-2 sm:gap-4 lg:gap-6 overflow-x-auto no-scrollbar pb-2">
-                        <span class="text-[9px] sm:text-[10px] lg:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider border-r border-gray-200 dark:border-gray-800 pr-3 sm:pr-6 whitespace-nowrap">Recommendation</span>
+                    <div class="flex flex-nowrap lg:flex-wrap items-center gap-2 sm:gap-4 lg:gap-6 overflow-x-auto lg:overflow-x-visible pb-2">
+                        <span class="text-[9px] sm:text-[10px] lg:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider border-r border-gray-200 dark:border-gray-800 pr-3 sm:pr-6 whitespace-nowrap shrink-0">Recommendation</span>
                         <div class="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] lg:text-xs font-bold uppercase tracking-wider text-emerald-500 whitespace-nowrap">
                             <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-500 shrink-0"></div> Strong (80%+): Highly Recommended
                         </div>
@@ -157,8 +157,8 @@
                         </div>
                     </div>
 
-                    <div class="flex flex-wrap items-center gap-2 sm:gap-4 lg:gap-6 overflow-x-auto no-scrollbar pb-2">
-                        <span class="text-[9px] sm:text-[10px] lg:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider border-r border-gray-200 dark:border-gray-800 pr-3 sm:pr-6 whitespace-nowrap">Verification</span>
+                    <div class="flex flex-nowrap lg:flex-wrap items-center gap-2 sm:gap-4 lg:gap-6 overflow-x-auto lg:overflow-x-visible pb-2">
+                        <span class="text-[9px] sm:text-[10px] lg:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider border-r border-gray-200 dark:border-gray-800 pr-3 sm:pr-6 whitespace-nowrap shrink-0">Verification</span>
                         <div class="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] lg:text-[11px] font-bold uppercase tracking-wider text-gray-500 whitespace-nowrap">
                             <span class="bg-emerald-50 dark:bg-emerald-950/30 text-emerald-500 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded text-[8px] sm:text-[9px] lg:text-[10px] border border-emerald-500/20">High</span> Interviewed
                         </div>
@@ -171,7 +171,7 @@
                     </div>
                 </div>
 
-                <div class="overflow-x-auto -mx-4 sm:-mx-8 lg:-mx-10 px-4 sm:px-8 lg:px-10 hidden md:block">
+                <div class="overflow-x-auto -mx-4 sm:-mx-8 lg:-mx-10 px-4 sm:px-8 lg:px-10 hidden lg:block">
                     <table class="min-w-[700px] w-full text-left">
                         <thead class="bg-gray-50 dark:bg-gray-950 text-[9px] sm:text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 dark:border-gray-800">
                             <tr>
@@ -534,36 +534,36 @@
                                                         @endphp
                                                         {{-- MODAL FOR FULL BREAKDOWN --}}
                                                         @if($breakdown)
-                                                            <div x-show="showBreakdown === '{{ $match->id }}'" 
-                                                                 x-cloak
-                                                                 class="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm"
-                                                                 x-transition:enter="transition ease-out duration-300"
-                                                                 x-transition:enter-start="opacity-0"
-                                                                 x-transition:enter-end="opacity-100"
-                                                                 x-transition:leave="transition ease-in duration-200"
-                                                                 x-transition:leave-start="opacity-100"
-                                                                 x-transition:leave-end="opacity-0"
-                                                                 @keydown.escape.window="showBreakdown = null"
-                                                                 style="display: none;"
-                                                            >
-                                                                <div class="w-full max-w-2xl bg-white dark:bg-gray-900 rounded-[32px] border border-gray-100 dark:border-gray-800 shadow-2xl overflow-hidden flex flex-col max-h-[85vh] transition-all duration-300 text-left"
-                                                                     x-transition:enter="transition ease-out duration-300"
-                                                                     x-transition:enter-start="opacity-0 scale-95 translate-y-4"
-                                                                     x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                                                                     @click.away="showBreakdown = null"
-                                                                >
-                                                                    {{-- Modal Header --}}
-                                                                    <div class="px-8 py-6 border-b border-gray-100 dark:border-gray-800 shrink-0 flex items-center justify-between">
-                                                                        <div>
-                                                                            <h2 class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight">{{ $applicant->full_name }} &bull; {{ $match->office->name }}</h2>
-                                                                        </div>
-                                                                        <button @click="showBreakdown = null" class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                                                                        </button>
-                                                                    </div>
- 
-                                                                    {{-- Modal Body (Scrollable) --}}
-                                                                    <div class="px-8 py-6 overflow-y-auto custom-scrollbar flex-1 text-sm text-gray-600 dark:text-gray-300 space-y-6 leading-relaxed font-sans">
+                                                             <div x-show="showBreakdown === '{{ $match->id }}'" 
+                                                                  x-cloak
+                                                                  class="fixed inset-0 z-[300] flex items-center justify-center p-3 sm:p-4 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm"
+                                                                  x-transition:enter="transition ease-out duration-300"
+                                                                  x-transition:enter-start="opacity-0"
+                                                                  x-transition:enter-end="opacity-100"
+                                                                  x-transition:leave="transition ease-in duration-200"
+                                                                  x-transition:leave-start="opacity-100"
+                                                                  x-transition:leave-end="opacity-0"
+                                                                  @keydown.escape.window="showBreakdown = null"
+                                                                  style="display: none;"
+                                                             >
+                                                                 <div class="w-full max-w-[calc(100%-0.5rem)] sm:max-w-lg lg:max-w-2xl bg-white dark:bg-gray-900 rounded-[24px] sm:rounded-[32px] border border-gray-100 dark:border-gray-800 shadow-2xl overflow-hidden flex flex-col max-h-[85vh] transition-all duration-300 text-left"
+                                                                      x-transition:enter="transition ease-out duration-300"
+                                                                      x-transition:enter-start="opacity-0 scale-95 translate-y-4"
+                                                                      x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                                                                      @click.away="showBreakdown = null"
+                                                                 >
+                                                                     {{-- Modal Header --}}
+                                                                     <div class="px-5 sm:px-8 py-4 sm:py-6 border-b border-gray-100 dark:border-gray-800 shrink-0 flex items-center justify-between gap-3">
+                                                                         <div class="min-w-0">
+                                                                             <h2 class="text-xs sm:text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight truncate">{{ $applicant->full_name }} &bull; {{ $match->office->name }}</h2>
+                                                                         </div>
+                                                                         <button @click="showBreakdown = null" class="p-2 shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors active:scale-90">
+                                                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                                                         </button>
+                                                                     </div>
+  
+                                                                     {{-- Modal Body (Scrollable) --}}
+                                                                     <div class="px-5 sm:px-8 py-4 sm:py-6 overflow-y-auto custom-scrollbar flex-1 text-sm text-gray-600 dark:text-gray-300 space-y-6 leading-relaxed font-sans">
                                                                         {{-- Status Pills --}}
                                                                         <div class="flex flex-wrap gap-2">
                                                                             @php
@@ -591,8 +591,8 @@
                                                                             <span class="px-3 py-1 bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 font-extrabold uppercase rounded-full border border-gray-200 dark:border-gray-700 text-[9px] tracking-wider">Verification: {{ $match->confidence }}</span>
                                                                         </div>
  
-                                                                        {{-- Structured HTML Breakdown --}}
-                                                                        <div class="markdown-content text-left dark:text-gray-300 mt-4">
+                                                                         {{-- Structured HTML Breakdown --}}
+                                                                         <div class="markdown-content text-left dark:text-gray-300 mt-4 overflow-x-auto">
                                                                             <div class="p-5 bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50 rounded-2xl mb-6 space-y-3">
                                                                                 <h4 class="text-xs font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400">TOPSIS Concept Definition</h4>
                                                                                 <div class="space-y-3 text-sm font-semibold leading-relaxed text-gray-600 dark:text-gray-300">
@@ -683,44 +683,44 @@
                                                                                     $recommendedText = ($isRecommended === true || $isRecommended === 1 || $isRecommended === "1" || $isRecommended === "Recommended") ? "Recommended" : "Needs More Training";
                                                                                 @endphp
 
-                                                                                <h3>2. Geometric Distances</h3>
-                                                                                <p>Distance to Positive Ideal (\(D^+\shrink\)):</p>
-                                                                                <div class="my-3 overflow-hidden text-center font-semibold text-gray-800 dark:text-gray-200">
-                                                                                    $$D^+ = \sqrt{ {!! implode(" + ", $pisTerms) !!} } = \sqrt{ {!! implode(" + ", $pisSimpTerms) !!} } = \sqrt{ {{ round($pisSumSq, 2) }} } \approx {{ $dPlus }}$$
-                                                                                </div>
+                                                                                 <h3>2. Geometric Distances</h3>
+                                                                                 <p>Distance to Positive Ideal (\(D^+\shrink\)):</p>
+                                                                                 <div class="my-3 overflow-x-auto overflow-y-hidden text-center font-semibold text-gray-800 dark:text-gray-200 pb-2">
+                                                                                     $$D^+ = \sqrt{ {!! implode(" + ", $pisTerms) !!} } = \sqrt{ {!! implode(" + ", $pisSimpTerms) !!} } = \sqrt{ {{ round($pisSumSq, 2) }} } \approx {{ $dPlus }}$$
+                                                                                 </div>
 
-                                                                                <p>Distance to Negative Ideal (\(D^-\shrink\)):</p>
-                                                                                <div class="my-3 overflow-hidden text-center font-semibold text-gray-800 dark:text-gray-200">
-                                                                                    $$D^- = \sqrt{ {!! implode(" + ", $nisTerms) !!} } = \sqrt{ {!! implode(" + ", $nisSimpTerms) !!} } = \sqrt{ {{ round($nisSumSq, 2) }} } \approx {{ $dMinus }}$$
-                                                                                </div>
+                                                                                 <p>Distance to Negative Ideal (\(D^-\shrink\)):</p>
+                                                                                 <div class="my-3 overflow-x-auto overflow-y-hidden text-center font-semibold text-gray-800 dark:text-gray-200 pb-2">
+                                                                                     $$D^- = \sqrt{ {!! implode(" + ", $nisTerms) !!} } = \sqrt{ {!! implode(" + ", $nisSimpTerms) !!} } = \sqrt{ {{ round($nisSumSq, 2) }} } \approx {{ $dMinus }}$$
+                                                                                 </div>
 
-                                                                                <h3>3. Closeness Coefficient (\(CC_i\))</h3>
-                                                                                <div class="my-3 overflow-hidden text-center font-semibold text-gray-800 dark:text-gray-200">
-                                                                                    $$CC_i = \frac{D^-}{D^+ + D^-} = \frac{ {{ $dMinus }} }{ {{ $dPlus }} + {{ $dMinus }} } = \frac{ {{ $dMinus }} }{ {{ round($dPlus + $dMinus, 2) }} } \approx {{ $cc }}\%$$
-                                                                                </div>
+                                                                                 <h3>3. Closeness Coefficient (\(CC_i\))</h3>
+                                                                                 <div class="my-3 overflow-x-auto overflow-y-hidden text-center font-semibold text-gray-800 dark:text-gray-200 pb-2">
+                                                                                     $$CC_i = \frac{D^-}{D^+ + D^-} = \frac{ {{ $dMinus }} }{ {{ $dPlus }} + {{ $dMinus }} } = \frac{ {{ $dMinus }} }{ {{ round($dPlus + $dMinus, 2) }} } \approx {{ $cc }}\%$$
+                                                                                 </div>
 
                                                                                 <h3>4. Behavioral Integration</h3>
                                                                                 <p>Behavioral score is <strong><code>{{ $behScore }}</code></strong> ({{ $behPct }}%).</p>
 
-                                                                                <h3>5. Weighted Score Formula</h3>
-                                                                                <div class="my-3 overflow-hidden text-center font-semibold text-gray-800 dark:text-gray-200">
-                                                                                    $$\text{Base Score} = ({{ $cc }}\% \times 0.8) + ({{ $behPct }}\% \times 0.2) = {{ $skillContribution }}\% + {{ $behavioralContribution }}\% = {{ $rawScore }}\%$$
-                                                                                </div>
+                                                                                 <h3>5. Weighted Score Formula</h3>
+                                                                                 <div class="my-3 overflow-x-auto overflow-y-hidden text-center font-semibold text-gray-800 dark:text-gray-200 pb-2">
+                                                                                     $$\text{Base Score} = ({{ $cc }}\% \times 0.8) + ({{ $behPct }}\% \times 0.2) = {{ $skillContribution }}\% + {{ $behavioralContribution }}\% = {{ $rawScore }}\%$$
+                                                                                 </div>
 
                                                                                 @if($recommendedText === "Needs More Training")
                                                                                     @php $finalScore = round($rawScore * 0.5); @endphp
-                                                                                    <h3>6. Recommendation Penalty (Needs More Training)</h3>
-                                                                                    <p>"Needs More Training" triggers a strict <strong>50% reduction</strong>:</p>
-                                                                                    <div class="my-3 overflow-hidden text-center font-semibold text-gray-800 dark:text-gray-200">
-                                                                                        $$\text{Final Score} = {{ $rawScore }}\% \times 0.5 = {{ round($rawScore * 0.5, 2) }}\% \rightarrow \mathbf{ {{ $finalScore }}\% }$$
-                                                                                    </div>
-                                                                                @else
-                                                                                    @php $finalScore = round($rawScore); @endphp
-                                                                                    <h3>6. Final Score</h3>
-                                                                                    <div class="my-3 overflow-hidden text-center font-semibold text-gray-800 dark:text-gray-200">
-                                                                                        $$\text{Final Score} = {{ $rawScore }}\% \rightarrow \mathbf{ {{ $finalScore }}\% }$$
-                                                                                    </div>
-                                                                                @endif
+                                                                                     <h3>6. Recommendation Penalty (Needs More Training)</h3>
+                                                                                     <p>"Needs More Training" triggers a strict <strong>50% reduction</strong>:</p>
+                                                                                     <div class="my-3 overflow-x-auto overflow-y-hidden text-center font-semibold text-gray-800 dark:text-gray-200 pb-2">
+                                                                                         $$\text{Final Score} = {{ $rawScore }}\% \times 0.5 = {{ round($rawScore * 0.5, 2) }}\% \rightarrow \mathbf{ {{ $finalScore }}\% }$$
+                                                                                     </div>
+                                                                                 @else
+                                                                                     @php $finalScore = round($rawScore); @endphp
+                                                                                     <h3>6. Final Score</h3>
+                                                                                     <div class="my-3 overflow-x-auto overflow-y-hidden text-center font-semibold text-gray-800 dark:text-gray-200 pb-2">
+                                                                                         $$\text{Final Score} = {{ $rawScore }}\% \rightarrow \mathbf{ {{ $finalScore }}\% }$$
+                                                                                     </div>
+                                                                                 @endif
                                                                             @else
                                                                                 <div class="p-5 bg-amber-50/50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/50 rounded-2xl mb-6">
                                                                                     <h4 class="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">Direct Assignment / Fallback Score</h4>
@@ -732,10 +732,10 @@
                                                                         </div>
                                                                     </div>
 
-                                                                    {{-- Modal Footer --}}
-                                                                    <div class="px-8 py-6 border-t border-gray-100 dark:border-gray-800 shrink-0 bg-gray-50 dark:bg-gray-900/50 flex flex-col sm:flex-row items-center justify-between gap-4">
-                                                                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Final Combined Score: {{ $match->score }}%</span>
-                                                                        <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+                                                                     {{-- Modal Footer --}}
+                                                                     <div class="px-5 sm:px-8 py-4 sm:py-6 border-t border-gray-100 dark:border-gray-800 shrink-0 bg-gray-50 dark:bg-gray-900/50 flex flex-col sm:flex-row items-center justify-between gap-4">
+                                                                         <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider shrink-0">Final Score: {{ $match->score }}%</span>
+                                                                         <div class="flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-end">
                                                                             @if(!$confirmedMatch)
                                                                                 <form action="{{ route('head-supervisor.matching.finalize') }}" method="POST" class="inline">
                                                                                     @csrf
@@ -764,11 +764,11 @@
                         </tbody>
                     </table>
                 </div>
-                {{-- CLOSE hidden md:block wrapper --}}
+                {{-- CLOSE hidden lg:block wrapper --}}
                 </div>
 
-                {{-- MOBILE CARD LAYOUT (md:hidden) --}}
-                <div class="md:hidden space-y-4">
+                {{-- MOBILE CARD LAYOUT (lg:hidden) --}}
+                <div class="lg:hidden space-y-3 sm:space-y-4">
                     @foreach($applicants as $applicant)
                         @php 
                             $matches = $results->get($applicant->full_name, collect());
@@ -1081,26 +1081,26 @@
          x-transition:leave="transition ease-in duration-200"
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
-         class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm"
+         class="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 lg:p-6 bg-black/60 backdrop-blur-sm"
          x-cloak>
         <div @click.away="showResumePreview = false" 
-             class="bg-white dark:bg-gray-900 w-full max-w-5xl h-[90vh] rounded-[35px] shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-300">
-            <div class="px-8 py-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-950/50">
-                <div class="flex items-center gap-4">
-                    <div class="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-2xl text-blue-600 dark:text-blue-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+             class="bg-white dark:bg-gray-900 w-full max-w-[calc(100%-0.5rem)] sm:max-w-3xl lg:max-w-5xl h-[90vh] rounded-[24px] sm:rounded-[35px] shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-300">
+            <div class="px-5 sm:px-8 py-4 sm:py-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-950/50 gap-3">
+                <div class="flex items-center gap-3 sm:gap-4 min-w-0">
+                    <div class="p-2 sm:p-3 bg-blue-50 dark:bg-blue-900/30 rounded-xl sm:rounded-2xl text-blue-600 dark:text-blue-400 shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" class="sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
                     </div>
-                    <div>
-                        <h4 class="text-sm font-black uppercase tracking-widest text-gray-800 dark:text-white">Resume Preview</h4>
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-0.5">Secure Document Viewer</p>
+                    <div class="min-w-0">
+                        <h4 class="text-xs sm:text-sm font-black uppercase tracking-wider sm:tracking-widest text-gray-800 dark:text-white truncate">Resume Preview</h4>
+                        <p class="text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-0.5">Secure Document Viewer</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-3">
-                    <a :href="resumeUrl" download class="p-3 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl text-gray-400 hover:text-[#0B5694] dark:hover:text-blue-400 transition shadow-sm" title="Download">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+                    <a :href="resumeUrl" download class="p-2.5 sm:p-3 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl sm:rounded-2xl text-gray-400 hover:text-[#0B5694] dark:hover:text-blue-400 transition shadow-sm active:scale-90" title="Download">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" class="sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
                     </a>
-                    <button @click="showResumePreview = false" class="p-3 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl text-gray-400 hover:text-red-500 transition shadow-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    <button @click="showResumePreview = false" class="p-2.5 sm:p-3 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl sm:rounded-2xl text-gray-400 hover:text-red-500 transition shadow-sm active:scale-90">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" class="sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                     </button>
                 </div>
             </div>
