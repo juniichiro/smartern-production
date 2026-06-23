@@ -9,7 +9,7 @@
     <div class="relative z-10 flex-1 flex flex-col justify-center items-center text-center px-4 sm:px-6 lg:px-8 max-w-[1400px] mx-auto w-full pt-20 pb-10">
         
         {{-- Micro-eyebrow Tag --}}
-        <span class="inline-flex items-center gap-1.5 px-4.5 py-1.5 mb-6 text-[10px] font-bold text-white/90 tracking-[0.2em] uppercase bg-white/10 backdrop-blur-md border border-white/20 rounded-full animate-fade-in">
+        <span class="inline-flex items-center gap-1.5 px-6 py-2 mb-6 text-[10px] font-bold text-white/90 tracking-[0.2em] uppercase bg-white/10 backdrop-blur-md border border-white/20 rounded-full animate-fade-in">
             Schools Division Office — Quezon City
         </span>
 
