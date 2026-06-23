@@ -64,7 +64,10 @@ class ScheduleController extends Controller
         }
 
         // 4. School-specific default schedules
-        $schoolSchedules = Schedule::where('type', 'school_default')->orderBy('school_name', 'asc')->get();
+        $schoolSchedules = Schedule::where('type', 'school_default')->orderBy('school_name', 'asc')->get()->map(function ($schedule) {
+            $schedule->hashid = $schedule->getRouteKey();
+            return $schedule;
+        });
 
         // Fetch universities with active interns or onboarding applicants
         $internSchools = InternDetail::distinct()->pluck('school')->toArray();
