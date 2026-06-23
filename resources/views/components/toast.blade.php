@@ -37,7 +37,7 @@
      x-transition:leave="transition ease-in duration-200"
      x-transition:leave-start="opacity-100 transform translate-x-0"
      x-transition:leave-end="opacity-0 transform translate-x-8"
-     class="fixed bottom-6 right-6 z-[250] flex items-center gap-4 px-6 py-4 rounded-[20px] border shadow-2xl backdrop-blur-xl min-w-[280px] max-w-md {{ $colors }}"
+     class="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 left-4 sm:left-auto z-[250] flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 sm:py-4 rounded-[20px] border shadow-2xl backdrop-blur-xl min-w-0 sm:min-w-[280px] max-w-[calc(100vw-2rem)] sm:max-w-md {{ $colors }}"
      x-cloak>
     
     <div class="shrink-0 flex items-center justify-center w-10 h-10 rounded-xl {{ $iconBg }}">

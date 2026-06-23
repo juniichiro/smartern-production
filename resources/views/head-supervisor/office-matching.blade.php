@@ -38,7 +38,7 @@
                 <h3 class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight uppercase">Office Matching</h3>
                 <p class="text-[10px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mt-1">Manage intern assignments and analyze compatibility</p>
             </div>
-            <div class="flex flex-wrap items-center gap-2 sm:gap-3 w-full lg:w-auto">
+            <div class="flex flex-wrap items-center justify-between sm:justify-start gap-2 sm:gap-3 w-full lg:w-auto">
                 {{-- Import Button --}}
                 <button @click="showImport = !showImport" 
                         title="Import CSV"
