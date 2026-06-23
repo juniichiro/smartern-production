@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class ScheduleController extends Controller
 {
@@ -134,7 +135,11 @@ class ScheduleController extends Controller
         ];
 
         if ($isSchoolDefault) {
-            $rules['school_name'] = 'required|string|unique:schedules,school_name';
+            $rules['school_name'] = [
+                'required',
+                'string',
+                Rule::unique('schedules', 'school_name')->where(fn ($q) => $q->where('type', 'school_default'))
+            ];
             $rules['start_time'] = 'required';
             $rules['end_time'] = 'required';
             $rules['daily_hours'] = 'required|integer|min:0|max:24';
@@ -180,7 +185,13 @@ class ScheduleController extends Controller
         ];
 
         if ($isSchoolDefault) {
-            $rules['school_name'] = 'required|string|unique:schedules,school_name,'.$schedule->id;
+            $rules['school_name'] = [
+                'required',
+                'string',
+                Rule::unique('schedules', 'school_name')
+                    ->where(fn ($q) => $q->where('type', 'school_default'))
+                    ->ignore($schedule->id)
+            ];
             $rules['start_date'] = 'nullable|date';
             $rules['target_end_date'] = 'nullable|date|after:start_date';
 
