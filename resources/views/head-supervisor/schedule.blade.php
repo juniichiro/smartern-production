@@ -90,10 +90,234 @@
 
         {{-- MAIN CONTENT GRID --}}
         <div x-show="!loading" x-transition.opacity.duration.500ms class="flex flex-col gap-8 items-start">
-            
+
+            {{-- SCHOOL SCHEDULE SETTINGS (Shown only when filtered) --}}
+            <template x-if="selectedSchool && schoolSchedules[selectedSchool]">
+                <div class="w-full bg-white dark:bg-gray-900 rounded-[25px] sm:rounded-[35px] shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
+
+                    {{-- SUMMARY VIEW --}}
+                    <div x-show="!editingSchoolInline"
+                         class="p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
+                        <div class="flex items-center gap-6">
+                            <div class="w-14 h-14 bg-blue-50 dark:bg-blue-900/30 text-[#0B5694] dark:text-blue-400 rounded-2xl flex items-center justify-center shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                            </div>
+                            <div class="text-left min-w-0">
+                                <h4 class="text-lg font-black text-gray-800 dark:text-white uppercase tracking-tight truncate" x-text="selectedSchool"></h4>
+                                <p class="text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest mt-1">Default Institutional Schedule</p>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-4 sm:gap-6">
+                            <div class="text-left">
+                                <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Shift Hours</span>
+                                <p class="text-sm font-black text-gray-800 dark:text-white tracking-widest" x-text="formatTime(schoolSchedules[selectedSchool].start_time) + ' - ' + formatTime(schoolSchedules[selectedSchool].end_time)"></p>
+                            </div>
+                            <div class="text-left">
+                                <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Daily Credit</span>
+                                <p class="text-sm font-black text-gray-800 dark:text-white tracking-widest" x-text="(schoolSchedules[selectedSchool].daily_hours % 1 === 0 ? schoolSchedules[selectedSchool].daily_hours : schoolSchedules[selectedSchool].daily_hours) + ' HRS (' + schoolSchedules[selectedSchool].rounding_mode.toUpperCase() + ')'"></p>
+                            </div>
+                            <div class="text-left">
+                                <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Late Policy</span>
+                                <p class="text-sm font-black text-gray-800 dark:text-white tracking-widest" x-text="schoolSchedules[selectedSchool].late_policy === 'next_hour' ? 'NEXT HOUR' : (schoolSchedules[selectedSchool].late_policy === 'next_half_hour' ? 'NEXT 30 MINS' : 'ACTUAL MINUTES')"></p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button @click="editSchoolInline(schoolSchedules[selectedSchool])"
+                                        class="p-3 sm:p-4 bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 rounded-2xl hover:bg-blue-100 transition-all border border-blue-100 dark:border-blue-900/50 active:scale-95">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                </button>
+                                <form :action="`/head-supervisor/schedule/${schoolSchedules[selectedSchool].hashid}`" method="POST" onsubmit="return confirm('Withdraw this school schedule? Standard office hours will apply.');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="p-3 sm:p-4 bg-rose-50 dark:bg-rose-900/20 text-rose-500 rounded-2xl hover:bg-rose-100 transition-all border border-rose-100 dark:border-rose-900/50 active:scale-95">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- INLINE EDIT VIEW --}}
+                    <div x-show="editingSchoolInline" x-cloak
+                         class="p-6 sm:p-8 lg:p-10">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h4 class="text-lg font-black text-gray-800 dark:text-white uppercase tracking-tight">Edit Institutional Schedule</h4>
+                                <p class="text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest mt-1" x-text="selectedSchool"></p>
+                            </div>
+                            <button @click="cancelSchoolInlineEdit()"
+                                    class="p-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-2xl transition-all active:scale-95">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                            </button>
+                        </div>
+
+                        <form :action="schoolFormAction" method="POST" class="space-y-6">
+                            @csrf
+                            @method('PUT')
+                            <input type="hidden" name="type" value="school_default">
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-2 text-left">
+                                    <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Internship Start</label>
+                                    <input type="date" name="start_date" x-model="schoolFormData.start_date"
+                                           class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-300 shadow-none outline-none focus:ring-2 focus:ring-[#0B5694] transition-all">
+                                </div>
+                                <div class="space-y-2 text-left">
+                                    <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Target Completion</label>
+                                    <input type="date" name="target_end_date" x-model="schoolFormData.target_end_date"
+                                           class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-300 shadow-none outline-none focus:ring-2 focus:ring-[#0B5694] transition-all">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-2 text-left">
+                                    <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Start Time</label>
+                                    <input type="time" name="start_time" required x-model="schoolFormData.start_time"
+                                           class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-300 shadow-none outline-none focus:ring-2 focus:ring-[#0B5694] transition-all">
+                                </div>
+                                <div class="space-y-2 text-left">
+                                    <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">End Time</label>
+                                    <input type="time" name="end_time" required x-model="schoolFormData.end_time"
+                                           class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-300 shadow-none outline-none focus:ring-2 focus:ring-[#0B5694] transition-all">
+                                </div>
+                            </div>
+
+                            <div class="space-y-2 text-left">
+                                <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Daily Hour Credit</label>
+                                <div class="relative">
+                                    <input type="number" name="daily_hours" required step="1" x-model="schoolFormData.daily_hours"
+                                           class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-300 shadow-none outline-none focus:ring-2 focus:ring-[#0B5694] transition-all">
+                                    <span class="absolute right-5 top-1/2 -translate-y-1/2 text-[10px] font-black text-gray-400 uppercase tracking-widest">Hours / Day</span>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-2 text-left">
+                                    <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Hour Calculation Rule</label>
+                                    <div class="grid grid-cols-3 gap-3">
+                                        <label class="cursor-pointer group">
+                                            <input type="radio" name="rounding_mode" value="none" x-model="schoolFormData.rounding_mode" class="hidden peer">
+                                            <div class="p-3 text-center border border-gray-100 dark:border-gray-800 rounded-xl peer-checked:bg-[#0B5694] peer-checked:text-white transition-all">
+                                                <p class="text-[10px] font-black uppercase tracking-widest">Standard</p>
+                                            </div>
+                                        </label>
+                                        <label class="cursor-pointer group">
+                                            <input type="radio" name="rounding_mode" value="floor" x-model="schoolFormData.rounding_mode" class="hidden peer">
+                                            <div class="p-3 text-center border border-gray-100 dark:border-gray-800 rounded-xl peer-checked:bg-[#0B5694] peer-checked:text-white transition-all">
+                                                <p class="text-[10px] font-black uppercase tracking-widest">Floor</p>
+                                            </div>
+                                        </label>
+                                        <label class="cursor-pointer group">
+                                            <input type="radio" name="rounding_mode" value="ceil" x-model="schoolFormData.rounding_mode" class="hidden peer">
+                                            <div class="p-3 text-center border border-gray-100 dark:border-gray-800 rounded-xl peer-checked:bg-[#0B5694] peer-checked:text-white transition-all">
+                                                <p class="text-[10px] font-black uppercase tracking-widest">Ceil</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="space-y-2 text-left">
+                                    <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Late Clock-In Policy</label>
+                                    <div class="grid grid-cols-3 gap-3">
+                                        <label class="cursor-pointer group">
+                                            <input type="radio" name="late_policy" value="actual" x-model="schoolFormData.late_policy" class="hidden peer">
+                                            <div class="p-3 text-center border border-gray-100 dark:border-gray-800 rounded-xl peer-checked:bg-[#0B5694] peer-checked:text-white transition-all">
+                                                <p class="text-[10px] font-black uppercase tracking-widest">Actual Mins</p>
+                                            </div>
+                                        </label>
+                                        <label class="cursor-pointer group">
+                                            <input type="radio" name="late_policy" value="next_half_hour" x-model="schoolFormData.late_policy" class="hidden peer">
+                                            <div class="p-3 text-center border border-gray-100 dark:border-gray-800 rounded-xl peer-checked:bg-[#0B5694] peer-checked:text-white transition-all">
+                                                <p class="text-[10px] font-black uppercase tracking-widest">Next 30m</p>
+                                            </div>
+                                        </label>
+                                        <label class="cursor-pointer group">
+                                            <input type="radio" name="late_policy" value="next_hour" x-model="schoolFormData.late_policy" class="hidden peer">
+                                            <div class="p-3 text-center border border-gray-100 dark:border-gray-800 rounded-xl peer-checked:bg-[#0B5694] peer-checked:text-white transition-all">
+                                                <p class="text-[10px] font-black uppercase tracking-widest">Next Hour</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-3 pt-2">
+                                <button type="submit"
+                                        class="flex-1 flex items-center justify-center gap-3 px-6 py-4 bg-[#0B5694] dark:bg-blue-600 text-white rounded-2xl font-bold text-xs uppercase tracking-wider shadow-xl shadow-blue-500/10 hover:scale-[1.02] active:scale-95 transition-all">
+                                    Save Changes
+                                </button>
+                                <button type="button" @click="cancelSchoolInlineEdit()"
+                                        class="px-6 py-4 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded-2xl font-bold text-xs uppercase tracking-wider hover:bg-gray-200 dark:hover:bg-gray-700 active:scale-95 transition-all">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </template>
+
+            {{-- INDIVIDUAL INTERN SCHEDULE CONFIGURATION --}}
+            <div class="w-full bg-white dark:bg-gray-900 rounded-[25px] sm:rounded-[35px] shadow-sm border border-gray-100 dark:border-gray-800 p-6 sm:p-8 lg:p-10 flex flex-col gap-6">
+                <div @click="toggleInternSection()"
+                     class="flex items-center justify-between cursor-pointer select-none">
+                    <div class="flex items-center gap-6">
+                        <div class="w-14 h-14 bg-blue-50 dark:bg-blue-900/30 text-[#0B5694] dark:text-blue-400 rounded-2xl flex items-center justify-center shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg>
+                        </div>
+                        <div class="text-left">
+                            <h4 class="text-lg font-black text-gray-800 dark:text-white uppercase tracking-tight">Configure Intern Weekly Schedules</h4>
+                            <p class="text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest mt-1">Set customized weekly reporting days per student</p>
+                        </div>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+                         class="text-gray-400 dark:text-gray-500 transition-transform duration-300 shrink-0"
+                         :class="{ 'rotate-180': internSectionOpen }">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+
+                <div x-show="internSectionOpen" x-collapse.duration.300ms x-cloak>
+                    <form :action="`/head-supervisor/interns/${selectedInternId}/schedule`" method="POST" class="space-y-6 pt-2">
+                        @csrf
+                        @method('PUT')
+
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-end">
+                            <div class="space-y-2 text-left">
+                                <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Select Intern</label>
+                                <select x-model="selectedInternId" @change="onInternChange()" required
+                                        class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-300 shadow-none outline-none focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-400 transition-all cursor-pointer">
+                                    <option value="" disabled selected>Choose an intern...</option>
+                                    <template x-for="intern in interns" :key="intern.id">
+                                        <option :value="intern.id" x-text="`${intern.name} (${intern.email})`"></option>
+                                    </template>
+                                </select>
+                            </div>
+
+                            <div class="lg:col-span-2 space-y-2 text-left" x-show="selectedInternId" x-cloak>
+                                <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Active Reporting Days</label>
+                                <div class="flex flex-wrap gap-2">
+                                    <template x-for="day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']" :key="day">
+                                        <label class="flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-950 rounded-xl border border-gray-200 dark:border-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-850 transition">
+                                            <input type="checkbox" name="schedule_assignment[]" :value="day" x-model="selectedInternDays"
+                                                class="rounded text-[#0B5694] focus:ring-[#0B5694] border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700">
+                                            <span class="text-xs font-bold text-gray-700 dark:text-gray-200" x-text="day"></span>
+                                        </label>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end pt-4" x-show="selectedInternId" x-cloak>
+                            <button type="submit" class="w-full sm:w-auto px-6 py-4 bg-[#0B5694] dark:bg-blue-600 text-white rounded-2xl font-bold text-xs uppercase tracking-wider shadow-lg shadow-blue-500/10 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer">
+                                Update Intern Schedule
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
             {{-- CALENDAR CONTAINER --}}
             <div class="w-full bg-white dark:bg-gray-900 rounded-[25px] sm:rounded-[35px] shadow-sm border border-gray-100 dark:border-gray-800 p-4 sm:p-6 lg:p-10 overflow-hidden flex flex-col">
-                
+
                 {{-- CALENDAR MONTH NAVIGATION HEADER --}}
                 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 mb-6 sm:mb-8">
                     <div class="flex items-center gap-6">
@@ -117,7 +341,7 @@
                     <div class="flex flex-wrap items-center gap-3">
                         {{-- School Filter --}}
                         <div class="relative w-full sm:w-64">
-                            <select x-model="selectedSchool" 
+                            <select x-model="selectedSchool"
                                     class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl px-5 py-3 text-[10px] font-black uppercase tracking-widest text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-400 focus:outline-none transition-all shadow-sm">
                                 <option value="">Global System Default</option>
                                 <template x-for="schoolName in Object.keys(schoolSchedules)" :key="schoolName">
@@ -126,7 +350,7 @@
                             </select>
                         </div>
 
-                        <button @click="resetSchoolForm(); showSchoolModal = true" 
+                        <button @click="resetSchoolForm(); showSchoolModal = true"
                                 class="px-6 py-3 bg-[#0B5694] dark:bg-blue-600 text-white rounded-xl font-bold text-[10px] uppercase tracking-wider shadow-lg shadow-blue-500/10 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
                             Register School Schedule
@@ -202,7 +426,7 @@
                                             </template>
                                         </div>
                                     </template>
-                                    
+
                                     {{-- More Events Indicator --}}
                                     <template x-if="day.events.length > 2">
                                         <div class="rounded-2xl p-2 text-center text-[10px] font-black uppercase tracking-wider bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 border border-gray-100 dark:border-gray-800/80 mt-1 select-none">
@@ -215,98 +439,6 @@
                         </template>
                     </div>
                 </div>
-            </div>
-
-            {{-- SCHOOL SCHEDULE SETTINGS SUMMARY (Shown only when filtered) --}}
-            <template x-if="selectedSchool && schoolSchedules[selectedSchool]">
-                <div class="w-full bg-white dark:bg-gray-900 rounded-[25px] sm:rounded-[35px] shadow-sm border border-gray-100 dark:border-gray-800 p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
-                    <div class="flex items-center gap-6">
-                        <div class="w-14 h-14 bg-blue-50 dark:bg-blue-900/30 text-[#0B5694] dark:text-blue-400 rounded-2xl flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-                        </div>
-                        <div class="text-left">
-                            <h4 class="text-lg font-black text-gray-800 dark:text-white uppercase tracking-tight" x-text="selectedSchool"></h4>
-                            <p class="text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest mt-1">Default Institutional Schedule</p>
-                        </div>
-                    </div>
-                    
-                    <div class="flex flex-wrap items-center gap-4 sm:gap-10">
-                        <div class="text-left">
-                            <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Shift Hours</span>
-                            <p class="text-sm font-black text-gray-800 dark:text-white tracking-widest" x-text="formatTime(schoolSchedules[selectedSchool].start_time) + ' - ' + formatTime(schoolSchedules[selectedSchool].end_time)"></p>
-                        </div>
-                        <div class="text-left">
-                            <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Daily Credit</span>
-                            <p class="text-sm font-black text-gray-800 dark:text-white tracking-widest" x-text="(schoolSchedules[selectedSchool].daily_hours % 1 === 0 ? schoolSchedules[selectedSchool].daily_hours : schoolSchedules[selectedSchool].daily_hours) + ' HRS (' + schoolSchedules[selectedSchool].rounding_mode.toUpperCase() + ')'"></p>
-                        </div>
-                        <div class="text-left">
-                            <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Late Policy</span>
-                            <p class="text-sm font-black text-gray-800 dark:text-white tracking-widest" x-text="schoolSchedules[selectedSchool].late_policy === 'next_hour' ? 'NEXT HOUR' : (schoolSchedules[selectedSchool].late_policy === 'next_half_hour' ? 'NEXT 30 MINS' : 'ACTUAL MINUTES')"></p>
-                        </div>
-                        <div class="flex gap-2 ml-auto">
-                             <button @click="editSchoolSchedule(schoolSchedules[selectedSchool])" class="p-3 sm:p-4 bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 rounded-2xl hover:bg-blue-100 transition-all border border-blue-100 dark:border-blue-900/50">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                             </button>
-                             <form :action="`/head-supervisor/schedule/${schoolSchedules[selectedSchool].hashid}`" method="POST" onsubmit="return confirm('Withdraw this school schedule? Standard office hours will apply.');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="p-3 sm:p-4 bg-rose-50 dark:bg-rose-900/20 text-rose-500 rounded-2xl hover:bg-rose-100 transition-all border border-rose-100 dark:border-rose-900/50">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </template>
-
-            {{-- INDIVIDUAL INTERN SCHEDULE CONFIGURATION --}}
-            <div class="w-full bg-white dark:bg-gray-900 rounded-[25px] sm:rounded-[35px] shadow-sm border border-gray-100 dark:border-gray-800 p-6 sm:p-8 lg:p-10 flex flex-col gap-6">
-                <div class="flex items-center gap-6">
-                    <div class="w-14 h-14 bg-blue-50 dark:bg-blue-900/30 text-[#0B5694] dark:text-blue-400 rounded-2xl flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg>
-                    </div>
-                    <div class="text-left">
-                        <h4 class="text-lg font-black text-gray-800 dark:text-white uppercase tracking-tight">Configure Intern Weekly Schedules</h4>
-                        <p class="text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest mt-1">Set customized weekly reporting days per student</p>
-                    </div>
-                </div>
-
-                <form :action="`/head-supervisor/interns/${selectedInternId}/schedule`" method="POST" class="space-y-6">
-                    @csrf
-                    @method('PUT')
-
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-end">
-                        <div class="space-y-2 text-left">
-                            <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Select Intern</label>
-                            <select x-model="selectedInternId" @change="onInternChange()" required
-                                    class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-300 shadow-none outline-none focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-400 transition-all cursor-pointer">
-                                <option value="" disabled selected>Choose an intern...</option>
-                                <template x-for="intern in interns" :key="intern.id">
-                                    <option :value="intern.id" x-text="`${intern.name} (${intern.email})`"></option>
-                                </template>
-                            </select>
-                        </div>
-
-                        <div class="lg:col-span-2 space-y-2 text-left" x-show="selectedInternId" x-cloak>
-                            <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Active Reporting Days</label>
-                            <div class="flex flex-wrap gap-2">
-                                <template x-for="day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']" :key="day">
-                                    <label class="flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-950 rounded-xl border border-gray-200 dark:border-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-850 transition">
-                                        <input type="checkbox" name="schedule_assignment[]" :value="day" x-model="selectedInternDays"
-                                            class="rounded text-[#0B5694] focus:ring-[#0B5694] border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700">
-                                        <span class="text-xs font-bold text-gray-700 dark:text-gray-200" x-text="day"></span>
-                                    </label>
-                                </template>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-end pt-4" x-show="selectedInternId" x-cloak>
-                        <button type="submit" class="w-full sm:w-auto px-6 py-4 bg-[#0B5694] dark:bg-blue-600 text-white rounded-2xl font-bold text-xs uppercase tracking-wider shadow-lg shadow-blue-500/10 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer">
-                            Update Intern Schedule
-                        </button>
-                    </div>
-                </form>
             </div>
         </div>
 
@@ -730,10 +862,18 @@
             schoolSchedules: schoolSchedules || {},
             selectedSchool: '',
             
+            // Inline edit state
+            editingSchoolInline: false,
+            internSectionOpen: true,
+
             // Intern schedule state
             interns: interns || [],
             selectedInternId: '',
             selectedInternDays: [],
+
+            toggleInternSection() {
+                this.internSectionOpen = !this.internSectionOpen;
+            },
 
             onInternChange() {
                 const found = this.interns.find(i => i.id === this.selectedInternId);
@@ -859,6 +999,7 @@
 
             resetSchoolForm() {
                 this.isEditingSchool = false;
+                this.editingSchoolInline = false;
                 this.schoolFormAction = '{{ route('head-supervisor.schedule.store') }}';
                 this.schoolFormData = {
                     school_name: '',
@@ -870,8 +1011,7 @@
                 };
             },
 
-            editSchoolSchedule(school) {
-                this.isEditingSchool = true;
+            editSchoolInline(school) {
                 this.schoolFormAction = `/head-supervisor/schedule/${school.hashid}`;
                 this.schoolFormData = {
                     school_name: school.school_name,
@@ -881,7 +1021,11 @@
                     rounding_mode: school.rounding_mode,
                     late_policy: school.late_policy || 'actual'
                 };
-                this.showSchoolModal = true;
+                this.editingSchoolInline = true;
+            },
+
+            cancelSchoolInlineEdit() {
+                this.editingSchoolInline = false;
             },
 
             prevMonth() {
