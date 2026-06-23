@@ -409,7 +409,18 @@ class AttendanceService
             } else {
                 // Case C: Standard weekday check
                 if ($this->isInternScheduled($user, $date)) {
-                    if (! $date->isToday()) {
+                    $isPastShift = false;
+                    if ($date->isToday()) {
+                        $effectiveSchedule = $this->getEffectiveSchedule($user, $date);
+                        $endTimeStr = $effectiveSchedule['end_time'] ?? '17:00:00';
+                        // Shift end time plus a 15-minute grace period for scanning issues
+                        $endTime = Carbon::parse($date->toDateString() . ' ' . $endTimeStr)->addMinutes(15);
+                        if (now()->greaterThan($endTime)) {
+                            $isPastShift = true;
+                        }
+                    }
+
+                    if (! $date->isToday() || $isPastShift) {
                         $mergedLogs->push([
                             'type' => 'absent',
                             'date' => $date->copy(),
