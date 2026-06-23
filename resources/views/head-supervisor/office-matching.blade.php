@@ -32,14 +32,14 @@
             this.resumeUrl = url;
             this.showResumePreview = true;
         }
-     }" class="flex flex-col h-full">
+     }" class="flex flex-col h-full transition-all duration-300 ease-out">
         
-        <header class="flex flex-col lg:flex-row justify-between items-start gap-6 mb-10">
+        <header class="flex flex-col lg:flex-row justify-between items-start gap-6 mb-10 transition-all duration-300 ease-out">
             <div class="min-w-0">
                 <h3 class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight uppercase">Office Matching</h3>
                 <p class="text-[10px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mt-1">Manage intern assignments and analyze compatibility</p>
             </div>
-            <div class="flex items-center gap-1.5 sm:gap-2 w-full lg:w-auto">
+            <div class="flex items-center gap-1.5 sm:gap-2 w-full lg:w-auto transition-all duration-300 ease-out">
                 {{-- Mobile: action buttons as icon bar --}}
                 <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                     {{-- Import Button --}}
@@ -81,7 +81,7 @@
         </header>
 
         {{-- BATCH IMPORT SECTION (Moved to top) --}}
-        <div x-show="showImport" x-transition.scale.95.duration.300ms x-cloak class="mb-10 bg-white dark:bg-gray-900 rounded-[25px] sm:rounded-[35px] border-2 border-dashed border-[#0B5694]/20 dark:border-blue-500/20 p-6 sm:p-10 shadow-2xl shadow-blue-500/5">
+        <div x-show="showImport" x-transition.scale.95.duration.300ms x-cloak class="mb-10 bg-white dark:bg-gray-900 rounded-[25px] sm:rounded-[35px] border-2 border-dashed border-[#0B5694]/20 dark:border-blue-500/20 p-6 sm:p-10 shadow-2xl shadow-blue-500/5 transition-all duration-300 ease-out">
             <div class="flex flex-col md:flex-row items-center gap-6 sm:gap-10">
                 <div class="flex-1 text-center md:text-left">
                     <h5 class="text-sm font-black uppercase tracking-widest text-[#0B5694] dark:text-blue-400">Batch Import Tool</h5>
@@ -107,13 +107,13 @@
 
         @if(isset($applicants) && $applicants->count() > 0)
             {{-- MAIN ANALYSIS TABLE --}}
-            <div class="bg-white dark:bg-gray-900 rounded-[25px] sm:rounded-[35px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 p-4 sm:p-8 lg:p-10 mb-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div class="bg-white dark:bg-gray-900 rounded-[25px] sm:rounded-[35px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 p-4 sm:p-8 lg:p-10 mb-10 animate-in fade-in slide-in-from-bottom-4 duration-500 transition-all duration-300 ease-out">
                 
                 <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
                     <h4 class="text-lg sm:text-xl font-extrabold text-gray-900 dark:text-white tracking-tight uppercase">Applicant Analysis</h4>
 
                     {{-- Batch Finalize --}}
-                    <form action="{{ route('head-supervisor.matching.finalize') }}" method="POST" x-show="selectedApplicants.length > 0" x-cloak class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
+                    <form action="{{ route('head-supervisor.matching.finalize') }}" method="POST" x-show="selectedApplicants.length > 0" x-cloak class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto transition-all duration-300 ease-out">
                         @csrf
                         <template x-for="name in selectedApplicants" :key="name">
                             <input type="hidden" name="applicant_names[]" :value="name">
@@ -185,8 +185,8 @@
                     </div>
                 </div>
 
-                <div class="overflow-x-auto -mx-4 sm:-mx-8 lg:-mx-10 px-4 sm:px-8 lg:px-10 hidden lg:block">
-                    <table class="min-w-[700px] w-full text-left">
+                <div class="overflow-x-auto -mx-4 sm:-mx-8 lg:-mx-10 px-4 sm:px-8 lg:px-10 hidden lg:block transition-all duration-300 ease-out">
+                    <table class="min-w-[700px] w-full text-left transition-all duration-300 ease-out">
                         <thead class="bg-gray-50 dark:bg-gray-950 text-[9px] sm:text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 dark:border-gray-800">
                             <tr>
                                 <th class="px-3 sm:px-6 py-4 sm:py-6 w-10 sm:w-12 text-center">
@@ -782,7 +782,7 @@
                 </div>
 
                 {{-- MOBILE & TABLET CARD LAYOUT (hidden lg:block is the table) --}}
-                <div class="lg:hidden grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                <div class="lg:hidden grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 transition-all duration-300 ease-out">
                     @foreach($applicants as $applicant)
                         @php 
                             $matches = $results->get($applicant->full_name, collect());
@@ -1071,7 +1071,7 @@
                 </div>
 
                 @if ($applicants->hasPages())
-                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6 mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-gray-100 dark:border-gray-800">
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6 mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-gray-100 dark:border-gray-800 transition-all duration-300 ease-out">
                         <p class="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider text-center sm:text-left">Showing {{ $applicants->firstItem() }} to {{ $applicants->lastItem() }} of {{ $applicants->total() }} applicants</p>
                         <div class="w-full sm:w-auto overflow-x-auto">
                             {{ $applicants->links() }}
@@ -1134,6 +1134,12 @@
 </x-page-layout>
 
 <style>
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
+}
 .custom-scrollbar::-webkit-scrollbar {
     width: 4px;
     height: 4px;
