@@ -180,7 +180,7 @@ class ScheduleController extends Controller
         ];
 
         if ($isSchoolDefault) {
-            $rules['school_name'] = 'required|string|unique:schedules,school_name';
+            $rules['school_name'] = 'required|string|unique:schedules,school_name,'.$schedule->id;
             $rules['start_date'] = 'nullable|date';
             $rules['target_end_date'] = 'nullable|date|after:start_date';
 
