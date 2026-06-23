@@ -1073,8 +1073,6 @@
             </div>
         @endif
 
-    </div>
-
     {{-- RESUME PREVIEW MODAL --}}
     <div x-show="showResumePreview" 
          x-transition:enter="transition ease-out duration-300"
@@ -1116,6 +1114,7 @@
             </div>
         </div>
     </div>
+</div>
 </x-page-layout>
 
 <style>
