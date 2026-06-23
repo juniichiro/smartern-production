@@ -287,9 +287,7 @@
                 <div class="p-10">
                     <form :action="schoolFormAction" method="POST" class="space-y-6">
                         @csrf
-                        <template x-if="isEditingSchool">
-                            <input type="hidden" name="_method" value="PUT">
-                        </template>
+                        <input type="hidden" name="_method" value="PUT" :disabled="!isEditingSchool">
                         <input type="hidden" name="type" value="school_default">
 
                         <div class="space-y-2 text-left">
