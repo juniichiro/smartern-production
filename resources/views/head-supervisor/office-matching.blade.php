@@ -166,7 +166,7 @@
                     </div>
                 </div>
 
-                <div class="overflow-x-auto -mx-4 sm:-mx-8 lg:-mx-10 px-4 sm:px-8 lg:px-10">
+                <div class="overflow-x-auto -mx-4 sm:-mx-8 lg:-mx-10 px-4 sm:px-8 lg:px-10 hidden md:block">
                     <table class="min-w-[700px] w-full text-left">
                         <thead class="bg-gray-50 dark:bg-gray-950 text-[9px] sm:text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 dark:border-gray-800">
                             <tr>
@@ -758,6 +758,297 @@
                             @endforeach
                         </tbody>
                     </table>
+                </div>
+                {{-- CLOSE hidden md:block wrapper --}}
+                </div>
+
+                {{-- MOBILE CARD LAYOUT (md:hidden) --}}
+                <div class="md:hidden space-y-4">
+                    @foreach($applicants as $applicant)
+                        @php 
+                            $matches = $results->get($applicant->full_name, collect());
+                            $confirmedMatch = $matches->where('is_confirmed', true)->first();
+                            $bestMatch = $matches->sortByDesc('score')->first();
+                            $displayMatch = $confirmedMatch ?? $bestMatch;
+
+                            $confidenceText = $displayMatch->confidence ?? 'Low';
+                            if ($confidenceText === 'High') {
+                                $confidenceColor = 'text-emerald-500'; $confidenceBg = 'bg-emerald-50 dark:bg-emerald-950/30';
+                            } elseif ($confidenceText === 'Medium') {
+                                $confidenceColor = 'text-blue-500'; $confidenceBg = 'bg-blue-50 dark:bg-blue-950/30';
+                            } else {
+                                $confidenceColor = 'text-amber-500'; $confidenceBg = 'bg-amber-50 dark:bg-amber-950/30';
+                            }
+
+                             if (!$displayMatch) {
+                                 $scoreText = 'N/A'; $scoreColor = 'text-gray-400'; $barColor = 'bg-gray-200';
+                             } elseif ($displayMatch->score >= 80) {
+                                 $scoreColor = 'text-emerald-500'; $barColor = 'bg-emerald-500';
+                             } elseif ($displayMatch->score >= 60) {
+                                 $scoreColor = 'text-blue-500'; $barColor = 'bg-blue-500';
+                             } elseif ($displayMatch->score >= 40) {
+                                 $scoreColor = 'text-indigo-500'; $barColor = 'bg-indigo-500';
+                             } else {
+                                 $scoreColor = 'text-amber-500'; $barColor = 'bg-amber-500';
+                             }
+
+                            $top5Matches = $matches->sortByDesc('score')->take(5);
+                            $skillToCategory = \App\Models\AssessmentItem::active()->pluck('category', 'competency_text')->mapWithKeys(fn($cat, $txt) => [trim($txt) => $cat])->toArray();
+                            $verifiedSkills = $applicant->evaluation?->verified_skills ?? [];
+                        @endphp
+
+                        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden transition-all"
+                             :class="isSelected('{{ $applicant->full_name }}') ? 'ring-2 ring-[#0B5694] dark:ring-blue-500 bg-blue-50/20 dark:bg-blue-950/20' : ''">
+                            
+                            {{-- Card Header: Select + Name + Score --}}
+                            <div class="p-4 flex items-start gap-3">
+                                <div class="shrink-0 mt-0.5">
+                                    @if(!$confirmedMatch)
+                                        <input type="checkbox" :value="'{{ $applicant->full_name }}'" x-model="selectedApplicants" class="w-5 h-5 rounded-lg border-gray-300 accent-[#0B5694] cursor-pointer">
+                                    @else
+                                        <div class="flex justify-center text-emerald-600" title="Assigned">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-2">
+                                        <p class="text-sm font-extrabold text-gray-800 dark:text-gray-100 truncate uppercase tracking-tight">{{ $applicant->full_name }}</p>
+                                        @if(!empty($applicant->resume_path))
+                                            <button @click="openResume('{{ route('head-supervisor.matching.resume', $applicant) }}')" class="shrink-0 text-blue-500 active:scale-90 transition-transform min-w-[44px] min-h-[44px] flex items-center justify-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                            </button>
+                                        @endif
+                                    </div>
+                                    <p class="text-[11px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider mt-0.5">{{ $applicant->university }}</p>
+                                </div>
+                                @if($displayMatch)
+                                    <div class="shrink-0 text-right">
+                                        <span class="text-lg font-black {{ $scoreColor }}">{{ $displayMatch->score }}%</span>
+                                    </div>
+                                @endif
+                            </div>
+
+                            {{-- Card Body: Match + Score Bar + Verification --}}
+                            <div class="px-4 pb-2 space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Department Match</span>
+                                    <span class="text-xs font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight">{{ $displayMatch ? $displayMatch->office->name : 'No Results' }}</span>
+                                </div>
+                                
+                                @if($displayMatch)
+                                <div class="flex items-center gap-2">
+                                    <div class="flex-1 h-2.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                                        <div class="h-full {{ $barColor }} rounded-full transition-all duration-700" style="width: {{ $displayMatch->score }}%"></div>
+                                    </div>
+                                </div>
+                                @endif
+
+                                <div class="flex items-center justify-between pt-1">
+                                    <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Verification</span>
+                                    <span class="{{ $confidenceBg }} {{ $confidenceColor }} text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-current">{{ $confidenceText }}</span>
+                                </div>
+                            </div>
+
+                            {{-- Card Footer: Action Buttons --}}
+                            <div class="px-4 pb-4 flex gap-2">
+                                <button @click="if (expanded === '{{ $applicant->applicant_id }}') { expanded = null; } else { expanded = '{{ $applicant->applicant_id }}'; evaluating = null; }" 
+                                        class="flex-1 min-h-[44px] flex items-center justify-center gap-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-[10px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider active:bg-gray-100 dark:active:bg-gray-700 transition"
+                                        :class="expanded === '{{ $applicant->applicant_id }}' ? 'border-[#0B5694] text-[#0B5694] dark:text-blue-400 dark:border-blue-500' : ''">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+                                    Analysis
+                                </button>
+                                @if(!$confirmedMatch)
+                                <button @click="if (evaluating === '{{ $applicant->applicant_id }}') { evaluating = null; } else { evaluating = '{{ $applicant->applicant_id }}'; expanded = null; }" 
+                                        class="flex-1 min-h-[44px] flex items-center justify-center gap-2 bg-[#0B5694] dark:bg-blue-600 text-white rounded-xl text-[10px] font-bold uppercase tracking-wider active:bg-[#084577] dark:active:bg-blue-700 transition shadow-sm"
+                                        :class="evaluating === '{{ $applicant->applicant_id }}' ? 'ring-2 ring-[#0B5694]/30' : ''">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                    Evaluate
+                                </button>
+                                @endif
+                            </div>
+
+                            {{-- Evaluation Expandable (Mobile) --}}
+                            <div x-show="evaluating === '{{ $applicant->applicant_id }}'" x-cloak class="border-t border-gray-100 dark:border-gray-800 bg-blue-50/20 dark:bg-blue-900/10">
+                                <div class="p-4">
+                                    <form action="{{ route('head-supervisor.matching.evaluate', $applicant) }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        <div class="space-y-4" x-data="{ skillFilter: 'all' }">
+                                            <div class="flex flex-col gap-2">
+                                                <h5 class="text-[11px] font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400">Skill Verification</h5>
+                                                <select x-model="skillFilter" 
+                                                        class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 text-[10px] font-bold uppercase tracking-wider rounded-xl px-4 py-2.5 shadow-sm focus:ring-2 focus:ring-[#0B5694]/20 outline-none transition-all">
+                                                    <option value="all">All Sections</option>
+                                                    <option value="I. Digital and Technical Skills">I. Digital & Technical Skills</option>
+                                                    <option value="II. Administrative and Office Skills">II. Administrative & Office Skills</option>
+                                                    <option value="III. Analytical and Problem-Solving Skills">III. Analytical & Problem-Solving</option>
+                                                    <option value="IV. Communication and Interpersonal Skills">IV. Communication & Interpersonal</option>
+                                                    <option value="V. Work Attitude and Professional Values">V. Work Attitude & Values</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="overflow-x-auto max-h-48 overflow-y-auto custom-scrollbar border border-gray-100 dark:border-gray-800 rounded-xl">
+                                                <table class="min-w-[400px] w-full text-left">
+                                                    <thead class="bg-gray-50 dark:bg-gray-950 sticky top-0 z-10">
+                                                        <tr class="border-b border-gray-100 dark:border-gray-800">
+                                                            <th class="px-3 py-2.5 text-[9px] font-black uppercase tracking-wider text-gray-500">Skill</th>
+                                                            <th class="px-3 py-2.5 text-[9px] font-black uppercase tracking-wider text-gray-500 text-center">Self</th>
+                                                            <th class="px-3 py-2.5 text-[9px] font-black uppercase tracking-wider text-gray-500 text-right">Score</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="divide-y divide-gray-100 dark:divide-gray-800 bg-white dark:bg-gray-900 text-[11px]">
+                                                        @foreach(array_merge($applicant->tech_skills, $applicant->soft_skills) as $skill => $score)
+                                                            @php $itemCategory = $skillToCategory[trim($skill)] ?? 'Other'; @endphp
+                                                            <tr x-show="skillFilter === 'all' || skillFilter === '{{ $itemCategory }}'">
+                                                                <td class="px-3 py-2.5 font-bold text-gray-700 dark:text-gray-300 uppercase tracking-tight">{{ $skill }}</td>
+                                                                <td class="px-3 py-2.5 text-center"><span class="inline-block bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded text-[9px] font-extrabold">{{ $score }}/5</span></td>
+                                                                <td class="px-3 py-2.5 text-right">
+                                                                    <select name="verified_skills[{{ $skill }}]" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-2 py-1.5 text-[10px] font-bold focus:ring-2 focus:ring-[#0B5694]/20 outline-none">
+                                                                        @for($i=1; $i<=5; $i++)
+                                                                            <option value="{{ $i }}" {{ ($verifiedSkills[$skill] ?? $score) == $i ? 'selected' : '' }}>{{ $i }}</option>
+                                                                        @endfor
+                                                                    </select>
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <div class="space-y-3">
+                                                <div>
+                                                    <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">Interview Notes</label>
+                                                    <textarea name="interview_notes" rows="3" class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl p-3 text-xs font-bold focus:ring-2 focus:ring-[#0B5694]/20 outline-none" placeholder="Add observations...">{{ $applicant->evaluation?->interview_notes }}</textarea>
+                                                </div>
+                                                <div>
+                                                    <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">Resume (PDF)</label>
+                                                    <input type="file" name="resume_pdf" accept="application/pdf" class="w-full text-[10px] font-bold text-gray-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-[10px] file:font-extrabold file:bg-blue-50 file:text-[#0B5694] dark:file:bg-blue-900/30 dark:file:text-blue-400">
+                                                </div>
+                                                <div class="grid grid-cols-2 gap-3">
+                                                    <div>
+                                                        <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">Behavioral</label>
+                                                        <select name="behavioral_score" class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg p-2.5 text-[10px] font-bold uppercase focus:ring-2 focus:ring-[#0B5694]/20 outline-none">
+                                                            @for($i=1; $i<=5; $i++)
+                                                                <option value="{{ $i }}" {{ ($applicant->evaluation?->behavioral_score ?? 3) == $i ? 'selected' : '' }}>{{ $i }}</option>
+                                                            @endfor
+                                                        </select>
+                                                    </div>
+                                                    <div>
+                                                        <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">Recommend</label>
+                                                        <select name="is_recommended" class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg p-2.5 text-[10px] font-bold uppercase focus:ring-2 focus:ring-[#0B5694]/20 outline-none">
+                                                            <option value="1" {{ ($applicant->evaluation?->is_recommended ?? true) ? 'selected' : '' }}>Yes</option>
+                                                            <option value="0" {{ !($applicant->evaluation?->is_recommended ?? true) ? 'selected' : '' }}>No</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <button type="submit" class="w-full min-h-[44px] bg-[#0B5694] dark:bg-blue-600 hover:bg-[#084577] dark:hover:bg-blue-500 text-white font-bold uppercase text-[11px] tracking-wider rounded-xl transition-all active:scale-95 shadow-md shadow-blue-500/10 flex items-center justify-center gap-2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                                Update Evaluation
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            {{-- Analysis Expandable (Mobile - Compact) --}}
+                            <div x-show="expanded === '{{ $applicant->applicant_id }}'" x-cloak class="border-t border-gray-100 dark:border-gray-800 bg-gray-50/30 dark:bg-gray-950/30">
+                                <div class="p-4" x-data="{ activeMatchId: 'all' }">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <h5 class="text-[11px] font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400">Match Analysis</h5>
+                                        <select x-model="activeMatchId" 
+                                                class="bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 text-[10px] font-bold uppercase tracking-wider rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#0B5694]/20 outline-none">
+                                            <option value="all">All Top 5</option>
+                                            @foreach($top5Matches as $match)
+                                                <option value="{{ $match->id }}">{{ $match->office->name }} ({{ $match->score }}%)</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    @if($matches->count() > 0)
+                                        <div class="relative w-full max-w-sm mx-auto pt-2 pb-2">
+                                            <div class="relative h-36 w-full">
+                                                <div class="absolute inset-0 flex flex-col justify-between pointer-events-none text-[8px] font-bold text-gray-400 dark:text-gray-500 pb-0.5">
+                                                    <div class="w-full border-t border-dashed border-gray-150 dark:border-gray-800/60 pt-0.5">100%</div>
+                                                    <div class="w-full border-t border-dashed border-gray-150 dark:border-gray-800/60 pt-0.5">50%</div>
+                                                    <div class="w-full border-b border-gray-200 dark:border-gray-800 pb-0.5">0%</div>
+                                                </div>
+
+                                                <div x-show="activeMatchId === 'all'" x-transition.opacity.duration.300ms
+                                                     class="absolute inset-0 flex items-end justify-around z-10 pb-0.5 px-4">
+                                                    @foreach($top5Matches as $match)
+                                                        @php
+                                                            if ($match->score >= 80) {
+                                                                $barBgMobile = 'background: linear-gradient(to top, #047857, #10b981);';
+                                                                $textColorMobile = 'text-emerald-500';
+                                                            } elseif ($match->score >= 60) {
+                                                                $barBgMobile = 'background: linear-gradient(to top, #084577, #3b82f6);';
+                                                                $textColorMobile = 'text-[#0B5694] dark:text-blue-400';
+                                                            } elseif ($match->score >= 40) {
+                                                                $barBgMobile = 'background: linear-gradient(to top, #4338ca, #6366f1);';
+                                                                $textColorMobile = 'text-indigo-500';
+                                                            } else {
+                                                                $barBgMobile = 'background: linear-gradient(to top, #b45309, #f59e0b);';
+                                                                $textColorMobile = 'text-amber-500';
+                                                            }
+                                                        @endphp
+                                                        <div class="flex flex-col items-center w-10 justify-end group h-full relative">
+                                                            <span class="absolute text-[8px] font-black {{ $textColorMobile }} transform -translate-y-4"
+                                                                  style="bottom: {{ $match->score }}%;">{{ $match->score }}%</span>
+                                                            <div @click="showBreakdown = '{{ $match->id }}'; $nextTick(() => { if (window.MathJax) { MathJax.typesetPromise(); } })"
+                                                                 class="w-8 cursor-pointer rounded-t-md transition-all shadow-sm active:scale-95"
+                                                                 style="height: {{ max(5, $match->score) }}%; {{ $barBgMobile }}"
+                                                                 title="Tap for breakdown"></div>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+
+                                                @foreach($top5Matches as $match)
+                                                    @php
+                                                        if ($match->score >= 80) {
+                                                            $barBgMobile = 'background: linear-gradient(to top, #047857, #10b981);';
+                                                            $textColorMobile = 'text-emerald-500';
+                                                        } elseif ($match->score >= 60) {
+                                                            $barBgMobile = 'background: linear-gradient(to top, #084577, #3b82f6);';
+                                                            $textColorMobile = 'text-[#0B5694] dark:text-blue-400';
+                                                        } elseif ($match->score >= 40) {
+                                                            $barBgMobile = 'background: linear-gradient(to top, #4338ca, #6366f1);';
+                                                            $textColorMobile = 'text-indigo-500';
+                                                        } else {
+                                                            $barBgMobile = 'background: linear-gradient(to top, #b45309, #f59e0b);';
+                                                            $textColorMobile = 'text-amber-500';
+                                                        }
+                                                    @endphp
+                                                    <div x-show="activeMatchId === '{{ $match->id }}'" x-transition.opacity.duration.300ms
+                                                         class="absolute inset-0 flex items-end justify-center z-10 pb-0.5">
+                                                        <div class="flex flex-col items-center w-16 justify-end group h-full relative">
+                                                            <span class="absolute text-[10px] font-black {{ $textColorMobile }} transform -translate-y-5"
+                                                                  style="bottom: {{ $match->score }}%;">{{ $match->score }}%</span>
+                                                            <div @click="showBreakdown = '{{ $match->id }}'; $nextTick(() => { if (window.MathJax) { MathJax.typesetPromise(); } })"
+                                                                 class="w-12 cursor-pointer rounded-t-lg transition-all shadow-md active:scale-95"
+                                                                 style="height: {{ max(5, $match->score) }}%; {{ $barBgMobile }}"
+                                                                 title="Tap for breakdown"></div>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+
+                                            <div class="mt-4 border-t border-gray-200 dark:border-gray-800 pt-3 text-center">
+                                                <div class="flex justify-around text-[8px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
+                                                    @foreach($top5Matches as $match)
+                                                        <span class="truncate max-w-[60px]">{{ $match->office->name }}</span>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider text-center py-4">No matching configurations found.</p>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
 
                 @if ($applicants->hasPages())
