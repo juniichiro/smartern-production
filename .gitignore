@@ -51,3 +51,8 @@ ml_anomaly_breakdown.txt
 __pycache__/
 *.pyc
 /storage/fonts/
+
+# Antigravity/Agentic tools temporary files
+image.png
+skills-lock.json
+scratch/
