@@ -3,7 +3,7 @@
 @section('title', 'Login')
 
 @section('content')
-<div class="min-h-screen w-full flex items-center justify-center relative overflow-hidden bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
+<div class="min-h-screen w-full flex flex-col lg:flex-row relative overflow-hidden bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
     
     {{-- Back to Landing --}}
     <a href="{{ url('/') }}" class="absolute top-6 left-6 z-[100] p-3 bg-white/90 dark:bg-white/10 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl text-gray-500 dark:text-gray-400 hover:text-[#0B5694] dark:hover:text-blue-400 hover:bg-white dark:hover:bg-white/20 transition-all active:scale-95 shadow-xl flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider">
@@ -24,87 +24,122 @@
         </button>
     </div>
 
-    {{-- Background Design --}}
-    <div class="absolute inset-0 z-0">
-        <div class="absolute left-0 top-0 w-1/2 h-full bg-[#0B5694] dark:bg-blue-900 opacity-90 dark:opacity-80 skew-x-[-12deg] -translate-x-32 transition-colors duration-300"></div>
-        <div class="absolute right-0 top-0 w-full h-full bg-cover bg-center" 
-             style="background-image: url('{{ asset('images/sdo.png') }}'); filter: brightness(0.7);"></div>
+    {{-- LEFT COLUMN: Welcome message & Onboarding Link (following image.png) --}}
+    <div class="relative hidden lg:flex lg:w-7/12 bg-[#0b5694] dark:bg-[#07365c] text-white flex-col justify-between p-16 z-10 transition-colors duration-300 overflow-hidden select-none">
+        {{-- Diagonal brand pattern overlays (chevrons) using SVG --}}
+        <div class="absolute inset-0 opacity-15 pointer-events-none z-0">
+            <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path d="M-20,0 L20,50 L-20,100 Z" fill="none" stroke="currentColor" stroke-width="8"/>
+                <path d="M10,0 L50,50 L10,100 Z" fill="none" stroke="currentColor" stroke-width="8"/>
+                <path d="M40,0 L80,50 L40,100 Z" fill="none" stroke="currentColor" stroke-width="8"/>
+            </svg>
+        </div>
+
+        <div></div>
+
+        {{-- Center Content --}}
+        <div class="relative z-10 max-w-lg my-auto space-y-6">
+            <span class="text-[11px] font-extrabold uppercase tracking-[0.25em] text-blue-200">Welcome To</span>
+            <h2 class="text-6xl font-black tracking-tight leading-none text-white font-sans drop-shadow-md">SmarTern</h2>
+            <p class="text-sm font-medium leading-relaxed text-blue-100/90 max-w-md">
+                A centralized platform for qualification-based placement, real-time progress tracking, secure documentation, and data-driven reporting—built for a smoother internship experience.
+            </p>
+            <div class="pt-4">
+                <a href="{{ route('onboarding.create') }}" class="inline-flex items-center justify-center px-10 py-3 border-2 border-white/60 hover:border-white hover:bg-white/10 text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all duration-300 active:scale-[0.98] shadow-lg shadow-black/10">
+                    Start
+                </a>
+            </div>
+        </div>
+
+        {{-- Footer --}}
+        <div class="relative z-10 text-[10px] font-bold uppercase tracking-[0.2em] text-blue-200">
+            SmarTern | SDO Quezon City
+        </div>
     </div>
 
-    @if(request()->has('timeout'))
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                setTimeout(() => {
-                    if (window.showToast) {
-                        window.showToast('Your session has timed out. Please sign in again.', 'info');
-                    }
-                }, 500);
-            });
-        </script>
-    @endif
-
-    {{-- LOGIN CARD --}}
-    <div class="relative z-10 w-full max-w-[450px] bg-white dark:bg-gray-900 rounded-[40px] shadow-2xl p-12 mx-4 transition-all duration-300
-                {{ $errors->any() ? 'animate-shake' : '' }} border border-transparent dark:border-gray-800">
+    {{-- RIGHT COLUMN: Login card (following image.png overlay style) --}}
+    <div class="relative flex-1 flex items-center justify-center p-6 sm:p-12 z-10">
         
-        <header class="text-center mb-10">
-            <h1 class="text-4xl font-extrabold text-[#0B5694] dark:text-blue-400 tracking-normal transition-colors duration-300">Login</h1>
-        </header>
+        {{-- Background image layer with local sdo.png --}}
+        <div class="absolute inset-0 z-0">
+            <img src="{{ asset('images/sdo.png') }}" alt="SDO Background" class="w-full h-full object-cover brightness-[0.7] lg:brightness-95">
+            <div class="absolute inset-0 bg-gradient-to-t from-gray-50/90 via-gray-50/70 to-gray-50/95 dark:from-gray-950/90 dark:via-gray-950/70 dark:to-gray-950/95 lg:bg-black/20 lg:dark:bg-black/45 transition-colors duration-300"></div>
+        </div>
 
-        {{-- DYNAMIC ERROR FEEDBACK --}}
-        @if ($errors->any())
-            <div x-data="uiNotification(5000)" 
-                 x-show="show" 
-                 x-transition:leave="transition ease-in duration-1000"
-                 x-transition:leave-start="opacity-100 transform scale-100"
-                 x-transition:leave-end="opacity-0 transform scale-95"
-                 class="mb-8 p-4 bg-red-50 dark:bg-red-950/30 rounded-2xl border border-red-100 dark:border-red-900/50 flex items-center gap-4">
-                
-                <div class="flex-shrink-0 w-10 h-10 bg-red-500 rounded-full flex items-center justify-center shadow-lg shadow-red-500/20">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="text-white" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                </div>
-                <div>
-                    @php $isLocked = Str::contains($errors->first(), 'try again in'); @endphp
+        {{-- Login form envelope card --}}
+        <div class="relative z-10 w-full max-w-[450px] bg-white/95 dark:bg-gray-900/95 border border-gray-100/50 dark:border-gray-800 rounded-[2.5rem] shadow-2xl p-8 sm:p-12 transition-all duration-300 {{ $errors->any() ? 'animate-shake' : '' }}">
+            
+            <header class="text-center mb-8">
+                <h1 class="text-3xl font-extrabold text-[#0B5694] dark:text-blue-400 tracking-tight leading-none mb-2">Login</h1>
+                {{-- Quick mobile onboarding helper --}}
+                <p class="lg:hidden text-xs text-gray-500 dark:text-gray-400 mt-2">
+                    New intern? <a href="{{ route('onboarding.create') }}" class="text-[#0B5694] dark:text-blue-400 font-bold hover:underline">Start your application here</a>
+                </p>
+            </header>
+
+            {{-- DYNAMIC ERROR FEEDBACK --}}
+            @if ($errors->any())
+                <div x-data="{ show: true }" 
+                     x-show="show" 
+                     class="mb-6 p-4 bg-red-50 dark:bg-red-950/30 rounded-2xl border border-red-100 dark:border-red-900/50 flex items-center gap-3">
                     
-                    <p class="text-[12px] font-bold text-red-600 dark:text-red-400 uppercase tracking-wider leading-none mb-1">
-                        {{ $isLocked ? 'Account Locked' : 'Access Denied' }}
-                    </p>
-                    <p class="text-[12px] text-red-400 dark:text-red-500 font-bold uppercase tracking-tight">
-                        Please try again later.
-                    </p>
+                    <div class="flex-shrink-0 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center shadow-lg shadow-red-500/10">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="text-white" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </div>
+                    <div>
+                        @php $isLocked = Str::contains($errors->first(), 'try again in'); @endphp
+                        <p class="text-[11px] font-bold text-red-600 dark:text-red-400 uppercase tracking-wider leading-none">
+                            {{ $isLocked ? 'Account Locked' : 'Access Denied' }}
+                        </p>
+                        <p class="text-[10px] text-red-400 dark:text-red-500 font-bold uppercase tracking-tight mt-1">
+                            Please verify your credentials.
+                        </p>
+                    </div>
                 </div>
-            </div>
-        @endif
+            @endif
 
-        <form action="{{ route('login') }}" method="POST" class="space-y-6">
-            @csrf
+            <form action="{{ route('login') }}" method="POST" class="space-y-6">
+                @csrf
 
-            {{-- Email --}}
-            <div class="text-left">
-                <label for="email" class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase block mb-2 tracking-wider ml-1">Email</label>
-                <input type="email" name="email" id="email" value="{{ old('email') }}" required 
-                    class="w-full {{ $errors->has('email') ? 'bg-red-50/30 dark:bg-red-900/10 ring-1 ring-red-100 dark:ring-red-900/50' : 'bg-gray-50 dark:bg-gray-800' }} rounded-2xl px-6 py-4 text-sm focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 transition-all font-medium dark:text-gray-200">
-            </div>
+                {{-- Email Input --}}
+                <div class="text-left">
+                    <label for="email" class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase block mb-1.5 tracking-wider ml-1">Email</label>
+                    <input type="email" name="email" id="email" value="{{ old('email') }}" placeholder="your.email@smartern.com" required 
+                        class="w-full bg-gray-50 dark:bg-gray-800 {{ $errors->has('email') ? 'bg-red-50/30 dark:bg-red-900/10 ring-1 ring-red-100 dark:ring-red-900/50 border-red-200' : 'border border-gray-100 dark:border-gray-700' }} rounded-xl px-5 py-3.5 text-sm focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 transition-all font-medium dark:text-gray-200">
+                </div>
 
-            {{-- Password --}}
-            <div class="text-left">
-                <label for="password" class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase block mb-2 tracking-wider ml-1">Password</label>
-                <input type="password" name="password" id="password" required 
-                    class="w-full {{ $errors->has('password') ? 'bg-red-50/30 dark:bg-red-900/10 ring-1 ring-red-100 dark:ring-red-900/50' : 'bg-gray-50 dark:bg-gray-800' }} rounded-2xl px-6 py-4 text-sm focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 transition-all font-medium dark:text-gray-200">
-            </div>
+                {{-- Password Input --}}
+                <div class="text-left">
+                    <label for="password" class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase block mb-1.5 tracking-wider ml-1">Password</label>
+                    <input type="password" name="password" id="password" placeholder="Enter your password" required 
+                        class="w-full bg-gray-50 dark:bg-gray-800 {{ $errors->has('password') ? 'bg-red-50/30 dark:bg-red-900/10 ring-1 ring-red-100 dark:ring-red-900/50 border-red-200' : 'border border-gray-100 dark:border-gray-700' }} rounded-xl px-5 py-3.5 text-sm focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 transition-all font-medium dark:text-gray-200">
+                </div>
 
-            {{-- Sign In Button --}}
-            <div class="pt-4">
-                <button type="submit" class="w-full bg-[#0B5694] dark:bg-blue-600 text-white py-4 rounded-2xl font-bold shadow-lg shadow-blue-500/20 hover:bg-[#084577] dark:hover:bg-blue-700 transition-all active:scale-[0.98]">
-                    Sign In
-                </button>
-            </div>
+                {{-- Sign In CTA --}}
+                <div class="pt-2">
+                    <button type="submit" class="w-full bg-[#0b5694] dark:bg-blue-600 hover:bg-[#084577] dark:hover:bg-blue-700 text-white py-4 rounded-xl font-bold uppercase text-[11px] tracking-wider transition-all duration-300 active:scale-[0.98] shadow-lg shadow-blue-500/20">
+                        Sign In
+                    </button>
+                </div>
 
-            <div class="text-center">
-                <a href="#" class="text-xs font-bold text-gray-300 dark:text-gray-600 hover:text-[#0B5694] dark:hover:text-blue-400 transition-colors uppercase tracking-wider">Forgot password?</a>
-            </div>
-        </form>
+                <div class="text-center pt-2">
+                    <a href="#" class="text-[10px] font-bold text-gray-400 dark:text-gray-500 hover:text-[#0B5694] dark:hover:text-blue-400 transition-colors uppercase tracking-wider">Forgot password?</a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
+
+@if(request()->has('timeout'))
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                if (window.showToast) {
+                    window.showToast('Your session has timed out. Please sign in again.', 'info');
+                }
+            }, 500);
+        });
+    </script>
+@endif
 
 @endsection
