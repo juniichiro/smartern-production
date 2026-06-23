@@ -290,6 +290,8 @@ class AttendanceService
                         $duration = floor($hours);
                     } elseif ($roundingMode === 'ceil') {
                         $duration = ceil($hours);
+                    } elseif ($roundingMode === 'none') {
+                        $duration = round($hours, 2);
                     } else {
                         $duration = round($hours);
                     }
@@ -516,6 +518,8 @@ class AttendanceService
                 $hoursRendered = floor($hours);
             } elseif ($roundingMode === 'ceil') {
                 $hoursRendered = ceil($hours);
+            } elseif ($roundingMode === 'none') {
+                $hoursRendered = round($hours, 2);
             } else {
                 $hoursRendered = round($hours);
             }
