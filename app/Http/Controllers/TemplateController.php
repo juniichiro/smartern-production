@@ -132,7 +132,7 @@ class TemplateController extends Controller
                 'note' => 'For security integrity, MFA resets require physical validation or supervisor endorsement to prevent unauthorized account access.'
             ],
             default => abort(404, 'Template not found.')
-        ];
+        };
 
         $pdf = Pdf::loadView('templates.pdf', compact('templateData'));
 
