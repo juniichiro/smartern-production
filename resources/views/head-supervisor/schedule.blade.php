@@ -400,7 +400,7 @@
 
                                     <template x-for="(event, index) in day.events" :key="event.id || event.description || event.reason">
                                         <div x-show="index < 2">
-                                            <template x-if="event.type !== 'absence'">
+                                            <template x-if="event.type !== 'absence' && event.type !== 'absence_request'">
                                                 <div class="rounded-2xl p-3 text-xs font-bold text-left leading-tight tracking-tight shadow-sm border"
                                                      :class="{
                                                          'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/50': event.type === 'holiday',
