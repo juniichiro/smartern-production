@@ -204,7 +204,8 @@
              x-transition:enter-start="opacity-0 scale-95"
              x-transition:enter-end="opacity-100 scale-100"
              class="fixed inset-0 z-[110] flex items-center justify-center p-4 sm:p-10" 
-             x-cloak>
+             x-cloak
+             @keydown.escape.window="showResumePreview = false">
             <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" @click="showResumePreview = false"></div>
             
             <div class="relative bg-white dark:bg-gray-900 w-full max-w-6xl h-[85vh] sm:h-full rounded-[25px] sm:rounded-[40px] shadow-2xl flex flex-col overflow-hidden border border-gray-100 dark:border-gray-800">
@@ -233,7 +234,8 @@
         {{-- GEOFENCE MODAL --}}
         <div x-show="geofenceOfficeOpen" 
              class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm"
-             x-cloak>
+             x-cloak
+             @keydown.escape.window="geofenceOfficeOpen = false">
             <div class="bg-white dark:bg-gray-900 w-full max-w-4xl mx-4 rounded-[25px] sm:rounded-[40px] shadow-2xl p-5 sm:p-8 border border-gray-100 dark:border-gray-800 transition-all" @click.away="geofenceOfficeOpen = false">
                 <div class="flex items-center gap-4 mb-6">
                     <div class="p-3 bg-blue-50 dark:bg-blue-900/30 text-[#0B5694] dark:text-blue-400 rounded-2xl shrink-0">
@@ -285,7 +287,8 @@
         {{-- ADD OFFICE MODAL --}}
         <div x-show="addOfficeOpen" 
              class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm"
-             x-cloak>
+             x-cloak
+             @keydown.escape.window="addOfficeOpen = false">
             <div class="bg-white dark:bg-gray-900 w-full max-w-md mx-4 rounded-[25px] sm:rounded-[40px] shadow-2xl p-6 sm:p-10 border border-gray-100 dark:border-gray-800 transition-all" @click.away="addOfficeOpen = false">
                 <h3 class="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-white mb-2">Add New Office</h3>
                 <p class="text-xs sm:text-sm text-gray-400 dark:text-gray-500 mb-6 sm:mb-8 font-medium tracking-tight">Create a new department. You can define matching rules later.</p>
@@ -312,7 +315,8 @@
         {{-- EDIT OFFICE MODAL --}}
         <div x-show="editOfficeOpen" 
              class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm"
-             x-cloak>
+             x-cloak
+             @keydown.escape.window="editOfficeOpen = false">
             <div class="bg-white dark:bg-gray-900 w-full max-w-md mx-4 rounded-[25px] sm:rounded-[40px] shadow-2xl p-6 sm:p-10 border border-gray-100 dark:border-gray-800 transition-all" @click.away="editOfficeOpen = false">
                 <h3 class="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-white mb-2">Edit Office</h3>
                 <p class="text-xs sm:text-sm text-gray-400 dark:text-gray-500 mb-6 sm:mb-8 font-medium tracking-tight">Update the department name.</p>
@@ -340,7 +344,8 @@
         {{-- DELETE OFFICE MODAL --}}
         <div x-show="deleteOfficeOpen" 
              class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm"
-             x-cloak>
+             x-cloak
+             @keydown.escape.window="deleteOfficeOpen = false">
             <div class="bg-white dark:bg-gray-900 w-full max-w-md mx-4 rounded-[25px] sm:rounded-[40px] shadow-2xl p-6 sm:p-10 border border-gray-100 dark:border-gray-800 transition-all text-center" @click.away="deleteOfficeOpen = false">
                 <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 mb-6">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>

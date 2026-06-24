@@ -72,7 +72,8 @@
         </div>
 
         {{-- Add Item Modal --}}
-        <div x-show="addItemOpen" x-cloak class="fixed inset-0 z-[150] flex items-center justify-center p-4 sm:p-6">
+        <div x-show="addItemOpen" x-cloak class="fixed inset-0 z-[150] flex items-center justify-center p-4 sm:p-6"
+             @keydown.escape.window="addItemOpen = false">
             <div @click="addItemOpen = false" class="absolute inset-0 bg-gray-950/60 backdrop-blur-sm"></div>
             <div class="relative bg-white dark:bg-gray-900 w-full max-w-xl mx-4 rounded-[25px] sm:rounded-[35px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 text-left">
                 <div class="p-6 sm:p-10">
@@ -113,7 +114,8 @@
         </div>
 
         {{-- Edit Item Modal --}}
-        <div x-show="editItemOpen" x-cloak class="fixed inset-0 z-[150] flex items-center justify-center p-4 sm:p-6">
+        <div x-show="editItemOpen" x-cloak class="fixed inset-0 z-[150] flex items-center justify-center p-4 sm:p-6"
+             @keydown.escape.window="editItemOpen = false">
             <div @click="editItemOpen = false" class="absolute inset-0 bg-gray-950/60 backdrop-blur-sm"></div>
             <div class="relative bg-white dark:bg-gray-900 w-full max-w-xl mx-4 rounded-[25px] sm:rounded-[35px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 text-left">
                 <div class="p-6 sm:p-10">

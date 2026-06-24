@@ -103,7 +103,7 @@
                             <div class="space-y-4">
                                 <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Active Reporting Days</span>
                                 
-                                <div class="grid grid-cols-5 gap-2">
+                                <div class="grid grid-cols-3 sm:grid-cols-5 gap-2">
                                     @php
                                         $assignedDays = $intern->schedule_assignment ?? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
                                     @endphp

@@ -67,15 +67,15 @@
             </div>
 
             {{-- Summary Bar Skeleton --}}
-            <div class="w-full bg-white dark:bg-gray-900 rounded-[35px] shadow-sm border border-gray-100 dark:border-gray-800 p-8 flex items-center justify-between">
+            <div class="w-full bg-white dark:bg-gray-900 rounded-[35px] shadow-sm border border-gray-100 dark:border-gray-800 p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 justify-between">
                 <div class="flex items-center gap-6">
-                    <x-skeleton class="w-14 h-14 rounded-2xl" />
+                    <x-skeleton class="w-14 h-14 rounded-2xl shrink-0" />
                     <div class="space-y-2 text-left">
                         <x-skeleton class="h-5 w-32 rounded-md" />
                         <x-skeleton class="h-3 w-48 rounded-md" />
                     </div>
                 </div>
-                <div class="flex gap-10">
+                <div class="flex gap-6 sm:gap-10">
                     <div class="space-y-2 text-left">
                         <x-skeleton class="h-3 w-16 rounded-md" />
                         <x-skeleton class="h-4 w-24 rounded-md" />
@@ -113,15 +113,15 @@
 
                 <div class="pt-4 border-t border-gray-100 dark:border-gray-800" x-show="configSectionOpen" x-collapse.duration.300ms x-cloak>
                     {{-- TAB CONTROLS --}}
-                    <div class="flex gap-6 border-b border-gray-100 dark:border-gray-800 mb-6">
+                    <div class="flex gap-4 sm:gap-6 border-b border-gray-100 dark:border-gray-800 mb-6 overflow-x-auto no-scrollbar">
                         <button @click="activeTab = 'intern'"
                                 :class="activeTab === 'intern' ? 'border-[#0B5694] text-[#0B5694] dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'"
-                                class="pb-3 border-b-2 font-black text-xs uppercase tracking-wider transition-all">
+                                class="pb-3 border-b-2 font-black text-[10px] sm:text-xs uppercase tracking-wider transition-all whitespace-nowrap shrink-0">
                             Intern Configuration
                         </button>
                         <button @click="activeTab = 'school'"
                                 :class="activeTab === 'school' ? 'border-[#0B5694] text-[#0B5694] dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'"
-                                class="pb-3 border-b-2 font-black text-xs uppercase tracking-wider transition-all">
+                                class="pb-3 border-b-2 font-black text-[10px] sm:text-xs uppercase tracking-wider transition-all whitespace-nowrap shrink-0">
                             Schedule Configuration
                         </button>
                     </div>
@@ -196,7 +196,7 @@
                                 <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase mt-0.5 tracking-wider">Set specific default hours for different schools</p>
                             </div>
                             <button @click="resetSchoolForm(); showSchoolModal = true"
-                                    class="px-5 py-3.5 bg-[#0B5694] dark:bg-blue-600 text-white rounded-2xl font-bold text-[10px] uppercase tracking-wider shadow-lg shadow-blue-500/10 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 w-fit">
+                                    class="w-full sm:w-auto px-5 py-3.5 bg-[#0B5694] dark:bg-blue-600 text-white rounded-2xl font-bold text-[10px] uppercase tracking-wider shadow-lg shadow-blue-500/10 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
                                 Register School Schedule
                             </button>
@@ -380,7 +380,7 @@
 
                 {{-- CALENDAR MONTH NAVIGATION HEADER --}}
                 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 mb-6 sm:mb-8">
-                    <div class="flex items-center gap-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
                         <div>
                             <h3 class="text-xl md:text-2xl font-black text-gray-800 dark:text-gray-100 tracking-tight uppercase" x-text="monthName()"></h3>
                             <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-1 font-black uppercase tracking-widest leading-none">
@@ -389,10 +389,10 @@
                             </p>
                         </div>
                         <div class="flex items-center gap-2">
-                            <button @click="prevMonth()" class="p-2.5 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-xl transition-all border border-gray-100 dark:border-gray-700 active:scale-95">
+                            <button @click="prevMonth()" class="p-2.5 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-xl transition-all border border-gray-100 dark:border-gray-700 active:scale-95 min-w-[44px] min-h-[44px] flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m15 18-6-6 6-6"/></svg>
                             </button>
-                            <button @click="nextMonth()" class="p-2.5 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-xl transition-all border border-gray-100 dark:border-gray-700 active:scale-95">
+                            <button @click="nextMonth()" class="p-2.5 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-xl transition-all border border-gray-100 dark:border-gray-700 active:scale-95 min-w-[44px] min-h-[44px] flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m9 18 6-6-6-6"/></svg>
                             </button>
                         </div>

@@ -22,18 +22,18 @@
             <x-slot:actions>
                 {{-- TAB NAVIGATION (Only for Dual Roles) --}}
                 @if($deptStats)
-                <div class="flex p-1.5 bg-gray-100 dark:bg-gray-900 rounded-[22px] border border-gray-200/50 dark:border-gray-800 shrink-0 shadow-inner">
+                <div class="flex p-1 bg-gray-100 dark:bg-gray-900 rounded-[22px] border border-gray-200/50 dark:border-gray-800 shrink-0 shadow-inner">
                     <button 
                         @click="setTab('division')"
                         :class="activeTab === 'division' ? 'bg-white dark:bg-gray-800 text-[#0B5694] dark:text-blue-400 shadow-sm' : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'"
-                        class="px-6 py-2.5 rounded-[18px] text-[11px] font-bold uppercase tracking-wider transition-all duration-300"
+                        class="px-4 sm:px-6 py-2 rounded-[18px] text-[10px] sm:text-[11px] font-bold uppercase tracking-wider transition-all duration-300 whitespace-nowrap"
                     >
                         Division
                     </button>
                     <button 
                         @click="setTab('department')"
                         :class="activeTab === 'department' ? 'bg-white dark:bg-gray-800 text-[#0B5694] dark:text-blue-400 shadow-sm' : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'"
-                        class="px-6 py-2.5 rounded-[18px] text-[11px] font-bold uppercase tracking-wider transition-all duration-300"
+                        class="px-4 sm:px-6 py-2 rounded-[18px] text-[10px] sm:text-[11px] font-bold uppercase tracking-wider transition-all duration-300 whitespace-nowrap"
                     >
                         Department
                     </button>
@@ -218,7 +218,7 @@
             </div>
 
             {{-- COHORT PERFORMANCE --}}
-            <x-card-container title="Cohort Performance Monitoring" padding="p-8 lg:p-10" class="shrink-0 rounded-[50px]">
+            <x-card-container title="Cohort Performance Monitoring" padding="p-8 lg:p-10" class="shrink-0 rounded-[25px] sm:rounded-[50px]">
                 <div x-show="loading" class="flex overflow-x-auto custom-scrollbar pb-4 gap-6 sm:gap-10">
                     @for($i = 0; $i < 3; $i++)
                         <div class="min-w-[260px] sm:min-w-[300px] md:min-w-[340px] lg:min-w-[calc(33.33%-2rem)] bg-gray-50/50 dark:bg-gray-800/30 p-5 sm:p-6 rounded-[25px] sm:rounded-[35px] border border-gray-100 dark:border-gray-700 space-y-4">
