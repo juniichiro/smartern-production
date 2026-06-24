@@ -19,12 +19,14 @@
                     <button @click="activeTab = 'interns'" 
                             :class="activeTab === 'interns' ? 'bg-white dark:bg-gray-700 text-[#0B5694] dark:text-blue-400 shadow-sm border-gray-100 dark:border-gray-600' : 'text-gray-400 dark:text-slate-500 border-transparent hover:text-gray-600 dark:hover:text-gray-300'" 
                             class="min-h-[44px] px-4 sm:px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all whitespace-nowrap active:scale-95 focus-visible:ring-2 focus-visible:ring-[#0B5694] dark:focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:outline-none">
-                        Intern Directory
+                        <span class="sm:hidden">Intern</span>
+                        <span class="hidden sm:inline">Intern Directory</span>
                     </button>
                     <button @click="activeTab = 'requirements'" 
                             :class="activeTab === 'requirements' ? 'bg-white dark:bg-gray-700 text-[#0B5694] dark:text-blue-400 shadow-sm border-gray-100 dark:border-gray-600' : 'text-gray-400 dark:text-slate-500 border-transparent hover:text-gray-600 dark:hover:text-gray-300'" 
                             class="min-h-[44px] px-4 sm:px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all whitespace-nowrap active:scale-95 focus-visible:ring-2 focus-visible:ring-[#0B5694] dark:focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:outline-none">
-                        Office Requirements
+                        <span class="sm:hidden">Office</span>
+                        <span class="hidden sm:inline">Office Requirements</span>
                     </button>
                 </nav>
             </x-slot:actions>
