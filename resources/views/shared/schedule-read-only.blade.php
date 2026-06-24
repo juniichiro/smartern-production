@@ -447,8 +447,20 @@
                                          'bg-blue-50 dark:bg-blue-950/20 text-blue-700 dark:text-blue-400 border-blue-100 dark:border-blue-800/40': event.type === 'work_day',
                                          'bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 border-amber-100 dark:border-amber-800/40': event.type === 'task'
                                      }">
-                                    <span class="text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full border bg-white dark:bg-gray-900 border-inherit"
-                                          x-text="event.type === 'holiday' ? 'Holiday Exemption' : (event.type === 'suspension' ? 'Suspension Override' : (event.type === 'work_day' ? 'Weekend Shift Override' : 'Task Assignment'))"></span>
+                                    <span class="text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full border bg-white dark:bg-gray-900 border-inherit">
+                                        <template x-if="event.type === 'holiday'">
+                                            <span><span class="sm:hidden">Holiday</span><span class="hidden sm:inline">Holiday Exemption</span></span>
+                                        </template>
+                                        <template x-if="event.type === 'suspension'">
+                                            <span><span class="sm:hidden">Suspension</span><span class="hidden sm:inline">Suspension Override</span></span>
+                                        </template>
+                                        <template x-if="event.type === 'work_day'">
+                                            <span><span class="sm:hidden">Weekend</span><span class="hidden sm:inline">Weekend Shift Override</span></span>
+                                        </template>
+                                        <template x-if="event.type === 'task'">
+                                            <span><span class="sm:hidden">Task</span><span class="hidden sm:inline">Task Assignment</span></span>
+                                        </template>
+                                    </span>
                                     <h5 class="text-xl font-black uppercase tracking-tight mt-6 leading-tight" x-text="event.description || event.title"></h5>
                                     
                                     {{-- Task details --}}
