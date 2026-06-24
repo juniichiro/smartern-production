@@ -61,7 +61,7 @@ class OfficeManagementController extends Controller
     {
         // Pull the intern with corrected relationship names
         $intern = InternDetail::where('user_id', $user->id)
-            ->with(['user', 'tasks', 'attendances', 'office.supervisorDetails', 'certificate'])
+            ->with(['user', 'tasks', 'attendances', 'office.supervisorDetails', 'certificate.evaluation'])
             ->firstOrFail();
 
         // 1. Fetch complete merged logs

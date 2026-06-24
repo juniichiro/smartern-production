@@ -157,10 +157,42 @@
 
                 <div class="bg-white dark:bg-gray-900 rounded-[25px] p-6 md:p-8 shadow-sm border border-gray-100 dark:border-gray-800">
                     <p class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-6">Performance Summary</p>
-                    <div class="bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl p-6 md:p-10 text-center flex flex-col items-center justify-center border border-dashed border-gray-200 dark:border-gray-700 h-auto min-h-[210px]">
-                        <svg class="text-gray-300 dark:text-gray-600 mb-3" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                        <p class="text-xs text-gray-400 dark:text-gray-500 italic font-medium px-4 md:px-10">Evaluation module pending. Performance metrics will sync once the assessment is submitted.</p>
-                    </div>
+                    
+                    @if($intern->certificate && $intern->certificate->evaluation)
+                        <div class="space-y-4 max-h-[220px] overflow-y-auto pr-2 custom-scrollbar">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-gray-50 dark:bg-gray-800/50 p-3.5 rounded-xl border border-gray-100/50 dark:border-gray-800/50">
+                                    <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block mb-1">Technical Proficiency</span>
+                                    <span class="text-xs font-extrabold text-gray-800 dark:text-gray-100 uppercase">{{ $intern->certificate->evaluation->technical_proficiency }}</span>
+                                </div>
+                                <div class="bg-gray-50 dark:bg-gray-800/50 p-3.5 rounded-xl border border-gray-100/50 dark:border-gray-800/50">
+                                    <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block mb-1">Professionalism & Ethics</span>
+                                    <span class="text-xs font-extrabold text-gray-800 dark:text-gray-100 uppercase">{{ $intern->certificate->evaluation->professionalism_ethics }}</span>
+                                </div>
+                                <div class="bg-gray-50 dark:bg-gray-800/50 p-3.5 rounded-xl border border-gray-100/50 dark:border-gray-800/50">
+                                    <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block mb-1">Communication Skills</span>
+                                    <span class="text-xs font-extrabold text-gray-800 dark:text-gray-100 uppercase">{{ $intern->certificate->evaluation->communication_skills }}</span>
+                                </div>
+                                <div class="bg-gray-50 dark:bg-gray-800/50 p-3.5 rounded-xl border border-gray-100/50 dark:border-gray-800/50">
+                                    <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block mb-1">Team Collaboration</span>
+                                    <span class="text-xs font-extrabold text-gray-800 dark:text-gray-100 uppercase">{{ $intern->certificate->evaluation->team_collaboration }}</span>
+                                </div>
+                            </div>
+                            @if($intern->certificate->supervisor_feedback)
+                                <div class="bg-blue-50/30 dark:bg-blue-950/10 p-4 rounded-xl border border-blue-100/50 dark:border-blue-900/30 mt-2">
+                                    <span class="text-[9px] font-black text-[#0B5694] dark:text-blue-400 uppercase tracking-widest block mb-1">Supervisor's Feedback</span>
+                                    <p class="text-xs font-bold text-gray-700 dark:text-gray-300 leading-relaxed italic">
+                                        "{{ $intern->certificate->supervisor_feedback }}"
+                                    </p>
+                                </div>
+                            @endif
+                        </div>
+                    @else
+                        <div class="bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl p-6 md:p-10 text-center flex flex-col items-center justify-center border border-dashed border-gray-200 dark:border-gray-700 h-auto min-h-[210px]">
+                            <svg class="text-gray-300 dark:text-gray-600 mb-3" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 9.5-9.5z"/></svg>
+                            <p class="text-xs text-gray-400 dark:text-gray-500 italic font-medium px-4 md:px-10">Evaluation module pending. Performance metrics will sync once the assessment is submitted.</p>
+                        </div>
+                    @endif
                 </div>
             </div>
 
