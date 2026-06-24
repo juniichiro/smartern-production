@@ -3,23 +3,23 @@
 @section('title', 'Intern Onboarding')
 
 @section('content')
-<div class="min-h-screen bg-gray-50 dark:bg-gray-950 font-sans flex items-center justify-center p-4 md:p-8 transition-colors duration-300 relative"
+<div class="min-h-screen bg-gray-50 dark:bg-gray-950 font-sans flex items-center justify-center p-3 xs:p-4 md:p-8 transition-colors duration-300 relative"
      x-data="smartOnboardingManager(@js($assessmentItems))">
     
     {{-- Back to Landing --}}
-    <a href="{{ url('/') }}" class="fixed top-6 left-6 z-[100] p-3 bg-white/90 dark:bg-white/10 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl text-gray-500 dark:text-gray-400 hover:text-[#0B5694] dark:hover:text-blue-400 hover:bg-white dark:hover:bg-white/20 transition-all active:scale-95 shadow-xl flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-        <span class="hidden sm:inline">Back</span>
+    <a href="{{ url('/') }}" class="fixed top-4 left-4 sm:top-6 sm:left-6 z-[100] p-2.5 sm:p-3 bg-white/90 dark:bg-white/10 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl text-gray-500 dark:text-gray-400 hover:text-[#0B5694] dark:hover:text-blue-400 hover:bg-white dark:hover:bg-white/20 transition-all active:scale-95 shadow-xl flex items-center gap-2 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" class="sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        <span>Back</span>
     </a>
 
     {{-- Theme Toggle --}}
-    <div class="fixed top-6 right-6 z-[100]" x-data="darkModeManager">
+    <div class="fixed top-4 right-4 sm:top-6 sm:right-6 z-[100]" x-data="darkModeManager">
         <button @click="darkMode = !darkMode"
-                class="p-3 bg-white/90 dark:bg-white/10 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl text-[#0B5694] dark:text-white hover:bg-white dark:hover:bg-white/20 transition-all active:scale-95 shadow-xl">
-            <svg x-show="!darkMode" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                class="p-2.5 sm:p-3 bg-white/90 dark:bg-white/10 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl text-[#0B5694] dark:text-white hover:bg-white dark:hover:bg-white/20 transition-all active:scale-95 shadow-xl">
+            <svg x-show="!darkMode" xmlns="http://www.w3.org/2000/svg" width="18" height="18" class="sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>       
             </svg>
-            <svg x-show="darkMode" x-cloak xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg x-show="darkMode" x-cloak xmlns="http://www.w3.org/2000/svg" width="18" height="18" class="sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
             </svg>
         </button>
@@ -93,13 +93,13 @@
 
                 {{-- STEP 0: WELCOME & INTRODUCTION --}}
                 <div x-show="step === 0" class="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-2xl mx-auto">
-                    <div class="bg-white dark:bg-gray-900 rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 p-8 md:p-12 text-center space-y-8">
+                    <div class="bg-white dark:bg-gray-900 rounded-[24px] xs:rounded-[32px] sm:rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 p-5 xs:p-8 md:p-12 text-center space-y-8">
                         <div class="space-y-6">
                             <div class="inline-flex items-center justify-center p-4 bg-[#0B5694] rounded-[24px] mb-4 shadow-xl shadow-blue-500/20 border border-white/10">
                                 <img src="{{ asset('images/white-smartern.png') }}" alt="SmarTern Logo" class="h-10">
                             </div>
-                            <h2 class="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Become a SmarTern Intern</h2>
-                            <p class="text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto font-medium leading-relaxed">
+                            <h2 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Become a SmarTern Intern</h2>
+                            <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto font-medium leading-relaxed">
                                 Join our smart internship matching ecosystem. Our AI-driven engine parses your profile and matches you with the ideal host office based on your skills and preferences.
                             </p>
                         </div>
@@ -139,21 +139,21 @@
 
                 {{-- STEP 1: RESUME UPLOAD --}}
                 <div x-show="step === 1" class="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <div class="bg-white dark:bg-gray-900 rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 p-8 md:p-12 text-center space-y-10">
+                    <div class="bg-white dark:bg-gray-900 rounded-[24px] xs:rounded-[32px] sm:rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 p-5 xs:p-8 md:p-12 text-center space-y-10">
                         <div class="space-y-4">
-                            <div class="w-20 h-20 bg-blue-50 dark:bg-blue-900/20 rounded-[28px] flex items-center justify-center mx-auto text-[#0B5694] dark:text-blue-400 mb-6 group-hover:scale-110 transition-transform shadow-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M9 15h6"/><path d="M9 11h6"/><path d="M9 19h6"/></svg>
+                            <div class="w-16 h-16 sm:w-20 sm:h-20 bg-blue-50 dark:bg-blue-900/20 rounded-[20px] sm:rounded-[28px] flex items-center justify-center mx-auto text-[#0B5694] dark:text-blue-400 mb-6 group-hover:scale-110 transition-transform shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" class="sm:w-8 sm:h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M9 15h6"/><path d="M9 11h6"/><path d="M9 19h6"/></svg>
                             </div>
-                            <h3 class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Attach Reference Materials</h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400 max-w-sm mx-auto font-medium">Reference materials assist the matching engine in identifying your core competencies automatically.</p>
+                            <h3 class="text-xl sm:text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Attach Reference Materials</h3>
+                            <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 max-w-sm mx-auto font-medium">Reference materials assist the matching engine in identifying your core competencies automatically.</p>
                         </div>
-
+ 
                         <div class="relative">
                             <input type="file" @change="handleResumeUpload" accept=".pdf" class="hidden" id="resume_upload">
-                            <label for="resume_upload" class="cursor-pointer block p-12 border-2 border-transparent bg-gray-50/50 dark:bg-gray-800/20 rounded-[35px] hover:bg-gray-100 dark:hover:bg-gray-800/40 transition-all group border-gray-100 dark:border-gray-800">
+                            <label for="resume_upload" class="cursor-pointer block p-6 xs:p-10 sm:p-12 border-2 border-transparent bg-gray-50/50 dark:bg-gray-800/20 rounded-[20px] xs:rounded-[28px] sm:rounded-[35px] hover:bg-gray-100 dark:hover:bg-gray-800/40 transition-all group border-gray-100 dark:border-gray-800">
                                 <div x-show="!isParsing && !resumeFileName" class="space-y-4">
-                                    <p class="text-sm font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Click to browse or drag reference PDF</p>
-                                    <p class="text-[10px] text-gray-300 dark:text-gray-600 font-bold uppercase tracking-widest">Max Size: 5MB • PDF Only</p>
+                                    <p class="text-xs sm:text-sm font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Click to browse or drag reference PDF</p>
+                                    <p class="text-[9px] sm:text-[10px] text-gray-300 dark:text-gray-600 font-bold uppercase tracking-widest">Max Size: 5MB • PDF Only</p>
                                 </div>
                                 <div x-show="isParsing" class="flex flex-col items-center gap-4 py-4 animate-pulse">
                                     <div class="w-10 h-10 border-4 border-[#0B5694] border-t-transparent rounded-full animate-spin"></div>
@@ -176,22 +176,22 @@
 
                 {{-- STEP 2: PROFILE & SKILLS --}}
                 <div x-show="step === 2" class="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500 pb-32">
-                    {{-- Personal Details Card --}}
-                    <div class="bg-white dark:bg-gray-900 rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 p-8 md:p-12 space-y-12">
-                        <div class="flex flex-col md:flex-row items-center gap-10">
-                            <div class="relative group">
-                                <div class="w-40 h-40 rounded-full bg-gray-50 dark:bg-gray-800 border-2 border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden group-hover:scale-[1.02] transition-transform duration-500 cursor-pointer flex items-center justify-center relative"
+                    {{-- Personal Details Card --}}                    {{-- Personal Details Card --}}
+                    <div class="bg-white dark:bg-gray-900 rounded-[24px] xs:rounded-[32px] sm:rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 p-5 xs:p-8 md:p-12 space-y-12">
+                        <div class="flex flex-col sm:flex-row items-center gap-6 sm:gap-10">
+                            <div class="relative group shrink-0">
+                                <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-gray-50 dark:bg-gray-800 border-2 border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden group-hover:scale-[1.02] transition-transform duration-500 cursor-pointer flex items-center justify-center relative"
                                      @click="!profilePreview ? $refs.profileInput.click() : null">
                                     <template x-if="profilePreview">
                                         <div class="w-full h-full relative">
                                             <img :src="profilePreview" class="w-full h-full object-cover">
                                             <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
                                                 <button type="button" @click.stop="profilePreview = null; profileFile = null; $refs.profileInput.value = ''" 
-                                                        class="p-2 bg-rose-500 text-white rounded-xl shadow-lg hover:scale-110 active:scale-95 transition-all" title="Remove Photo">
+                                                         class="p-2 bg-rose-500 text-white rounded-xl shadow-lg hover:scale-110 active:scale-95 transition-all" title="Remove Photo">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                                                 </button>
                                                 <button type="button" @click.stop="$refs.profileInput.click()" 
-                                                        class="p-2 bg-blue-500 text-white rounded-xl shadow-lg hover:scale-110 active:scale-95 transition-all" title="Change Photo">
+                                                         class="p-2 bg-blue-500 text-white rounded-xl shadow-lg hover:scale-110 active:scale-95 transition-all" title="Change Photo">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                                                 </button>
                                             </div>
@@ -199,15 +199,15 @@
                                     </template>
                                     <template x-if="!profilePreview">
                                         <div class="w-full h-full flex flex-col items-center justify-center text-gray-300 dark:text-gray-700">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                                            <span class="text-[9px] font-bold uppercase tracking-wider mt-4">Attach Media</span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" class="sm:w-10 sm:h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                            <span class="text-[8px] sm:text-[9px] font-bold uppercase tracking-wider mt-2.5 sm:mt-4">Attach Photo</span>
                                         </div>
                                     </template>
                                 </div>
                             </div>
-
+ 
                             <div class="flex-1 space-y-6 w-full text-left">
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
                                     <div class="space-y-2">
                                         <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">First Name</label>
                                         <input type="text" name="first_name" required x-model="formData.first_name" 
@@ -243,14 +243,14 @@
                                 </div>
                             </div>
                         </div>
-
+ 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
                             <div class="space-y-2" id="gender-selection">
                                 <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Gender Identification</label>
-                                <div class="grid grid-cols-3 gap-3">
-                                    <button type="button" @click="gender = 'male'; errors['gender'] = false" :class="gender === 'male' ? 'bg-[#0B5694] text-white border-transparent' : (errors['gender'] ? 'bg-rose-50/50 dark:bg-rose-900/10 border-rose-500 text-rose-500' : 'bg-gray-50 dark:bg-gray-800 text-gray-400 border-gray-100 dark:border-gray-800')" class="py-4 rounded-2xl text-[10px] font-bold uppercase tracking-wider transition-all border-2">Male</button>
-                                    <button type="button" @click="gender = 'female'; errors['gender'] = false" :class="gender === 'female' ? 'bg-[#0B5694] text-white border-transparent' : (errors['gender'] ? 'bg-rose-50/50 dark:bg-rose-900/10 border-rose-500 text-rose-500' : 'bg-gray-50 dark:bg-gray-800 text-gray-400 border-gray-100 dark:border-gray-800')" class="py-4 rounded-2xl text-[10px] font-bold uppercase tracking-wider transition-all border-2">Female</button>
-                                    <button type="button" @click="gender = 'other'; errors['gender'] = false" :class="gender === 'other' ? 'bg-[#0B5694] text-white border-transparent' : (errors['gender'] ? 'bg-rose-50/50 dark:bg-rose-900/10 border-rose-500 text-rose-500' : 'bg-gray-50 dark:bg-gray-800 text-gray-400 border-gray-100 dark:border-gray-800')" class="py-4 rounded-2xl text-[10px] font-bold uppercase tracking-wider transition-all border-2">Other</button>
+                                <div class="grid grid-cols-3 gap-2.5">
+                                    <button type="button" @click="gender = 'male'; errors['gender'] = false" :class="gender === 'male' ? 'bg-[#0B5694] text-white border-transparent' : (errors['gender'] ? 'bg-rose-50/50 dark:bg-rose-900/10 border-rose-500 text-rose-500' : 'bg-gray-50 dark:bg-gray-800 text-gray-400 border-gray-100 dark:border-gray-800')" class="py-3.5 sm:py-4 rounded-xl xs:rounded-2xl text-[9px] xs:text-[10px] font-bold uppercase tracking-wider transition-all border-2">Male</button>
+                                    <button type="button" @click="gender = 'female'; errors['gender'] = false" :class="gender === 'female' ? 'bg-[#0B5694] text-white border-transparent' : (errors['gender'] ? 'bg-rose-50/50 dark:bg-rose-900/10 border-rose-500 text-rose-500' : 'bg-gray-50 dark:bg-gray-800 text-gray-400 border-gray-100 dark:border-gray-800')" class="py-3.5 sm:py-4 rounded-xl xs:rounded-2xl text-[9px] xs:text-[10px] font-bold uppercase tracking-wider transition-all border-2">Female</button>
+                                    <button type="button" @click="gender = 'other'; errors['gender'] = false" :class="gender === 'other' ? 'bg-[#0B5694] text-white border-transparent' : (errors['gender'] ? 'bg-rose-50/50 dark:bg-rose-900/10 border-rose-500 text-rose-500' : 'bg-gray-50 dark:bg-gray-800 text-gray-400 border-gray-100 dark:border-gray-800')" class="py-3.5 sm:py-4 rounded-xl xs:rounded-2xl text-[9px] xs:text-[10px] font-bold uppercase tracking-wider transition-all border-2">Other</button>
                                 </div>
                                 <p x-show="errors['gender']" x-text="errors['gender']" class="text-[9px] font-black text-rose-500 uppercase tracking-widest mt-1 ml-1 animate-in fade-in slide-in-from-top-1"></p>
                                 <input type="hidden" name="gender" :value="gender">
@@ -317,11 +317,11 @@
                     {{-- Dynamic Competency Assessment Form --}}
                     <div class="space-y-12">
                         @foreach($assessmentItems as $category => $categoryItems)
-                            <div class="bg-white dark:bg-gray-900 rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 text-left">
-                                <div class="bg-gray-50 dark:bg-gray-950 px-10 py-6 border-b border-gray-100 dark:border-gray-800 rounded-t-[40px]">
+                            <div class="bg-white dark:bg-gray-900 rounded-[24px] xs:rounded-[32px] sm:rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 text-left">
+                                <div class="bg-gray-50 dark:bg-gray-950 px-5 xs:px-8 sm:px-10 py-5 sm:py-6 border-b border-gray-100 dark:border-gray-800 rounded-t-[24px] xs:rounded-t-[32px] sm:rounded-t-[40px]">
                                     <h3 class="text-xs font-black text-[#0B5694] dark:text-blue-400 uppercase tracking-[0.2em]">{{ $category }}</h3>
                                 </div>
-                                <div class="p-8 md:p-10 space-y-8">
+                                <div class="p-5 xs:p-8 md:p-10 space-y-6 sm:space-y-8">
                                     @foreach($categoryItems as $item)
                                         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center group">
                                             <div class="lg:col-span-8">
@@ -373,52 +373,51 @@
                 </div>
 
                 {{-- STEP 3: PREVIEW & VERIFY --}}
-                <div x-show="step === 3" class="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500 pb-32">
-                    {{-- Personal Details Card (Mirroring Step 2) --}}
-                    <div class="bg-white dark:bg-gray-900 rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 p-8 md:p-12 space-y-12">
-                        <div class="flex flex-col md:flex-row items-center gap-10">
-                            <div class="relative group">
-                                <div class="w-40 h-40 rounded-full bg-gray-50 dark:bg-gray-800 border-2 border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden flex items-center justify-center relative pointer-events-none">
+                <div x-show="step === 3" class="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500 pb-32">                    {{-- Personal Details Card (Mirroring Step 2) --}}
+                    <div class="bg-white dark:bg-gray-900 rounded-[24px] xs:rounded-[32px] sm:rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 p-5 xs:p-8 md:p-12 space-y-12">
+                        <div class="flex flex-col sm:flex-row items-center gap-6 sm:gap-10">
+                            <div class="relative group shrink-0">
+                                <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-gray-50 dark:bg-gray-800 border-2 border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden flex items-center justify-center relative pointer-events-none">
                                     <template x-if="profilePreview">
                                         <img :src="profilePreview" class="w-full h-full object-cover">
                                     </template>
                                     <template x-if="!profilePreview">
                                         <div class="w-full h-full flex flex-col items-center justify-center text-gray-300 dark:text-gray-700">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" class="sm:w-10 sm:h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                                         </div>
                                     </template>
                                 </div>
                             </div>
-
+ 
                             <div class="flex-1 space-y-6 w-full text-left">
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
                                     <div class="space-y-2">
                                         <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">First Name</label>
-                                        <div class="w-full bg-gray-50/50 dark:bg-gray-800/50 border-2 border-gray-100 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-500 dark:text-gray-400" x-text="formData.first_name"></div>
+                                        <div class="w-full bg-gray-50/50 dark:bg-gray-800/50 border-2 border-gray-100 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-550 dark:text-slate-400" x-text="formData.first_name"></div>
                                     </div>
                                     <div class="space-y-2">
                                         <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Middle Name</label>
-                                        <div class="w-full bg-gray-50/50 dark:bg-gray-800/50 border-2 border-gray-100 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-500 dark:text-gray-400" x-text="formData.middle_name || 'N/A'"></div>
+                                        <div class="w-full bg-gray-50/50 dark:bg-gray-800/50 border-2 border-gray-100 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-550 dark:text-slate-400" x-text="formData.middle_name || 'N/A'"></div>
                                     </div>
                                     <div class="space-y-2">
                                         <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Last Name</label>
-                                        <div class="w-full bg-gray-50/50 dark:bg-gray-800/50 border-2 border-gray-100 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-500 dark:text-gray-400" x-text="formData.last_name"></div>
+                                        <div class="w-full bg-gray-50/50 dark:bg-gray-800/50 border-2 border-gray-100 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-550 dark:text-slate-400" x-text="formData.last_name"></div>
                                     </div>
                                 </div>
                                 <div class="space-y-2">
                                     <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Email Address</label>
-                                    <div class="w-full bg-gray-50/50 dark:bg-gray-800/50 border-2 border-gray-100 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-500 dark:text-gray-400" x-text="formData.email"></div>
+                                    <div class="w-full bg-gray-50/50 dark:bg-gray-800/50 border-2 border-gray-100 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-550 dark:text-slate-400" x-text="formData.email"></div>
                                 </div>
                             </div>
                         </div>
-
+ 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
                             <div class="space-y-2">
                                 <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Gender Identification</label>
-                                <div class="grid grid-cols-3 gap-3 pointer-events-none">
-                                    <div :class="gender === 'male' ? 'bg-[#0B5694] text-white border-transparent' : 'bg-gray-50/50 dark:bg-gray-800/50 text-gray-400 border-gray-100 dark:border-gray-800'" class="py-4 rounded-2xl text-[10px] font-bold uppercase tracking-wider text-center border-2">Male</div>
-                                    <div :class="gender === 'female' ? 'bg-[#0B5694] text-white border-transparent' : 'bg-gray-50/50 dark:bg-gray-800/50 text-gray-400 border-gray-100 dark:border-gray-800'" class="py-4 rounded-2xl text-[10px] font-bold uppercase tracking-wider text-center border-2">Female</div>
-                                    <div :class="gender === 'other' ? 'bg-[#0B5694] text-white border-transparent' : 'bg-gray-50/50 dark:bg-gray-800/50 text-gray-400 border-gray-100 dark:border-gray-800'" class="py-4 rounded-2xl text-[10px] font-bold uppercase tracking-wider text-center border-2">Other</div>
+                                <div class="grid grid-cols-3 gap-2.5 pointer-events-none">
+                                    <div :class="gender === 'male' ? 'bg-[#0B5694] text-white border-transparent' : 'bg-gray-50/50 dark:bg-gray-800/50 text-gray-450 border-gray-100 dark:border-gray-800'" class="py-3.5 sm:py-4 rounded-xl xs:rounded-2xl text-[9px] xs:text-[10px] font-bold uppercase tracking-wider text-center border-2">Male</div>
+                                    <div :class="gender === 'female' ? 'bg-[#0B5694] text-white border-transparent' : 'bg-gray-50/50 dark:bg-gray-800/50 text-gray-455 border-gray-100 dark:border-gray-800'" class="py-3.5 sm:py-4 rounded-xl xs:rounded-2xl text-[9px] xs:text-[10px] font-bold uppercase tracking-wider text-center border-2">Female</div>
+                                    <div :class="gender === 'other' ? 'bg-[#0B5694] text-white border-transparent' : 'bg-gray-50/50 dark:bg-gray-800/50 text-gray-455 border-gray-100 dark:border-gray-800'" class="py-3.5 sm:py-4 rounded-xl xs:rounded-2xl text-[9px] xs:text-[10px] font-bold uppercase tracking-wider text-center border-2">Other</div>
                                 </div>
                                 <div x-show="gender === 'other'" class="mt-4">
                                     <div class="w-full bg-gray-50/50 dark:bg-gray-800/50 border-2 border-gray-100 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-500 dark:text-gray-400" x-text="formData.gender_other_specify"></div>
@@ -447,15 +446,14 @@
                             </div>
                         </div>
                     </div>
-
                     {{-- Dynamic Competency Assessment Form (Mirroring Step 2) --}}
                     <div class="space-y-12">
                         @foreach($assessmentItems as $category => $categoryItems)
-                            <div class="bg-white dark:bg-gray-900 rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 text-left">
-                                <div class="bg-gray-50 dark:bg-gray-950 px-10 py-6 border-b border-gray-100 dark:border-gray-800 rounded-t-[40px]">
+                            <div class="bg-white dark:bg-gray-900 rounded-[24px] xs:rounded-[32px] sm:rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 text-left">
+                                <div class="bg-gray-50 dark:bg-gray-950 px-5 xs:px-8 sm:px-10 py-5 sm:py-6 border-b border-gray-100 dark:border-gray-800 rounded-t-[24px] xs:rounded-t-[32px] sm:rounded-t-[40px]">
                                     <h3 class="text-xs font-black text-[#0B5694] dark:text-blue-400 uppercase tracking-[0.2em]">{{ $category }}</h3>
                                 </div>
-                                <div class="p-8 md:p-10 space-y-8">
+                                <div class="p-5 xs:p-8 md:p-10 space-y-6 sm:space-y-8">
                                     @foreach($categoryItems as $item)
                                         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
                                             <div class="lg:col-span-8">
@@ -481,21 +479,21 @@
                             </div>
                         @endforeach
                     </div>
-
+ 
                     {{-- Privacy Acknowledgement & Final Actions --}}
                     <div class="space-y-10">
-                        <div class="p-8 bg-blue-50/50 dark:bg-blue-900/10 rounded-[35px] border border-blue-100/50 dark:border-blue-800/30 text-left">
-                            <div class="flex items-center">
-                                <input type="checkbox" id="privacy_acknowledgement" name="privacy_acknowledgement" value="1" required class="h-6 w-6 rounded-[8px] border-gray-300 text-[#0B5694] focus:ring-[#0B5694]">
-                                <label for="privacy_acknowledgement" class="ml-3 text-xs text-gray-600 dark:text-gray-400 font-bold">
+                        <div class="p-5 xs:p-8 bg-blue-50/50 dark:bg-blue-900/10 rounded-[20px] xs:rounded-[28px] sm:rounded-[35px] border border-blue-100/50 dark:border-blue-800/30 text-left">
+                            <div class="flex items-start">
+                                <input type="checkbox" id="privacy_acknowledgement" name="privacy_acknowledgement" value="1" required class="h-5 w-5 rounded-[6px] border-gray-300 text-[#0B5694] focus:ring-[#0B5694] mt-0.5 shrink-0">
+                                <label for="privacy_acknowledgement" class="ml-3 text-xs text-gray-600 dark:text-gray-400 font-bold leading-normal">
                                     I acknowledge and agree to the <a href="{{ route('privacy-policy') }}" target="_blank" class="text-[#0B5694] dark:text-blue-400 hover:underline">Privacy Policy</a> and the <a href="https://www.officialgazette.gov.ph/2012/08/15/republic-act-no-10173/" target="_blank" class="text-[#0B5694] dark:text-blue-400 hover:underline">Data Privacy Act of 2012</a>.
                                 </label>
                             </div>
                         </div>
-
-                        <div class="flex flex-col md:flex-row gap-4">
-                            <button type="button" @click="step = 2" class="w-full md:w-1/3 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 py-5 rounded-[30px] font-black text-sm uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-700 transition-all hover:scale-[1.01] active:scale-[0.99]">Back to Edit</button>
-                            <button type="button" @click="submitFinalForm" class="w-full md:w-2/3 bg-[#0B5694] dark:bg-blue-600 text-white py-5 rounded-[30px] font-black text-sm uppercase tracking-widest shadow-xl shadow-blue-500/20 hover:shadow-blue-500/40 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3">
+ 
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <button type="button" @click="step = 2" class="w-full sm:w-1/3 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 py-5 rounded-[30px] font-black text-sm uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-700 transition-all hover:scale-[1.01] active:scale-[0.99]">Back to Edit</button>
+                            <button type="button" @click="submitFinalForm" class="w-full sm:w-2/3 bg-[#0B5694] dark:bg-blue-600 text-white py-5 rounded-[30px] font-black text-sm uppercase tracking-widest shadow-xl shadow-blue-500/20 hover:shadow-blue-500/40 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3">
                                 <span>Finalize & Publish</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>
                             </button>
@@ -504,15 +502,15 @@
                 </div>
             </form>
         </div>
-
+ 
         {{-- SUCCESS STATE --}}
-        <div x-show="step === 4" x-cloak class="bg-white dark:bg-gray-900 rounded-[40px] shadow-xl border border-gray-100 dark:border-gray-800 p-8 md:p-12 text-center transition-all duration-300">
-            <div class="w-24 h-24 bg-green-50 dark:bg-green-900/20 rounded-[32px] flex items-center justify-center mx-auto text-green-600 dark:text-green-400 mb-8">
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <div x-show="step === 4" x-cloak class="bg-white dark:bg-gray-900 rounded-[24px] xs:rounded-[32px] sm:rounded-[40px] shadow-xl border border-gray-100 dark:border-gray-800 p-5 xs:p-8 md:p-12 text-center transition-all duration-300">
+            <div class="w-20 h-20 sm:w-24 sm:h-24 bg-green-50 dark:bg-green-900/20 rounded-[24px] sm:rounded-[32px] flex items-center justify-center mx-auto text-green-600 dark:text-green-400 mb-8">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" class="sm:w-12 sm:h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
             </div>
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white uppercase tracking-tight">Application Finalized!</h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 mb-10">We couldn't find any issues with your submission. Your credentials have been authorized.</p>
-            <button type="button" @click="window.location.reload()" class="w-full bg-[#0B5694] dark:bg-blue-600 text-white py-5 rounded-[24px] font-black text-sm uppercase tracking-widest shadow-xl">Finish Process</button>
+            <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white uppercase tracking-tight">Application Finalized!</h2>
+            <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-2 mb-10 leading-relaxed">We couldn't find any issues with your submission. Your credentials have been authorized.</p>
+            <button type="button" @click="window.location.reload()" class="w-full bg-[#0B5694] dark:bg-blue-600 text-white py-5 rounded-[20px] sm:rounded-[24px] font-black text-sm uppercase tracking-widest shadow-xl">Finish Process</button>
         </div>
     </div>
 
