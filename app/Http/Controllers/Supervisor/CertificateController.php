@@ -126,10 +126,14 @@ class CertificateController extends Controller
         // 3. Validate request
         $request->validate([
             'supervisor_feedback' => 'nullable|string|max:5000',
+            'technical_proficiency' => 'required|string|in:Excellent,Very Good,Good,Fair,Poor',
+            'professionalism_ethics' => 'required|string|in:Excellent,Very Good,Good,Fair,Poor',
+            'communication_skills' => 'required|string|in:Excellent,Very Good,Good,Fair,Poor',
+            'team_collaboration' => 'required|string|in:Excellent,Very Good,Good,Fair,Poor',
         ]);
 
         // 4. Create or Update the Certificate record
-        Certificate::updateOrCreate(
+        $cert = Certificate::updateOrCreate(
             ['intern_id' => $intern->user_id],
             [
                 'supervisor_id' => auth()->id(),
@@ -141,6 +145,17 @@ class CertificateController extends Controller
                 'intern_unit' => Auth::user()->supervisorDetails->office->name ?? 'N/A',
                 'endorsed_at' => now(),
                 'supervisor_feedback' => $request->input('supervisor_feedback'),
+            ]
+        );
+
+        // 5. Save the specific evaluations
+        $cert->evaluation()->updateOrCreate(
+            ['certificate_id' => $cert->certificate_id],
+            [
+                'technical_proficiency' => $request->input('technical_proficiency'),
+                'professionalism_ethics' => $request->input('professionalism_ethics'),
+                'communication_skills' => $request->input('communication_skills'),
+                'team_collaboration' => $request->input('team_collaboration'),
             ]
         );
 

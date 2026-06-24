@@ -46,17 +46,44 @@
         </div>
 
         {{-- Blind Supervisor Feedback Alert --}}
-        @if($certificate->supervisor_feedback)
-            <div x-show="!loading" x-transition.opacity.duration.500ms class="mb-8 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[24px] p-6 shadow-sm max-w-[215.9mm] mx-auto text-left flex items-start gap-4">
-                <div class="p-3 bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 rounded-xl shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        @if($certificate->supervisor_feedback || $certificate->evaluation)
+            <div x-show="!loading" x-transition.opacity.duration.500ms class="mb-8 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[24px] p-6 shadow-sm max-w-[215.9mm] mx-auto text-left flex flex-col gap-4">
+                <div class="flex items-start gap-4">
+                    <div class="p-3 bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 rounded-xl shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest leading-none">Supervisor Feedback (Confidential)</h4>
+                        @if($certificate->supervisor_feedback)
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-2.5 font-medium italic leading-relaxed">
+                                "{{ $certificate->supervisor_feedback }}"
+                            </p>
+                        @else
+                            <p class="text-xs text-gray-400 dark:text-gray-500 mt-2.5 font-medium italic leading-relaxed">
+                                No qualitative comments submitted.
+                            </p>
+                        @endif
+                    </div>
                 </div>
-                <div>
-                    <h4 class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest leading-none">Supervisor Feedback (Confidential)</h4>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-2.5 font-medium italic leading-relaxed">
-                        "{{ $certificate->supervisor_feedback }}"
-                    </p>
-                </div>
+
+                @if($certificate->evaluation)
+                    <div class="border-t border-gray-100 dark:border-gray-800 pt-4">
+                        <h5 class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3">Supervisor Assessment Ratings</h5>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                            @foreach([
+                                'Technical' => $certificate->evaluation->technical_proficiency,
+                                'Professionalism' => $certificate->evaluation->professionalism_ethics,
+                                'Communication' => $certificate->evaluation->communication_skills,
+                                'Collaboration' => $certificate->evaluation->team_collaboration,
+                            ] as $label => $score)
+                                <div class="bg-gray-50 dark:bg-gray-800/40 border border-gray-100 dark:border-gray-800 p-3 rounded-2xl">
+                                    <p class="text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">{{ $label }}</p>
+                                    <p class="text-xs font-black text-gray-700 dark:text-gray-300">{{ $score ?? 'Pending' }}</p>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
             </div>
         @endif
 

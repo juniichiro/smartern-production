@@ -215,16 +215,43 @@
                         <div class="overflow-x-auto custom-scrollbar">
                             <table class="w-full text-left border-collapse">
                                 <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
-                                    @foreach(['Technical Proficiency', 'Professionalism & Ethics', 'Communication Skills', 'Team Collaboration'] as $category)
+                                    @php
+                                        $cert = $intern->certificate;
+                                        $isPublished = optional($cert)->status === 'published';
+                                        $eval = $isPublished ? optional($cert)->evaluation : null;
+
+                                        $categories = [
+                                            'Technical Proficiency' => optional($eval)->technical_proficiency,
+                                            'Professionalism & Ethics' => optional($eval)->professionalism_ethics,
+                                            'Communication Skills' => optional($eval)->communication_skills,
+                                            'Team Collaboration' => optional($eval)->team_collaboration,
+                                        ];
+                                    @endphp
+                                    @foreach($categories as $categoryName => $score)
                                     <tr class="group hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition">
                                         <td class="p-8">
-                                            <p class="text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-tight">{{ $category }}</p>
+                                            <p class="text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-tight">{{ $categoryName }}</p>
                                             <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider mt-1">Standard Assessment Criteria</p>
                                         </td>
                                         <td class="p-8 text-right">
-                                            <span class="px-6 py-2.5 bg-gray-50 dark:bg-gray-800 text-gray-300 dark:text-gray-700 text-[10px] font-bold uppercase tracking-[0.2em] rounded-xl border border-gray-100 dark:border-gray-700 group-hover:border-[#0B5694]/30 transition-all">
-                                                Pending
-                                            </span>
+                                            @if($score)
+                                                @php
+                                                    $scoreColors = [
+                                                        'Excellent' => 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/50',
+                                                        'Very Good' => 'bg-teal-50 dark:bg-teal-950/30 text-teal-600 dark:text-teal-400 border-teal-100 dark:border-teal-900/50',
+                                                        'Good' => 'bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 border-blue-100 dark:border-blue-900/50',
+                                                        'Fair' => 'bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 border-amber-100 dark:border-amber-900/50',
+                                                        'Poor' => 'bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 border-rose-100 dark:border-rose-900/50'
+                                                    ];
+                                                @endphp
+                                                <span class="px-6 py-2.5 rounded-xl border text-[10px] font-black uppercase tracking-wider shadow-sm {{ $scoreColors[$score] ?? 'bg-gray-100 dark:bg-gray-800 text-gray-400' }}">
+                                                    {{ $score }}
+                                                </span>
+                                            @else
+                                                <span class="px-6 py-2.5 bg-gray-50 dark:bg-gray-800 text-gray-300 dark:text-gray-700 text-[10px] font-bold uppercase tracking-[0.2em] rounded-xl border border-gray-100 dark:border-gray-700 group-hover:border-[#0B5694]/30 transition-all">
+                                                    Pending
+                                                </span>
+                                            @endif
                                         </td>
                                     </tr>
                                     @endforeach

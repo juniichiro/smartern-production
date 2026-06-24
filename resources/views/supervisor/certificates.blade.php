@@ -159,11 +159,34 @@
                             Provide qualitative feedback and evaluation for <span class="font-extrabold text-gray-700 dark:text-gray-300 x-text" x-text="selectedInternName"></span> to review during the endorsement process. This feedback is completely confidential and will not be displayed to the intern.
                         </p>
 
+                        <div class="grid grid-cols-2 gap-4">
+                            @foreach([
+                                'technical_proficiency' => 'Technical Proficiency',
+                                'professionalism_ethics' => 'Professionalism & Ethics',
+                                'communication_skills' => 'Communication Skills',
+                                'team_collaboration' => 'Team Collaboration'
+                            ] as $key => $label)
+                                <div class="space-y-2">
+                                    <label for="{{ $key }}" class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">{{ $label }}</label>
+                                    <select id="{{ $key }}" 
+                                            name="{{ $key }}" 
+                                            required
+                                            class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl p-3 text-xs text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-600 focus:border-transparent font-medium">
+                                        <option value="Excellent">Excellent</option>
+                                        <option value="Very Good">Very Good</option>
+                                        <option value="Good" selected>Good</option>
+                                        <option value="Fair">Fair</option>
+                                        <option value="Poor">Poor</option>
+                                    </select>
+                                </div>
+                            @endforeach
+                        </div>
+
                         <div class="space-y-2">
                             <label for="supervisor_feedback" class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Feedback & Notes</label>
                             <textarea id="supervisor_feedback" 
                                       name="supervisor_feedback" 
-                                      rows="5" 
+                                      rows="4" 
                                       class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-4 text-xs text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-600 focus:border-transparent placeholder-gray-400 resize-none font-medium"
                                       placeholder="Write your feedback regarding the intern's work behavior, competency, attendance, and overall performance..."></textarea>
                         </div>

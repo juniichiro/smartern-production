@@ -64,6 +64,11 @@ class Certificate extends Model
         return $this->belongsTo(InternDetail::class, 'intern_id', 'user_id');
     }
 
+    public function evaluation()
+    {
+        return $this->hasOne(Evaluation::class, 'certificate_id', 'certificate_id');
+    }
+
     // Helper: Get intern's full name
     public function getInternNameAttribute(): string
     {
