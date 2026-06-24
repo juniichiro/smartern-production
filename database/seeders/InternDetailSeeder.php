@@ -102,7 +102,7 @@ class InternDetailSeeder extends Seeder
                 'school' => 'DLSU',
                 'gender' => 'Female',
                 'phone_number' => '09123456789',
-                'hours_rendered' => 320,
+                'hours_rendered' => 400,
                 'required_hours' => 400,
             ],
             [
