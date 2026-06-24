@@ -35,7 +35,7 @@
         $userRole = 'System Admin';
     }
 
-    $hasUnread = $notifications->contains('is_read', false);
+    $hasUnread = $notificationsList->contains('is_read', false);
 @endphp
 
 <x-page-layout 
@@ -79,7 +79,7 @@
         {{-- ACTUAL CONTENT VIEW --}}
         <div x-show="!loading" x-cloak x-transition:enter="transition ease-out duration-500 delay-200" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" class="flex flex-col flex-1">
             <div class="space-y-6">
-                @forelse($notifications as $notif)
+                @forelse($notificationsList as $notif)
                     @php
                         $notifId = $notif->getRouteKey();
                         $category = $notif->category;
@@ -161,9 +161,9 @@
                 @endforelse
             </div>
 
-            @if($notifications->hasPages())
+            @if($notificationsList->hasPages())
                 <div class="mt-12 flex justify-end">
-                    {{ $notifications->links('vendor.pagination.tailwind-custom') }}
+                    {{ $notificationsList->links('vendor.pagination.tailwind-custom') }}
                 </div>
             @endif
         </div>
