@@ -33,7 +33,11 @@ class AttendanceController extends Controller
         $user = Auth::user();
         $intern = $user->internDetails;
 
-        $token = Hashids::encode($user->id, now()->timestamp);
+        $token = Cache::get("active_qr_token_{$user->id}");
+        if (! $token) {
+            $token = Hashids::encode($user->id, now()->timestamp);
+            Cache::put("active_qr_token_{$user->id}", $token, now()->addMinutes(10));
+        }
         $baseUrl = url('/');
         $qrPayload = "{$baseUrl}/attendance/verify?token={$token}";
 
@@ -85,6 +89,7 @@ class AttendanceController extends Controller
 
         return view('intern.attendance', [
             'qrPayload' => $qrPayload,
+            'token' => $token,
             'attendanceHistory' => $attendanceHistory,
             'allAttendanceLogs' => $allAttendanceLogs,
             'is_enabled' => $isEnabled,
@@ -140,9 +145,14 @@ class AttendanceController extends Controller
             'can_scan' => ! $completedToday,
         ];
 
-        // Generate token for any state that isn't completed
+        // Generate token for any state that isn't completed using cache
+        $token = null;
         if (! $completedToday) {
-            $token = Hashids::encode($user->id, now()->timestamp);
+            $token = Cache::get("active_qr_token_{$user->id}");
+            if (! $token) {
+                $token = Hashids::encode($user->id, now()->timestamp);
+                Cache::put("active_qr_token_{$user->id}", $token, now()->addMinutes(10));
+            }
             $baseUrl = url('/');
             $qrPayload = "{$baseUrl}/attendance/verify?token={$token}";
             $data['qr_code_html'] = (string) QrCode::size(350)->generate($qrPayload);
@@ -151,6 +161,7 @@ class AttendanceController extends Controller
         return response()->json([
             'geofence' => $data['geofence'],
             'qr_code_html' => $data['qr_code_html'] ?? null,
+            'token' => $token,
             'can_scan' => $data['can_scan'],
             'next_available_scan' => $nextAvailableScan,
             'is_clocked_in' => (bool) $todayRecord,
@@ -180,6 +191,10 @@ class AttendanceController extends Controller
                 return response()->json(['message' => 'This QR code has already been scanned.'], 403);
             }
 
+            // Burn the token immediately to ensure that any scan attempt (whether successful or blocked)
+            // invalidates this token/QR code instantly.
+            Cache::put($cacheKey, true, now()->addMinutes(10));
+
             $decoded = Hashids::decode($token);
             if (count($decoded) < 2) {
                 return response()->json(['message' => 'Invalid QR token format.'], 400);
@@ -187,6 +202,10 @@ class AttendanceController extends Controller
 
             [$userId, $timestamp] = $decoded;
             logger()->info('Token Decoded', ['userId' => $userId, 'timestamp' => $timestamp]);
+
+            // Clear the active QR token cache for this user immediately so that the polling
+            // endpoint checkStatus() will generate a new token on the next poll.
+            Cache::forget("active_qr_token_{$userId}");
 
             // 1. Replay Protection (60s)
             $tokenTime = Carbon::createFromTimestamp($timestamp);
@@ -276,7 +295,6 @@ class AttendanceController extends Controller
                 return response()->json(['message' => $result['message']], 400);
             }
 
-            Cache::put($cacheKey, true, now()->addMinutes(2));
             $this->auditService->log($result['type'] === 'in' ? 'Clock In' : 'Clock Out', "User #{$userId} via QR Scan");
 
             logger()->info('Attendance Recorded Successfully', ['type' => $result['type']]);

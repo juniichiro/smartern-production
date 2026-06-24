@@ -1538,10 +1538,10 @@ Alpine.data('analyticsManager', (months, applicantsTrends, completionTrends, com
 /**
  * Intern Attendance Manager
  */
-Alpine.data('attendanceManager', (checkStatusRoute, isClockedIn, isCompleted) => ({
+Alpine.data('attendanceManager', (checkStatusRoute, isClockedIn, isCompleted, initialToken) => ({
     isClockedIn: isClockedIn,
     isCompleted: isCompleted,
-    lastQrUpdate: Date.now(),
+    currentToken: initialToken,
     loading: true,
     init() {
         // Simulated loading for "Instagram" feel transitions
@@ -1554,21 +1554,18 @@ Alpine.data('attendanceManager', (checkStatusRoute, isClockedIn, isCompleted) =>
         }
     },
     checkAttendanceStatus(route) {
-        const timeSinceLastUpdate = Date.now() - this.lastQrUpdate;
-        // Refresh QR code if 45 seconds have passed
-        const shouldRefreshQr = timeSinceLastUpdate >= 45000;
-        const fetchRoute = shouldRefreshQr ? `${route}?refresh_qr=1` : route;
+        const fetchRoute = `${route}?current_token=${this.currentToken}`;
 
         fetch(fetchRoute)
             .then(response => response.json())
             .then(data => {
                 if (data.is_clocked_in !== this.isClockedIn || data.is_completed !== this.isCompleted) {
                     window.location.reload();
-                } else if (shouldRefreshQr && data.qr_code_html) {
+                } else if (data.token && data.token !== this.currentToken && data.qr_code_html) {
                     const qrContainer = document.getElementById('qr-code-container');
                     if (qrContainer) {
                         qrContainer.innerHTML = data.qr_code_html;
-                        this.lastQrUpdate = Date.now();
+                        this.currentToken = data.token;
                     }
                 }
             })

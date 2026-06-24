@@ -8,7 +8,7 @@
     userName="{{ Auth::user()->internDetails->first_name }}" 
     userRole="{{ Auth::user()->internDetails->office->name }}"
 >
-    <div x-data="attendanceManager('{{ route('intern.attendance.check-status') }}', {{ $current_record ? 'true' : 'false' }}, {{ $completed_today ? 'true' : 'false' }})" class="flex flex-col flex-1">
+    <div x-data="attendanceManager('{{ route('intern.attendance.check-status') }}', {{ $current_record ? 'true' : 'false' }}, {{ $completed_today ? 'true' : 'false' }}, '{{ $token }}')" class="flex flex-col flex-1">
         
         {{-- Header --}}
         <x-page-header 
