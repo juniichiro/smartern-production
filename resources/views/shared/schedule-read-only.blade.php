@@ -216,7 +216,7 @@
                     <template x-if="('{{ $portalType }}' === 'Supervisor' || '{{ $portalType }}' === 'Head Supervisor') && modalMode === 'review'">
                         <div class="space-y-6">
                             <template x-for="event in selectedEvents.filter(e => e.type === 'absence_request')" :key="event.id">
-                                <div class="rounded-3xl p-6 border text-left bg-gray-50/50 dark:bg-gray-850/20 border-gray-100 dark:border-gray-850 space-y-4 mb-4 last:mb-0">
+                                <div class="rounded-3xl p-6 border text-left bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800 space-y-4 mb-4 last:mb-0 shadow-sm">
                                     {{-- Request Info Header --}}
                                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 dark:border-gray-800/80 pb-3">
                                         <div class="min-w-0">
@@ -226,9 +226,9 @@
                                         </div>
                                         <span class="text-[9px] font-black uppercase px-3 py-1.5 rounded-full border w-fit"
                                               :class="{
-                                                  'bg-orange-50 text-orange-600 border-orange-100': event.status === 'pending',
-                                                  'bg-emerald-50 text-emerald-600 border-emerald-100': event.status === 'approved',
-                                                  'bg-rose-50 text-rose-600 border-rose-100': event.status === 'rejected'
+                                                  'bg-orange-50 dark:bg-orange-950/20 text-orange-600 dark:text-orange-400 border-orange-100 dark:border-orange-900/30': event.status === 'pending',
+                                                  'bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/30': event.status === 'approved',
+                                                  'bg-rose-50 dark:bg-rose-950/20 text-rose-600 dark:text-rose-400 border-rose-100 dark:border-rose-900/30': event.status === 'rejected'
                                               }"
                                               x-text="event.status"></span>
                                     </div>
