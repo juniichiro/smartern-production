@@ -204,12 +204,18 @@
                                 <tbody class="text-gray-600 dark:text-gray-400 divide-y divide-gray-50 dark:divide-gray-800">
                                     @forelse($recentAttendance as $log)
                                         <tr>
-                                            <td class="py-4 px-6 text-left font-bold text-gray-700 dark:text-gray-200 whitespace-nowrap">{{ $log->clock_in->format('M d, Y') }}</td>
-                                            <td class="py-4 px-6 text-center text-[10px] font-black text-gray-400 dark:text-gray-500 whitespace-nowrap">
-                                                {{ $log->clock_in->format('h:i A') }} - {{ $log->clock_out ? $log->clock_out->format('h:i A') : 'Active' }}
+                                            <td class="py-4 px-6 text-left font-bold text-gray-700 dark:text-gray-200 whitespace-nowrap">
+                                                {{ isset($log['clock_in']) && $log['clock_in'] ? \Carbon\Carbon::parse($log['clock_in'])->format('M d, Y') : (isset($log['date']) && $log['date'] ? \Carbon\Carbon::parse($log['date'])->format('M d, Y') : '--') }}
                                             </td>
-                                            <td class="py-4 px-6 text-right font-black uppercase text-[10px] {{ $log->clock_out ? 'text-emerald-500 dark:text-emerald-400' : 'text-blue-500 dark:text-blue-400' }} whitespace-nowrap">
-                                                {{ $log->clock_out ? (int)8 . ' HRS' : 'Pending' }}
+                                            <td class="py-4 px-6 text-center text-[10px] font-black text-gray-400 dark:text-gray-500 whitespace-nowrap">
+                                                @if(isset($log['clock_in']) && $log['clock_in'])
+                                                    {{ \Carbon\Carbon::parse($log['clock_in'])->format('h:i A') }} - {{ (isset($log['clock_out']) && $log['clock_out']) ? \Carbon\Carbon::parse($log['clock_out'])->format('h:i A') : 'Active' }}
+                                                @else
+                                                    --
+                                                @endif
+                                            </td>
+                                            <td class="py-4 px-6 text-right font-black uppercase text-[10px] {{ (isset($log['clock_out']) && $log['clock_out']) ? 'text-emerald-500 dark:text-emerald-400' : 'text-blue-500 dark:text-blue-400' }} whitespace-nowrap">
+                                                {{ isset($log['duration']) && $log['duration'] !== null ? (float)$log['duration'] . ' HRS' : 'Pending' }}
                                             </td>
                                         </tr>
                                     @empty
