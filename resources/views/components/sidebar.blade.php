@@ -190,7 +190,7 @@ class="relative">
 
 {{-- SYSTEM SETTINGS MODAL --}}
 <x-modal name="system-settings-modal" maxWidth="4xl">
-    <div class="flex flex-col md:flex-row text-gray-900 dark:text-gray-100 min-h-0 md:min-h-[500px]"
+    <div class="flex flex-col md:flex-row text-gray-900 dark:text-gray-100 min-h-0 md:min-h-[500px] relative"
          x-data="{
              activeTab: 'general',
              darkMode: localStorage.getItem('darkMode') === 'true' || 
@@ -413,6 +413,12 @@ class="relative">
              }
          }"
     >
+        <!-- Close button (absolute, always visible) -->
+        <button type="button" @click="$dispatch('close-modal', 'system-settings-modal')" 
+                class="absolute top-3 right-3 md:top-4 md:right-4 p-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-white dark:hover:bg-gray-700 transition-all z-10 shadow-sm border border-gray-200/60 dark:border-gray-700/60 cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+
         <!-- LEFT SIDEBAR PANEL -->
         <div class="w-full md:w-56 bg-gray-50/50 dark:bg-gray-950/40 p-3 md:p-4 border-b md:border-b-0 md:border-r border-gray-200/60 dark:border-gray-800/80 flex flex-col justify-between shrink-0">
             <div class="space-y-6">
@@ -423,7 +429,7 @@ class="relative">
                 <nav class="flex flex-row md:flex-col overflow-x-auto md:overflow-x-visible no-scrollbar">
                     <button type="button" 
                             @click="activeTab = 'general'"
-                            :class="activeTab === 'general' ? 'border-l-4 border-[#0B5694] dark:border-blue-500 font-bold text-[#0B5694] dark:text-blue-400 bg-gray-100/60 dark:bg-gray-900/30' : 'border-l-4 border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-50/50 dark:hover:bg-gray-900/10'"
+                            :class="activeTab === 'general' ? 'border-b-4 md:border-l-4 md:border-b-0 border-[#0B5694] dark:border-blue-500 font-bold text-[#0B5694] dark:text-blue-400 bg-gray-100/60 dark:bg-gray-900/30' : 'border-b-4 md:border-l-4 md:border-b-0 border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-50/50 dark:hover:bg-gray-900/10'"
                             class="flex items-center gap-3 px-4 py-3 text-xs uppercase tracking-wider transition-all text-left whitespace-nowrap md:w-full border-t border-b border-transparent focus:outline-none shrink-0 rounded-r-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="3"/>
@@ -433,7 +439,7 @@ class="relative">
                     </button>
                     <button type="button" 
                             @click="activeTab = 'security'"
-                            :class="activeTab === 'security' ? 'border-l-4 border-[#0B5694] dark:border-blue-500 font-bold text-[#0B5694] dark:text-blue-400 bg-gray-100/60 dark:bg-gray-900/30' : 'border-l-4 border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-50/50 dark:hover:bg-gray-900/10'"
+                            :class="activeTab === 'security' ? 'border-b-4 md:border-l-4 md:border-b-0 border-[#0B5694] dark:border-blue-500 font-bold text-[#0B5694] dark:text-blue-400 bg-gray-100/60 dark:bg-gray-900/30' : 'border-b-4 md:border-l-4 md:border-b-0 border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-50/50 dark:hover:bg-gray-900/10'"
                             class="flex items-center gap-3 px-4 py-3 text-xs uppercase tracking-wider transition-all text-left whitespace-nowrap md:w-full border-t border-b border-transparent focus:outline-none shrink-0 rounded-r-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
@@ -452,16 +458,13 @@ class="relative">
         <div class="flex-1 bg-white dark:bg-gray-900 p-4 sm:p-6 md:p-8 flex flex-col justify-between min-h-0 md:min-h-[500px]">
             <div>
                 <!-- Right Header -->
-                <div class="flex justify-between items-start mb-6">
+                <div class="mb-6">
                     <div class="text-left">
                         <h4 class="text-lg font-bold text-gray-800 dark:text-gray-100 tracking-tight"
                             x-text="activeTab === 'general' ? 'General Settings' : 'Two-Factor Security'"></h4>
                         <p class="text-[11px] text-gray-400 dark:text-gray-550 font-bold uppercase tracking-wider mt-1"
                            x-text="activeTab === 'general' ? 'Visual preferences & scaling' : 'Account access verification methods'"></p>
                     </div>
-                    <button type="button" @click="$dispatch('close-modal', 'system-settings-modal')" class="p-1.5 text-gray-405 hover:text-gray-800 dark:hover:text-gray-200 transition-colors focus:outline-none cursor-pointer">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                    </button>
                 </div>
 
                 <!-- Tab content: General -->
