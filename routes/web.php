@@ -55,6 +55,7 @@ Route::get('/dashboard', function () {
 
     $destination = match ($role) {
         'admin' => route('admin.dashboard'),
+        'super_admin' => route('admin.dashboard'),
         'head_supervisor' => route('head-supervisor.dashboard'),
         'supervisor' => route('supervisor.dashboard'),
         'intern' => route('intern.dashboard'),

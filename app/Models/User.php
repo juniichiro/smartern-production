@@ -55,7 +55,15 @@ class User extends Authenticatable
     protected static function booted(): void
     {
         static::addGlobalScope('hide_super_admin', function ($builder) {
-            $builder->where('role_id', '!=', UserRole::SUPER_ADMIN->value);
+            $authId = \Illuminate\Support\Facades\Auth::id();
+            if ($authId) {
+                $builder->where(function ($q) use ($authId) {
+                    $q->where('role_id', '!=', UserRole::SUPER_ADMIN->value)
+                      ->orWhere('id', '=', $authId);
+                });
+            } else {
+                $builder->where('role_id', '!=', UserRole::SUPER_ADMIN->value);
+            }
         });
 
         static::creating(function ($user) {
@@ -124,7 +132,7 @@ class User extends Authenticatable
 
     public function role(): BelongsTo
     {
-        return $this->belongsTo(Role::class);
+        return $this->belongsTo(Role::class)->withoutGlobalScope('hide_super_admin_role');
     }
 
     public function internDetails()
