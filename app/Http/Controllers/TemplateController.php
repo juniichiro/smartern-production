@@ -40,7 +40,7 @@ class TemplateController extends Controller
         switch ($type) {
             case 'account_edit':
                 $user = auth()->user();
-                $role = $user ? ($user->role_id instanceof \App\Enums\UserRole ? $user->role_id : \App\Enums\UserRole::tryFrom((int)$user->role_id)) : null;
+                $role = $user?->role_id;
 
                 $profileFields = [
                     'Full Registered Name' => '________________________________________________',
