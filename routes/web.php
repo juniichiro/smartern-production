@@ -32,6 +32,7 @@ use App\Http\Controllers\Supervisor\DashboardController as SupervisorDashboard;
 use App\Http\Controllers\Supervisor\InternController as SupervisorIntern;
 use App\Http\Controllers\Supervisor\ReportController as SupervisorReport;
 use App\Http\Controllers\Supervisor\TaskController;
+use App\Http\Controllers\TemplateController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -70,6 +71,10 @@ Route::get('/dashboard', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('/security/run-analysis', [SecurityController::class, 'runAnalysis'])->name('security.run');
+
+    // Document Templates
+    Route::get('/templates', [TemplateController::class, 'index'])->name('templates.index');
+    Route::get('/templates/download/{type}', [TemplateController::class, 'download'])->name('templates.download');
 
     Route::get('profile/change-password', [PasswordUpdateController::class, 'edit'])
         ->name('profile.change-password');
