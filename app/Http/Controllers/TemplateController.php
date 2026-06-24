@@ -51,88 +51,97 @@ class TemplateController extends Controller
      */
     public function download($type)
     {
-        $templateData = match ($type) {
-            'account_edit' => [
-                'title' => 'ACCOUNT DETAILS MODIFICATION REQUEST',
-                'form_code' => 'SMRT-FORM-001',
-                'sections' => [
-                    'Section A: Current Profile Information' => [
-                        'Full Registered Name' => '________________________________________________',
-                        'Registered Email Address' => '________________________________________________',
-                        'Student ID / Unique Identifier' => '________________________________________________',
-                        'School / Affiliate Institution' => '________________________________________________',
+        switch ($type) {
+            case 'account_edit':
+                $templateData = [
+                    'title' => 'ACCOUNT DETAILS MODIFICATION REQUEST',
+                    'form_code' => 'SMRT-FORM-001',
+                    'sections' => [
+                        'Section A: Current Profile Information' => [
+                            'Full Registered Name' => '________________________________________________',
+                            'Registered Email Address' => '________________________________________________',
+                            'Student ID / Unique Identifier' => '________________________________________________',
+                            'School / Affiliate Institution' => '________________________________________________',
+                        ],
+                        'Section B: Requested Changes & Modifications' => [
+                            'Attribute to Update (e.g. Name, School)' => '________________________________________________',
+                            'Old Value / Information' => '________________________________________________',
+                            'New Proposed Value (Corrected)' => '________________________________________________',
+                        ],
+                        'Section C: Reason for Account Modification' => [
+                            'Detailed Explanation/Justification' => "\n_________________________________________________________________________________\n_________________________________________________________________________________",
+                        ]
                     ],
-                    'Section B: Requested Changes & Modifications' => [
-                        'Attribute to Update (e.g. Name, School)' => '________________________________________________',
-                        'Old Value / Information' => '________________________________________________',
-                        'New Proposed Value (Corrected)' => '________________________________________________',
+                    'note' => 'Please attach supporting formal documentation (e.g. Certificate of Enrollment, Registrar Certificate) validating the requested change.'
+                ];
+                break;
+            case 'account_unblock':
+                $templateData = [
+                    'title' => 'ACCOUNT UNBLOCK & PORTAL RESTORATION FORM',
+                    'form_code' => 'SMRT-FORM-002',
+                    'sections' => [
+                        'Section A: Account Holder Information' => [
+                            'Full Registered Name' => '________________________________________________',
+                            'Registered Email Address' => '________________________________________________',
+                            'Assigned Role (Intern / Supervisor)' => '________________________________________________',
+                            'Office / Assignment Division' => '________________________________________________',
+                        ],
+                        'Section B: Lockout & Security Details' => [
+                            'Date / Time of Portal Suspension' => '________________________________________________',
+                            'Reason for Suspension (if provided)' => '________________________________________________',
+                        ],
+                        'Section C: Statement & Security Clearance' => [
+                            'Please explain the cause of lockout and state your clearance request' => "\n_________________________________________________________________________________\n_________________________________________________________________________________",
+                        ]
                     ],
-                    'Section C: Reason for Account Modification' => [
-                        'Detailed Explanation/Justification' => "\n\n_________________________________________________________________________________\n\n_________________________________________________________________________________",
-                    ]
-                ],
-                'note' => 'Please attach supporting formal documentation (e.g. Certificate of Enrollment, Registrar Certificate) validating the requested change.'
-            ],
-            'account_unblock' => [
-                'title' => 'ACCOUNT UNBLOCK & PORTAL RESTORATION FORM',
-                'form_code' => 'SMRT-FORM-002',
-                'sections' => [
-                    'Section A: Account Holder Information' => [
-                        'Full Registered Name' => '________________________________________________',
-                        'Registered Email Address' => '________________________________________________',
-                        'Assigned Role (Intern / Supervisor)' => '________________________________________________',
-                        'Office / Assignment Division' => '________________________________________________',
+                    'note' => 'Account unblocking is subject to administrative security checks. Ensure all security questions and identity confirmations are validated.'
+                ];
+                break;
+            case 'attendance_adjust':
+                $templateData = [
+                    'title' => 'WEEKLY ATTENDANCE ADJUSTMENT REQUEST',
+                    'form_code' => 'SMRT-FORM-003',
+                    'sections' => [
+                        'Section A: Intern & Office Details' => [
+                            'Intern Full Name' => '________________________________________________',
+                            'Assigned Office / Department' => '________________________________________________',
+                            'Supervising Office Head' => '________________________________________________',
+                        ],
+                        'Section B: Attendance Adjustment Entry' => [
+                            'Target Log Date (MM/DD/YYYY)' => '________________________________________________',
+                            'Type of Adjustment (Clock In / Clock Out)' => '________________________________________________',
+                            'Actual Time Rendered (e.g. 08:00 AM)' => '________________________________________________',
+                            'Missed Scan Reason (e.g., Geofence, QR Refresh)' => '________________________________________________',
+                        ],
+                        'Section C: Signatures & Certification' => [
+                            'Intern Signature' => '________________________  Date: ________________',
+                            'Supervisor Signature' => '________________________  Date: ________________',
+                        ]
                     ],
-                    'Section B: Lockout & Security Details' => [
-                        'Date / Time of Portal Suspension' => '________________________________________________',
-                        'Reason for Suspension (if provided)' => '________________________________________________',
+                    'note' => 'This request must be signed by your direct Supervisor to confirm actual presence in the assigned division.'
+                ];
+                break;
+            case 'mfa_reset':
+                $templateData = [
+                    'title' => 'MFA RESET & SECURITY ADJUSTMENT REQUEST',
+                    'form_code' => 'SMRT-FORM-004',
+                    'sections' => [
+                        'Section A: Identity Verification' => [
+                            'Registered Account Email' => '________________________________________________',
+                            'Full Legal Name' => '________________________________________________',
+                            'Contact / Mobile Number' => '________________________________________________',
+                        ],
+                        'Section B: Multi-Factor Authentication Method' => [
+                            'MFA Method to Reset' => '[  ] Authenticator App (TOTP)     [  ] Email Code Verification',
+                            'Reason for Reset Request' => "\n_________________________________________________________________________________\n_________________________________________________________________________________",
+                        ],
                     ],
-                    'Section C: Statement & Security Clearance' => [
-                        'Please explain the cause of lockout and state your clearance request' => "\n\n_________________________________________________________________________________\n\n_________________________________________________________________________________\n\n_________________________________________________________________________________",
-                    ]
-                ],
-                'note' => 'Account unblocking is subject to administrative security checks. Ensure all security questions and identity confirmations are validated.'
-            ],
-            'attendance_adjust' => [
-                'title' => 'WEEKLY ATTENDANCE ADJUSTMENT REQUEST',
-                'form_code' => 'SMRT-FORM-003',
-                'sections' => [
-                    'Section A: Intern & Office Details' => [
-                        'Intern Full Name' => '________________________________________________',
-                        'Assigned Office / Department' => '________________________________________________',
-                        'Supervising Office Head' => '________________________________________________',
-                    ],
-                    'Section B: Attendance Adjustment Entry' => [
-                        'Target Log Date (MM/DD/YYYY)' => '________________________________________________',
-                        'Type of Adjustment (Clock In / Clock Out)' => '________________________________________________',
-                        'Actual Time Rendered (e.g. 08:00 AM)' => '________________________________________________',
-                        'Missed Scan Reason (e.g., Geofence, QR Refresh)' => '________________________________________________',
-                    ],
-                    'Section C: Signatures & Certification' => [
-                        'Intern Signature' => '________________________  Date: ________________',
-                        'Supervisor Signature' => '________________________  Date: ________________',
-                    ]
-                ],
-                'note' => 'This request must be signed by your direct Supervisor to confirm actual presence in the assigned division.'
-            ],
-            'mfa_reset' => [
-                'title' => 'MFA RESET & SECURITY ADJUSTMENT REQUEST',
-                'form_code' => 'SMRT-FORM-004',
-                'sections' => [
-                    'Section A: Identity Verification' => [
-                        'Registered Account Email' => '________________________________________________',
-                        'Full Legal Name' => '________________________________________________',
-                        'Contact / Mobile Number' => '________________________________________________',
-                    ],
-                    'Section B: Multi-Factor Authentication Method' => [
-                        'MFA Method to Reset' => '[  ] Authenticator App (TOTP)     [  ] Email Code Verification',
-                        'Reason for Reset Request' => "\n\n_________________________________________________________________________________\n\n_________________________________________________________________________________",
-                    ],
-                ],
-                'note' => 'For security integrity, MFA resets require physical validation or supervisor endorsement to prevent unauthorized account access.'
-            ],
-            default => abort(404, 'Template not found.')
-        };
+                    'note' => 'For security integrity, MFA resets require physical validation or supervisor endorsement to prevent unauthorized account access.'
+                ];
+                break;
+            default:
+                abort(404, 'Template not found.');
+        }
 
         $fontPath = storage_path('fonts');
         if (!file_exists($fontPath)) {
