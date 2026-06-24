@@ -501,10 +501,12 @@ class AttendanceService
             }
 
             // Throttling Check
-            if ($todayRecord->clock_in->diffInMinutes(now()) < 5) {
+            $diffMinutes = $todayRecord->clock_in->diffInMinutes(now(), false);
+            if (abs($diffMinutes) < 5) {
+                $minutesLeft = (int) ceil(5 - abs($diffMinutes));
                 return [
                     'success' => false,
-                    'message' => 'Security cooldown: Please wait '.(5 - $todayRecord->clock_in->diffInMinutes(now())).' more minutes before checking out.',
+                    'message' => "Security cooldown: Please wait {$minutesLeft} more minutes before checking out.",
                 ];
             }
 
