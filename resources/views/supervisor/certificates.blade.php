@@ -8,7 +8,7 @@
     userName="{{ Auth::user()->supervisorDetails->first_name }}" 
     userRole="{{ Auth::user()->supervisorDetails->office->name }}"
 >
-    <div class="flex flex-col h-full" x-data="supervisorCertificatesManager({{ session('success') ? 'true' : 'false' }})">
+    <div class="flex flex-col h-full" x-data="supervisorCertificatesManager()">
         <x-page-header 
             title="Endorsements"
             subtitle="Verify and endorse interns who have completed their internship hours"

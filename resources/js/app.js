@@ -1057,16 +1057,12 @@ Alpine.data('headSupervisorCertificatesManager', () => ({
 /**
  * Supervisor Certificates Manager
  */
-Alpine.data('supervisorCertificatesManager', (justFinishedEndorsing = false) => ({
+Alpine.data('supervisorCertificatesManager', () => ({
     loading: true,
     showFeedbackModal: false,
     selectedInternName: '',
     endorseUrl: '',
     init() {
-        if (justFinishedEndorsing && window.showToast) {
-            window.showToast('Intern Endorsed Successfully', 'success');
-        }
-
         setTimeout(() => {
             this.loading = false;
         }, 800);
