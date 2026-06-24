@@ -44,7 +44,8 @@
 
         {{-- Certification Management --}}
         <x-table-container title="Fulfillment Dispatch">
-                <div class="border border-gray-100 dark:border-gray-800 rounded-2xl sm:rounded-3xl overflow-hidden shadow-inner">
+            {{-- DESKTOP TABLE (lg+) --}}
+            <div class="hidden lg:block border border-gray-100 dark:border-gray-800 rounded-2xl sm:rounded-3xl overflow-hidden shadow-inner">
                 <div class="overflow-x-auto custom-scrollbar">
                     <table class="w-full text-left">
                         <thead class="bg-gray-50 dark:bg-gray-800/50 text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest border-b border-gray-100 dark:border-gray-800">
@@ -55,7 +56,6 @@
                                 <th class="px-8 py-5 text-right">Dispatch Actions</th>
                             </tr>
                         </thead>
-                        {{-- Skeleton Rows --}}
                         <tbody x-show="loading" class="divide-y divide-gray-50 dark:divide-gray-800">
                             @for($i = 0; $i < min(count($certificates) ?: 5, 5); $i++)
                                 <tr>
@@ -94,49 +94,32 @@
                                                     <span class="text-[#0B5694] dark:text-blue-400 shrink-0 mt-0.5">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                                                     </span>
-                                                    <p class="text-[10px] text-gray-500 dark:text-gray-400 font-medium italic leading-normal line-clamp-2" title="{{ $cert->supervisor_feedback }}">
-                                                        "{{ $cert->supervisor_feedback }}"
-                                                    </p>
+                                                    <p class="text-[10px] text-gray-500 dark:text-gray-400 font-medium italic leading-normal line-clamp-2" title="{{ $cert->supervisor_feedback }}">"{{ $cert->supervisor_feedback }}"</p>
                                                 </div>
                                             @endif
                                         </div>
                                     </div>
                                 </td>
                                 <td class="px-8 py-6 text-center whitespace-nowrap">
-                                    <span class="font-black text-gray-700 dark:text-gray-300 text-[12px] tracking-widest uppercase leading-none">
-                                        {{ (int)($cert->completed_hours ?? 0) }} / {{ $cert->intern->required_hours ?? 480 }} HRS
-                                    </span>
+                                    <span class="font-black text-gray-700 dark:text-gray-300 text-[12px] tracking-widest uppercase leading-none">{{ (int)($cert->completed_hours ?? 0) }} / {{ $cert->intern->required_hours ?? 480 }} HRS</span>
                                 </td>
                                 <td class="px-8 py-6 text-center whitespace-nowrap">
-                                    @php
-                                        $statusColors = [
-                                            'pending' => 'bg-amber-50 dark:bg-amber-950/30 text-orange-600 dark:text-orange-400 border-orange-100 dark:border-orange-900/50',
-                                            'published' => 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/50'
-                                        ];
-                                    @endphp
-                                    <span class="{{ $statusColors[$cert->status] ?? 'bg-gray-100 dark:bg-gray-800' }} text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest border shadow-sm">
-                                        {{ $cert->status ?? $cert->verification_status }}
-                                    </span>
+                                    @php $statusColors = ['pending' => 'bg-amber-50 dark:bg-amber-950/30 text-orange-600 dark:text-orange-400 border-orange-100 dark:border-orange-900/50', 'published' => 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/50']; @endphp
+                                    <span class="{{ $statusColors[$cert->status] ?? 'bg-gray-100 dark:bg-gray-800' }} text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest border shadow-sm">{{ $cert->status ?? $cert->verification_status }}</span>
                                 </td>
                                 <td class="px-8 py-6 text-right whitespace-nowrap">
                                     <div class="flex items-center justify-end gap-3">
                                         @if(!empty($cert->certificate_id))
-                                            <a href="{{ route('head-supervisor.certificates.show', ['certificate' => $cert]) }}" 
-                                               class="p-2.5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-400 hover:text-[#0B5694] dark:hover:text-blue-400 rounded-xl transition shadow-sm transform hover:scale-110 active:scale-95 flex items-center justify-center">
+                                            <a href="{{ route('head-supervisor.certificates.show', ['certificate' => $cert]) }}" class="p-2.5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-400 hover:text-[#0B5694] dark:hover:text-blue-400 rounded-xl transition shadow-sm transform hover:scale-110 active:scale-95 flex items-center justify-center">
                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
                                             </a>
-                                            
                                             @if($cert->verification_status === 'pending')
                                                 <form action="{{ route('head-supervisor.certificates.publish', ['certificate' => $cert]) }}" method="POST">
                                                     @csrf
-                                                    <button type="submit" class="bg-[#0B5694] dark:bg-blue-600 text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-[#084577] transition-all transform hover:scale-105 active:scale-95">
-                                                        Publish
-                                                    </button>
+                                                    <button type="submit" class="bg-[#0B5694] dark:bg-blue-600 text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-[#084577] transition-all transform hover:scale-105 active:scale-95">Publish</button>
                                                 </form>
                                             @elseif($cert->status === 'published')
-                                                <a href="{{ route('head-supervisor.certificates.download', ['certificate' => $cert]) }}" 
-                                                   class="bg-gray-800 dark:bg-gray-700 text-white p-2.5 rounded-xl shadow-lg flex items-center justify-center hover:bg-black transition-all transform hover:scale-110 active:scale-95"
-                                                   title="Download Record">
+                                                <a href="{{ route('head-supervisor.certificates.download', ['certificate' => $cert]) }}" class="bg-gray-800 dark:bg-gray-700 text-white p-2.5 rounded-xl shadow-lg flex items-center justify-center hover:bg-black transition-all transform hover:scale-110 active:scale-95" title="Download Record">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                                                 </a>
                                             @endif
@@ -154,6 +137,61 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+
+            {{-- MOBILE & TABLET CARD LAYOUT (< lg) --}}
+            <div class="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                @forelse($certificates as $cert)
+                <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
+                    <div class="p-4">
+                        <div class="flex items-start gap-3 mb-3">
+                            <x-avatar :user="$cert->intern" size="10" border="1" circular="true" textSize="xs" class="shrink-0" />
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight truncate">{{ $cert->intern->first_name ?? 'N/A' }} {{ $cert->intern->last_name ?? '' }}</p>
+                                <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider truncate">{{ $cert->intern->user->email ?? 'No email' }}</p>
+                            </div>
+                            @php $statusColors = ['pending' => 'bg-amber-50 dark:bg-amber-950/30 text-orange-600 dark:text-orange-400 border-orange-100 dark:border-orange-900/50', 'published' => 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/50']; @endphp
+                            <span class="shrink-0 {{ $statusColors[$cert->status] ?? 'bg-gray-100 dark:bg-gray-800 text-gray-500' }} text-[9px] font-black px-2.5 py-1 rounded-full uppercase tracking-widest border shadow-sm">{{ $cert->status ?? $cert->verification_status }}</span>
+                        </div>
+                        @if($cert->supervisor_feedback)
+                            <div class="mb-3 flex items-start gap-1.5 p-2.5 bg-gray-50 dark:bg-gray-800/40 rounded-xl border border-gray-100 dark:border-gray-800">
+                                <span class="text-[#0B5694] dark:text-blue-400 shrink-0 mt-0.5"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+                                <p class="text-[10px] text-gray-500 dark:text-gray-400 font-medium italic leading-normal line-clamp-2">"{{ $cert->supervisor_feedback }}"</p>
+                            </div>
+                        @endif
+                        <div class="flex items-center justify-between py-2 border-t border-gray-50 dark:border-gray-800">
+                            <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Hours</span>
+                            <span class="text-xs font-black text-gray-700 dark:text-gray-300">{{ (int)($cert->completed_hours ?? 0) }} / {{ $cert->intern->required_hours ?? 480 }} HRS</span>
+                        </div>
+                        @if(!empty($cert->certificate_id))
+                        <div class="flex gap-2 mt-3 pt-3 border-t border-gray-50 dark:border-gray-800">
+                            <a href="{{ route('head-supervisor.certificates.show', ['certificate' => $cert]) }}" class="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-[10px] font-black text-gray-600 dark:text-gray-300 uppercase tracking-wider active:bg-gray-50 dark:active:bg-gray-700 transition active:scale-[0.97] min-h-[44px]">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                                Preview
+                            </a>
+                            @if($cert->verification_status === 'pending')
+                                <form action="{{ route('head-supervisor.certificates.publish', ['certificate' => $cert]) }}" method="POST" class="flex-1">
+                                    @csrf
+                                    <button type="submit" class="w-full flex items-center justify-center gap-1.5 py-2.5 bg-[#0B5694] dark:bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm active:bg-[#084577] transition active:scale-[0.97] min-h-[44px]">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22h6a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v3"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M5 17l-3-3 3-3"/><path d="M2 14h9"/></svg>
+                                        Publish
+                                    </button>
+                                </form>
+                            @elseif($cert->status === 'published')
+                                <a href="{{ route('head-supervisor.certificates.download', ['certificate' => $cert]) }}" class="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-gray-800 dark:bg-gray-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm active:bg-black transition active:scale-[0.97] min-h-[44px]">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                    Download
+                                </a>
+                            @endif
+                        </div>
+                        @endif
+                    </div>
+                </div>
+                @empty
+                <div class="col-span-full py-16 text-center">
+                    <x-empty-state title="No certificates identified in records" compact="true" />
+                </div>
+                @endforelse
             </div>
 
             @if($certificates->hasPages())

@@ -80,7 +80,8 @@
         <template x-if="activeTab === 'applicants'">
             <div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <x-table-container title="Applicant Registry" subtitle="Live intake monitoring">
-                    <div class="border border-gray-100 dark:border-gray-800 rounded-3xl overflow-hidden shadow-inner bg-white dark:bg-gray-900/50">
+                    {{-- DESKTOP TABLE (lg+) --}}
+                    <div class="hidden lg:block border border-gray-100 dark:border-gray-800 rounded-3xl overflow-hidden shadow-inner bg-white dark:bg-gray-900/50">
                         <div class="overflow-x-auto custom-scrollbar">
                             <table class="w-full text-left border-collapse">
                                 <thead class="bg-gray-50 dark:bg-gray-800/50 text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest border-b border-gray-100 dark:border-gray-800">
@@ -97,9 +98,7 @@
                                         <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition group">
                                             <td class="px-8 py-6 whitespace-nowrap">
                                                 <div class="flex items-center gap-4">
-                                                    <span class="text-[11px] font-black text-[#0B5694] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-lg border border-blue-100 dark:border-blue-900/30 uppercase tracking-tighter shadow-sm">
-                                                        #{{ $applicant['id'] }}
-                                                    </span>
+                                                    <span class="text-[11px] font-black text-[#0B5694] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-lg border border-blue-100 dark:border-blue-900/30 uppercase tracking-tighter shadow-sm">#{{ $applicant['id'] }}</span>
                                                     @if(!empty($applicant['resume_path']))
                                                         <button @click="openResume('{{ route('head-supervisor.matching.resume', $applicant['db_id']) }}')" class="p-2 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-blue-500 hover:scale-110 transition-transform rounded-lg shadow-sm" title="Preview Resume">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
@@ -115,16 +114,12 @@
                                                 <span class="text-[12px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest italic leading-none">{{ $applicant['school'] }}</span>
                                             </td>
                                             <td class="px-8 py-6 text-center whitespace-nowrap">
-                                                <p class="text-[11px] font-black text-rose-500 dark:text-rose-400 uppercase tracking-widest bg-rose-50 dark:bg-rose-900/20 px-3 py-1.5 rounded-full border border-rose-100 dark:border-rose-900/30 inline-block shadow-sm">
-                                                    {{ $applicant['emergency'] ?? 'N/A' }}
-                                                </p>
+                                                <p class="text-[11px] font-black text-rose-500 dark:text-rose-400 uppercase tracking-widest bg-rose-50 dark:bg-rose-900/20 px-3 py-1.5 rounded-full border border-rose-100 dark:border-rose-900/30 inline-block shadow-sm">{{ $applicant['emergency'] ?? 'N/A' }}</p>
                                             </td>
                                             <td class="px-8 py-6 text-right whitespace-nowrap">
                                                 <div class="flex flex-wrap justify-end gap-2 max-w-[200px] ml-auto">
                                                     @foreach(array_slice($applicant['tech_list'], 0, 2) as $skill)
-                                                        <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 px-2 py-1 rounded-md uppercase tracking-tighter">
-                                                            {{ $skill }}
-                                                        </span>
+                                                        <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 px-2 py-1 rounded-md uppercase tracking-tighter">{{ $skill }}</span>
                                                     @endforeach
                                                     @if(count($applicant['tech_list']) > 2)
                                                         <span class="text-[9px] font-black text-[#0B5694] dark:text-blue-400">+{{ count($applicant['tech_list']) - 2 }}</span>
@@ -134,14 +129,59 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="5" class="py-32">
-                                                <x-empty-state title="Onboarding queue is currently clear" compact="true" />
-                                            </td>
+                                            <td colspan="5" class="py-32"><x-empty-state title="Onboarding queue is currently clear" compact="true" /></td>
                                         </tr>
                                     @endforelse
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+
+                    {{-- MOBILE & TABLET CARD LAYOUT (< lg) --}}
+                    <div class="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                        @forelse($applicants as $applicant)
+                        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
+                            <div class="p-4">
+                                <div class="flex items-start gap-3 mb-3">
+                                    <span class="shrink-0 text-[10px] font-black text-[#0B5694] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2.5 py-1.5 rounded-lg border border-blue-100 dark:border-blue-900/30 uppercase tracking-tighter shadow-sm">#{{ $applicant['id'] }}</span>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight truncate">{{ $applicant['name'] }}</p>
+                                        <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider truncate">{{ $applicant['email'] }}</p>
+                                    </div>
+                                    <div class="shrink-0">
+                                        <p class="text-[10px] font-black text-rose-500 dark:text-rose-400 uppercase tracking-widest bg-rose-50 dark:bg-rose-900/20 px-2.5 py-1 rounded-full border border-rose-100 dark:border-rose-900/30 shadow-sm">{{ $applicant['emergency'] ?? 'N/A' }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between py-2 border-t border-gray-50 dark:border-gray-800">
+                                    <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">School</span>
+                                    <span class="text-[11px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest italic">{{ $applicant['school'] }}</span>
+                                </div>
+                                <div class="flex items-center justify-between py-2 border-t border-gray-50 dark:border-gray-800">
+                                    <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Skills</span>
+                                    <div class="flex flex-wrap justify-end gap-1.5">
+                                        @foreach(array_slice($applicant['tech_list'], 0, 2) as $skill)
+                                            <span class="text-[8px] font-black text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 px-1.5 py-0.5 rounded-md uppercase tracking-tighter">{{ $skill }}</span>
+                                        @endforeach
+                                        @if(count($applicant['tech_list']) > 2)
+                                            <span class="text-[8px] font-black text-[#0B5694] dark:text-blue-400">+{{ count($applicant['tech_list']) - 2 }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+                                @if(!empty($applicant['resume_path']))
+                                <div class="mt-3 pt-3 border-t border-gray-50 dark:border-gray-800">
+                                    <button @click="openResume('{{ route('head-supervisor.matching.resume', $applicant['db_id']) }}')" class="w-full flex items-center justify-center gap-1.5 py-2.5 bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 rounded-xl text-[10px] font-black uppercase tracking-wider active:bg-blue-100 transition active:scale-[0.97] min-h-[44px]">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                        Preview Resume
+                                    </button>
+                                </div>
+                                @endif
+                            </div>
+                        </div>
+                        @empty
+                        <div class="col-span-full py-16 text-center">
+                            <x-empty-state title="Onboarding queue is currently clear" compact="true" />
+                        </div>
+                        @endforelse
                     </div>
                 </x-table-container>
             </div>

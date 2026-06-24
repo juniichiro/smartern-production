@@ -103,7 +103,8 @@
                 </div>
             </x-slot>
 
-            <div class="border border-gray-100 dark:border-gray-800 rounded-3xl overflow-hidden shadow-inner">
+            {{-- DESKTOP TABLE (lg+) --}}
+            <div class="hidden lg:block border border-gray-100 dark:border-gray-800 rounded-3xl overflow-hidden shadow-inner">
                 <div class="overflow-x-auto custom-scrollbar">
                     <table class="w-full text-left">
                         <thead class="bg-gray-50 dark:bg-gray-800/50 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider border-b border-gray-100 dark:border-gray-800">
@@ -115,7 +116,6 @@
                                 <th class="px-8 py-5 text-right">Action</th>
                             </tr>
                         </thead>
-                        {{-- Skeleton Rows --}}
                         <tbody x-show="loading" class="divide-y divide-gray-50 dark:divide-gray-800">
                             @for($i = 0; $i < min(count($interns) ?: 5, 5); $i++)
                                 <tr>
@@ -160,9 +160,7 @@
                                     </div>
                                 </td>
                                 <td class="px-8 py-6 whitespace-nowrap">
-                                    <span class="font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider text-[11px] bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 px-3 py-1.5 rounded-lg">
-                                        {{ $officeName }}
-                                    </span>
+                                    <span class="font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider text-[11px] bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 px-3 py-1.5 rounded-lg">{{ $officeName }}</span>
                                 </td>
                                 <td class="px-8 py-6">
                                     <div class="flex items-center gap-4">
@@ -196,6 +194,57 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+
+            {{-- MOBILE & TABLET CARD LAYOUT (< lg) --}}
+            <div class="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                @forelse($interns as $intern)
+                @php 
+                    $percentage = ($intern->required_hours ?? 480) > 0 ? min(100, ($intern->hours_rendered / ($intern->required_hours ?? 480)) * 100) : 0;
+                    $status = optional($intern->certificate)->status === 'published' ? 'completed' : 'active';
+                    $isPublished = $status === 'completed';
+                    $renderedInt = round($intern->hours_rendered); 
+                    $officeName = $intern->office->name ?? 'Unassigned';
+                @endphp
+                <div x-show="matches('{{ $intern->first_name }} {{ $intern->last_name }}', '{{ $intern->user->email ?? '' }}', '{{ $officeName }}', '{{ $status }}')"
+                     x-transition.opacity
+                     class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
+                    <a href="{{ route('head-supervisor.interns.show', $intern->user) }}" class="block p-4 active:bg-gray-50 dark:active:bg-gray-800/50 transition-colors">
+                        <div class="flex items-start gap-3 mb-3">
+                            <x-avatar :user="$intern" size="10" border="1" circular="true" textSize="xs" class="shrink-0" />
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight truncate">{{ $intern->first_name }} {{ $intern->last_name }}</p>
+                                <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold tracking-wider uppercase truncate">{{ $intern->user->email ?? 'No email' }}</p>
+                            </div>
+                            <div class="shrink-0">
+                                @if($isPublished)
+                                    <span class="bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border border-emerald-100 dark:border-emerald-900/30">completed</span>
+                                @else
+                                    <span class="bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border border-blue-100 dark:border-blue-900/30">active</span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">
+                            <span>Department</span>
+                            <span class="text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 px-2 py-0.5 rounded-lg">{{ $officeName }}</span>
+                        </div>
+                        <div class="space-y-1.5">
+                            <div class="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider">
+                                <span class="text-gray-400 dark:text-gray-500">Progress</span>
+                                <span class="text-gray-700 dark:text-gray-300">{{ round($percentage) }}%</span>
+                            </div>
+                            <div class="w-full h-2 bg-gray-100 dark:bg-gray-950 rounded-full overflow-hidden shadow-inner border border-gray-100 dark:border-gray-800">
+                                <div class="{{ $isPublished ? 'bg-emerald-500' : 'bg-[#0B5694] dark:bg-blue-600' }} h-full rounded-full transition-all" style="width: {{ $percentage }}%"></div>
+                            </div>
+                            <p class="text-[9px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-tighter">{{ $renderedInt }} / {{ $intern->required_hours ?? 480 }} HRS</p>
+                        </div>
+                    </a>
+                </div>
+                @empty
+                <div class="col-span-full py-16 text-center">
+                    <x-empty-state title="No student records registered in division." compact="true" />
+                </div>
+                @endforelse
             </div>
         </x-table-container>
 
