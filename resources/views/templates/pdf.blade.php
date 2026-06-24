@@ -206,18 +206,20 @@
     <div class="title">{{ $templateData['title'] }}</div>
 
     <!-- Form Sections -->
-    @foreach($templateData['sections'] as $sectionName => $fields)
+    @foreach($templateData['sections'] as $sectionName => $section)
         <div class="section-title">{{ $sectionName }}</div>
         
-        @foreach($fields as $label => $value)
-            @php
-                $isLongField = (strpos($value, "\n") !== false || strlen($label) > 40);
-            @endphp
-            <div class="field-group {{ $isLongField ? 'field-group-block' : '' }}">
-                <span class="field-label">{{ $label }}:</span>
-                <span class="field-value">{!! nl2br(e($value)) !!}</span>
-            </div>
-        @endforeach
+        @if(isset($section['data']))
+            @foreach($section['data'] as $label => $value)
+                @php
+                    $isLongField = (strpos($value, "\n") !== false || strlen($label) > 40);
+                @endphp
+                <div class="field-group {{ $isLongField ? 'field-group-block' : '' }}">
+                    <span class="field-label">{{ $label }}:</span>
+                    <span class="field-value">{!! nl2br(e($value)) !!}</span>
+                </div>
+            @endforeach
+        @endif
     @endforeach
 
     <div class="footer-note">

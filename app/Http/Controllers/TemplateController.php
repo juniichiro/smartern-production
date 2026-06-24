@@ -39,18 +39,35 @@ class TemplateController extends Controller
     {
         switch ($type) {
             case 'account_edit':
+                $user = auth()->user();
+                $role = $user ? ($user->role_id instanceof \App\Enums\UserRole ? $user->role_id : \App\Enums\UserRole::tryFrom((int)$user->role_id)) : null;
+
+                $profileFields = [
+                    'Full Registered Name' => '________________________________________________',
+                    'Registered Email Address' => '________________________________________________',
+                ];
+
+                if ($role === \App\Enums\UserRole::INTERN) {
+                    $profileFields['Student ID / Intern ID Number'] = '________________________________________________';
+                    $profileFields['Affiliated School / University'] = '________________________________________________';
+                    $profileFields['Course / Program'] = '________________________________________________';
+                } elseif ($role === \App\Enums\UserRole::SUPERVISOR || $role === \App\Enums\UserRole::HEAD_SUPERVISOR) {
+                    $profileFields['Supervisor ID / Employee Number'] = '________________________________________________';
+                    $profileFields['Assigned Office / Department'] = '________________________________________________';
+                } elseif ($role === \App\Enums\UserRole::SCHOOL_COORDINATOR) {
+                    $profileFields['Coordinator ID / Employee Number'] = '________________________________________________';
+                    $profileFields['Affiliated School / Institution'] = '________________________________________________';
+                } else {
+                    $profileFields['Admin ID / Employee Number'] = '________________________________________________';
+                }
+
                 $templateData = [
                     'title' => 'ACCOUNT DETAILS MODIFICATION REQUEST',
                     'form_code' => 'SMRT-FORM-001',
                     'sections' => [
                         'Section A: Current Profile Information' => [
                             'type' => 'fields',
-                            'data' => [
-                                'Full Registered Name' => '________________________________________________',
-                                'Registered Email Address' => '________________________________________________',
-                                'Student ID / Unique Identifier' => '________________________________________________',
-                                'School / Affiliate Institution' => '________________________________________________',
-                            ]
+                            'data' => $profileFields
                         ],
                         'Section B: Requested Changes & Modifications' => [
                             'type' => 'fields',
@@ -67,7 +84,7 @@ class TemplateController extends Controller
                             ]
                         ]
                     ],
-                    'note' => 'Please attach supporting formal documentation (e.g. Certificate of Enrollment, Registrar Certificate) validating the requested change.'
+                    'note' => 'Please attach supporting formal documentation (e.g. Certificate of Enrollment, Registrar Certificate, or Official Assignment Order) validating the requested change.'
                 ];
                 break;
             case 'account_unblock':
