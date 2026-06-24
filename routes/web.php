@@ -131,6 +131,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/interns', [SupervisorIntern::class, 'index'])->name('interns');
         Route::get('/interns/{user}', [SupervisorIntern::class, 'show'])->name('interns.show');
         Route::post('/office/requirements', [SupervisorIntern::class, 'updateRequirements'])->name('office.requirements');
+        Route::get('/office/rules', [SupervisorIntern::class, 'editRules'])->name('office.rules');
+        Route::put('/office/rules', [SupervisorIntern::class, 'updateRules'])->name('office.rules.update');
+        Route::post('/office/assessment-items', [SupervisorIntern::class, 'storeAssessmentItem'])->name('office.assessment-items.store');
         Route::get('/tasks', [TaskController::class, 'index'])->name('tasks');
         Route::get('/tasks/intern/{user}', [TaskController::class, 'internTasks'])->name('tasks.intern');
         Route::put('/tasks/update/{task}', [TaskController::class, 'update'])->name('tasks.update');

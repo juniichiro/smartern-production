@@ -185,6 +185,12 @@
                             Update Limit
                         </button>
                     </form>
+                    <div class="border-t border-gray-100 dark:border-gray-800 pt-6 mt-6">
+                        <a href="{{ route('supervisor.office.rules') }}" class="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-bold py-4 px-6 rounded-2xl text-[11px] uppercase tracking-widest transition-all shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                            Competency Requirements
+                        </a>
+                    </div>
                 </x-card-container>
             </div>
         </div>

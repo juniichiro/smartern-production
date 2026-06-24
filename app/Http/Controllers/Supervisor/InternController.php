@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Supervisor;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\NotificationController;
+use App\Models\AssessmentItem;
 use App\Models\InternDetail;
 use App\Models\Role;
 use App\Models\Schedule;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use App\Services\AttendanceService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -140,5 +142,146 @@ class InternController extends Controller
         }
 
         return redirect()->back()->with('success', 'Intern requirements updated successfully.');
+    }
+
+    /**
+     * Show the matching rules configuration form for the supervisor's office.
+     */
+    public function editRules()
+    {
+        $user = Auth::user();
+        $supervisor = $user->supervisorDetails;
+
+        if (! $supervisor || ! $supervisor->office) {
+            return redirect()->back()->with('error', 'Unauthorized or office not associated.');
+        }
+
+        $office = $supervisor->office;
+        $rules = \App\Models\OfficeRule::where('office_id', $office->id)->get();
+        $assessmentItems = AssessmentItem::active()->ordered()->get()->groupBy('category');
+        $categories = AssessmentItem::active()->select('category')->distinct()->pluck('category');
+
+        return view('supervisor.edit-rules', compact('office', 'rules', 'assessmentItems', 'categories'));
+    }
+
+    /**
+     * Update the matching rules & intern limit for the supervisor's office.
+     */
+    public function updateRules(Request $request)
+    {
+        $request->validate([
+            'intern_limit' => 'required|integer|min:0',
+        ]);
+
+        $user = Auth::user();
+        $supervisor = $user->supervisorDetails;
+
+        if (! $supervisor || ! $supervisor->office) {
+            return redirect()->back()->with('error', 'Unauthorized or office not associated.');
+        }
+
+        $office = $supervisor->office;
+
+        DB::transaction(function () use ($request, $office) {
+            // Update Office Limit
+            $office->update(['intern_limit' => $request->intern_limit]);
+
+            // Clear existing rules
+            \App\Models\OfficeRule::where('office_id', $office->id)->delete();
+
+            // Insert new rules
+            if ($request->has('rules')) {
+                foreach ($request->rules as $ruleData) {
+                    if (isset($ruleData['priority']) && $ruleData['priority'] > 1) {
+                        \App\Models\OfficeRule::create([
+                            'office_id' => $office->id,
+                            'require_rule' => $ruleData['require_rule'],
+                            'rule_value' => $ruleData['rule_value'],
+                            'priority' => $ruleData['priority'],
+                        ]);
+                    }
+                }
+            }
+        });
+
+        // Find Head Supervisors (Ms. Mal-in) and notify them
+        $headSupervisorRole = Role::where('name', 'head_supervisor')->first();
+        if ($headSupervisorRole) {
+            $headSupervisors = User::where('role_id', $headSupervisorRole->id)->get();
+            foreach ($headSupervisors as $headSupervisor) {
+                NotificationController::send(
+                    $headSupervisor->id,
+                    'Intern Requirements Update',
+                    'system',
+                    "Office {$office->name} has updated their intern limit and competency rules.",
+                    route('head-supervisor.offices.index')
+                );
+            }
+        }
+
+        return redirect()->route('supervisor.interns')
+            ->with('success', "Requirements and rules for {$office->name} updated successfully.");
+    }
+
+    /**
+     * Add a custom competency item to the assessment form and automatically set its rule priority.
+     */
+    public function storeAssessmentItem(Request $request)
+    {
+        $request->validate([
+            'category' => 'required|string|max:100',
+            'competency_text' => 'required|string|max:500',
+            'priority' => 'required|integer|min:1|max:5',
+        ]);
+
+        $user = Auth::user();
+        $supervisor = $user->supervisorDetails;
+
+        if (! $supervisor || ! $supervisor->office) {
+            return redirect()->back()->with('error', 'Unauthorized or office not associated.');
+        }
+
+        $office = $supervisor->office;
+
+        DB::transaction(function () use ($request, $office) {
+            // Create assessment item
+            $item = AssessmentItem::create([
+                'category' => $request->category,
+                'competency_text' => $request->competency_text,
+                'order_index' => AssessmentItem::where('category', $request->category)->count(),
+                'is_active' => true,
+            ]);
+
+            // Add as requirement rule to their office
+            if ($request->priority > 1) {
+                $categoryName = str_contains($request->category, '.') 
+                    ? trim(explode('.', $request->category, 2)[1]) 
+                    : $request->category;
+
+                \App\Models\OfficeRule::create([
+                    'office_id' => $office->id,
+                    'require_rule' => $categoryName,
+                    'rule_value' => $request->competency_text,
+                    'priority' => $request->priority,
+                ]);
+            }
+        });
+
+        // Find Head Supervisors and notify them
+        $headSupervisorRole = Role::where('name', 'head_supervisor')->first();
+        if ($headSupervisorRole) {
+            $headSupervisors = User::where('role_id', $headSupervisorRole->id)->get();
+            foreach ($headSupervisors as $headSupervisor) {
+                NotificationController::send(
+                    $headSupervisor->id,
+                    'New Assessment Competency Added',
+                    'system',
+                    "Office {$office->name} added a new assessment form competency: '{$request->competency_text}'",
+                    route('head-supervisor.offices.index')
+                );
+            }
+        }
+
+        return redirect()->back()->with('success', 'Custom competency added and linked as requirement rule.');
     }
 }
