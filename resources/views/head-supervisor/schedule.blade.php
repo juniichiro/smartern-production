@@ -412,83 +412,202 @@
                     </div>
                 </div>
 
-                {{-- CALENDAR GRID --}}
-                <div class="border border-gray-100 dark:border-gray-850 rounded-[25px] overflow-hidden shadow-inner bg-gray-50/50 dark:bg-gray-950/20">
-                    <div class="grid grid-cols-7 border-b border-gray-100 dark:border-gray-850 text-center bg-gray-50 dark:bg-gray-800/40">
-                        <template x-for="day in ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']">
-                            <div class="py-4 text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest" x-text="day"></div>
-                        </template>
+                {{-- DESKTOP CALENDAR GRID (lg+) --}}
+                <div class="hidden lg:block">
+                    <div class="border border-gray-100 dark:border-gray-850 rounded-[25px] overflow-hidden shadow-inner bg-gray-50/50 dark:bg-gray-950/20">
+                        <div class="grid grid-cols-7 border-b border-gray-100 dark:border-gray-850 text-center bg-gray-50 dark:bg-gray-800/40">
+                            <template x-for="day in ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']">
+                                <div class="py-4 text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest" x-text="day"></div>
+                            </template>
+                        </div>
+
+                        <div class="grid grid-cols-7 divide-x divide-y divide-gray-100 dark:divide-gray-850">
+                            <template x-for="blank in blankDays">
+                                <div class="min-h-[70px] sm:min-h-[100px] lg:min-h-[120px] bg-gray-100/30 dark:bg-gray-900/10"></div>
+                            </template>
+
+                            <template x-for="day in daysInMonth" :key="day.dateStr">
+                                <div @click="selectDate(day)"
+                                     class="min-h-[70px] sm:min-h-[100px] lg:min-h-[120px] p-2 sm:p-3 lg:p-4 bg-white dark:bg-gray-900 cursor-pointer flex flex-col justify-between hover:bg-blue-50/20 dark:hover:bg-blue-900/5 transition-all group border-t border-l border-gray-100 dark:border-gray-850 first-of-type:border-t-0"
+                                     :class="{'opacity-60 bg-gray-50/50 dark:bg-gray-950/20': isPast(day.dateStr)}">
+                                    <div class="flex justify-between items-start">
+                                        <span class="text-[9px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 group-hover:text-[#0B5694] dark:group-hover:text-blue-400 transition-colors uppercase tracking-[0.1em]"
+                                              x-text="getCellLabel(day)"></span>
+                                        <span class="text-base sm:text-lg font-black text-gray-850 dark:text-gray-100 leading-none group-hover:scale-110 transition-transform"
+                                              x-text="day.day"></span>
+                                    </div>
+
+                                    <div class="mt-4 space-y-2 flex-1 flex flex-col justify-end">
+                                        <template x-if="selectedSchool && schoolSchedules[selectedSchool] && !day.isWeekend && day.events.length === 0">
+                                            <div class="rounded-2xl p-3 text-xs font-bold text-left leading-tight tracking-tight shadow-sm border bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 border-blue-100 dark:border-blue-900/50">
+                                                <div class="font-black uppercase tracking-widest text-[9px] mb-1 opacity-90">School Default</div>
+                                                <div class="truncate font-bold" x-text="formatTime(schoolSchedules[selectedSchool].start_time) + ' - ' + formatTime(schoolSchedules[selectedSchool].end_time)"></div>
+                                                <div class="text-[9px] mt-1 opacity-70" x-text="(schoolSchedules[selectedSchool].daily_hours % 1 === 0 ? schoolSchedules[selectedSchool].daily_hours : schoolSchedules[selectedSchool].daily_hours) + ' HRS CREDIT'"></div>
+                                            </div>
+                                        </template>
+
+                                        <template x-for="(event, index) in day.events" :key="event.id || event.description || event.reason">
+                                            <div x-show="index < 2">
+                                                <template x-if="event.type !== 'absence' && event.type !== 'absence_request'">
+                                                    <div class="rounded-2xl p-3 text-xs font-bold text-left leading-tight tracking-tight shadow-sm border"
+                                                         :class="{
+                                                             'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/50': event.type === 'holiday',
+                                                             'bg-purple-50 dark:bg-purple-950/30 text-purple-600 dark:text-purple-400 border-purple-100 dark:border-purple-900/50': event.type === 'suspension',
+                                                             'bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 border-blue-100 dark:border-blue-900/50': event.type === 'work_day'
+                                                         }">
+                                                        <div class="font-black uppercase tracking-widest text-[9px] mb-1 opacity-90"
+                                                             x-text="event.type === 'holiday' ? 'Holiday' : (event.type === 'suspension' ? 'Suspended' : 'Weekend Work')"></div>
+                                                        <div class="truncate font-bold" x-text="event.description"></div>
+                                                    </div>
+                                                </template>
+
+                                                <template x-if="event.type === 'absence_request'">
+                                                    <div class="rounded-2xl p-3 text-xs font-bold text-left leading-tight tracking-tight shadow-sm border"
+                                                         :class="{
+                                                             'bg-orange-50 dark:bg-orange-950/30 text-orange-600 dark:text-orange-400 border-orange-100 dark:border-orange-900/50': event.status === 'pending',
+                                                             'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/50': event.status === 'approved',
+                                                             'bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 border-rose-100 dark:border-rose-900/50': event.status === 'rejected'
+                                                         }">
+                                                        <div class="font-black uppercase tracking-widest text-[9px] mb-1 opacity-90 flex justify-between items-center">
+                                                            <span x-text="(event.request_type === 'early_leave' ? 'Early Leave ' : 'Absence ') + (event.status === 'pending' ? 'Pending' : (event.status === 'approved' ? 'Approved' : 'Rejected'))"></span>
+                                                            <template x-if="event.status === 'pending'">
+                                                                <div class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse"></div>
+                                                            </template>
+                                                        </div>
+                                                        <div class="truncate font-bold" x-text="event.intern_name + ': ' + event.reason"></div>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </template>
+
+                                        <template x-if="day.events.length > 2">
+                                            <div class="rounded-2xl p-2 text-center text-[10px] font-black uppercase tracking-wider bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 border border-gray-100 dark:border-gray-800/80 mt-1 select-none">
+                                                + <span x-text="day.events.length - 2"></span> more requests
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- MOBILE AGENDA VIEW (< lg) — Google Calendar-style --}}
+                <div class="lg:hidden -mx-4 sm:-mx-6 px-4 sm:px-6">
+                    {{-- Horizontal day strip --}}
+                    <div class="mb-4 overflow-x-auto no-scrollbar -mx-4 px-4">
+                        <div class="flex gap-1.5 min-w-max">
+                            <template x-for="(day, i) in daysInMonth" :key="day.dateStr">
+                                <button @click="mobileSelectedDay = day.dateStr; mobileSelectedIndex = i"
+                                        class="flex flex-col items-center gap-1 px-3 py-2.5 rounded-2xl transition-all min-w-[56px] min-h-[72px]"
+                                        :class="mobileSelectedDay === day.dateStr
+                                            ? 'bg-[#0B5694] dark:bg-blue-600 text-white shadow-md shadow-blue-500/20 scale-105'
+                                            : day.isWeekend
+                                                ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500'
+                                                : 'bg-gray-50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'">
+                                    <span class="text-[9px] font-bold uppercase tracking-wider leading-none"
+                                          x-text="day.dayNameShort"></span>
+                                    <span class="text-sm font-black leading-none" x-text="day.day"></span>
+                                </button>
+                            </template>
+                        </div>
                     </div>
 
-                    <div class="grid grid-cols-7 divide-x divide-y divide-gray-100 dark:divide-gray-850">
-                        <template x-for="blank in blankDays">
-                            <div class="min-h-[70px] sm:min-h-[100px] lg:min-h-[120px] bg-gray-100/30 dark:bg-gray-900/10"></div>
+                    {{-- Selected date label + add button --}}
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h4 class="text-base font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight"
+                                x-text="mobileSelectedDay ? formatDateLong(mobileSelectedDay) : ''"></h4>
+                            <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest mt-0.5"
+                               x-text="mobileSelectedDay ? (selectedSchool ? schoolSchedules[selectedSchool]?.school_name + ' schedule' : 'Standard hours') : ''"></p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button @click="selectedDateStr = mobileSelectedDay; selectedEvents = getMobileDayEvents(); const hasAbsence = selectedEvents.some(e => e.type === 'absence_request'); const hasEvent = selectedEvents.some(e => e.id !== undefined && e.type !== 'absence_request'); if (hasAbsence) { showAbsenceReviewModal = true } else if (hasEvent) { const dayObj = daysInMonth[mobileSelectedIndex]; if (dayObj) openViewModal(dayObj) } else if (!isPast(mobileSelectedDay)) { const dayObj = daysInMonth[mobileSelectedIndex]; if (dayObj) openCreateModal(dayObj) }"
+                                    class="p-3 bg-[#0B5694] dark:bg-blue-600 text-white rounded-2xl shadow-lg shadow-blue-500/20 hover:scale-105 active:scale-95 transition-all min-w-[44px] min-h-[44px] flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    {{-- Agenda list for selected day --}}
+                    <div class="space-y-2.5">
+                        <template x-if="getMobileDayEvents().length === 0 && !isPast(mobileSelectedDay)">
+                            <div @click="selectedDateStr = mobileSelectedDay; const dayObj = daysInMonth[mobileSelectedIndex]; if (dayObj) openCreateModal(dayObj)"
+                                 class="flex flex-col items-center justify-center py-10 px-4 bg-gray-50 dark:bg-gray-800/30 rounded-3xl border border-dashed border-gray-200 dark:border-gray-700 cursor-pointer active:scale-[0.99] transition-all">
+                                <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 rounded-2xl flex items-center justify-center mb-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                                </div>
+                                <p class="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">No events scheduled</p>
+                                <p class="text-[10px] text-gray-300 dark:text-gray-600 font-medium mt-1">Tap to add an override</p>
+                            </div>
                         </template>
 
-                        <template x-for="day in daysInMonth" :key="day.dateStr">
-                            <div @click="selectDate(day)"
-                                 class="min-h-[70px] sm:min-h-[100px] lg:min-h-[120px] p-2 sm:p-3 lg:p-4 bg-white dark:bg-gray-900 cursor-pointer flex flex-col justify-between hover:bg-blue-50/20 dark:hover:bg-blue-900/5 transition-all group border-t border-l border-gray-100 dark:border-gray-850 first-of-type:border-t-0"
-                                 :class="{'opacity-60 bg-gray-50/50 dark:bg-gray-950/20': isPast(day.dateStr)}">
-                                <div class="flex justify-between items-start">
-                                    <span class="text-[9px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 group-hover:text-[#0B5694] dark:group-hover:text-blue-400 transition-colors uppercase tracking-[0.1em]"
-                                          x-text="getCellLabel(day)"></span>
-                                    <span class="text-base sm:text-lg font-black text-gray-850 dark:text-gray-100 leading-none group-hover:scale-110 transition-transform"
-                                          x-text="day.day"></span>
+                        <template x-if="getMobileDayEvents().length === 0 && isPast(mobileSelectedDay)">
+                            <div class="flex flex-col items-center justify-center py-10 px-4 bg-gray-50 dark:bg-gray-800/30 rounded-3xl">
+                                <div class="w-12 h-12 bg-gray-100 dark:bg-gray-800 text-gray-300 dark:text-gray-600 rounded-2xl flex items-center justify-center mb-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                                 </div>
+                                <p class="text-sm font-bold text-gray-300 dark:text-gray-600 uppercase tracking-wider">No records for this date</p>
+                            </div>
+                        </template>
 
-                                <div class="mt-4 space-y-2 flex-1 flex flex-col justify-end">
-                                    {{-- School Schedule Indicator --}}
-                                    <template x-if="selectedSchool && schoolSchedules[selectedSchool] && !day.isWeekend && day.events.length === 0">
-                                        <div class="rounded-2xl p-3 text-xs font-bold text-left leading-tight tracking-tight shadow-sm border bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 border-blue-100 dark:border-blue-900/50">
-                                            <div class="font-black uppercase tracking-widest text-[9px] mb-1 opacity-90">School Default</div>
-                                            <div class="truncate font-bold" x-text="formatTime(schoolSchedules[selectedSchool].start_time) + ' - ' + formatTime(schoolSchedules[selectedSchool].end_time)"></div>
-                                            <div class="text-[9px] mt-1 opacity-70" x-text="(schoolSchedules[selectedSchool].daily_hours % 1 === 0 ? schoolSchedules[selectedSchool].daily_hours : schoolSchedules[selectedSchool].daily_hours) + ' HRS CREDIT'"></div>
-                                        </div>
+                        <template x-for="event in getMobileDayEvents()" :key="event.id || event.description || event.reason">
+                            <div @click="openMobileEvent(event)"
+                                 class="flex items-start gap-3 sm:gap-4 p-4 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md active:scale-[0.99] transition-all cursor-pointer">
+                                <div class="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 mt-0.5"
+                                     :class="{
+                                         'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400': event.type === 'holiday',
+                                         'bg-purple-50 dark:bg-purple-950/30 text-purple-600 dark:text-purple-400': event.type === 'suspension',
+                                         'bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400': event.type === 'work_day',
+                                         'bg-orange-50 dark:bg-orange-950/30 text-orange-600 dark:text-orange-400': event.type === 'absence_request' && event.status === 'pending',
+                                         'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400': event.type === 'absence_request' && event.status === 'approved',
+                                         'bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400': event.type === 'absence_request' && event.status === 'rejected'
+                                     }">
+                                    <template x-if="event.type === 'holiday' || event.type === 'suspension' || event.type === 'work_day'">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                                     </template>
-
-                                    <template x-for="(event, index) in day.events" :key="event.id || event.description || event.reason">
-                                        <div x-show="index < 2">
-                                            <template x-if="event.type !== 'absence' && event.type !== 'absence_request'">
-                                                <div class="rounded-2xl p-3 text-xs font-bold text-left leading-tight tracking-tight shadow-sm border"
-                                                     :class="{
-                                                         'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/50': event.type === 'holiday',
-                                                         'bg-purple-50 dark:bg-purple-950/30 text-purple-600 dark:text-purple-400 border-purple-100 dark:border-purple-900/50': event.type === 'suspension',
-                                                         'bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 border-blue-100 dark:border-blue-900/50': event.type === 'work_day'
-                                                     }">
-                                                    <div class="font-black uppercase tracking-widest text-[9px] mb-1 opacity-90"
-                                                         x-text="event.type === 'holiday' ? 'Holiday' : (event.type === 'suspension' ? 'Suspended' : 'Weekend Work')"></div>
-                                                    <div class="truncate font-bold" x-text="event.description"></div>
-                                                </div>
-                                            </template>
-
-                                            {{-- Absence Requests --}}
+                                    <template x-if="event.type === 'absence_request'">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                                    </template>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-2 mb-0.5">
+                                        <span class="text-[9px] font-black uppercase tracking-widest"
+                                              :class="{
+                                                  'text-emerald-600 dark:text-emerald-400': event.type === 'holiday',
+                                                  'text-purple-600 dark:text-purple-400': event.type === 'suspension',
+                                                  'text-blue-600 dark:text-blue-400': event.type === 'work_day',
+                                                  'text-orange-600 dark:text-orange-400': event.type === 'absence_request' && event.status === 'pending',
+                                                  'text-emerald-600 dark:text-emerald-400': event.type === 'absence_request' && event.status === 'approved',
+                                                  'text-rose-600 dark:text-rose-400': event.type === 'absence_request' && event.status === 'rejected'
+                                              }">
+                                            <template x-if="event.type === 'holiday'">Holiday</template>
+                                            <template x-if="event.type === 'suspension'">Suspended</template>
+                                            <template x-if="event.type === 'work_day'">Weekend Work</template>
                                             <template x-if="event.type === 'absence_request'">
-                                                <div class="rounded-2xl p-3 text-xs font-bold text-left leading-tight tracking-tight shadow-sm border"
-                                                     :class="{
-                                                         'bg-orange-50 dark:bg-orange-950/30 text-orange-600 dark:text-orange-400 border-orange-100 dark:border-orange-900/50': event.status === 'pending',
-                                                         'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/50': event.status === 'approved',
-                                                         'bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 border-rose-100 dark:border-rose-900/50': event.status === 'rejected'
-                                                     }">
-                                                    <div class="font-black uppercase tracking-widest text-[9px] mb-1 opacity-90 flex justify-between items-center">
-                                                        <span x-text="(event.request_type === 'early_leave' ? 'Early Leave ' : 'Absence ') + (event.status === 'pending' ? 'Pending' : (event.status === 'approved' ? 'Approved' : 'Rejected'))"></span>
-                                                        <template x-if="event.status === 'pending'">
-                                                            <div class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse"></div>
-                                                        </template>
-                                                    </div>
-                                                    <div class="truncate font-bold" x-text="event.intern_name + ': ' + event.reason"></div>
-                                                </div>
+                                                <span x-text="(event.request_type === 'early_leave' ? 'Early Leave' : 'Absence') + ' - ' + event.status"></span>
                                             </template>
-                                        </div>
+                                        </span>
+                                        <template x-if="event.type === 'absence_request' && event.status === 'pending'">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse shrink-0"></span>
+                                        </template>
+                                    </div>
+                                    <template x-if="event.type !== 'absence_request'">
+                                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate" x-text="event.description"></p>
                                     </template>
-
-                                    {{-- More Events Indicator --}}
-                                    <template x-if="day.events.length > 2">
-                                        <div class="rounded-2xl p-2 text-center text-[10px] font-black uppercase tracking-wider bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 border border-gray-100 dark:border-gray-800/80 mt-1 select-none">
-                                            + <span x-text="day.events.length - 2"></span> more requests
-                                        </div>
+                                    <template x-if="event.type === 'absence_request'">
+                                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate" x-text="event.intern_name + ': ' + event.reason"></p>
                                     </template>
+                                    <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest mt-0.5 truncate">
+                                        <template x-if="event.type !== 'absence_request' && event.type !== 'absence'">
+                                            <span x-text="event.type === 'holiday' ? 'Non-working day' : (event.type === 'suspension' ? 'Work suspended' : 'Make-up day')"></span>
+                                        </template>
+                                        <template x-if="event.type === 'absence_request'">
+                                            <span x-text="event.intern_name + ' - ' + event.reason"></span>
+                                        </template>
+                                    </p>
                                 </div>
-                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 text-gray-300 dark:text-gray-600 mt-2"><path d="m9 18 6-6-6-6"/></svg>
                             </div>
                         </template>
                     </div>
@@ -924,6 +1043,8 @@
             events: initialEvents || {},
             schoolSchedules: schoolSchedules || {},
             selectedSchool: '',
+            mobileSelectedDay: '',
+            mobileSelectedIndex: 0,
             
             // Inline edit state
             editingSchoolInline: false,
@@ -990,6 +1111,13 @@
                 setTimeout(() => {
                     this.loading = false;
                 }, 800);
+                const today = new Date();
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                this.mobileSelectedDay = `${yyyy}-${mm}-${dd}`;
+                this.mobileSelectedIndex = this.daysInMonth.findIndex(d => d.dateStr === this.mobileSelectedDay);
+                if (this.mobileSelectedIndex < 0) this.mobileSelectedIndex = 0;
             },
 
             isPast(dateStr) {
@@ -1128,6 +1256,7 @@
                 const month = this.currentDate.getMonth();
                 const firstDay = new Date(year, month, 1).getDay();
                 const totalDays = new Date(year, month + 1, 0).getDate();
+                const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
                 this.blankDays = Array.from({ length: firstDay }, (_, i) => i);
                 this.daysInMonth = Array.from({ length: totalDays }, (_, i) => {
@@ -1141,9 +1270,15 @@
                         day: dayNum,
                         dateStr: dateStr,
                         isWeekend: dateObj.getDay() === 0 || dateObj.getDay() === 6,
+                        dayNameShort: dayNames[dateObj.getDay()],
                         events: this.events[dateStr] || []
                     };
                 });
+                if (this.mobileSelectedDay && !this.daysInMonth.some(d => d.dateStr === this.mobileSelectedDay)) {
+                    this.mobileSelectedDay = this.daysInMonth[0]?.dateStr || '';
+                    this.mobileSelectedIndex = 0;
+                }
+                this.mobileSelectedIndex = Math.max(0, this.daysInMonth.findIndex(d => d.dateStr === this.mobileSelectedDay));
             },
 
             getCellLabel(day) {
@@ -1159,6 +1294,31 @@
                     }
                 }
                 return day.isWeekend ? 'Weekend' : 'Workday';
+            },
+
+            getMobileDayEvents() {
+                if (!this.mobileSelectedDay) return [];
+                return this.events[this.mobileSelectedDay] || [];
+            },
+
+            openMobileEvent(event) {
+                this.selectedDateStr = this.mobileSelectedDay;
+                const dayObj = this.daysInMonth[this.mobileSelectedIndex];
+                if (!dayObj) return;
+                if (event.type === 'absence_request') {
+                    this.selectedEvents = [event];
+                    this.showAbsenceReviewModal = true;
+                } else {
+                    this.selectedEvent = event;
+                    this.deleteActionUrl = event.id ? `/head-supervisor/schedule/${event.id}` : '';
+                    this.showViewModal = true;
+                }
+            },
+
+            formatDateLong(dateStr) {
+                if (!dateStr) return '';
+                const d = new Date(dateStr + 'T00:00:00');
+                return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
             }
         };
     }
