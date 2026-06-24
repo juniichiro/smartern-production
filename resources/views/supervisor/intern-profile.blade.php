@@ -13,7 +13,8 @@
         
         @php 
             $isCompleted = optional($intern->certificate)->status === 'published';
-            $hourPercentage = min(100, ($intern->hours_rendered / 480) * 100); 
+            $targetHours = $intern->required_hours ?? 480;
+            $hourPercentage = $targetHours > 0 ? min(100, ($intern->hours_rendered / $targetHours) * 100) : 0; 
         @endphp
 
         {{-- Header --}}
@@ -84,7 +85,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div class="p-6 bg-white dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
                         <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Hours</p>
-                        <p class="text-2xl md:text-3xl font-black text-[#0B5694] dark:text-blue-400">{{ (int)$intern->hours_rendered }}/480</p>
+                        <p class="text-2xl md:text-3xl font-black text-[#0B5694] dark:text-blue-400">{{ (int)$intern->hours_rendered }}/{{ $intern->required_hours ?? 480 }}</p>
                         <div class="w-full bg-gray-100 dark:bg-gray-800 h-2 rounded-full mt-4 overflow-hidden">
                             <div class="{{ $isCompleted ? 'bg-emerald-500 dark:bg-emerald-400' : 'bg-[#0B5694] dark:bg-blue-600' }} h-full transition-all duration-1000" style="width: {{ $hourPercentage }}%"></div>
                         </div>
@@ -146,7 +147,7 @@
                                     </tr>
                                     <tr>
                                         <td class="bg-gray-50/50 dark:bg-gray-800/50 p-5 font-bold text-gray-400 dark:text-gray-500 uppercase text-[10px]">Total Requirement</td>
-                                        <td class="p-5 font-bold text-gray-800 dark:text-gray-100">480 Working Hours</td>
+                                        <td class="p-5 font-bold text-gray-800 dark:text-gray-100">{{ $intern->required_hours ?? 480 }} Working Hours</td>
                                     </tr>
                                 </tbody>
                             </table>
