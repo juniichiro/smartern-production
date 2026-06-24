@@ -128,46 +128,62 @@
 
                     {{-- TAB 1: INTERN CONFIGURATION --}}
                     <div x-show="activeTab === 'intern'">
-                        <form :action="`/head-supervisor/interns/${selectedInternId}/schedule`" method="POST" class="space-y-6 pt-2">
+                        <form :action="`/head-supervisor/interns/${selectedInternId}/schedule`" method="POST" class="pt-2">
                             @csrf
                             @method('PUT')
 
-                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-end">
-                                <div class="space-y-2 text-left">
-                                    <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Select Intern</label>
-                                    <select x-model="selectedInternId" @change="onInternChange()" required
-                                            class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-300 shadow-none outline-none focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-400 transition-all cursor-pointer">
-                                        <option value="" disabled selected>Choose an intern...</option>
-                                        <template x-for="intern in interns" :key="intern.id">
-                                            <option :value="intern.id" x-text="`${intern.name} (${intern.email})`"></option>
-                                        </template>
-                                    </select>
-                                </div>
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+                                {{-- Left panel: selection & hours --}}
+                                <div class="space-y-6 flex flex-col justify-between">
+                                    <div class="space-y-6">
+                                        <div class="space-y-2 text-left">
+                                            <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Select Intern</label>
+                                            <select x-model="selectedInternId" @change="onInternChange()" required
+                                                    class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-300 shadow-none outline-none focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-400 transition-all cursor-pointer">
+                                                <option value="" disabled selected>Choose an intern...</option>
+                                                <template x-for="intern in interns" :key="intern.id">
+                                                    <option :value="intern.id" x-text="`${intern.name} (${intern.email})`"></option>
+                                                </template>
+                                            </select>
+                                        </div>
 
-                                <div class="space-y-2 text-left" x-show="selectedInternId" x-cloak>
-                                    <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Required Internship Hours</label>
-                                    <input type="number" name="required_hours" x-model="selectedInternHours" min="1" required
-                                            class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-300 shadow-none outline-none focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-400 transition-all">
-                                </div>
+                                        <div class="space-y-2 text-left" x-show="selectedInternId" x-cloak>
+                                            <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Required Internship Hours</label>
+                                            <input type="number" name="required_hours" x-model="selectedInternHours" min="1" required
+                                                    class="w-full bg-gray-50 dark:bg-gray-955 border border-gray-200 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-300 shadow-none outline-none focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-400 transition-all">
+                                        </div>
+                                    </div>
 
-                                <div class="lg:col-span-3 space-y-2 text-left" x-show="selectedInternId" x-cloak>
-                                    <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Active Reporting Days</label>
-                                    <div class="flex flex-wrap gap-2">
-                                        <template x-for="day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']" :key="day">
-                                            <label class="flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-950 rounded-xl border border-gray-200 dark:border-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-850 transition">
-                                                <input type="checkbox" name="schedule_assignment[]" :value="day" x-model="selectedInternDays"
-                                                    class="rounded text-[#0B5694] focus:ring-[#0B5694] border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700">
-                                                <span class="text-xs font-bold text-gray-700 dark:text-gray-200" x-text="day"></span>
-                                            </label>
-                                        </template>
+                                    <div class="pt-4" x-show="selectedInternId" x-cloak>
+                                        <button type="submit" class="w-full px-6 py-4 bg-[#0B5694] dark:bg-blue-600 text-white rounded-2xl font-bold text-xs uppercase tracking-wider shadow-lg shadow-blue-500/10 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer">
+                                            Update Intern Schedule
+                                        </button>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="flex justify-end pt-4" x-show="selectedInternId" x-cloak>
-                                <button type="submit" class="w-full sm:w-auto px-6 py-4 bg-[#0B5694] dark:bg-blue-600 text-white rounded-2xl font-bold text-xs uppercase tracking-wider shadow-lg shadow-blue-500/10 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer">
-                                    Update Intern Schedule
-                                </button>
+                                {{-- Right panel: active reporting days or placeholder --}}
+                                <div class="h-full">
+                                    <div x-show="selectedInternId" x-cloak class="space-y-4 text-left">
+                                        <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Active Reporting Days</label>
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <template x-for="day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']" :key="day">
+                                                <label class="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-950 rounded-2xl border border-gray-150 dark:border-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900 transition-all select-none">
+                                                    <input type="checkbox" name="schedule_assignment[]" :value="day" x-model="selectedInternDays"
+                                                        class="rounded text-[#0B5694] focus:ring-[#0B5694] border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 w-4 h-4">
+                                                    <span class="text-xs font-bold text-gray-700 dark:text-gray-200" x-text="day"></span>
+                                                </label>
+                                            </template>
+                                        </div>
+                                    </div>
+
+                                    <div x-show="!selectedInternId" class="flex flex-col items-center justify-center p-8 bg-gray-50 dark:bg-gray-950 border border-dashed border-gray-200 dark:border-gray-800 rounded-3xl h-full min-h-[220px] text-center">
+                                        <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 rounded-full flex items-center justify-center mb-4 shrink-0">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg>
+                                        </div>
+                                        <h5 class="text-xs font-black text-gray-800 dark:text-white uppercase tracking-wider mb-1">No Intern Selected</h5>
+                                        <p class="text-[10px] text-gray-400 dark:text-gray-500 font-medium max-w-[240px]">Choose an intern from the selection dropdown to configure their weekly hours and reporting days.</p>
+                                    </div>
+                                </div>
                             </div>
                         </form>
                     </div>
