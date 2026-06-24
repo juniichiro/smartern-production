@@ -74,10 +74,10 @@
                 </p>
             </header>
 
-            {{-- DYNAMIC ERROR FEEDBACK --}}
             @if ($errors->any())
                 <div x-data="{ show: true }" 
                      x-show="show" 
+                     x-init="setTimeout(() => show = false, 5000)"
                      class="mb-6 p-4 bg-red-50 dark:bg-red-950/30 rounded-2xl border border-red-100 dark:border-red-900/50 flex items-center gap-3">
                     
                     <div class="flex-shrink-0 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center shadow-lg shadow-red-500/10">

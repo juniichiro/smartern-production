@@ -12,6 +12,15 @@
          resendCountdown: {{ $cooldown ?? 0 }},
          
          init() {
+             this.$watch('statusMessage', value => {
+                 if (value && (this.statusType === 'success' || this.statusType === 'error')) {
+                     if (this.statusTimeout) clearTimeout(this.statusTimeout);
+                     this.statusTimeout = setTimeout(() => {
+                         this.statusMessage = '';
+                     }, 5000);
+                 }
+             });
+
              if (this.resendCountdown > 0) {
                  this.emailSent = true;
                  this.statusMessage = 'A verification code has been sent to your email.';
@@ -139,7 +148,7 @@
 
         {{-- DYNAMIC ERROR FEEDBACK --}}
         @if ($errors->any())
-            <div class="mb-8 p-4 bg-red-50 dark:bg-red-950/30 rounded-2xl border border-red-100 dark:border-red-900/50 flex items-center gap-4">
+            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)" class="mb-8 p-4 bg-red-50 dark:bg-red-950/30 rounded-2xl border border-red-100 dark:border-red-900/50 flex items-center gap-4">
                 <div class="flex-shrink-0 w-10 h-10 bg-red-500 rounded-full flex items-center justify-center shadow-lg shadow-red-500/20">
                     <svg xmlns="http://www.w3.org/2000/svg" class="text-white" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </div>
