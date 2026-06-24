@@ -190,7 +190,7 @@ class="relative">
 
 {{-- SYSTEM SETTINGS MODAL --}}
 <x-modal name="system-settings-modal" maxWidth="4xl">
-    <div class="flex flex-col md:flex-row text-gray-900 dark:text-gray-100 min-h-0 md:min-h-[500px] relative"
+    <div class="flex flex-col md:flex-row text-gray-900 dark:text-gray-100 h-[75vh] md:h-[550px] max-h-[75vh] md:max-h-[550px] overflow-hidden relative"
          x-data="{
              activeTab: 'general',
              mobileGeneralExpanded: true,
@@ -463,8 +463,8 @@ class="relative">
         </div>
 
         <!-- RIGHT CONTENT DISPLAY -->
-        <div class="flex-1 bg-white dark:bg-gray-900 p-4 sm:p-6 md:p-8 flex flex-col justify-between min-h-0 md:min-h-[500px]">
-            <div class="space-y-4 md:space-y-0">
+        <div class="flex-1 bg-white dark:bg-gray-900 flex flex-col min-h-0 h-full overflow-hidden">
+            <div class="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 custom-scrollbar space-y-4 md:space-y-0">
                 <!-- Desktop Header -->
                 <div class="hidden md:block mb-6">
                     <div class="text-left">
