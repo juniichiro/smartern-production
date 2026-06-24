@@ -153,7 +153,7 @@
                             <div class="bg-gray-50/30 dark:bg-gray-900/20"></div>
                         </template>
                         <template x-for="(day, i) in daysInMonth" :key="day.dateStr">
-                            <button @click="mobileSelectedDay = day.dateStr; mobileSelectedIndex = i; selectDate(day)"
+                            <button @click="mobileSelectedDay = day.dateStr; mobileSelectedIndex = i"
                                     class="relative flex flex-col items-center justify-center py-2.5 transition-all active:scale-90 min-h-[48px]"
                                     :class="mobileSelectedDay === day.dateStr
                                         ? 'bg-[#0B5694]/10 dark:bg-blue-600/20'
