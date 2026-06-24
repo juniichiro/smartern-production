@@ -193,6 +193,9 @@ class="relative">
     <div class="flex flex-col md:flex-row text-gray-900 dark:text-gray-100 min-h-0 md:min-h-[500px] relative"
          x-data="{
              activeTab: 'general',
+             mobileGeneralExpanded: true,
+             mobileSecurityExpanded: false,
+             isMobile: window.innerWidth < 768,
              darkMode: localStorage.getItem('darkMode') === 'true' || 
                       (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches),
              fontSize: localStorage.getItem('fontSize') || 'md',
@@ -216,6 +219,11 @@ class="relative">
              submitting: false,
              
              init() {
+                 this.isMobile = window.innerWidth < 768;
+                 window.addEventListener('resize', () => {
+                     this.isMobile = window.innerWidth < 768;
+                 });
+
                  this.$watch('darkMode', val => {
                      localStorage.setItem('darkMode', val);
                      if (val) document.documentElement.classList.add('dark');
@@ -228,7 +236,7 @@ class="relative">
                      document.documentElement.classList.remove('font-size-sm', 'font-size-md', 'font-size-lg', 'font-size-xl');
                      document.documentElement.classList.add('font-size-' + val);
                  });
-             },
+             },",StartLine:194,TargetContent:
              
              fetchTotpSetup() {
                  this.mfaSetupStep = 'totp_setup';
@@ -420,17 +428,17 @@ class="relative">
         </button>
 
         <!-- LEFT SIDEBAR PANEL -->
-        <div class="w-full md:w-56 bg-gray-50/50 dark:bg-gray-950/40 p-3 md:p-4 border-b md:border-b-0 md:border-r border-gray-200/60 dark:border-gray-800/80 flex flex-col justify-between shrink-0">
+        <div class="hidden md:flex w-56 bg-gray-50/50 dark:bg-gray-950/40 p-4 border-r border-gray-200/60 dark:border-gray-800/80 flex-col justify-between shrink-0">
             <div class="space-y-4 md:space-y-6">
                 <div class="px-3 text-left">
                     <h3 class="text-xs font-extrabold text-gray-800 dark:text-gray-200 uppercase tracking-wider">Settings</h3>
-                    <p class="text-[11px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider mt-1">System Preferences</p>
+                    <p class="text-[11px] text-gray-400 dark:text-gray-550 font-bold uppercase tracking-wider mt-1">System Preferences</p>
                 </div>
-                <nav class="flex flex-row md:flex-col gap-1.5 md:gap-0 overflow-x-auto md:overflow-x-visible no-scrollbar p-1 bg-gray-100/60 dark:bg-gray-900/30 md:bg-transparent rounded-xl md:rounded-none">
+                <nav class="flex flex-col gap-0 md:bg-transparent">
                     <button type="button" 
                             @click="activeTab = 'general'"
-                            :class="activeTab === 'general' ? 'bg-white dark:bg-gray-800 md:bg-gray-100/60 dark:md:bg-gray-900/30 border-b-2 md:border-b-0 md:border-l-4 border-[#0B5694] dark:border-blue-500 font-bold text-[#0B5694] dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'"
-                            class="flex items-center justify-center md:justify-start gap-2.5 px-4 py-2.5 md:py-3 text-xs uppercase tracking-wider transition-all text-left whitespace-nowrap md:w-full border-t border-b border-transparent focus:outline-none shrink-0 rounded-lg md:rounded-none md:rounded-r-lg shadow-sm md:shadow-none">
+                            :class="activeTab === 'general' ? 'bg-gray-100/60 dark:bg-gray-900/30 border-l-4 border-[#0B5694] dark:border-blue-500 font-bold text-[#0B5694] dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'"
+                            class="flex items-center justify-start gap-2.5 px-4 py-3 text-xs uppercase tracking-wider transition-all text-left whitespace-nowrap w-full border-t border-b border-transparent focus:outline-none shrink-0 rounded-r-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="3"/>
                             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
@@ -439,8 +447,8 @@ class="relative">
                     </button>
                     <button type="button" 
                             @click="activeTab = 'security'"
-                            :class="activeTab === 'security' ? 'bg-white dark:bg-gray-800 md:bg-gray-100/60 dark:md:bg-gray-900/30 border-b-2 md:border-b-0 md:border-l-4 border-[#0B5694] dark:border-blue-500 font-bold text-[#0B5694] dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'"
-                            class="flex items-center justify-center md:justify-start gap-2.5 px-4 py-2.5 md:py-3 text-xs uppercase tracking-wider transition-all text-left whitespace-nowrap md:w-full border-t border-b border-transparent focus:outline-none shrink-0 rounded-lg md:rounded-none md:rounded-r-lg shadow-sm md:shadow-none">
+                            :class="activeTab === 'security' ? 'bg-gray-100/60 dark:bg-gray-900/30 border-l-4 border-[#0B5694] dark:border-blue-500 font-bold text-[#0B5694] dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'"
+                            class="flex items-center justify-start gap-2.5 px-4 py-3 text-xs uppercase tracking-wider transition-all text-left whitespace-nowrap w-full border-t border-b border-transparent focus:outline-none shrink-0 rounded-r-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                             <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
@@ -456,9 +464,9 @@ class="relative">
 
         <!-- RIGHT CONTENT DISPLAY -->
         <div class="flex-1 bg-white dark:bg-gray-900 p-4 sm:p-6 md:p-8 flex flex-col justify-between min-h-0 md:min-h-[500px]">
-            <div>
-                <!-- Right Header -->
-                <div class="mb-6">
+            <div class="space-y-4 md:space-y-0">
+                <!-- Desktop Header -->
+                <div class="hidden md:block mb-6">
                     <div class="text-left">
                         <h4 class="text-lg font-bold text-gray-800 dark:text-gray-100 tracking-tight"
                             x-text="activeTab === 'general' ? 'General Settings' : 'Two-Factor Security'"></h4>
@@ -467,245 +475,301 @@ class="relative">
                     </div>
                 </div>
 
-                <!-- Tab content: General -->
-                <div x-show="activeTab === 'general'" class="space-y-6" x-transition>
-                     <!-- Appearance Selection -->
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between py-4 border-b border-gray-150 dark:border-gray-800 text-left gap-4">
-                        <div class="space-y-1">
-                            <h5 class="text-xs font-bold text-gray-850 dark:text-gray-200">Theme</h5>
-                            <p class="text-[11px] text-gray-400 dark:text-gray-555 font-medium">Switch between light and dark visual interfaces</p>
-                        </div>
-                        <div class="flex items-center gap-1 bg-gray-100/80 dark:bg-gray-800/80 rounded-lg p-1 border border-gray-200/60 dark:border-gray-700/60 self-start sm:self-auto shrink-0">
-                            <button type="button"
-                                    @click="darkMode = false"
-                                    :class="!darkMode ? 'bg-white dark:bg-gray-700 shadow-sm text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
-                                    class="px-4 py-2 text-xs font-bold rounded-md transition-all cursor-pointer">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-1.5 -mt-0.5">
-                                    <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-                                </svg>
-                                Light
-                            </button>
-                            <button type="button"
-                                    @click="darkMode = true"
-                                    :class="darkMode ? 'bg-white dark:bg-gray-700 shadow-sm text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
-                                    class="px-4 py-2 text-xs font-bold rounded-md transition-all cursor-pointer">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-1.5 -mt-0.5">
-                                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-                                </svg>
-                                Dark
-                            </button>
-                        </div>
-                    </div>
+                <!-- Mobile Header -->
+                <div class="block md:hidden mb-2 text-left">
+                    <h3 class="text-base font-bold text-[#0B5694] dark:text-blue-400 tracking-tight">System Settings</h3>
+                    <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider mt-0.5">Preferences & security controls</p>
+                </div>
 
-                    <!-- Font Scaling Selection -->
-                    <div class="flex flex-col gap-3 py-4 border-b border-gray-150 dark:border-gray-800 text-left">
-                        <div>
-                            <h5 class="text-xs font-bold text-gray-850 dark:text-gray-200">Text Display Scale</h5>
-                            <p class="text-[11px] text-gray-400 dark:text-gray-555 font-medium">Adjust the readable text sizing of all elements</p>
+                <!-- Tab content: General (Boxed/Collapsible on Mobile) -->
+                <div class="space-y-0" :class="isMobile ? 'border border-gray-150 dark:border-gray-800 rounded-2xl overflow-hidden bg-gray-50/20 dark:bg-gray-900/20 mb-4' : ''">
+                    <!-- Mobile Accordion Trigger -->
+                    <button type="button" 
+                            @click="mobileGeneralExpanded = !mobileGeneralExpanded" 
+                            class="flex md:hidden w-full items-center justify-between p-4 bg-gray-50/50 dark:bg-gray-800/40 border-b border-gray-150 dark:border-gray-800 text-left cursor-pointer focus:outline-none select-none">
+                        <div class="flex items-center gap-2.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-[#0B5694] dark:text-blue-400">
+                                <circle cx="12" cy="12" r="3"/>
+                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                            </svg>
+                            <div>
+                                <span class="text-xs font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider">General Settings</span>
+                                <span class="block text-[9px] text-gray-400 dark:text-gray-500 font-medium">Visual Preferences & Scaling</span>
+                            </div>
                         </div>
-                        <div class="flex flex-wrap items-center gap-1.5 mt-1">
-                            @foreach(['sm' => 'S', 'md' => 'M', 'lg' => 'L', 'xl' => 'XL'] as $sizeKey => $sizeLabel)
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-gray-400 dark:text-gray-500 transition-transform duration-250" :class="mobileGeneralExpanded ? 'rotate-180 text-[#0B5694] dark:text-blue-400' : ''">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+
+                    <!-- Content Area -->
+                    <div x-show="isMobile ? mobileGeneralExpanded : activeTab === 'general'" 
+                         class="space-y-6" 
+                         :class="isMobile ? 'p-4 bg-white dark:bg-gray-900/60' : ''"
+                         x-transition>
+                         <!-- Appearance Selection -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between py-4 border-b border-gray-150 dark:border-gray-800 text-left gap-4">
+                            <div class="space-y-1">
+                                <h5 class="text-xs font-bold text-gray-855 dark:text-gray-200">Theme</h5>
+                                <p class="text-[11px] text-gray-400 dark:text-gray-555 font-medium">Switch between light and dark visual interfaces</p>
+                            </div>
+                            <div class="flex items-center gap-1 bg-gray-100/80 dark:bg-gray-800/80 rounded-lg p-1 border border-gray-200/60 dark:border-gray-700/60 self-start sm:self-auto shrink-0">
                                 <button type="button"
-                                        @click="fontSize = '{{ $sizeKey }}'"
-                                        :class="fontSize === '{{ $sizeKey }}' ? 'bg-[#0B5694] dark:bg-blue-600 text-white shadow-sm' : 'bg-gray-100/80 dark:bg-gray-800/80 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'"
-                                        class="px-3 py-2 text-xs font-bold rounded-md transition-all cursor-pointer min-w-[36px] text-center border border-gray-200/60 dark:border-gray-700/60"
-                                        title="{{ ['sm' => 'Small', 'md' => 'Medium', 'lg' => 'Large', 'xl' => 'X-Large'][$sizeKey] }}">
-                                    {{ $sizeLabel }}
+                                        @click="darkMode = false"
+                                        :class="!darkMode ? 'bg-white dark:bg-gray-700 shadow-sm text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
+                                        class="px-4 py-2 text-xs font-bold rounded-md transition-all cursor-pointer">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-1.5 -mt-0.5">
+                                        <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                                    </svg>
+                                    Light
                                 </button>
-                            @endforeach
-                            <span class="text-[10px] text-gray-400 dark:text-gray-500 font-semibold ml-2"
-                                  x-text="fontSize === 'sm' ? 'Small' : (fontSize === 'md' ? 'Medium' : (fontSize === 'lg' ? 'Large' : 'X-Large'))"></span>
+                                <button type="button"
+                                        @click="darkMode = true"
+                                        :class="darkMode ? 'bg-white dark:bg-gray-700 shadow-sm text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
+                                        class="px-4 py-2 text-xs font-bold rounded-md transition-all cursor-pointer">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-1.5 -mt-0.5">
+                                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                                    </svg>
+                                    Dark
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <!-- Font Scaling Preview Box -->
-                    <div class="py-4 text-left">
-                        <div class="pl-4 border-l-2 border-[#0B5694] dark:border-blue-500">
-                            <p class="text-[10px] font-extrabold text-[#0B5694] dark:text-blue-400 uppercase tracking-wider">Type Preview</p>
-                            <p class="text-gray-550 dark:text-gray-450 italic mt-2 font-medium leading-relaxed">
-                                "Adjust font size to see how it scales text readability across all dashboard panels."
-                            </p>
+
+                        <!-- Font Scaling Selection -->
+                        <div class="flex flex-col gap-3 py-4 border-b border-gray-150 dark:border-gray-800 text-left">
+                            <div>
+                                <h5 class="text-xs font-bold text-gray-855 dark:text-gray-200">Text Display Scale</h5>
+                                <p class="text-[11px] text-gray-400 dark:text-gray-555 font-medium">Adjust the readable text sizing of all elements</p>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-1.5 mt-1">
+                                @foreach(['sm' => 'S', 'md' => 'M', 'lg' => 'L', 'xl' => 'XL'] as $sizeKey => $sizeLabel)
+                                    <button type="button"
+                                            @click="fontSize = '{{ $sizeKey }}'"
+                                            :class="fontSize === '{{ $sizeKey }}' ? 'bg-[#0B5694] dark:bg-blue-600 text-white shadow-sm' : 'bg-gray-100/80 dark:bg-gray-800/80 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'"
+                                            class="px-3 py-2 text-xs font-bold rounded-md transition-all cursor-pointer min-w-[36px] text-center border border-gray-200/60 dark:border-gray-700/60"
+                                            title="{{ ['sm' => 'Small', 'md' => 'Medium', 'lg' => 'Large', 'xl' => 'X-Large'][$sizeKey] }}">
+                                        {{ $sizeLabel }}
+                                    </button>
+                                @endforeach
+                                <span class="text-[10px] text-gray-400 dark:text-gray-500 font-semibold ml-2"
+                                      x-text="fontSize === 'sm' ? 'Small' : (fontSize === 'md' ? 'Medium' : (fontSize === 'lg' ? 'Large' : 'X-Large'))"></span>
+                            </div>
+                        </div>
+                        
+                        <!-- Font Scaling Preview Box -->
+                        <div class="py-4 text-left">
+                            <div class="pl-4 border-l-2 border-[#0B5694] dark:border-blue-500">
+                                <p class="text-[10px] font-extrabold text-[#0B5694] dark:text-blue-400 uppercase tracking-wider">Type Preview</p>
+                                <p class="text-gray-550 dark:text-gray-450 italic mt-2 font-medium leading-relaxed">
+                                    "Adjust font size to see how it scales text readability across all dashboard panels."
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Tab content: Security -->
-                <div x-show="activeTab === 'security'" class="space-y-6" x-transition>
-                    <!-- Status Banner -->
-                    <div class="py-3 px-4 rounded-xl border flex items-center justify-between transition-colors duration-200 text-left"
-                         :class="mfaEnabled ? 'bg-emerald-50/30 dark:bg-emerald-950/10 border-emerald-100/50 dark:border-emerald-900/30' : 'bg-amber-50/30 dark:bg-amber-950/10 border-amber-100/50 dark:border-amber-900/30'">
-                        <div class="flex items-center gap-3">
-                            <div class="w-1.5 h-1.5 rounded-full shadow-sm"
-                                 :class="mfaEnabled ? 'bg-emerald-500' : 'bg-amber-500'"></div>
+                <!-- Tab content: Security (Boxed/Collapsible on Mobile) -->
+                <div class="space-y-0" :class="isMobile ? 'border border-gray-150 dark:border-gray-800 rounded-2xl overflow-hidden bg-gray-50/20 dark:bg-gray-900/20' : ''">
+                    <!-- Mobile Accordion Trigger -->
+                    <button type="button" 
+                            @click="mobileSecurityExpanded = !mobileSecurityExpanded" 
+                            class="flex md:hidden w-full items-center justify-between p-4 bg-gray-50/50 dark:bg-gray-800/40 border-b border-gray-150 dark:border-gray-800 text-left cursor-pointer focus:outline-none select-none">
+                        <div class="flex items-center gap-2.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-[#0B5694] dark:text-blue-400">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                            </svg>
                             <div>
-                                <h5 class="text-xs font-bold" :class="mfaEnabled ? 'text-emerald-850 dark:text-emerald-400' : 'text-amber-850 dark:text-amber-400'">
-                                    Two-Factor Authentication (2FA)
-                                </h5>
-                                <p class="text-[10px] text-gray-450 dark:text-gray-450 font-semibold mt-0.5" 
-                                   x-text="mfaEnabled ? 'Protected: Verification codes are required on login.' : 'Unprotected: Add a verification method to secure your account login.'"></p>
+                                <span class="text-xs font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider">Security & MFA</span>
+                                <span class="block text-[9px] text-gray-400 dark:text-gray-555 font-medium">Account Protection Methods</span>
                             </div>
                         </div>
-                        
-                        <template x-if="mfaEnabled">
-                            <button type="button" @click="disableMfa()" class="text-xs font-bold text-red-500 hover:text-red-755 dark:hover:text-red-400 uppercase tracking-wider focus:outline-none transition-colors">
-                                Deactivate
-                            </button>
-                        </template>
-                    </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-gray-400 dark:text-gray-550 transition-transform duration-250" :class="mobileSecurityExpanded ? 'rotate-180 text-[#0B5694] dark:text-blue-400' : ''">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
 
-                    <!-- Setup Options List -->
-                    <div x-show="mfaSetupStep === 'idle'" class="divide-y divide-gray-150 dark:divide-gray-800" x-transition>
-                        <!-- Authenticator App Row -->
-                        <div class="flex flex-col sm:flex-row justify-between items-start py-5 gap-3 sm:gap-4 text-left">
-                            <div class="space-y-1">
-                                <h5 class="font-bold text-gray-800 dark:text-gray-100 text-xs tracking-tight">Authenticator Application (TOTP)</h5>
-                                <p class="text-[11px] text-gray-400 dark:text-gray-500 font-semibold max-w-lg leading-relaxed">
-                                    Use verification codes generated by an app on your phone (like Google Authenticator or Microsoft Authenticator).
-                                </p>
-                            </div>
-                            <div class="flex items-center gap-4 shrink-0 mt-0.5">
-                                <span class="text-[10px] font-bold uppercase tracking-wider" 
-                                      :class="totpActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-400'">
-                                    <span x-text="totpActive ? 'Active' : 'Inactive'"></span>
-                                </span>
-                                <template x-if="!totpActive">
-                                    <button type="button" @click="fetchTotpSetup()" class="text-xs font-bold text-[#0B5694] dark:text-blue-400 hover:underline tracking-wider focus:outline-none uppercase">Set Up</button>
-                                </template>
-                                <template x-if="totpActive">
-                                    <button type="button" @click="disableTotp()" class="text-xs font-bold text-red-500 hover:underline tracking-wider focus:outline-none uppercase">Revoke</button>
-                                </template>
-                            </div>
-                        </div>
-
-                        <!-- Email Row -->
-                        <div class="flex flex-col sm:flex-row justify-between items-start py-5 gap-3 sm:gap-4 text-left">
-                            <div class="space-y-1">
-                                <h5 class="font-bold text-gray-800 dark:text-gray-100 text-xs tracking-tight">Email Verification (OTP)</h5>
-                                <p class="text-[11px] text-gray-400 dark:text-gray-500 font-semibold max-w-lg leading-relaxed">
-                                    Receive verification codes in your inbox. Useful if you lose access to your authenticator application.
-                                </p>
-                            </div>
-                            <div class="flex items-center gap-4 shrink-0 mt-0.5">
-                                <span class="text-[10px] font-bold uppercase tracking-wider" 
-                                      :class="emailActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-400'">
-                                    <span x-text="emailActive ? 'Active' : 'Inactive'"></span>
-                                </span>
-                                <template x-if="!emailActive">
-                                    <button type="button" @click="fetchEmailSetup()" class="text-xs font-bold text-[#0B5694] dark:text-blue-400 hover:underline tracking-wider focus:outline-none uppercase">Set Up</button>
-                                </template>
-                                <template x-if="emailActive">
-                                    <span class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase">Always Backup</span>
-                                </template>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Setup Sub-view: TOTP Setup -->
-                    <div x-show="mfaSetupStep === 'totp_setup'" class="space-y-4" x-transition>
-                        <div class="flex items-center justify-between pb-3 border-b border-gray-150 dark:border-gray-800">
-                            <button type="button" @click="mfaSetupStep = 'idle'" class="flex items-center gap-2 text-xs font-bold text-gray-455 hover:text-gray-650 dark:hover:text-gray-200 uppercase tracking-wider focus:outline-none">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-                                Back to Methods
-                            </button>
-                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Authenticator Setup</span>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                            <div class="space-y-4 text-left">
-                                <p class="text-[11px] text-gray-505 dark:text-gray-400 font-medium leading-relaxed">
-                                    1. Scan the QR code using your Authenticator App, or type the following text key:
-                                </p>
-                                <div class="bg-gray-50 dark:bg-gray-950 px-4 py-2.5 rounded border border-gray-200 dark:border-gray-800 font-mono text-xs text-[#0B5694] dark:text-blue-400 font-bold select-all tracking-wider text-center" 
-                                     x-text="totpSecret"></div>
-                                
-                                <p class="text-[11px] text-gray-550 dark:text-gray-400 font-medium leading-relaxed">
-                                    2. Type the generated 6-digit confirmation code:
-                                </p>
-                                
-                                <div class="grid grid-cols-6 gap-1 xs:gap-1.5 sm:gap-2">
-                                    @for($i = 0; $i < 6; $i++)
-                                        <input type="text"
-                                               x-ref="totpInput{{ $i }}"
-                                               x-model="totpDigits[{{ $i }}]"
-                                               @input="focusNext($el, {{ $i }}, 'totp')"
-                                               @keydown="handleKeydown($event, {{ $i }}, 'totp')"
-                                               inputmode="numeric"
-                                               pattern="[0-9]*"
-                                               maxlength="2"
-                                               class="w-full h-10 sm:h-12 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg xs:rounded-xl sm:rounded-2xl text-center text-lg sm:text-xl font-extrabold text-[#0B5694] dark:text-blue-400 focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 focus:border-[#0B5694] outline-none transition-all">
-                                    @endfor
+                    <!-- Content Area -->
+                    <div x-show="isMobile ? mobileSecurityExpanded : activeTab === 'security'" 
+                         class="space-y-6" 
+                         :class="isMobile ? 'p-4 bg-white dark:bg-gray-900/60' : ''"
+                         x-transition>
+                        <!-- Status Banner -->
+                        <div class="py-3 px-4 rounded-xl border flex items-center justify-between transition-colors duration-200 text-left"
+                             :class="mfaEnabled ? 'bg-emerald-50/30 dark:bg-emerald-950/10 border-emerald-100/50 dark:border-emerald-900/30' : 'bg-amber-50/30 dark:bg-amber-950/10 border-amber-100/50 dark:border-amber-900/30'">
+                            <div class="flex items-center gap-3">
+                                <div class="w-1.5 h-1.5 rounded-full shadow-sm"
+                                     :class="mfaEnabled ? 'bg-emerald-500' : 'bg-amber-500'"></div>
+                                <div>
+                                    <h5 class="text-xs font-bold" :class="mfaEnabled ? 'text-emerald-850 dark:text-emerald-400' : 'text-amber-850 dark:text-amber-400'">
+                                        Two-Factor Authentication (2FA)
+                                    </h5>
+                                    <p class="text-[10px] text-gray-450 dark:text-gray-450 font-semibold mt-0.5" 
+                                       x-text="mfaEnabled ? 'Protected: Verification codes are required on login.' : 'Unprotected: Add a verification method to secure your account login.'"></p>
                                 </div>
-                                
-                                <button type="button" 
-                                        @click="verifyTotp()"
-                                        :disabled="submitting"
-                                        class="w-full bg-[#0B5694] dark:bg-blue-600 text-white py-3 rounded font-bold text-xs uppercase tracking-wider hover:bg-[#084577] dark:hover:bg-blue-700 disabled:opacity-50 transition active:scale-[0.98] shadow-sm">
-                                    Confirm & Link App
+                            </div>
+                            
+                            <template x-if="mfaEnabled">
+                                <button type="button" @click="disableMfa()" class="text-xs font-bold text-red-500 hover:text-red-755 dark:hover:text-red-400 uppercase tracking-wider focus:outline-none transition-colors">
+                                    Deactivate
                                 </button>
-                            </div>
-                            
-                            <div class="flex flex-col items-center justify-center p-4 bg-gray-50 dark:bg-gray-950 rounded border border-gray-150 dark:border-gray-850">
-                                <div class="bg-white p-3 rounded shadow-sm border flex items-center justify-center" x-html="totpQrCode"></div>
-                                <p class="text-[9px] text-gray-400 font-bold uppercase tracking-wider mt-3">Scan with Camera</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Setup Sub-view: Email Setup -->
-                    <div x-show="mfaSetupStep === 'email_setup'" class="space-y-4" x-transition>
-                        <div class="flex items-center justify-between pb-3 border-b border-gray-150 dark:border-gray-800">
-                            <button type="button" @click="mfaSetupStep = 'idle'" class="flex items-center gap-2 text-xs font-bold text-gray-455 hover:text-gray-650 dark:hover:text-gray-200 uppercase tracking-wider focus:outline-none">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-                                Back to Methods
-                            </button>
-                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Verification Request</span>
-                        </div>
-
-                        <div class="max-w-md mx-auto space-y-4 text-center">
-                            <p class="text-[11px] text-gray-505 dark:text-gray-400 font-medium">
-                                To confirm access, we will send a one-time verification code to:
-                            </p>
-                            <div class="bg-gray-50 dark:bg-gray-950 py-2.5 px-4 rounded border border-gray-150 dark:border-gray-850 font-bold text-xs text-[#0B5694] dark:text-blue-400 select-all">
-                                {{ Auth::user()->email }}
-                            </div>
-                            
-                            <button type="button" 
-                                    @click="sendEmailCode()"
-                                    :disabled="emailSending"
-                                    class="bg-[#0B5694] dark:bg-blue-600 text-white px-5 py-2.5 rounded font-bold text-xs uppercase tracking-wider hover:bg-[#084577] dark:hover:bg-blue-700 disabled:opacity-50 transition shadow-sm active:scale-95">
-                                <span x-text="emailSending ? 'Sending Code...' : (emailSent ? 'Resend Verification Code' : 'Send Verification Code')"></span>
-                            </button>
-
-                            <template x-if="statusMessage">
-                                <p class="text-xs font-bold text-center mt-2" 
-                                   :class="statusType === 'success' ? 'text-emerald-600 dark:text-emerald-400' : (statusType === 'info' ? 'text-blue-500' : 'text-red-500')" 
-                                   x-text="statusMessage"></p>
                             </template>
+                        </div>
 
-                            <div x-show="emailSent" x-transition class="text-left space-y-3 pt-2">
-                                <p class="text-[11px] text-gray-550 dark:text-gray-400 font-medium text-center">
-                                    Enter the 6-digit verification code you received:
+                        <!-- Setup Options List -->
+                        <div x-show="mfaSetupStep === 'idle'" class="divide-y divide-gray-150 dark:divide-gray-800" x-transition>
+                            <!-- Authenticator App Row -->
+                            <div class="flex flex-col sm:flex-row justify-between items-start py-5 gap-3 sm:gap-4 text-left">
+                                <div class="space-y-1">
+                                    <h5 class="font-bold text-gray-800 dark:text-gray-100 text-xs tracking-tight">Authenticator Application (TOTP)</h5>
+                                    <p class="text-[11px] text-gray-400 dark:text-gray-500 font-semibold max-w-lg leading-relaxed">
+                                        Use verification codes generated by an app on your phone (like Google Authenticator or Microsoft Authenticator).
+                                    </p>
+                                </div>
+                                <div class="flex items-center gap-4 shrink-0 mt-0.5">
+                                    <span class="text-[10px] font-bold uppercase tracking-wider" 
+                                          :class="totpActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-400'">
+                                        <span x-text="totpActive ? 'Active' : 'Inactive'"></span>
+                                    </span>
+                                    <template x-if="!totpActive">
+                                        <button type="button" @click="fetchTotpSetup()" class="text-xs font-bold text-[#0B5694] dark:text-blue-400 hover:underline tracking-wider focus:outline-none uppercase">Set Up</button>
+                                    </template>
+                                    <template x-if="totpActive">
+                                        <button type="button" @click="disableTotp()" class="text-xs font-bold text-red-500 hover:underline tracking-wider focus:outline-none uppercase">Revoke</button>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <!-- Email Row -->
+                            <div class="flex flex-col sm:flex-row justify-between items-start py-5 gap-3 sm:gap-4 text-left">
+                                <div class="space-y-1">
+                                    <h5 class="font-bold text-gray-800 dark:text-gray-100 text-xs tracking-tight">Email Verification (OTP)</h5>
+                                    <p class="text-[11px] text-gray-400 dark:text-gray-550 font-semibold max-w-lg leading-relaxed">
+                                        Receive verification codes in your inbox. Useful if you lose access to your authenticator application.
+                                    </p>
+                                </div>
+                                <div class="flex items-center gap-4 shrink-0 mt-0.5">
+                                    <span class="text-[10px] font-bold uppercase tracking-wider" 
+                                          :class="emailActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-400'">
+                                        <span x-text="emailActive ? 'Active' : 'Inactive'"></span>
+                                    </span>
+                                    <template x-if="!emailActive">
+                                        <button type="button" @click="fetchEmailSetup()" class="text-xs font-bold text-[#0B5694] dark:text-blue-400 hover:underline tracking-wider focus:outline-none uppercase">Set Up</button>
+                                    </template>
+                                    <template x-if="emailActive">
+                                        <span class="text-[10px] text-gray-400 dark:text-gray-550 font-bold uppercase">Always Backup</span>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Setup Sub-view: TOTP Setup -->
+                        <div x-show="mfaSetupStep === 'totp_setup'" class="space-y-4" x-transition>
+                            <div class="flex items-center justify-between pb-3 border-b border-gray-150 dark:border-gray-800">
+                                <button type="button" @click="mfaSetupStep = 'idle'" class="flex items-center gap-2 text-xs font-bold text-gray-455 hover:text-gray-650 dark:hover:text-gray-200 uppercase tracking-wider focus:outline-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                                    Back to Methods
+                                </button>
+                                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Authenticator Setup</span>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                                <div class="space-y-4 text-left">
+                                    <p class="text-[11px] text-gray-505 dark:text-gray-400 font-medium leading-relaxed">
+                                        1. Scan the QR code using your Authenticator App, or type the following text key:
+                                    </p>
+                                    <div class="bg-gray-50 dark:bg-gray-950 px-4 py-2.5 rounded border border-gray-200 dark:border-gray-800 font-mono text-xs text-[#0B5694] dark:text-blue-400 font-bold select-all tracking-wider text-center" 
+                                         x-text="totpSecret"></div>
+                                    
+                                    <p class="text-[11px] text-gray-550 dark:text-gray-400 font-medium leading-relaxed">
+                                        2. Type the generated 6-digit confirmation code:
+                                    </p>
+                                    
+                                    <div class="grid grid-cols-6 gap-1 xs:gap-1.5 sm:gap-2">
+                                        @for($i = 0; $i < 6; $i++)
+                                            <input type="text"
+                                                   x-ref="totpInput{{ $i }}"
+                                                   x-model="totpDigits[{{ $i }}]"
+                                                   @input="focusNext($el, {{ $i }}, 'totp')"
+                                                   @keydown="handleKeydown($event, {{ $i }}, 'totp')"
+                                                   inputmode="numeric"
+                                                   pattern="[0-9]*"
+                                                   maxlength="2"
+                                                   class="w-full h-10 sm:h-12 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg xs:rounded-xl sm:rounded-2xl text-center text-lg sm:text-xl font-extrabold text-[#0B5694] dark:text-blue-400 focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 focus:border-[#0B5694] outline-none transition-all">
+                                        @endfor
+                                    </div>
+                                    
+                                    <button type="button" 
+                                            @click="verifyTotp()"
+                                            :disabled="submitting"
+                                            class="w-full bg-[#0B5694] dark:bg-blue-600 text-white py-3 rounded font-bold text-xs uppercase tracking-wider hover:bg-[#084577] dark:hover:bg-blue-700 disabled:opacity-50 transition active:scale-[0.98] shadow-sm">
+                                        Confirm & Link App
+                                    </button>
+                                </div>
+                                
+                                <div class="flex flex-col items-center justify-center p-4 bg-gray-50 dark:bg-gray-950 rounded border border-gray-150 dark:border-gray-855">
+                                    <div class="bg-white p-3 rounded shadow-sm border flex items-center justify-center" x-html="totpQrCode"></div>
+                                    <p class="text-[9px] text-gray-400 font-bold uppercase tracking-wider mt-3">Scan with Camera</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Setup Sub-view: Email Setup -->
+                        <div x-show="mfaSetupStep === 'email_setup'" class="space-y-4" x-transition>
+                            <div class="flex items-center justify-between pb-3 border-b border-gray-150 dark:border-gray-800">
+                                <button type="button" @click="mfaSetupStep = 'idle'" class="flex items-center gap-2 text-xs font-bold text-gray-455 hover:text-gray-650 dark:hover:text-gray-200 uppercase tracking-wider focus:outline-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                                    Back to Methods
+                                </button>
+                                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Verification Request</span>
+                            </div>
+
+                            <div class="max-w-md mx-auto space-y-4 text-center">
+                                <p class="text-[11px] text-gray-505 dark:text-gray-400 font-medium">
+                                    To confirm access, we will send a one-time verification code to:
                                 </p>
-                                <div class="grid grid-cols-6 gap-1 xs:gap-1.5 sm:gap-2">
-                                    @for($i = 0; $i < 6; $i++)
-                                        <input type="text"
-                                               x-ref="emailInput{{ $i }}"
-                                               x-model="emailDigits[{{ $i }}]"
-                                               @input="focusNext($el, {{ $i }}, 'email')"
-                                               @keydown="handleKeydown($event, {{ $i }}, 'email')"
-                                               inputmode="numeric"
-                                               pattern="[0-9]*"
-                                               maxlength="2"
-                                               class="w-full h-10 sm:h-12 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg xs:rounded-xl sm:rounded-2xl text-center text-lg sm:text-xl font-extrabold text-[#0B5694] dark:text-blue-400 focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 focus:border-[#0B5694] outline-none transition-all">
-                                    @endfor
+                                <div class="bg-gray-50 dark:bg-gray-950 py-2.5 px-4 rounded border border-gray-150 dark:border-gray-855 font-bold text-xs text-[#0B5694] dark:text-blue-400 select-all">
+                                    {{ Auth::user()->email }}
                                 </div>
                                 
                                 <button type="button" 
-                                        @click="verifyEmail()"
-                                        :disabled="submitting"
-                                        class="w-full bg-[#0B5694] dark:bg-blue-600 text-white py-3 rounded font-bold text-xs uppercase tracking-wider hover:bg-[#084577] dark:hover:bg-blue-700 disabled:opacity-50 transition active:scale-[0.98] shadow-sm">
-                                    Confirm & Enable
+                                        @click="sendEmailCode()"
+                                        :disabled="emailSending"
+                                        class="bg-[#0B5694] dark:bg-blue-600 text-white px-5 py-2.5 rounded font-bold text-xs uppercase tracking-wider hover:bg-[#084577] dark:hover:bg-blue-700 disabled:opacity-50 transition shadow-sm active:scale-95">
+                                    <span x-text="emailSending ? 'Sending Code...' : (emailSent ? 'Resend Verification Code' : 'Send Verification Code')"></span>
                                 </button>
+
+                                <template x-if="statusMessage">
+                                    <p class="text-xs font-bold text-center mt-2" 
+                                       :class="statusType === 'success' ? 'text-emerald-600 dark:text-emerald-400' : (statusType === 'info' ? 'text-blue-500' : 'text-red-500')" 
+                                       x-text="statusMessage"></p>
+                                </template>
+
+                                <div x-show="emailSent" x-transition class="text-left space-y-3 pt-2">
+                                    <p class="text-[11px] text-gray-550 dark:text-gray-400 font-medium text-center">
+                                        Enter the 6-digit verification code you received:
+                                    </p>
+                                    <div class="grid grid-cols-6 gap-1 xs:gap-1.5 sm:gap-2">
+                                        @for($i = 0; $i < 6; $i++)
+                                            <input type="text"
+                                                   x-ref="emailInput{{ $i }}"
+                                                   x-model="emailDigits[{{ $i }}]"
+                                                   @input="focusNext($el, {{ $i }}, 'email')"
+                                                   @keydown="handleKeydown($event, {{ $i }}, 'email')"
+                                                   inputmode="numeric"
+                                                   pattern="[0-9]*"
+                                                   maxlength="2"
+                                                   class="w-full h-10 sm:h-12 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg xs:rounded-xl sm:rounded-2xl text-center text-lg sm:text-xl font-extrabold text-[#0B5694] dark:text-blue-400 focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 focus:border-[#0B5694] outline-none transition-all">
+                                        @endfor
+                                    </div>
+                                    
+                                    <button type="button" 
+                                            @click="verifyEmail()"
+                                            :disabled="submitting"
+                                            class="w-full bg-[#0B5694] dark:bg-blue-600 text-white py-3 rounded font-bold text-xs uppercase tracking-wider hover:bg-[#084577] dark:hover:bg-blue-700 disabled:opacity-50 transition active:scale-[0.98] shadow-sm">
+                                        Confirm & Enable
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
