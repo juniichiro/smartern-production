@@ -154,7 +154,7 @@
                         </template>
                         <template x-for="(day, i) in daysInMonth" :key="day.dateStr">
                             <button @click="mobileSelectedDay = day.dateStr; mobileSelectedIndex = i"
-                                    class="relative flex flex-col items-center justify-center py-2.5 transition-all active:scale-90 min-h-[48px]"
+                                    class="relative flex flex-col items-center justify-center py-2.5 focus:outline-none"
                                     :class="mobileSelectedDay === day.dateStr
                                         ? 'bg-[#0B5694]/10 dark:bg-blue-600/20'
                                         : isPastDate(day.dateStr) && day.events.length === 0 ? 'opacity-40' : 'hover:bg-gray-50 dark:hover:bg-gray-800/30'">
@@ -288,8 +288,8 @@
              class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-950/80 backdrop-blur-md"
              x-cloak>
             
-            <div @click.away="showModal = false"
-                 class="bg-white dark:bg-[#090D16] w-full max-w-md rounded-[40px] shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300">
+             <div @click.away="showModal = false"
+                  class="bg-white dark:bg-[#090D16] w-full max-w-md rounded-[40px] shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300">
                 
                 {{-- Modal Header --}}
                 <header class="p-6 border-b border-gray-250 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-[#0D121F]">
