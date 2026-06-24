@@ -206,7 +206,7 @@
                             <h5 class="text-xs font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider mb-4">Latest Feedback</h5>
                             <p class="text-sm text-gray-400 dark:text-gray-500 font-medium leading-relaxed">
                                 @if(optional($intern->certificate)->status === 'published')
-                                    "Your internship has been completed and verified. Final assessment records are now archived."
+                                    "{{ $intern->certificate->supervisor_feedback ?? 'Your internship has been completed and verified. Final assessment records are now archived.' }}"
                                 @else
                                     "Your supervisor hasn't submitted a review yet."
                                 @endif
