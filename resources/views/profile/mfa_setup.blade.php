@@ -31,7 +31,7 @@
         </header>
 
         <div class="max-w-4xl mx-auto">
-            <div class="bg-white dark:bg-gray-900 rounded-[35px] shadow-sm border border-gray-100 dark:border-gray-800 p-8 lg:p-12 relative overflow-hidden"
+            <div class="bg-white dark:bg-gray-900 rounded-[24px] sm:rounded-[35px] shadow-sm border border-gray-100 dark:border-gray-800 p-5 sm:p-8 lg:p-12 relative overflow-hidden"
                  x-data="{
                      activeMethod: 'totp',
                      emailSent: false,
@@ -70,19 +70,19 @@
                          });
                      }
                  }">
-                <div class="flex items-center gap-6 mb-10">
-                    <div class="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center rounded-[22px] text-[#0B5694] dark:text-blue-400 border-2 border-white dark:border-gray-800 shadow-xl transition-all">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 mb-10">
+                    <div class="w-14 h-14 sm:w-16 sm:h-16 bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center rounded-[18px] sm:rounded-[22px] text-[#0B5694] dark:text-blue-400 border-2 border-white dark:border-gray-800 shadow-xl transition-all shrink-0">
+                        <svg width="28" height="28" class="sm:w-[32px] sm:h-[32px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
                     </div>
                     <div>
-                        <h3 class="font-extrabold text-gray-800 dark:text-gray-100 text-xl md:text-2xl tracking-normal uppercase">Two-Factor Authentication</h3>
-                        <p class="text-sm md:text-base text-gray-400 dark:text-gray-500 font-medium italic mt-1">Protect your account with an extra verification method</p>
+                        <h3 class="font-extrabold text-gray-800 dark:text-gray-100 text-lg sm:text-xl md:text-2xl tracking-normal uppercase">Two-Factor Authentication</h3>
+                        <p class="text-xs sm:text-sm md:text-base text-gray-400 dark:text-gray-500 font-medium italic mt-1">Protect your account with an extra verification method</p>
                     </div>
                 </div>
 
                 @if(!$enabled)
                     {{-- TAB CONTROLLERS --}}
-                    <div class="flex gap-4 mb-8 border-b border-gray-100 dark:border-gray-800 pb-4">
+                    <div class="flex flex-col xs:flex-row gap-3 xs:gap-4 mb-8 border-b border-gray-100 dark:border-gray-800 pb-4">
                         <button type="button" 
                                 @click="activeMethod = 'totp'"
                                 :class="activeMethod === 'totp' ? 'text-[#0B5694] border-[#0B5694] dark:text-blue-400 dark:border-blue-400' : 'text-gray-400 border-transparent hover:text-gray-600'"
@@ -230,7 +230,7 @@
                                         <div class="text-left">
                                             <label class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase block mb-3 tracking-wider ml-1 text-center">Verification Code</label>
                                             <input type="hidden" name="one_time_password" x-ref="hiddenInput" required>
-                                            <div class="grid grid-cols-6 gap-2 sm:gap-3">
+                                            <div class="grid grid-cols-6 gap-2 sm:gap-4">
                                                 @for($i = 0; $i < 6; $i++)
                                                     <input type="text"
                                                            x-ref="input{{ $i }}"
@@ -241,7 +241,7 @@
                                                            inputmode="numeric"
                                                            pattern="[0-9]*"
                                                            maxlength="2"
-                                                           class="w-full h-14 sm:h-16 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl text-center text-2xl font-extrabold text-[#0B5694] dark:text-blue-400 focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 focus:border-[#0B5694] outline-none transition-all shadow-sm select-all"
+                                                           class="w-full h-12 xs:h-14 sm:h-16 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg sm:rounded-xl text-center text-lg sm:text-2xl font-extrabold text-[#0B5694] dark:text-blue-400 focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 focus:border-[#0B5694] outline-none transition-all shadow-sm select-all"
                                                            required>
                                                 @endfor
                                             </div>
@@ -264,11 +264,11 @@
                                 </form>
                             </div>
 
-                            <div class="flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-800/30 rounded-[30px] p-10 border border-gray-100 dark:border-gray-800 shadow-inner">
-                                <div class="bg-white p-6 rounded-3xl shadow-xl flex items-center justify-center">
+                            <div class="flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-800/30 rounded-[24px] sm:rounded-[30px] p-6 sm:p-10 border border-gray-100 dark:border-gray-800 shadow-inner">
+                                <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-xl flex items-center justify-center max-w-[200px] sm:max-w-none">
                                     {!! $qrCodeUrl !!}
                                 </div>
-                                <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider mt-8">Scan QR Code</p>
+                                <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider mt-6 sm:mt-8">Scan QR Code</p>
                             </div>
                         </div>
                     </div>
@@ -369,7 +369,7 @@
                                     <div class="text-left">
                                         <label class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase block mb-3 tracking-wider ml-1 text-center">Verification Code</label>
                                         <input type="hidden" name="one_time_password" x-ref="hiddenInput" required>
-                                        <div class="grid grid-cols-6 gap-2 sm:gap-3">
+                                        <div class="grid grid-cols-6 gap-1 xs:gap-1.5 sm:gap-3">
                                             @for($i = 0; $i < 6; $i++)
                                                 <input type="text"
                                                        x-ref="input{{ $i }}"
@@ -380,7 +380,7 @@
                                                        inputmode="numeric"
                                                        pattern="[0-9]*"
                                                        maxlength="2"
-                                                       class="w-full h-14 sm:h-16 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl text-center text-2xl font-extrabold text-[#0B5694] dark:text-blue-400 focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 focus:border-[#0B5694] outline-none transition-all shadow-sm select-all"
+                                                       class="w-full h-11 xs:h-13 sm:h-16 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl xs:rounded-2xl text-center text-xl sm:text-2xl font-extrabold text-[#0B5694] dark:text-blue-400 focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 focus:border-[#0B5694] outline-none transition-all shadow-sm select-all"
                                                        required>
                                             @endfor
                                         </div>

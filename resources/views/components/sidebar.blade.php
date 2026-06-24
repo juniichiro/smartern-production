@@ -421,16 +421,16 @@ class="relative">
 
         <!-- LEFT SIDEBAR PANEL -->
         <div class="w-full md:w-56 bg-gray-50/50 dark:bg-gray-950/40 p-3 md:p-4 border-b md:border-b-0 md:border-r border-gray-200/60 dark:border-gray-800/80 flex flex-col justify-between shrink-0">
-            <div class="space-y-6">
+            <div class="space-y-4 md:space-y-6">
                 <div class="px-3 text-left">
                     <h3 class="text-xs font-extrabold text-gray-800 dark:text-gray-200 uppercase tracking-wider">Settings</h3>
                     <p class="text-[11px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider mt-1">System Preferences</p>
                 </div>
-                <nav class="flex flex-row md:flex-col overflow-x-auto md:overflow-x-visible no-scrollbar">
+                <nav class="flex flex-row md:flex-col gap-1.5 md:gap-0 overflow-x-auto md:overflow-x-visible no-scrollbar p-1 bg-gray-100/60 dark:bg-gray-900/30 md:bg-transparent rounded-xl md:rounded-none">
                     <button type="button" 
                             @click="activeTab = 'general'"
-                            :class="activeTab === 'general' ? 'border-b-4 md:border-l-4 md:border-b-0 border-[#0B5694] dark:border-blue-500 font-bold text-[#0B5694] dark:text-blue-400 bg-gray-100/60 dark:bg-gray-900/30' : 'border-b-4 md:border-l-4 md:border-b-0 border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-50/50 dark:hover:bg-gray-900/10'"
-                            class="flex items-center gap-3 px-4 py-3 text-xs uppercase tracking-wider transition-all text-left whitespace-nowrap md:w-full border-t border-b border-transparent focus:outline-none shrink-0 rounded-r-lg">
+                            :class="activeTab === 'general' ? 'bg-white dark:bg-gray-800 md:bg-gray-100/60 dark:md:bg-gray-900/30 border-b-2 md:border-b-0 md:border-l-4 border-[#0B5694] dark:border-blue-500 font-bold text-[#0B5694] dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'"
+                            class="flex items-center justify-center md:justify-start gap-2.5 px-4 py-2.5 md:py-3 text-xs uppercase tracking-wider transition-all text-left whitespace-nowrap md:w-full border-t border-b border-transparent focus:outline-none shrink-0 rounded-lg md:rounded-none md:rounded-r-lg shadow-sm md:shadow-none">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="3"/>
                             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
@@ -439,8 +439,8 @@ class="relative">
                     </button>
                     <button type="button" 
                             @click="activeTab = 'security'"
-                            :class="activeTab === 'security' ? 'border-b-4 md:border-l-4 md:border-b-0 border-[#0B5694] dark:border-blue-500 font-bold text-[#0B5694] dark:text-blue-400 bg-gray-100/60 dark:bg-gray-900/30' : 'border-b-4 md:border-l-4 md:border-b-0 border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-50/50 dark:hover:bg-gray-900/10'"
-                            class="flex items-center gap-3 px-4 py-3 text-xs uppercase tracking-wider transition-all text-left whitespace-nowrap md:w-full border-t border-b border-transparent focus:outline-none shrink-0 rounded-r-lg">
+                            :class="activeTab === 'security' ? 'bg-white dark:bg-gray-800 md:bg-gray-100/60 dark:md:bg-gray-900/30 border-b-2 md:border-b-0 md:border-l-4 border-[#0B5694] dark:border-blue-500 font-bold text-[#0B5694] dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'"
+                            class="flex items-center justify-center md:justify-start gap-2.5 px-4 py-2.5 md:py-3 text-xs uppercase tracking-wider transition-all text-left whitespace-nowrap md:w-full border-t border-b border-transparent focus:outline-none shrink-0 rounded-lg md:rounded-none md:rounded-r-lg shadow-sm md:shadow-none">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                             <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
@@ -469,13 +469,13 @@ class="relative">
 
                 <!-- Tab content: General -->
                 <div x-show="activeTab === 'general'" class="space-y-6" x-transition>
-                    <!-- Appearance Selection -->
-                    <div class="flex items-center justify-between py-4 border-b border-gray-150 dark:border-gray-800 text-left">
+                     <!-- Appearance Selection -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between py-4 border-b border-gray-150 dark:border-gray-800 text-left gap-4">
                         <div class="space-y-1">
                             <h5 class="text-xs font-bold text-gray-850 dark:text-gray-200">Theme</h5>
                             <p class="text-[11px] text-gray-400 dark:text-gray-555 font-medium">Switch between light and dark visual interfaces</p>
                         </div>
-                        <div class="flex items-center gap-1 bg-gray-100/80 dark:bg-gray-800/80 rounded-lg p-1 border border-gray-200/60 dark:border-gray-700/60">
+                        <div class="flex items-center gap-1 bg-gray-100/80 dark:bg-gray-800/80 rounded-lg p-1 border border-gray-200/60 dark:border-gray-700/60 self-start sm:self-auto shrink-0">
                             <button type="button"
                                     @click="darkMode = false"
                                     :class="!darkMode ? 'bg-white dark:bg-gray-700 shadow-sm text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
@@ -622,7 +622,7 @@ class="relative">
                                     2. Type the generated 6-digit confirmation code:
                                 </p>
                                 
-                                <div class="grid grid-cols-6 gap-1 sm:gap-2">
+                                <div class="grid grid-cols-6 gap-1 xs:gap-1.5 sm:gap-2">
                                     @for($i = 0; $i < 6; $i++)
                                         <input type="text"
                                                x-ref="totpInput{{ $i }}"
@@ -632,7 +632,7 @@ class="relative">
                                                inputmode="numeric"
                                                pattern="[0-9]*"
                                                maxlength="2"
-                                               class="w-full h-10 sm:h-12 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl sm:rounded-2xl text-center text-lg sm:text-xl font-extrabold text-[#0B5694] dark:text-blue-400 focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 focus:border-[#0B5694] outline-none transition-all">
+                                               class="w-full h-10 sm:h-12 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg xs:rounded-xl sm:rounded-2xl text-center text-lg sm:text-xl font-extrabold text-[#0B5694] dark:text-blue-400 focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 focus:border-[#0B5694] outline-none transition-all">
                                     @endfor
                                 </div>
                                 
@@ -686,7 +686,7 @@ class="relative">
                                 <p class="text-[11px] text-gray-550 dark:text-gray-400 font-medium text-center">
                                     Enter the 6-digit verification code you received:
                                 </p>
-                                <div class="grid grid-cols-6 gap-1 sm:gap-2">
+                                <div class="grid grid-cols-6 gap-1 xs:gap-1.5 sm:gap-2">
                                     @for($i = 0; $i < 6; $i++)
                                         <input type="text"
                                                x-ref="emailInput{{ $i }}"
@@ -696,7 +696,7 @@ class="relative">
                                                inputmode="numeric"
                                                pattern="[0-9]*"
                                                maxlength="2"
-                                               class="w-full h-10 sm:h-12 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl sm:rounded-2xl text-center text-lg sm:text-xl font-extrabold text-[#0B5694] dark:text-blue-400 focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 focus:border-[#0B5694] outline-none transition-all">
+                                               class="w-full h-10 sm:h-12 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg xs:rounded-xl sm:rounded-2xl text-center text-lg sm:text-xl font-extrabold text-[#0B5694] dark:text-blue-400 focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 focus:border-[#0B5694] outline-none transition-all">
                                     @endfor
                                 </div>
                                 

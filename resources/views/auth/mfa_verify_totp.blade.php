@@ -32,16 +32,16 @@
 
     {{-- Background Design --}}
     <div class="absolute inset-0 z-0">
-        <div class="absolute left-0 top-0 w-1/2 h-full bg-[#0B5694] dark:bg-blue-900 opacity-90 dark:opacity-80 skew-x-[-12deg] -translate-x-32 transition-colors duration-300"></div>
+        <div class="absolute left-0 top-0 w-1/2 h-full bg-[#0B5694] dark:bg-blue-900 opacity-90 dark:opacity-80 skew-x-[-12deg] -translate-x-32 transition-colors duration-300 hidden md:block"></div>
         <div class="absolute right-0 top-0 w-full h-full bg-cover bg-center" 
              style="background-image: url('/images/school-bg.jpg'); filter: brightness(0.7);"></div>
     </div>
 
     {{-- MFA CARD --}}
-    <div class="relative z-10 w-full max-w-[450px] bg-white dark:bg-gray-900 rounded-[40px] shadow-2xl p-12 mx-4 transition-all duration-300 border border-transparent dark:border-gray-800">
+    <div class="relative z-10 w-full max-w-[450px] bg-white dark:bg-gray-900 rounded-[28px] xs:rounded-[36px] sm:rounded-[40px] shadow-2xl p-6 xs:p-8 sm:p-10 md:p-12 mx-4 transition-all duration-300 border border-transparent dark:border-gray-800">
         
-        <header class="text-center mb-10">
-            <h1 class="text-4xl font-extrabold text-[#0B5694] dark:text-blue-400 tracking-normal transition-colors duration-300">Identity Check</h1>
+        <header class="text-center mb-8 sm:mb-10">
+            <h1 class="text-2xl xs:text-3xl sm:text-4xl font-extrabold text-[#0B5694] dark:text-blue-400 tracking-normal transition-colors duration-300">Identity Check</h1>
             <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-2 font-bold uppercase tracking-wider leading-relaxed">
                 Enter the 6-digit code from your <br>
                 <span class="text-[#0B5694] dark:text-blue-400">Authenticator App</span>
@@ -165,7 +165,7 @@
                 <input type="hidden" name="one_time_password" x-ref="hiddenInput" required>
 
                 {{-- Grid of 6 inputs --}}
-                <div class="grid grid-cols-6 gap-2 sm:gap-3">
+                <div class="grid grid-cols-6 gap-1 xs:gap-1.5 sm:gap-3">
                     @for($i = 0; $i < 6; $i++)
                         <input type="text"
                                x-ref="input{{ $i }}"
@@ -176,7 +176,7 @@
                                inputmode="numeric"
                                pattern="[0-9]*"
                                maxlength="2"
-                               class="w-full h-14 sm:h-16 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl text-center text-2xl font-extrabold text-[#0B5694] dark:text-blue-400 focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 focus:border-[#0B5694] outline-none transition-all shadow-sm select-all"
+                               class="w-full h-11 xs:h-13 sm:h-16 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl xs:rounded-2xl text-center text-xl sm:text-2xl font-extrabold text-[#0B5694] dark:text-blue-400 focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 focus:border-[#0B5694] outline-none transition-all shadow-sm select-all"
                                required>
                     @endfor
                 </div>

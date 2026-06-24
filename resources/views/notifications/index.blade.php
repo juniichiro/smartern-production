@@ -106,12 +106,12 @@
                         };
                     @endphp
 
-                    <div class="flex items-stretch gap-4 group">
+                    <div class="flex items-stretch gap-2.5 sm:gap-4 group">
                         <div @click="handleNotificationClick('{{ $notifId }}', '{{ csrf_token() }}')" 
-                             class="flex-1 flex gap-5 items-start p-6 md:p-8 border rounded-[30px] transition-all duration-300 cursor-pointer select-none active:scale-[0.99] {{ $cardBgClass }}">
+                             class="flex-1 flex gap-3 xs:gap-5 items-start p-4 xs:p-6 md:p-8 border rounded-[20px] xs:rounded-[30px] transition-all duration-300 cursor-pointer select-none active:scale-[0.99] {{ $cardBgClass }}">
                             
                             {{-- Category Icon --}}
-                            <div class="p-3.5 rounded-2xl border shrink-0 {{ $iconClass }}">
+                            <div class="p-2.5 xs:p-3.5 rounded-xl xs:rounded-2xl border shrink-0 {{ $iconClass }}">
                                 @if($category === 'task')
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
                                 @elseif($category === 'announcement')
@@ -120,30 +120,30 @@
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                                 @endif
                             </div>
-
+ 
                             {{-- Text Content --}}
-                            <div class="flex-1 min-w-0">
+                            <div class="flex-1 min-w-0 text-left">
                                 <div class="flex flex-wrap justify-between items-center gap-2 mb-2">
                                     <div class="flex items-center gap-3">
-                                        <span class="text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500">{{ $categoryLabel }}</span>
+                                        <span class="text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-550">{{ $categoryLabel }}</span>
                                         @if(!$isRead)
                                             <span class="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]"></span>
                                         @endif
                                     </div>
-                                    <span class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase">{{ $notif->created_at->diffForHumans() }}</span>
+                                    <span class="text-[10px] text-gray-400 dark:text-gray-550 font-bold uppercase">{{ $notif->created_at->diffForHumans() }}</span>
                                 </div>
                                 <p class="text-sm md:text-base font-bold text-gray-700 dark:text-gray-200 leading-normal group-hover:text-[#0B5694] dark:group-hover:text-blue-400 transition-colors">
                                     {{ $notif->message }}
                                 </p>
                             </div>
                         </div>
-
+ 
                         {{-- Mark as Read Button (for individual unread items) --}}
                         @if(!$isRead)
                             <form action="{{ route('notifications.read', $notif) }}" method="POST" class="flex shrink-0">
                                 @csrf
                                 <button type="submit" 
-                                        class="h-full px-5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[24px] hover:bg-emerald-50 hover:border-emerald-100 hover:text-emerald-500 dark:hover:bg-emerald-950/20 dark:hover:border-emerald-900/50 dark:hover:text-emerald-400 text-gray-400 transition-all cursor-pointer flex items-center justify-center" 
+                                        class="h-full px-3.5 sm:px-5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[16px] sm:rounded-[24px] hover:bg-emerald-50 hover:border-emerald-100 hover:text-emerald-500 dark:hover:bg-emerald-950/20 dark:hover:border-emerald-900/50 dark:hover:text-emerald-400 text-gray-400 transition-all cursor-pointer flex items-center justify-center" 
                                         title="Mark as read">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                                 </button>

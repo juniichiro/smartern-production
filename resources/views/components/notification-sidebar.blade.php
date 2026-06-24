@@ -68,10 +68,10 @@
                 'lg:translate-x-0': !desktopNotifCollapsed,
                 'lg:translate-x-full': desktopNotifCollapsed
            }" 
-           class="w-80 bg-white dark:bg-gray-900 border-l border-gray-100 dark:border-gray-800 p-8 fixed right-0 top-0 h-full text-left overflow-y-auto z-[110] transition-all duration-300 ease-in-out">
+           class="w-[85vw] sm:w-80 max-w-[20rem] bg-white dark:bg-gray-900 border-l border-gray-100 dark:border-gray-800 p-5 sm:p-8 fixed right-0 top-0 h-full text-left overflow-y-auto z-[110] transition-all duration-300 ease-in-out">
         
         {{-- Header --}}
-        <div class="flex justify-between items-center mb-12 mt-4">
+        <div class="flex justify-between items-center mb-10 sm:mb-12 mt-4">
             <div>
                 <h4 class="font-bold text-gray-400 dark:text-gray-300 text-xs uppercase tracking-wider">Notifications</h4>
                 <template x-if="unreadCount > 0">
@@ -81,8 +81,8 @@
                 </template>
             </div>
             
-            <div class="flex items-center gap-4">
-                <div class="relative">
+            <div class="flex items-center gap-2 sm:gap-4">
+                <div class="relative mr-1.5 sm:mr-0">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2.5">
                         <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
                     </svg>
@@ -99,6 +99,15 @@
                         title="Hide Notifications">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform">
                         <polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline>
+                    </svg>
+                </button>
+
+                {{-- Close button for mobile --}}
+                <button @click="notifOpen = false" 
+                        class="lg:hidden p-1.5 rounded-md hover:bg-gray-50/50 dark:hover:bg-gray-800/50 text-gray-400 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+                        title="Close Notifications">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
                     </svg>
                 </button>
             </div>
@@ -158,7 +167,7 @@
             </template>
         </div>
 
-        <a href="{{ route('notifications.index') }}" class="mt-16 block text-xs font-bold text-gray-400 dark:text-gray-400 hover:text-[#0B5694] dark:hover:text-blue-400 transition-all w-full text-center py-4 border border-dashed border-gray-200 dark:border-gray-800 rounded-2xl uppercase tracking-wider">
+        <a href="{{ route('notifications.index') }}" class="mt-10 sm:mt-16 block text-xs font-bold text-gray-400 dark:text-gray-400 hover:text-[#0B5694] dark:hover:text-blue-400 transition-all w-full text-center py-4 border border-dashed border-gray-200 dark:border-gray-800 rounded-2xl uppercase tracking-wider">
             View All History
         </a>
     </aside>
