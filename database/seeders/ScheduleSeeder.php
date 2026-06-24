@@ -17,6 +17,8 @@ class ScheduleSeeder extends Seeder
             Schedule::create([
                 'school_name' => $school,
                 'type' => 'school_default',
+                'start_date' => Carbon::now()->subMonth()->format('Y-m-d'),
+                'target_end_date' => Carbon::now()->addMonths(3)->format('Y-m-d'),
                 'start_time' => '08:00:00',
                 'end_time' => '17:00:00',
                 'daily_hours' => 8,
