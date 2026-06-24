@@ -38,8 +38,18 @@ class AccountController extends Controller
 
     public function index(Request $request)
     {
-        $query = User::with(['role', 'internDetails.office', 'supervisorDetails.office', 'schoolCoordinatorDetails'])
-            ->where('role_id', '!=', UserRole::ADMIN);
+        $authUser = auth()->user();
+        $authRoleVal = $authUser->role_id instanceof UserRole ? $authUser->role_id->value : (int)$authUser->role_id;
+
+        $query = User::with(['role', 'internDetails.office', 'supervisorDetails.office', 'schoolCoordinatorDetails']);
+
+        if ($authRoleVal === UserRole::SUPER_ADMIN->value) {
+            // Super Admin can see standard Admins, but not other Super Admins
+            $query->where('role_id', '!=', UserRole::SUPER_ADMIN->value);
+        } else {
+            // Standard Admin can see everyone except other Admins and Super Admins
+            $query->whereNotIn('role_id', [UserRole::ADMIN->value, UserRole::SUPER_ADMIN->value]);
+        }
 
         // Server-side search logic
         if ($request->filled('search')) {
@@ -225,6 +235,18 @@ class AccountController extends Controller
 
     public function update(UpdateAccountRequest $request, User $user)
     {
+        $authUser = auth()->user();
+        $userRoleVal = $user->role_id instanceof UserRole ? $user->role_id->value : (int)$user->role_id;
+        $authRoleVal = $authUser->role_id instanceof UserRole ? $authUser->role_id->value : (int)$authUser->role_id;
+
+        if ($userRoleVal === UserRole::SUPER_ADMIN->value) {
+            return redirect()->back()->withErrors(['error' => 'Cannot modify a super administrator account.']);
+        }
+
+        if ($userRoleVal === UserRole::ADMIN->value && $authRoleVal !== UserRole::SUPER_ADMIN->value) {
+            return redirect()->back()->withErrors(['error' => 'Cannot modify an administrator account.']);
+        }
+
         try {
             return DB::transaction(function () use ($request, $user) {
                 $user->update(['email' => $request->email]);
@@ -307,6 +329,17 @@ class AccountController extends Controller
 
     public function destroy(User $user)
     {
+        $userRoleVal = $user->role_id instanceof UserRole ? $user->role_id->value : (int)$user->role_id;
+        $authRoleVal = auth()->user()->role_id instanceof UserRole ? auth()->user()->role_id->value : (int)auth()->user()->role_id;
+
+        if ($userRoleVal === UserRole::SUPER_ADMIN->value) {
+            return redirect()->back()->withErrors(['error' => 'Cannot modify a super administrator account.']);
+        }
+
+        if ($userRoleVal === UserRole::ADMIN->value && $authRoleVal !== UserRole::SUPER_ADMIN->value) {
+            return redirect()->back()->withErrors(['error' => 'Cannot modify an administrator account.']);
+        }
+
         if ($user->id === auth()->id()) {
             return redirect()->back()->withErrors(['error' => 'You cannot deactivate yourself.']);
         }

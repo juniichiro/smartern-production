@@ -15,6 +15,13 @@ class Role extends Model
 
     protected $fillable = ['name'];
 
+    protected static function booted(): void
+    {
+        static::addGlobalScope('hide_super_admin_role', function ($builder) {
+            $builder->where('id', '!=', \App\Enums\UserRole::SUPER_ADMIN->value);
+        });
+    }
+
     /**
      * A role can be assigned to many users.
      */

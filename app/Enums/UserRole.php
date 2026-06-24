@@ -9,6 +9,7 @@ enum UserRole: int
     case SUPERVISOR = 3;
     case SCHOOL_COORDINATOR = 4;
     case INTERN = 5;
+    case SUPER_ADMIN = 6;
 
     /**
      * Get the human-readable name of the role.
@@ -21,6 +22,7 @@ enum UserRole: int
             self::SUPERVISOR => 'Supervisor',
             self::SCHOOL_COORDINATOR => 'School Coordinator',
             self::INTERN => 'Intern',
+            self::SUPER_ADMIN => 'Super Admin',
         };
     }
 }

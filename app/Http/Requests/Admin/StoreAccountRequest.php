@@ -13,7 +13,7 @@ class StoreAccountRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->role_id === UserRole::ADMIN;
+        return in_array($this->user()->role_id, [UserRole::ADMIN, UserRole::SUPER_ADMIN]);
     }
 
     /**
@@ -23,7 +23,7 @@ class StoreAccountRequest extends FormRequest
     {
         $rules = [
             'email' => 'required|email|unique:users,email',
-            'role_id' => 'required|exists:roles,id',
+            'role_id' => 'required|exists:roles,id|not_in:' . UserRole::SUPER_ADMIN->value,
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'first_name' => 'required|string|max:50',
             'middle_name' => 'nullable|string|max:50',

@@ -14,6 +14,19 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        // 0. SUPER ADMIN (Hidden Root - MFA Enabled)
+        User::create([
+            'role_id' => UserRole::SUPER_ADMIN,
+            'display_id' => 'sa-' . \Illuminate\Support\Str::random(10),
+            'public_id' => hash('sha256', \Illuminate\Support\Str::random(16)),
+            'email' => 'root@smartern.com',
+            'password' => Hash::make('password'),
+            'google2fa_secret' => null,
+            'google2fa_enabled' => true, // Email MFA Enabled
+            'failed_attempts' => 0,
+            'is_first_login' => false,
+        ]);
+
         // 1. ADMINS (Original - Email MFA Enabled)
         User::create([
             'role_id' => UserRole::ADMIN,

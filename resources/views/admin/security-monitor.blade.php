@@ -232,7 +232,20 @@
                                 </span>
                             </td>
                             <td class="px-8 py-6 text-right">
-                                @if($log->user && $log->user->role_id !== \App\Enums\UserRole::ADMIN && $log->anomaly_score > 0.7 && $log->user->locked_until && now()->lessThan($log->user->locked_until))
+                                @php
+                                    $canEvaluate = false;
+                                    if ($log->user && $log->anomaly_score > 0.7 && $log->user->locked_until && now()->lessThan($log->user->locked_until)) {
+                                        $targetRoleVal = $log->user->role_id instanceof \App\Enums\UserRole ? $log->user->role_id->value : (int)$log->user->role_id;
+                                        if ($targetRoleVal === \App\Enums\UserRole::SUPER_ADMIN->value) {
+                                            $canEvaluate = false;
+                                        } elseif ($targetRoleVal === \App\Enums\UserRole::ADMIN->value) {
+                                            $canEvaluate = Auth::user()->role_id === \App\Enums\UserRole::SUPER_ADMIN;
+                                        } else {
+                                            $canEvaluate = true;
+                                        }
+                                    }
+                                @endphp
+                                @if($canEvaluate)
                                     <div class="flex flex-col items-end gap-1">
                                         @if($log->user->locked_until && now()->lessThan($log->user->locked_until))
                                             <span class="inline-block text-[9px] font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/20 px-2 py-0.5 rounded-md border border-rose-100 dark:border-rose-800/50 mb-1">
@@ -333,8 +346,21 @@
                         <p class="line-clamp-1 overflow-hidden" title="{{ $log->user_agent }}">Device: {{ str_replace('|', ' • ', $log->device ?? 'System') }}</p>
                         <p class="line-clamp-1 sm:ml-4 overflow-hidden" title="{{ $log->user_agent }}">UA: {{ $log->user_agent ?? 'System' }}</p>
                     </div>
-                    @if($log->user && $log->user->role_id !== \App\Enums\UserRole::ADMIN && $log->anomaly_score > 0.7 && $log->user->locked_until && now()->lessThan($log->user->locked_until))
-                        <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 space-y-2">
+                    @php
+                        $canEvaluateMobile = false;
+                        if ($log->user && $log->anomaly_score > 0.7 && $log->user->locked_until && now()->lessThan($log->user->locked_until)) {
+                            $targetRoleVal = $log->user->role_id instanceof \App\Enums\UserRole ? $log->user->role_id->value : (int)$log->user->role_id;
+                            if ($targetRoleVal === \App\Enums\UserRole::SUPER_ADMIN->value) {
+                                $canEvaluateMobile = false;
+                            } elseif ($targetRoleVal === \App\Enums\UserRole::ADMIN->value) {
+                                $canEvaluateMobile = Auth::user()->role_id === \App\Enums\UserRole::SUPER_ADMIN;
+                            } else {
+                                $canEvaluateMobile = true;
+                            }
+                        }
+                    @endphp
+                    @if($canEvaluateMobile)
+                        <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800/50 space-y-2">
                             @if($log->user->locked_until && now()->lessThan($log->user->locked_until))
                                 <div class="text-center mb-2">
                                     <span class="inline-block text-[9px] font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/20 px-2 py-0.5 rounded-md border border-rose-100 dark:border-rose-800/50">

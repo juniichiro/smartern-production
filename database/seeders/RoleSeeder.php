@@ -18,6 +18,7 @@ class RoleSeeder extends Seeder
             ['name' => 'supervisor'],
             ['name' => 'school_coordinator'],
             ['name' => 'intern'],
+            ['name' => 'super_admin'],
         ];
 
         // Using DB::table to bypass mass-assignment protection for this initial setup

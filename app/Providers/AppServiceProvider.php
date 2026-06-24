@@ -24,6 +24,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        \Illuminate\Support\Facades\Gate::before(function ($user, $ability) {
+            if ($user->role_id === \App\Enums\UserRole::SUPER_ADMIN) {
+                return true;
+            }
+        });
+
         if (str_starts_with(config('app.url'), 'https://') && request()->getHost() !== 'localhost' && request()->getHost() !== '127.0.0.1') {
             URL::forceScheme('https');
         }

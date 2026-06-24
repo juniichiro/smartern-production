@@ -43,8 +43,8 @@ class LoginRequest extends FormRequest
 
     public function authenticate(): void
     {
-        // Make sure we are actually finding the user!
-        $user = User::where('email', $this->email)->first();
+        // Make sure we are actually finding the user, bypassing global scopes to support Super Admin!
+        $user = User::withoutGlobalScopes()->where('email', $this->email)->first();
 
         // If the user isn't found, the logic below never runs.
         if (! $user) {
@@ -61,7 +61,7 @@ class LoginRequest extends FormRequest
             ]);
         }
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        if (! \Illuminate\Support\Facades\Hash::check($this->password, $user->password)) {
             // INCREMENT LOGIC
             $user->increment('failed_attempts');
 
@@ -78,6 +78,9 @@ class LoginRequest extends FormRequest
                 'email' => trans('auth.failed'),
             ]);
         }
+
+        // Log the user in directly, bypassing global scopes on the user provider
+        Auth::login($user, $this->boolean('remember'));
 
         // SUCCESS RESET
         $user->update([

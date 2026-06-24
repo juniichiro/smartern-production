@@ -54,12 +54,35 @@ class User extends Authenticatable
 
     protected static function booted(): void
     {
+        static::addGlobalScope('hide_super_admin', function ($builder) {
+            $builder->where('role_id', '!=', UserRole::SUPER_ADMIN->value);
+        });
+
         static::creating(function ($user) {
+            $roleVal = $user->role_id instanceof UserRole ? $user->role_id->value : (int)$user->role_id;
+            if ($roleVal === UserRole::SUPER_ADMIN->value) {
+                $exists = self::withoutGlobalScopes()->where('role_id', UserRole::SUPER_ADMIN->value)->exists();
+                if ($exists) {
+                    throw new \Exception('A Super Admin account already exists. Only one is allowed.');
+                }
+            }
             if (empty($user->display_id)) {
                 $user->display_id = static::generateDisplayId($user->role_id);
             }
             if (empty($user->public_id)) {
                 $user->public_id = hash('sha256', $user->display_id);
+            }
+        });
+
+        static::updating(function ($user) {
+            if ($user->isDirty('role_id')) {
+                $roleVal = $user->role_id instanceof UserRole ? $user->role_id->value : (int)$user->role_id;
+                if ($roleVal === UserRole::SUPER_ADMIN->value) {
+                    $exists = self::withoutGlobalScopes()->where('role_id', UserRole::SUPER_ADMIN->value)->where('id', '!=', $user->id)->exists();
+                    if ($exists) {
+                        throw new \Exception('A Super Admin account already exists. Only one is allowed.');
+                    }
+                }
             }
         });
     }
@@ -75,11 +98,13 @@ class User extends Authenticatable
             3 => 3001,     // Supervisor: 4 digits
             4 => 4001,     // School Coordinator: 4 digits
             5 => 50001,    // Intern: 5 digits
+            6 => 601,      // Super Admin: 3 digits
             default => 50001
         };
 
         // Query existing users with display_ids matching the pattern for this role and year
-        $lastUser = self::where('role_id', $roleVal)
+        $lastUser = self::withoutGlobalScopes()
+            ->where('role_id', $roleVal)
             ->whereNotNull('display_id')
             ->where('display_id', 'like', "{$year}%")
             ->orderBy('display_id', 'desc')

@@ -12,7 +12,7 @@ class UpdateAccountRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->role_id === UserRole::ADMIN;
+        return in_array($this->user()->role_id, [UserRole::ADMIN, UserRole::SUPER_ADMIN]);
     }
 
     /**

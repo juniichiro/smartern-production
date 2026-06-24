@@ -19,6 +19,10 @@ class RoleMiddleware
         if ($request->user()) {
             $userRole = strtolower($request->user()->role->name);
 
+            if ($userRole === 'super_admin') {
+                return $next($request);
+            }
+
             foreach ($roles as $role) {
                 if ($userRole === strtolower($role)) {
                     return $next($request);

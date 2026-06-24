@@ -94,11 +94,10 @@ class AnomalyDetectionService
                     ->get();
 
                 if ($criticalLogs->isNotEmpty() || $warningLogs->isNotEmpty()) {
-                    $admins = User::where('role_id', UserRole::ADMIN)->get();
-
                     if ($criticalLogs->isNotEmpty()) {
                         foreach ($criticalLogs as $log) {
-                            if ($log->user && $log->user->role_id !== UserRole::ADMIN && config('services.security.lockout_enabled', true)) {
+                            $userRoleVal = $log->user->role_id instanceof UserRole ? $log->user->role_id->value : (int)$log->user->role_id;
+                            if ($log->user && $userRoleVal !== UserRole::SUPER_ADMIN->value && config('services.security.lockout_enabled', true)) {
                                 $log->user->update([
                                     'locked_until' => now()->addMinutes(30),
                                 ]);
@@ -110,10 +109,20 @@ class AnomalyDetectionService
                                 }
                             }
 
-                            // 2. Send notifications to all Admins
-                            foreach ($admins as $admin) {
+                            // 2. Send notifications to all Admins and Super Admins (bypassing global scopes)
+                            $recipients = User::withoutGlobalScopes()
+                                ->whereIn('role_id', [UserRole::ADMIN->value, UserRole::SUPER_ADMIN->value])
+                                ->get();
+
+                            foreach ($recipients as $recipient) {
+                                $recipientRoleVal = $recipient->role_id instanceof UserRole ? $recipient->role_id->value : (int)$recipient->role_id;
+                                // If the user who triggered the critical log is an Admin, only notify the Super Admin (root)
+                                if ($userRoleVal === UserRole::ADMIN->value && $recipientRoleVal !== UserRole::SUPER_ADMIN->value) {
+                                    continue;
+                                }
+
                                 $notification = Notification::create([
-                                    'recipient_id' => $admin->id,
+                                    'recipient_id' => $recipient->id,
                                     'sender_id' => $log->user_id,
                                     'type' => 'Security Alert',
                                     'category' => 'system',
@@ -126,14 +135,14 @@ class AnomalyDetectionService
                                 try {
                                     broadcast(new RealTimeNotificationSent($notification));
                                 } catch (\Exception $e) {
-                                    // Suppress socket broadcasting errors in environments where Reverb is offline
+                                    // Suppress socket broadcasting errors
                                 }
 
                                 // Trigger email notification
                                 try {
-                                    Mail::to($admin->email)->send(new SecurityAlertMail($log, $admin));
+                                    Mail::to($recipient->email)->send(new SecurityAlertMail($log, $recipient));
                                 } catch (\Exception $e) {
-                                    Log::error("Failed to send security alert email to {$admin->email}: ".$e->getMessage());
+                                    Log::error("Failed to send security alert email to {$recipient->email}: ".$e->getMessage());
                                 }
                             }
                         }
@@ -141,9 +150,20 @@ class AnomalyDetectionService
 
                     if ($warningLogs->isNotEmpty()) {
                         foreach ($warningLogs as $log) {
-                            foreach ($admins as $admin) {
+                            $userRoleVal = $log->user->role_id instanceof UserRole ? $log->user->role_id->value : (int)$log->user->role_id;
+                            $recipients = User::withoutGlobalScopes()
+                                ->whereIn('role_id', [UserRole::ADMIN->value, UserRole::SUPER_ADMIN->value])
+                                ->get();
+
+                            foreach ($recipients as $recipient) {
+                                $recipientRoleVal = $recipient->role_id instanceof UserRole ? $recipient->role_id->value : (int)$recipient->role_id;
+                                // If the flagged user is an Admin, only notify Super Admins
+                                if ($userRoleVal === UserRole::ADMIN->value && $recipientRoleVal !== UserRole::SUPER_ADMIN->value) {
+                                    continue;
+                                }
+
                                 $notification = Notification::create([
-                                    'recipient_id' => $admin->id,
+                                    'recipient_id' => $recipient->id,
                                     'sender_id' => $log->user_id,
                                     'type' => 'Security Warning',
                                     'category' => 'system',
@@ -159,13 +179,10 @@ class AnomalyDetectionService
                                     // Suppress socket broadcasting errors
                                 }
 
-                                // Note: We only send system notifications for warnings per requirements,
-                                // but we could also send email if needed. Requirement says "notify admin via system notification/email".
-                                // For warning, system notification might be enough to avoid email spam, but let's send email too.
                                 try {
-                                    Mail::to($admin->email)->send(new SecurityAlertMail($log, $admin));
+                                    Mail::to($recipient->email)->send(new SecurityAlertMail($log, $recipient));
                                 } catch (\Exception $e) {
-                                    Log::error("Failed to send security warning email to {$admin->email}: ".$e->getMessage());
+                                    Log::error("Failed to send security warning email to {$recipient->email}: ".$e->getMessage());
                                 }
                             }
                         }
