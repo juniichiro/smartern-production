@@ -58,9 +58,18 @@ class ProgressController extends Controller
             ->where('entry_date', now()->format('Y-m-d'))
             ->exists();
 
+        $schoolSchedule = null;
+        if ($intern && $intern->school) {
+            $schoolSchedule = \App\Models\Schedule::where('type', 'school_default')
+                ->where('school_name', $intern->school)
+                ->first();
+        }
+
+        $timelineNotSet = !$schoolSchedule || !$schoolSchedule->start_date || !$schoolSchedule->target_end_date;
+
         return view('intern.progress', compact(
             'rendered', 'remaining', 'percentage', 'totalRequired',
-            'tasks', 'hasSubmittedToday', 'journals'
+            'tasks', 'hasSubmittedToday', 'journals', 'timelineNotSet'
         ));
     }
 

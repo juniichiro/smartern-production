@@ -64,7 +64,7 @@ class AttendanceController extends Controller
 
         if ($timelineNotSet) {
             $isEnabled = false;
-            $statusMessage = 'Your program timeline has not been configured yet.';
+            $statusMessage = 'Your internship schedule has not started just yet.';
         } elseif ($effectiveSchedule['blocked'] && ! $todayRecord && ! $completedToday) {
             $isEnabled = false;
             $labelMap = [

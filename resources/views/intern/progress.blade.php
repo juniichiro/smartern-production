@@ -113,7 +113,18 @@
 
         {{-- ACTUAL CONTENT VIEW --}}
         <div x-show="!loading" x-cloak x-transition:enter="transition ease-out duration-500 delay-200" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" class="flex flex-col flex-1">
-            {{-- STATUS ALERTS --}}
+            @if($timelineNotSet)
+                <div class="flex-1 flex flex-col items-center justify-center text-center py-20 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[35px] min-h-[400px]">
+                    <div class="w-36 h-36 bg-amber-50 dark:bg-amber-900/20 rounded-full flex items-center justify-center text-amber-500 mb-10 border-4 border-amber-100 dark:border-amber-800 shadow-inner">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" x2="16" y1="2" x2="16" y2="6"/><line x1="8" x2="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    </div>
+                    <h3 class="text-4xl font-extrabold text-gray-800 dark:text-gray-100 uppercase tracking-normal">Schedule Pending</h3>
+                    <p class="text-[11px] text-gray-400 dark:text-gray-500 max-w-sm mt-6 font-bold uppercase tracking-[0.2em] italic leading-relaxed text-center px-6">
+                        Your internship schedule has not started just yet. Please contact your coordinator.
+                    </p>
+                </div>
+            @else
+                {{-- STATUS ALERTS --}}
         @if(session('success'))
             <div class="mb-8 p-5 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 rounded-[22px] font-bold uppercase text-[10px] tracking-[0.2em] border border-emerald-100 dark:border-emerald-900/50 shadow-sm flex items-center gap-3">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
@@ -367,6 +378,8 @@
             </div>
         </div>
     </div>
+
+            @endif
 
     {{-- JOURNAL ENTRY MODAL --}}
     <div x-show="showJournalModal" 

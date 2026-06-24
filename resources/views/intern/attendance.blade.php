@@ -103,9 +103,9 @@
                                 <div class="w-36 h-36 bg-amber-50 dark:bg-amber-900/20 rounded-full flex items-center justify-center text-amber-500 mb-10 border-4 border-amber-100 dark:border-amber-800 shadow-inner">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                                 </div>
-                                <h3 class="text-4xl font-extrabold text-gray-800 dark:text-gray-100 uppercase tracking-normal">Timeline Pending</h3>
+                                <h3 class="text-4xl font-extrabold text-gray-800 dark:text-gray-100 uppercase tracking-normal">Schedule Pending</h3>
                                 <p class="text-[11px] text-gray-400 dark:text-gray-500 max-w-sm mt-6 font-bold uppercase tracking-[0.2em] italic leading-relaxed text-center px-6">
-                                    Your specific internship starting date and expected end date are not configured yet. Please contact your coordinator.
+                                    Your internship schedule has not started just yet. Please contact your coordinator.
                                 </p>
                                 </div>
                                 @else
