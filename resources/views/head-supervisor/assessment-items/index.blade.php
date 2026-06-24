@@ -82,14 +82,13 @@
                     <form action="{{ route('head-supervisor.assessment-items.store') }}" method="POST" class="space-y-6">
                         @csrf
                         <div class="space-y-2">
-                            <label class="text-[11px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider ml-1">Category</label>
-                            <select name="category" required class="w-full bg-gray-50 dark:bg-gray-800 border-2 border-transparent focus:border-blue-500/20 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 outline-none transition-all">
-                                <option value="I. Digital and Technical Skills">I. Digital and Technical Skills</option>
-                                <option value="II. Administrative and Office Skills">II. Administrative and Office Skills</option>
-                                <option value="III. Analytical and Problem-Solving Skills">III. Analytical and Problem-Solving Skills</option>
-                                <option value="IV. Communication and Interpersonal Skills">IV. Communication and Interpersonal Skills</option>
-                                <option value="V. Work Attitude and Professional Values">V. Work Attitude and Professional Values</option>
-                            </select>
+                            <label class="text-[11px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider ml-1">Category / Section</label>
+                            <input type="text" name="category" required list="categories-list-hs" placeholder="Select or type a category..." class="w-full bg-gray-50 dark:bg-gray-800 border-2 border-transparent focus:border-blue-500/20 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 outline-none transition-all">
+                            <datalist id="categories-list-hs">
+                                @foreach(array_keys($items->toArray()) as $cat)
+                                    <option value="{{ $cat }}">
+                                @endforeach
+                            </datalist>
                         </div>
 
                         <div class="space-y-2">
@@ -125,14 +124,8 @@
                         @csrf
                         @method('PUT')
                         <div class="space-y-2">
-                            <label class="text-[11px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider ml-1">Category</label>
-                            <select name="category" x-model="editItem.category" required class="w-full bg-gray-50 dark:bg-gray-800 border-2 border-transparent focus:border-blue-500/20 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 outline-none transition-all">
-                                <option value="I. Digital and Technical Skills">I. Digital and Technical Skills</option>
-                                <option value="II. Administrative and Office Skills">II. Administrative and Office Skills</option>
-                                <option value="III. Analytical and Problem-Solving Skills">III. Analytical and Problem-Solving Skills</option>
-                                <option value="IV. Communication and Interpersonal Skills">IV. Communication and Interpersonal Skills</option>
-                                <option value="V. Work Attitude and Professional Values">V. Work Attitude and Professional Values</option>
-                            </select>
+                            <label class="text-[11px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider ml-1">Category / Section</label>
+                            <input type="text" name="category" x-model="editItem.category" required list="categories-list-hs" placeholder="Select or type a category..." class="w-full bg-gray-50 dark:bg-gray-800 border-2 border-transparent focus:border-blue-500/20 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 outline-none transition-all">
                         </div>
 
                         <div class="space-y-2">
