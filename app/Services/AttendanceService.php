@@ -622,9 +622,24 @@ class AttendanceService
                 }
             }
 
-            // Auto-create Weekly Journal on Friday clock-out
+            // Auto-create Weekly Journal on the last scheduled day of the week for the intern
             try {
-                if (now()->isFriday()) {
+                $scheduleAssignment = $user->internDetails->schedule_assignment ?? [];
+                
+                // Fallback to Friday if no schedule is set
+                $lastScheduledDay = 'Friday';
+                if (!empty($scheduleAssignment) && is_array($scheduleAssignment)) {
+                    $dayOrder = ['Sunday' => 0, 'Monday' => 1, 'Tuesday' => 2, 'Wednesday' => 3, 'Thursday' => 4, 'Friday' => 5, 'Saturday' => 6];
+                    $maxOrder = -1;
+                    foreach ($scheduleAssignment as $day) {
+                        if (isset($dayOrder[$day]) && $dayOrder[$day] > $maxOrder) {
+                            $maxOrder = $dayOrder[$day];
+                            $lastScheduledDay = $day;
+                        }
+                    }
+                }
+
+                if (now()->format('l') === $lastScheduledDay) {
                     $startOfWeek = now()->startOfWeek()->format('Y-m-d');
                     $hasWeeklyJournal = Journal::where('intern_id', $userId)
                         ->where('journal_type', 'weekly')
