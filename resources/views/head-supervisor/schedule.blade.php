@@ -302,56 +302,58 @@
                         </div>
 
                         {{-- REGISTERED SCHOOLS LIST --}}
-                        <div x-show="!editingSchoolInline" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <template x-for="schoolName in Object.keys(schoolSchedules)" :key="schoolName">
-                                <div class="p-5 bg-gray-50 dark:bg-gray-955 border border-gray-150 dark:border-gray-800 rounded-3xl flex flex-col justify-between gap-4">
-                                    <div class="flex items-start justify-between gap-4">
-                                        <div class="flex items-center gap-4">
-                                            <div class="w-10 h-10 bg-blue-50 dark:bg-blue-900/30 text-[#0B5694] dark:text-blue-400 rounded-xl flex items-center justify-center shrink-0">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                        <div x-show="!editingSchoolInline" class="max-h-[380px] overflow-y-auto custom-scrollbar pr-2">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <template x-for="schoolName in Object.keys(schoolSchedules)" :key="schoolName">
+                                    <div class="p-5 bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-3xl flex flex-col justify-between gap-4">
+                                        <div class="flex items-start justify-between gap-4">
+                                            <div class="flex items-center gap-4">
+                                                <div class="w-10 h-10 bg-blue-50 dark:bg-blue-900/30 text-[#0B5694] dark:text-blue-400 rounded-xl flex items-center justify-center shrink-0">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                                                </div>
+                                                <div class="text-left min-w-0">
+                                                    <h4 class="text-sm font-black text-gray-800 dark:text-white uppercase tracking-tight truncate" x-text="schoolName"></h4>
+                                                    <p class="text-[9px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest mt-0.5">Default Schedule</p>
+                                                </div>
                                             </div>
-                                            <div class="text-left min-w-0">
-                                                <h4 class="text-sm font-black text-gray-800 dark:text-white uppercase tracking-tight truncate" x-text="schoolName"></h4>
-                                                <p class="text-[9px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest mt-0.5">Default Schedule</p>
+                                        </div>
+
+                                        <div class="grid grid-cols-3 gap-2 border-t border-b border-gray-100 dark:border-gray-800 py-3">
+                                            <div class="text-left">
+                                                <span class="text-[8px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Shift Hours</span>
+                                                <p class="text-[10px] font-black text-gray-800 dark:text-white tracking-widest mt-0.5" x-text="formatTime(schoolSchedules[schoolName].start_time) + ' - ' + formatTime(schoolSchedules[schoolName].end_time)"></p>
+                                            </div>
+                                            <div class="text-left">
+                                                <span class="text-[8px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Daily Credit</span>
+                                                <p class="text-[10px] font-black text-gray-800 dark:text-white tracking-widest mt-0.5" x-text="schoolSchedules[schoolName].daily_hours + ' HRS'"></p>
+                                            </div>
+                                            <div class="text-left">
+                                                <span class="text-[8px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Rounding</span>
+                                                <p class="text-[10px] font-black text-gray-800 dark:text-gray-250 tracking-widest mt-0.5 uppercase" x-text="schoolSchedules[schoolName].rounding_mode"></p>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div class="grid grid-cols-3 gap-2 border-t border-b border-gray-100 dark:border-gray-800 py-3">
-                                        <div class="text-left">
-                                            <span class="text-[8px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Shift Hours</span>
-                                            <p class="text-[10px] font-black text-gray-805 dark:text-white tracking-widest mt-0.5" x-text="formatTime(schoolSchedules[schoolName].start_time) + ' - ' + formatTime(schoolSchedules[schoolName].end_time)"></p>
-                                        </div>
-                                        <div class="text-left">
-                                            <span class="text-[8px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Daily Credit</span>
-                                            <p class="text-[10px] font-black text-gray-805 dark:text-white tracking-widest mt-0.5" x-text="schoolSchedules[schoolName].daily_hours + ' HRS'"></p>
-                                        </div>
-                                        <div class="text-left">
-                                            <span class="text-[8px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Rounding</span>
-                                            <p class="text-[10px] font-black text-gray-805 dark:text-white tracking-widest mt-0.5 uppercase" x-text="schoolSchedules[schoolName].rounding_mode"></p>
-                                        </div>
-                                    </div>
-
-                                    <div class="flex gap-2">
-                                        <button @click="editSchoolInline(schoolSchedules[schoolName])"
-                                                class="flex-1 py-2.5 bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 rounded-xl hover:bg-blue-100 transition-all border border-blue-100 dark:border-blue-900/50 active:scale-95 text-[10px] font-black uppercase tracking-wider text-center">
-                                            Edit
-                                        </button>
-                                        <form :action="`/head-supervisor/schedule/${schoolSchedules[schoolName].hashid}`" method="POST" class="flex-1" onsubmit="return confirm('Withdraw this school schedule? Standard office hours will apply.');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="w-full py-2.5 bg-rose-50 dark:bg-rose-900/20 text-rose-500 rounded-xl hover:bg-rose-100 transition-all border border-rose-100 dark:border-rose-900/50 active:scale-95 text-[10px] font-black uppercase tracking-wider text-center">
-                                                Delete
+                                        <div class="flex gap-2">
+                                            <button @click="editSchoolInline(schoolSchedules[schoolName])"
+                                                    class="flex-1 py-2.5 bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 rounded-xl hover:bg-blue-100 transition-all border border-blue-100 dark:border-blue-900/50 active:scale-95 text-[10px] font-black uppercase tracking-wider text-center">
+                                                Edit
                                             </button>
-                                        </form>
+                                            <form :action="`/head-supervisor/schedule/${schoolSchedules[schoolName].hashid}`" method="POST" class="flex-1" onsubmit="return confirm('Withdraw this school schedule? Standard office hours will apply.');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="w-full py-2.5 bg-rose-50 dark:bg-rose-900/20 text-rose-500 rounded-xl hover:bg-rose-100 transition-all border border-rose-100 dark:border-rose-900/50 active:scale-95 text-[10px] font-black uppercase tracking-wider text-center">
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        </div>
                                     </div>
-                                </div>
-                            </template>
-                            <template x-if="Object.keys(schoolSchedules).length === 0">
-                                <div class="col-span-full p-8 text-center bg-gray-50 dark:bg-gray-950 rounded-3xl border border-gray-100 dark:border-gray-800">
-                                    <p class="text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest">No institutional default schedules registered yet.</p>
-                                </div>
-                            </template>
+                                </template>
+                                <template x-if="Object.keys(schoolSchedules).length === 0">
+                                    <div class="col-span-full p-8 text-center bg-gray-50 dark:bg-gray-950 rounded-3xl border border-gray-100 dark:border-gray-800">
+                                        <p class="text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest">No institutional default schedules registered yet.</p>
+                                    </div>
+                                </template>
+                            </div>
                         </div>
                     </div>
                 </div>
