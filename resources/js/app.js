@@ -1322,6 +1322,7 @@ Alpine.data('analyticsManager', (months, applicantsTrends, completionTrends, com
     activeTab: initialTab,
     trendFilter: 'rate',
     schoolFilter: '5',
+    showFilters: false,
     months: months,
     applicantsTrends: applicantsTrends,
     completionTrends: completionTrends,

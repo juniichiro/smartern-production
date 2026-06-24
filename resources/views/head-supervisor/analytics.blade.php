@@ -16,7 +16,7 @@
               @js($schoolLabels), 
               @js($schoolTotals),
               '{{ request('search') || request('page') || request('filter_type') ? 'reports' : 'analytics' }}'
-          )" class="flex flex-col flex-1">
+          )" x-init="showFilters = window.innerWidth >= 768" class="flex flex-col flex-1">
         
         {{-- Header --}}
         <x-page-header 
@@ -246,7 +246,14 @@
         {{-- Reports Content Tab --}}
         <div x-show="activeTab === 'reports'" x-cloak class="space-y-8 animate-in fade-in duration-300">
             <div class="w-full bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[25px] sm:rounded-[35px] p-4 sm:p-6 shadow-sm mb-6">
-                <form action="{{ route('head-supervisor.analytics') }}" method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 sm:gap-4 items-end">
+                <div class="flex items-center gap-2 mb-4 md:hidden">
+                    <button @click="showFilters = !showFilters" class="flex items-center gap-2 text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
+                        Filters
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" :class="showFilters ? 'rotate-180' : ''" class="transition-transform"><path d="m6 9 6 6 6-6"/></svg>
+                    </button>
+                </div>
+                <form action="{{ route('head-supervisor.analytics') }}" method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 sm:gap-4 items-end" :class="showFilters || window.innerWidth >= 768 ? '' : 'hidden'">
                     {{-- Search Name --}}
                     <div class="sm:col-span-2 lg:col-span-3 relative group">
                         <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Search Intern</label>
@@ -406,51 +413,90 @@
                     </div>
                 </div>
 
-                {{-- MOBILE & TABLET CARD LAYOUT (< lg) --}}
-                <div class="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                {{-- TABLET CARD LAYOUT (md-lg) --}}
+                <div class="hidden md:grid lg:hidden grid-cols-2 gap-4">
                     @forelse($reports as $intern)
                         @php 
                             $latestJournal = $intern->journals->first();
                             $isCompleted = optional($intern->certificate)->status === 'published';
                         @endphp
-                        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
-                            <a href="{{ route('head-supervisor.interns.show', $intern->user) }}" class="block p-4 active:bg-gray-50 dark:active:bg-gray-800/50 transition-colors">
-                                <div class="flex items-start gap-3 mb-3">
-                                    <x-avatar :user="$intern" size="10" border="1" circular="true" textSize="xs" class="shrink-0" />
-                                    <div class="flex-1 min-w-0">
-                                        <p class="text-sm font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight truncate">{{ $intern->first_name }} {{ $intern->last_name }}</p>
-                                        <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider truncate">{{ $intern->user->email ?? 'No email' }}</p>
+                        <div class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden group">
+                            <a href="{{ route('head-supervisor.interns.show', $intern->user) }}" class="block active:bg-gray-50 dark:active:bg-gray-800/50 transition-colors">
+                                <div class="h-1.5 bg-gradient-to-r from-gray-200 to-gray-100 dark:from-gray-700 dark:to-gray-800 group-hover:from-[#0B5694] group-hover:to-blue-400 transition-all duration-500"></div>
+                                <div class="p-5">
+                                    <div class="flex items-start gap-3 mb-4">
+                                        <x-avatar :user="$intern" size="10" border="1" circular="true" textSize="xs" class="shrink-0" />
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-sm font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight truncate leading-tight group-hover:text-[#0B5694] dark:group-hover:text-blue-400 transition-colors">{{ $intern->first_name }} {{ $intern->last_name }}</p>
+                                            <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider truncate mt-0.5">{{ $intern->user->email ?? 'No email' }}</p>
+                                        </div>
+                                        <div class="shrink-0">
+                                            @if($isCompleted)
+                                                <span class="bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border border-emerald-100 dark:border-emerald-900/30">completed</span>
+                                            @else
+                                                <span class="bg-gray-50 dark:bg-gray-950 text-gray-400 dark:text-gray-500 text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border border-gray-100 dark:border-gray-800">pending</span>
+                                            @endif
+                                        </div>
                                     </div>
-                                    @if($isCompleted)
-                                        <span class="shrink-0 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border border-emerald-100 dark:border-emerald-900/30">completed</span>
-                                    @else
-                                        <span class="shrink-0 bg-gray-50 dark:bg-gray-950 text-gray-400 dark:text-gray-500 text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border border-gray-100 dark:border-gray-800">pending</span>
-                                    @endif
-                                </div>
-                                <div class="space-y-2 text-[10px] font-bold uppercase tracking-wider">
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-gray-400 dark:text-gray-500">Department</span>
-                                        <span class="text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 px-2 py-0.5 rounded-lg">{{ $intern->office->name ?? 'Unassigned' }}</span>
+                                    <div class="flex flex-col gap-3">
+                                        <div class="flex items-center justify-between py-2 px-4 bg-gray-50 dark:bg-gray-800/30 rounded-2xl border border-gray-100 dark:border-gray-800">
+                                            <span class="text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Department</span>
+                                            <span class="text-[10px] font-black text-gray-600 dark:text-gray-300">{{ $intern->office->name ?? 'Unassigned' }}</span>
+                                        </div>
+                                        <div class="flex items-center justify-between py-2 px-4 bg-gray-50 dark:bg-gray-800/30 rounded-2xl border border-gray-100 dark:border-gray-800">
+                                            <span class="text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Latest Entry</span>
+                                            <span class="text-[10px] font-black text-gray-700 dark:text-gray-300">{{ $latestJournal ? \Carbon\Carbon::parse($latestJournal->entry_date)->format('M d, Y') : 'No Activity' }}</span>
+                                        </div>
+                                        <div class="flex items-center justify-between py-2 px-4 bg-gray-50 dark:bg-gray-800/30 rounded-2xl border border-gray-100 dark:border-gray-800">
+                                            <span class="text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Hours</span>
+                                            <span class="text-[11px] font-black text-gray-800 dark:text-gray-200">{{ (int)$intern->hours_rendered }} / {{ $intern->required_hours ?? 480 }} HRS</span>
+                                        </div>
                                     </div>
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-gray-400 dark:text-gray-500">Latest Entry</span>
-                                        <span class="text-gray-700 dark:text-gray-300">{{ $latestJournal ? \Carbon\Carbon::parse($latestJournal->entry_date)->format('M d, Y') : 'No Activity' }}</span>
-                                    </div>
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-gray-400 dark:text-gray-500">Hours</span>
-                                        <span class="text-gray-800 dark:text-gray-200 font-black">{{ (int)$intern->hours_rendered }} / {{ $intern->required_hours ?? 480 }} HRS</span>
-                                    </div>
-                                </div>
-                                <div class="mt-3 pt-3 border-t border-gray-50 dark:border-gray-800">
-                                    <div class="flex items-center justify-center gap-1.5 text-[#0B5694] dark:text-blue-400 text-[10px] font-black uppercase tracking-wider">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-                                        View Profile
+                                    <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
+                                        <div class="flex items-center justify-center gap-2 py-2.5 bg-[#0B5694]/5 dark:bg-blue-500/5 rounded-2xl text-[#0B5694] dark:text-blue-400 text-[10px] font-black uppercase tracking-wider">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                                            View Full Profile
+                                        </div>
                                     </div>
                                 </div>
                             </a>
                         </div>
                     @empty
                         <div class="col-span-full py-16 text-center">
+                            <x-empty-state title="No internship reports found" compact="true" />
+                        </div>
+                    @endforelse
+                </div>
+
+                {{-- MOBILE CARD LAYOUT (< md) --}}
+                <div class="flex md:hidden flex-col gap-3">
+                    @forelse($reports as $intern)
+                        @php 
+                            $latestJournal = $intern->journals->first();
+                            $isCompleted = optional($intern->certificate)->status === 'published';
+                        @endphp
+                        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden active:bg-gray-50 dark:active:bg-gray-800/50 transition-colors">
+                            <a href="{{ route('head-supervisor.interns.show', $intern->user) }}" class="flex items-center gap-3 p-4">
+                                <x-avatar :user="$intern" size="10" border="1" circular="true" textSize="xs" class="shrink-0" />
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-2">
+                                        <p class="text-sm font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight truncate leading-tight">{{ $intern->first_name }} {{ $intern->last_name }}</p>
+                                        @if($isCompleted)
+                                            <span class="shrink-0 w-2 h-2 rounded-full bg-emerald-500"></span>
+                                        @endif
+                                    </div>
+                                    <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider truncate mt-0.5">{{ $intern->office->name ?? 'Unassigned' }}</p>
+                                    <div class="flex items-center gap-2 mt-1">
+                                        <span class="text-[9px] text-gray-400 dark:text-gray-500 uppercase tracking-wider">{{ $latestJournal ? \Carbon\Carbon::parse($latestJournal->entry_date)->format('M d') : '--' }}</span>
+                                        <span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-700"></span>
+                                        <span class="text-[9px] font-black {{ $isCompleted ? 'text-emerald-500' : 'text-gray-500' }}">{{ (int)$intern->hours_rendered }} / {{ $intern->required_hours ?? 480 }} HRS</span>
+                                    </div>
+                                </div>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 text-gray-300 dark:text-gray-600"><path d="m9 18 6-6-6-6"/></svg>
+                            </a>
+                        </div>
+                    @empty
+                        <div class="py-16 text-center">
                             <x-empty-state title="No internship reports found" compact="true" />
                         </div>
                     @endforelse

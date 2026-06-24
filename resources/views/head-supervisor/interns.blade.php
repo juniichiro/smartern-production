@@ -196,8 +196,8 @@
                 </div>
             </div>
 
-            {{-- MOBILE & TABLET CARD LAYOUT (< lg) --}}
-            <div class="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            {{-- TABLET CARD LAYOUT (md-lg) --}}
+            <div class="hidden md:grid lg:hidden grid-cols-2 gap-4">
                 @forelse($interns as $intern)
                 @php 
                     $percentage = ($intern->required_hours ?? 480) > 0 ? min(100, ($intern->hours_rendered / ($intern->required_hours ?? 480)) * 100) : 0;
@@ -208,40 +208,89 @@
                 @endphp
                 <div x-show="matches('{{ $intern->first_name }} {{ $intern->last_name }}', '{{ $intern->user->email ?? '' }}', '{{ $officeName }}', '{{ $status }}')"
                      x-transition.opacity
-                     class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
-                    <a href="{{ route('head-supervisor.interns.show', $intern->user) }}" class="block p-4 active:bg-gray-50 dark:active:bg-gray-800/50 transition-colors">
-                        <div class="flex items-start gap-3 mb-3">
-                            <x-avatar :user="$intern" size="10" border="1" circular="true" textSize="xs" class="shrink-0" />
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight truncate">{{ $intern->first_name }} {{ $intern->last_name }}</p>
-                                <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold tracking-wider uppercase truncate">{{ $intern->user->email ?? 'No email' }}</p>
+                     class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden flex flex-col group">
+                    <div class="flex items-stretch h-full">
+                        <div class="w-2 shrink-0 {{ $isPublished ? 'bg-emerald-500' : 'bg-[#0B5694] dark:bg-blue-600' }}"></div>
+                        <a href="{{ route('head-supervisor.interns.show', $intern->user) }}" class="flex-1 p-5 flex flex-col active:bg-gray-50 dark:active:bg-gray-800/50 transition-colors">
+                            <div class="flex items-start gap-3 mb-4">
+                                <x-avatar :user="$intern" size="10" border="1" circular="true" textSize="xs" class="shrink-0" />
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight truncate leading-tight group-hover:text-[#0B5694] dark:group-hover:text-blue-400 transition-colors">{{ $intern->first_name }} {{ $intern->last_name }}</p>
+                                    <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold tracking-wider uppercase truncate mt-0.5">{{ $intern->user->email ?? 'No email' }}</p>
+                                </div>
                             </div>
-                            <div class="shrink-0">
+
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider shrink-0">Dept:</span>
+                                <span class="text-[10px] font-black text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 px-2.5 py-1 rounded-lg truncate">{{ $officeName }}</span>
+                                <div class="ml-auto shrink-0">
+                                    @if($isPublished)
+                                        <span class="bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border border-emerald-100 dark:border-emerald-900/30">completed</span>
+                                    @else
+                                        <span class="bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border border-blue-100 dark:border-blue-900/30">active</span>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div class="mt-auto">
+                                <div class="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider mb-1.5">
+                                    <span class="text-gray-400 dark:text-gray-500">Progress</span>
+                                    <span class="text-gray-800 dark:text-gray-200 font-black">{{ round($percentage) }}%</span>
+                                </div>
+                                <div class="w-full h-3 bg-gray-100 dark:bg-gray-950 rounded-full overflow-hidden shadow-inner border border-gray-100 dark:border-gray-800">
+                                    <div class="{{ $isPublished ? 'bg-emerald-500' : 'bg-[#0B5694] dark:bg-blue-600' }} h-full rounded-full shadow-sm transition-all duration-700" style="width: {{ $percentage }}%"></div>
+                                </div>
+                                <p class="text-[9px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-tighter mt-1.5 text-right">{{ $renderedInt }} / {{ $intern->required_hours ?? 480 }} HRS</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                @empty
+                <div class="col-span-full py-16 text-center">
+                    <x-empty-state title="No student records registered in division." compact="true" />
+                </div>
+                @endforelse
+            </div>
+
+            {{-- MOBILE CARD LAYOUT (< md) --}}
+            <div class="flex md:hidden flex-col gap-3">
+                @forelse($interns as $intern)
+                @php 
+                    $percentage = ($intern->required_hours ?? 480) > 0 ? min(100, ($intern->hours_rendered / ($intern->required_hours ?? 480)) * 100) : 0;
+                    $status = optional($intern->certificate)->status === 'published' ? 'completed' : 'active';
+                    $isPublished = $status === 'completed';
+                    $renderedInt = round($intern->hours_rendered); 
+                    $officeName = $intern->office->name ?? 'Unassigned';
+                @endphp
+                <div x-show="matches('{{ $intern->first_name }} {{ $intern->last_name }}', '{{ $intern->user->email ?? '' }}', '{{ $officeName }}', '{{ $status }}')"
+                     x-transition.opacity
+                     class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden active:bg-gray-50 dark:active:bg-gray-800/50 transition-colors">
+                    <a href="{{ route('head-supervisor.interns.show', $intern->user) }}" class="flex items-center gap-3 p-4">
+                        <x-avatar :user="$intern" size="10" border="1" circular="true" textSize="xs" class="shrink-0" />
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2">
+                                <p class="text-sm font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight truncate">{{ $intern->first_name }} {{ $intern->last_name }}</p>
                                 @if($isPublished)
-                                    <span class="bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border border-emerald-100 dark:border-emerald-900/30">completed</span>
-                                @else
-                                    <span class="bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border border-blue-100 dark:border-blue-900/30">active</span>
+                                    <span class="shrink-0 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider border border-emerald-100 dark:border-emerald-900/30">done</span>
                                 @endif
                             </div>
-                        </div>
-                        <div class="flex items-center justify-between text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">
-                            <span>Department</span>
-                            <span class="text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 px-2 py-0.5 rounded-lg">{{ $officeName }}</span>
-                        </div>
-                        <div class="space-y-1.5">
-                            <div class="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider">
-                                <span class="text-gray-400 dark:text-gray-500">Progress</span>
-                                <span class="text-gray-700 dark:text-gray-300">{{ round($percentage) }}%</span>
+                            <div class="flex items-center gap-2 mt-0.5">
+                                <span class="text-[10px] text-gray-400 dark:text-gray-500 font-bold tracking-wider uppercase truncate">{{ $intern->user->email ?? 'No email' }}</span>
+                                <span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-700 shrink-0"></span>
+                                <span class="text-[9px] text-gray-500 dark:text-gray-400 font-black uppercase tracking-wider italic truncate">{{ $officeName }}</span>
                             </div>
-                            <div class="w-full h-2 bg-gray-100 dark:bg-gray-950 rounded-full overflow-hidden shadow-inner border border-gray-100 dark:border-gray-800">
+                        </div>
+                        <div class="shrink-0 flex flex-col items-end gap-1">
+                            <span class="text-xs font-black {{ $isPublished ? 'text-emerald-500' : 'text-[#0B5694] dark:text-blue-400' }}">{{ round($percentage) }}%</span>
+                            <div class="w-16 h-1.5 bg-gray-100 dark:bg-gray-950 rounded-full overflow-hidden shadow-inner border border-gray-100 dark:border-gray-800">
                                 <div class="{{ $isPublished ? 'bg-emerald-500' : 'bg-[#0B5694] dark:bg-blue-600' }} h-full rounded-full transition-all" style="width: {{ $percentage }}%"></div>
                             </div>
-                            <p class="text-[9px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-tighter">{{ $renderedInt }} / {{ $intern->required_hours ?? 480 }} HRS</p>
+                            <span class="text-[7px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-tighter">{{ $renderedInt }}/{{ $intern->required_hours ?? 480 }}</span>
                         </div>
                     </a>
                 </div>
                 @empty
-                <div class="col-span-full py-16 text-center">
+                <div class="py-16 text-center">
                     <x-empty-state title="No student records registered in division." compact="true" />
                 </div>
                 @endforelse

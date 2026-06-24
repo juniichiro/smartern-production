@@ -137,48 +137,94 @@
                         </div>
                     </div>
 
-                    {{-- MOBILE & TABLET CARD LAYOUT (< lg) --}}
-                    <div class="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    {{-- TABLET CARD LAYOUT (md-lg) --}}
+                    <div class="hidden md:grid lg:hidden grid-cols-2 gap-4">
                         @forelse($applicants as $applicant)
-                        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
-                            <div class="p-4">
-                                <div class="flex items-start gap-3 mb-3">
-                                    <span class="shrink-0 text-[10px] font-black text-[#0B5694] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2.5 py-1.5 rounded-lg border border-blue-100 dark:border-blue-900/30 uppercase tracking-tighter shadow-sm">#{{ $applicant['id'] }}</span>
+                        <div class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden flex flex-col">
+                            <div class="h-1.5 bg-gradient-to-r from-[#0B5694] to-blue-400 dark:from-blue-600 dark:to-blue-400"></div>
+                            <div class="p-5 flex-1 flex flex-col">
+                                <div class="flex items-start gap-3 mb-4">
+                                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#0B5694] to-blue-400 dark:from-blue-600 dark:to-blue-400 flex items-center justify-center text-white text-[11px] font-black shadow-lg shrink-0">#{{ $applicant['id'] }}</div>
                                     <div class="flex-1 min-w-0">
-                                        <p class="text-sm font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight truncate">{{ $applicant['name'] }}</p>
-                                        <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider truncate">{{ $applicant['email'] }}</p>
+                                        <p class="text-sm font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight truncate leading-tight">{{ $applicant['name'] }}</p>
+                                        <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider truncate mt-0.5">{{ $applicant['email'] }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center gap-4 mb-4">
+                                    <div class="flex-1">
+                                        <span class="text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider block mb-1">School</span>
+                                        <span class="text-[11px] font-black text-gray-600 dark:text-gray-300 uppercase tracking-widest italic leading-tight">{{ $applicant['school'] }}</span>
                                     </div>
                                     <div class="shrink-0">
-                                        <p class="text-[10px] font-black text-rose-500 dark:text-rose-400 uppercase tracking-widest bg-rose-50 dark:bg-rose-900/20 px-2.5 py-1 rounded-full border border-rose-100 dark:border-rose-900/30 shadow-sm">{{ $applicant['emergency'] ?? 'N/A' }}</p>
+                                        <span class="text-[9px] font-black text-rose-500 dark:text-rose-400 uppercase tracking-widest bg-rose-50 dark:bg-rose-900/20 px-3 py-1.5 rounded-full border border-rose-100 dark:border-rose-900/30 shadow-sm">{{ $applicant['emergency'] ?? 'N/A' }}</span>
                                     </div>
                                 </div>
-                                <div class="flex items-center justify-between py-2 border-t border-gray-50 dark:border-gray-800">
-                                    <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">School</span>
-                                    <span class="text-[11px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest italic">{{ $applicant['school'] }}</span>
+
+                                <div class="flex flex-wrap gap-1.5 mb-4">
+                                    @foreach(array_slice($applicant['tech_list'], 0, 3) as $skill)
+                                        <span class="text-[8px] font-black text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 px-2 py-1 rounded-md uppercase tracking-tight">{{ $skill }}</span>
+                                    @endforeach
+                                    @if(count($applicant['tech_list']) > 3)
+                                        <span class="text-[8px] font-black text-[#0B5694] dark:text-blue-400 leading-7">+{{ count($applicant['tech_list']) - 3 }}</span>
+                                    @endif
                                 </div>
-                                <div class="flex items-center justify-between py-2 border-t border-gray-50 dark:border-gray-800">
-                                    <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Skills</span>
-                                    <div class="flex flex-wrap justify-end gap-1.5">
-                                        @foreach(array_slice($applicant['tech_list'], 0, 2) as $skill)
-                                            <span class="text-[8px] font-black text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 px-1.5 py-0.5 rounded-md uppercase tracking-tighter">{{ $skill }}</span>
-                                        @endforeach
-                                        @if(count($applicant['tech_list']) > 2)
-                                            <span class="text-[8px] font-black text-[#0B5694] dark:text-blue-400">+{{ count($applicant['tech_list']) - 2 }}</span>
-                                        @endif
-                                    </div>
+
+                                <div class="mt-auto">
+                                    @if(!empty($applicant['resume_path']))
+                                    <button @click="openResume('{{ route('head-supervisor.matching.resume', $applicant['db_id']) }}')" class="w-full flex items-center justify-center gap-2 py-3 bg-[#0B5694]/5 dark:bg-blue-500/5 border border-[#0B5694]/15 dark:border-blue-500/15 text-[#0B5694] dark:text-blue-400 rounded-2xl text-[10px] font-black uppercase tracking-wider hover:bg-[#0B5694]/10 transition active:scale-[0.97] min-h-[48px]">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                            Preview Resume
+                                        </button>
+                                    @else
+                                        <div class="py-3 text-center text-[9px] text-gray-300 dark:text-gray-700 font-bold uppercase tracking-wider italic">No Resume Attached</div>
+                                    @endif
                                 </div>
-                                @if(!empty($applicant['resume_path']))
-                                <div class="mt-3 pt-3 border-t border-gray-50 dark:border-gray-800">
-                                    <button @click="openResume('{{ route('head-supervisor.matching.resume', $applicant['db_id']) }}')" class="w-full flex items-center justify-center gap-1.5 py-2.5 bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 rounded-xl text-[10px] font-black uppercase tracking-wider active:bg-blue-100 transition active:scale-[0.97] min-h-[44px]">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
-                                        Preview Resume
-                                    </button>
-                                </div>
-                                @endif
                             </div>
                         </div>
                         @empty
                         <div class="col-span-full py-16 text-center">
+                            <x-empty-state title="Onboarding queue is currently clear" compact="true" />
+                        </div>
+                        @endforelse
+                    </div>
+
+                    {{-- MOBILE CARD LAYOUT (< md) --}}
+                    <div class="flex md:hidden flex-col gap-3">
+                        @forelse($applicants as $applicant)
+                        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden active:bg-gray-50 dark:active:bg-gray-800 transition-colors">
+                            <div class="flex items-center gap-3 p-4">
+                                <span class="shrink-0 text-[10px] font-black text-[#0B5694] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2.5 py-1.5 rounded-lg border border-blue-100 dark:border-blue-900/30 uppercase tracking-tighter shadow-sm">#{{ $applicant['id'] }}</span>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight truncate leading-tight">{{ $applicant['name'] }}</p>
+                                    <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider truncate mt-0.5">{{ $applicant['email'] }}</p>
+                                </div>
+                                <div class="shrink-0 flex items-center gap-2">
+                                    <span class="text-[9px] font-black text-rose-500 dark:text-rose-400 uppercase tracking-widest bg-rose-50 dark:bg-rose-900/20 px-2.5 py-1 rounded-full border border-rose-100 dark:border-rose-900/30">{{ $applicant['emergency'] ?? 'N/A' }}</span>
+                                    @if(!empty($applicant['resume_path']))
+                                    <button @click="openResume('{{ route('head-supervisor.matching.resume', $applicant['db_id']) }}')" class="w-11 h-11 flex items-center justify-center bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 rounded-xl border border-blue-100 dark:border-blue-900/30 active:bg-blue-100 transition active:scale-90" title="Preview Resume">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                    </button>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 px-4 pb-3 pt-1">
+                                <div class="flex items-center gap-1.5 min-w-0">
+                                    <span class="text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider shrink-0">School:</span>
+                                    <span class="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest italic truncate">{{ $applicant['school'] }}</span>
+                                </div>
+                                <div class="flex flex-wrap justify-end gap-1 shrink-0">
+                                    @foreach(array_slice($applicant['tech_list'], 0, 2) as $skill)
+                                        <span class="text-[7px] font-black text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 px-1.5 py-0.5 rounded-md uppercase tracking-tight">{{ $skill }}</span>
+                                    @endforeach
+                                    @if(count($applicant['tech_list']) > 2)
+                                        <span class="text-[7px] font-black text-[#0B5694] dark:text-blue-400">+{{ count($applicant['tech_list']) - 2 }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        @empty
+                        <div class="py-16 text-center">
                             <x-empty-state title="Onboarding queue is currently clear" compact="true" />
                         </div>
                         @endforelse
