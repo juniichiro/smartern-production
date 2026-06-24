@@ -29,7 +29,7 @@ use App\Http\Controllers\Supervisor\AnnouncementController as SupervisorAnnounce
 use App\Http\Controllers\Supervisor\AttendanceController as SupervisorAttendance;
 use App\Http\Controllers\Supervisor\CertificateController as SupervisorCertificate;
 use App\Http\Controllers\Supervisor\DashboardController as SupervisorDashboard;
-use App\Http\Controllers\Supervisor\InternController as SupervisorIntern;
+use App\Http\Controllers\Supervisor\OfficeManagementController as SupervisorIntern;
 use App\Http\Controllers\Supervisor\ReportController as SupervisorReport;
 use App\Http\Controllers\Supervisor\TaskController;
 use App\Http\Controllers\TemplateController;

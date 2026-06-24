@@ -14,7 +14,7 @@ use App\Services\AttendanceService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class InternController extends Controller
+class OfficeManagementController extends Controller
 {
     public function index(Request $request)
     {
@@ -22,7 +22,7 @@ class InternController extends Controller
         $supervisor = $user->supervisorDetails;
 
         if (! $supervisor) {
-            return view('supervisor.interns', [
+            return view('supervisor.office-management', [
                 'interns' => collect([]),
                 'totalInterns' => 0,
             ]);
@@ -54,7 +54,7 @@ class InternController extends Controller
                 $q->where('status', 'published');
             })->count();
 
-        return view('supervisor.interns', compact('interns', 'totalInterns'));
+        return view('supervisor.office-management', compact('interns', 'totalInterns'));
     }
 
     public function show(User $user, AttendanceService $attendanceService)
