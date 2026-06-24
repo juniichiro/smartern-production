@@ -27,12 +27,12 @@ class SecurityAnalysisMiddleware
 
                 if ($request->expectsJson()) {
                     return response()->json([
-                        'error' => 'The system has detected that your actions violated security terms. Kindly contact the Admin (ICT Dept).',
+                        'error' => 'Your account has been locked due to suspicious activity. Please submit a formal request letter for account reactivation.',
                     ], 403);
                 }
 
                 return redirect()->route('login')->withErrors([
-                    'email' => 'The system has detected that your actions violated security terms. Kindly contact the Admin (ICT Dept).',
+                    'email' => 'Your account has been locked due to suspicious activity. Please submit a formal request letter for account reactivation.',
                 ]);
             }
         }

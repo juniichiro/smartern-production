@@ -55,10 +55,25 @@ class LoginRequest extends FormRequest
 
         // LOCKOUT CHECK
         if ($user->locked_until && now()->lessThan($user->locked_until)) {
+            $isPermanent = $user->locked_until->year >= 9999;
+            
+            if ($isPermanent) {
+                throw ValidationException::withMessages([
+                    'email' => "Your account is currently deactivated. Please submit a formal request letter to the administration to reactivate your access.",
+                ]);
+            }
+
             $diff = now()->diffInSeconds($user->locked_until);
-            throw ValidationException::withMessages([
-                'email' => "Account locked. Please try again in {$diff} seconds.",
-            ]);
+            
+            if ($user->failed_attempts >= 5) {
+                throw ValidationException::withMessages([
+                    'email' => "Account locked due to multiple failed login attempts. Please try again in {$diff} seconds.",
+                ]);
+            } else {
+                throw ValidationException::withMessages([
+                    'email' => "Your account has been locked due to suspicious activity. Please try again in {$diff} seconds, or submit a formal request letter for reactivation.",
+                ]);
+            }
         }
 
         if (! \Illuminate\Support\Facades\Hash::check($this->password, $user->password)) {
