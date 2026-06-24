@@ -604,7 +604,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                     </button>
                 </header>
-                <div class="p-10">
+                <div class="p-10 max-h-[65vh] overflow-y-auto custom-scrollbar">
                     <div class="space-y-6">
                         <template x-for="event in selectedEvents.filter(e => e.type === 'absence_request')" :key="event.id">
                             <div class="space-y-6">

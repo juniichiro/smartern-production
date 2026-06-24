@@ -165,7 +165,7 @@
                     </button>
                 </header>
 
-                <div class="p-8">
+                <div class="p-8 max-h-[65vh] overflow-y-auto custom-scrollbar">
                     {{-- 1. INTERN: Request Absence Form --}}
                     <template x-if="'{{ $portalType }}' === 'Intern' && modalMode === 'request'">
                         <form :action="isEditingAbsence ? `/intern/schedule/absence/${absenceToEdit.id}` : '{{ route('intern.schedule.absence.store') }}'" 
