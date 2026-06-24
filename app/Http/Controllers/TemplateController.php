@@ -134,13 +134,18 @@ class TemplateController extends Controller
             default => abort(404, 'Template not found.')
         };
 
+        $fontPath = storage_path('fonts');
+        if (!file_exists($fontPath)) {
+            mkdir($fontPath, 0775, true);
+        }
+
         $pdf = Pdf::loadView('templates.pdf', compact('templateData'));
 
         $pdf->setOptions([
             'isRemoteEnabled' => true,
             'chroot' => public_path(),
-            'fontDir' => storage_path('fonts'),
-            'fontCache' => storage_path('fonts'),
+            'fontDir' => $fontPath,
+            'fontCache' => $fontPath,
             'isHtml5ParserEnabled' => true,
         ]);
 
