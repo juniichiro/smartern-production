@@ -15,15 +15,15 @@
             subtitle="Manage assigned interns and office limits/requirements" 
         >
             <x-slot:actions>
-                <nav class="overflow-x-auto flex items-center gap-1 p-1 bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl w-fit border border-gray-100 dark:border-gray-800 shrink-0">
+                <nav class="overflow-x-auto no-scrollbar flex items-center gap-1 p-1 bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl w-full sm:w-fit border border-gray-100 dark:border-gray-800">
                     <button @click="activeTab = 'interns'" 
                             :class="activeTab === 'interns' ? 'bg-white dark:bg-gray-700 text-[#0B5694] dark:text-blue-400 shadow-sm border-gray-100 dark:border-gray-600' : 'text-gray-400 dark:text-slate-500 border-transparent hover:text-gray-600 dark:hover:text-gray-300'" 
-                            class="min-h-[44px] px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all whitespace-nowrap active:scale-95 focus-visible:ring-2 focus-visible:ring-[#0B5694] dark:focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:outline-none">
+                            class="min-h-[44px] px-4 sm:px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all whitespace-nowrap active:scale-95 focus-visible:ring-2 focus-visible:ring-[#0B5694] dark:focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:outline-none">
                         Intern Directory
                     </button>
                     <button @click="activeTab = 'requirements'" 
                             :class="activeTab === 'requirements' ? 'bg-white dark:bg-gray-700 text-[#0B5694] dark:text-blue-400 shadow-sm border-gray-100 dark:border-gray-600' : 'text-gray-400 dark:text-slate-500 border-transparent hover:text-gray-600 dark:hover:text-gray-300'" 
-                            class="min-h-[44px] px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all whitespace-nowrap active:scale-95 focus-visible:ring-2 focus-visible:ring-[#0B5694] dark:focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:outline-none">
+                            class="min-h-[44px] px-4 sm:px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all whitespace-nowrap active:scale-95 focus-visible:ring-2 focus-visible:ring-[#0B5694] dark:focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:outline-none">
                         Office Requirements
                     </button>
                 </nav>
@@ -296,7 +296,7 @@
                         </button>
                     </form>
                     <div class="border-t border-gray-100 dark:border-gray-800 pt-6 mt-6">
-                        <a href="{{ route('supervisor.office.rules') }}" class="w-full min-h-[48px] bg-white dark:bg-gray-850 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-bold py-4 px-6 rounded-2xl text-[11px] uppercase tracking-widest transition-all shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-[#0B5694] dark:focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:outline-none active:scale-[0.98]">
+                        <a href="{{ route('supervisor.office.rules') }}" class="w-full min-h-[48px] bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 font-bold py-4 px-6 rounded-2xl text-[11px] uppercase tracking-widest transition hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-[#0B5694] dark:focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:outline-none active:scale-[0.98] text-center">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
                             Competency Requirements Rules
                         </a>
