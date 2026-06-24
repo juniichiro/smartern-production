@@ -118,6 +118,15 @@ class AttendanceService
             return $dateStatus;
         }
 
+        // 1.5. Check if scheduled to work today
+        if (! $this->isInternScheduled($user, $date)) {
+            return [
+                'blocked' => true,
+                'type' => 'weekend',
+                'description' => 'Today is not in your active reporting schedule.',
+            ];
+        }
+
         // 2. Check for approved FULL-DAY absence for this user
         $absence = AbsenceRequest::where('intern_id', $user->id)
             ->whereDate('date', $date->toDateString())
@@ -473,12 +482,22 @@ class AttendanceService
             $nextAvailableScan = $todayRecord->clock_in->addMinutes(5);
         }
 
+        $canScan = ! $completedToday;
+        if (! $todayRecord && isset($effectiveSchedule['end_time'])) {
+            $endTime = Carbon::parse(now()->toDateString() . ' ' . $effectiveSchedule['end_time']);
+            if (now()->greaterThan($endTime)) {
+                $canScan = false;
+                $statusMessage = 'The scheduled shift for today has already ended at ' . $endTime->format('h:i A') . '.';
+            }
+        }
+
         return [
             'todayRecord' => $todayRecord,
             'completedToday' => $completedToday,
             'statusMessage' => $statusMessage,
             'nextAvailableScan' => $nextAvailableScan ? $nextAvailableScan->toIso8601String() : null,
             'effectiveSchedule' => $effectiveSchedule,
+            'canScan' => $canScan,
         ];
     }
 
@@ -642,6 +661,17 @@ class AttendanceService
 
         if (isset($effectiveSchedule['blocked']) && $effectiveSchedule['blocked']) {
             return ['success' => false, 'message' => 'Attendance is blocked: '.$effectiveSchedule['description']];
+        }
+
+        // Prevent clock-in if the shift has already ended
+        if (isset($effectiveSchedule['end_time'])) {
+            $endTime = Carbon::parse(now()->toDateString() . ' ' . $effectiveSchedule['end_time']);
+            if (now()->greaterThan($endTime)) {
+                return [
+                    'success' => false,
+                    'message' => 'Cannot clock in: The scheduled shift for today has ended at ' . $endTime->format('h:i A') . '.'
+                ];
+            }
         }
 
         $status = 'on_time';

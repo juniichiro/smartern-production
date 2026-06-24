@@ -74,6 +74,9 @@ class AttendanceController extends Controller
         } elseif ($completedToday) {
             $isEnabled = false;
             $statusMessage = 'Shift Complete';
+        } elseif (! $statusData['canScan']) {
+            $isEnabled = false;
+            $statusMessage = $statusData['statusMessage'];
         }
 
         $totalRequired = (int) ($intern->required_hours ?? $intern->office->total_hours_required ?? 480);
@@ -142,12 +145,12 @@ class AttendanceController extends Controller
                 'longitude' => (float) ($office->longitude ?? 121.0501),
                 'radius' => (int) ($office->radius_meters ?? 100),
             ],
-            'can_scan' => ! $completedToday,
+            'can_scan' => $statusData['canScan'],
         ];
 
         // Generate token for any state that isn't completed using cache
         $token = null;
-        if (! $completedToday) {
+        if ($statusData['canScan']) {
             $token = Cache::get("active_qr_token_{$user->id}");
             if (! $token) {
                 $token = Hashids::encode($user->id, now()->timestamp);
