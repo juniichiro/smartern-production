@@ -130,6 +130,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/dashboard', [SupervisorDashboard::class, 'index'])->name('dashboard');
         Route::get('/interns', [SupervisorIntern::class, 'index'])->name('interns');
         Route::get('/interns/{user}', [SupervisorIntern::class, 'show'])->name('interns.show');
+        Route::post('/office/requirements', [SupervisorIntern::class, 'updateRequirements'])->name('office.requirements');
         Route::get('/tasks', [TaskController::class, 'index'])->name('tasks');
         Route::get('/tasks/intern/{user}', [TaskController::class, 'internTasks'])->name('tasks.intern');
         Route::put('/tasks/update/{task}', [TaskController::class, 'update'])->name('tasks.update');

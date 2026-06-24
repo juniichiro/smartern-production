@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Supervisor;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\NotificationController;
 use App\Models\InternDetail;
+use App\Models\Role;
 use App\Models\Schedule;
 use App\Models\User;
 use App\Services\AttendanceService;
@@ -99,5 +101,44 @@ class InternController extends Controller
             'schoolSchedule',
             'effectiveSchedule'
         ));
+    }
+
+    /**
+     * Update the intern limit/slots for the supervisor's office and notify head supervisors.
+     */
+    public function updateRequirements(Request $request)
+    {
+        $request->validate([
+            'intern_limit' => 'required|integer|min:0',
+        ]);
+
+        $user = Auth::user();
+        $supervisor = $user->supervisorDetails;
+
+        if (! $supervisor || ! $supervisor->office) {
+            return redirect()->back()->with('error', 'Unauthorized or office not associated.');
+        }
+
+        $office = $supervisor->office;
+        $office->update([
+            'intern_limit' => $request->intern_limit,
+        ]);
+
+        // Find Head Supervisors (Ms. Mal-in) and notify them
+        $headSupervisorRole = Role::where('name', 'head_supervisor')->first();
+        if ($headSupervisorRole) {
+            $headSupervisors = User::where('role_id', $headSupervisorRole->id)->get();
+            foreach ($headSupervisors as $headSupervisor) {
+                NotificationController::send(
+                    $headSupervisor->id,
+                    'Intern Requirements Update',
+                    'system',
+                    "Office {$office->name} has updated their intern limit to {$request->intern_limit} slots.",
+                    route('head-supervisor.offices.index')
+                );
+            }
+        }
+
+        return redirect()->back()->with('success', 'Intern requirements updated successfully.');
     }
 }
