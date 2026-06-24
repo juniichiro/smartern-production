@@ -230,7 +230,7 @@
     <div class="signature-section">
         <div class="signature-col">
             <div class="signature-line"></div>
-            <div class="signature-label">Applicant Signature</div>
+            <div class="signature-label">Printed Name over Signature</div>
             <div style="font-size: 8.5px; color: #666; margin-top: 2px;">Date signed: __________________</div>
         </div>
         <div class="signature-col">
