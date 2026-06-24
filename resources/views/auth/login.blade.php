@@ -120,7 +120,7 @@
                 </div>
 
                 <div class="text-center pt-2">
-                    <a href="#" class="text-[10px] font-bold text-gray-400 dark:text-gray-500 hover:text-[#0B5694] dark:hover:text-blue-400 transition-colors uppercase tracking-wider">Forgot password?</a>
+                    <a href="{{ route('password.request') }}" class="text-[10px] font-bold text-gray-400 dark:text-gray-500 hover:text-[#0B5694] dark:hover:text-blue-400 transition-colors uppercase tracking-wider">Forgot password?</a>
                 </div>
             </form>
         </div>
