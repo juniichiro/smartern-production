@@ -50,7 +50,7 @@ class DashboardController extends Controller
 
             // 4. Cohort Milestones
             $averageProgress = InternDetail::where('school', $school)
-                ->selectRaw('AVG(hours_rendered / required_hours * 100) as avg_prog')
+                ->selectRaw('AVG(hours_rendered / COALESCE(NULLIF(required_hours, 0), 480) * 100) as avg_prog')
                 ->value('avg_prog') ?? 0;
             $averageProgress = min(100, round($averageProgress));
 

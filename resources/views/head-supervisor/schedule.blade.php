@@ -292,7 +292,13 @@
                                 </select>
                             </div>
 
-                            <div class="lg:col-span-2 space-y-2 text-left" x-show="selectedInternId" x-cloak>
+                            <div class="space-y-2 text-left" x-show="selectedInternId" x-cloak>
+                                <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Required Internship Hours</label>
+                                <input type="number" name="required_hours" x-model="selectedInternHours" min="1" required
+                                        class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-300 shadow-none outline-none focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-400 transition-all">
+                            </div>
+
+                            <div class="lg:col-span-3 space-y-2 text-left" x-show="selectedInternId" x-cloak>
                                 <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Active Reporting Days</label>
                                 <div class="flex flex-wrap gap-2">
                                     <template x-for="day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']" :key="day">
@@ -870,6 +876,7 @@
             interns: interns || [],
             selectedInternId: '',
             selectedInternDays: [],
+            selectedInternHours: 480,
 
             toggleInternSection() {
                 this.internSectionOpen = !this.internSectionOpen;
@@ -879,8 +886,10 @@
                 const found = this.interns.find(i => i.id === this.selectedInternId);
                 if (found) {
                     this.selectedInternDays = [...found.schedule_assignment];
+                    this.selectedInternHours = found.required_hours || 480;
                 } else {
                     this.selectedInternDays = [];
+                    this.selectedInternHours = 480;
                 }
             },
             

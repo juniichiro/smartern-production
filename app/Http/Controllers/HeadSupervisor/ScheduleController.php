@@ -89,6 +89,7 @@ class ScheduleController extends Controller
                 'name' => "{$i->first_name} {$i->last_name}",
                 'email' => $i->user->email ?? '',
                 'schedule_assignment' => $i->schedule_assignment ?? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+                'required_hours' => $i->required_hours ?? 480,
             ];
         }));
 

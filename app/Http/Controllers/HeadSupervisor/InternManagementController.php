@@ -25,7 +25,7 @@ class InternManagementController extends Controller
         })->count();
 
         // Average progress calculation
-        $avgProgress = InternDetail::selectRaw('AVG(hours_rendered / required_hours * 100) as avg_prog')->value('avg_prog') ?? 0;
+        $avgProgress = InternDetail::selectRaw('AVG(hours_rendered / COALESCE(NULLIF(required_hours, 0), 480) * 100) as avg_prog')->value('avg_prog') ?? 0;
         $avgProgress = min(100, $avgProgress);
 
         // 2. Main Intern Table (With Relationships)
