@@ -1,4 +1,4 @@
-@props(['portalType', 'userName', 'userRole'])
+@props(['portalType', 'userName', 'userRole', 'setupMode' => false])
 
 @php
     $user = Auth::user();
@@ -124,6 +124,7 @@ class="relative">
         </div>
 
         {{-- Navigation Links --}}
+        @if(!$setupMode)
         <nav class="px-4 space-y-1">
             @if($sidebarType === 'Admin')
                 <x-sidebar.admin-links />
@@ -139,10 +140,11 @@ class="relative">
                 {{ $slot }}
             @endif
         </nav>
+        @endif
     </div>
 
     {{-- Templates Section --}}
-    @if($sidebarType === 'Admin' || $sidebarType === 'Head Supervisor' || $sidebarType === 'Supervisor' || $sidebarType === 'Intern' || $sidebarType === 'School Coordinator' || $sidebarType === 'User')
+    @if(!$setupMode && ($sidebarType === 'Admin' || $sidebarType === 'Head Supervisor' || $sidebarType === 'Supervisor' || $sidebarType === 'Intern' || $sidebarType === 'School Coordinator' || $sidebarType === 'User'))
     <div class="px-4 mb-1">
         <a href="{{ route('templates.index') }}"
            class="flex items-center px-3 min-h-[44px] rounded-xl hover:bg-white/10 dark:hover:bg-gray-800 transition-colors cursor-pointer text-white font-medium">

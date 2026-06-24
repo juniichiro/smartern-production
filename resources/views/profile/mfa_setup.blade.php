@@ -6,7 +6,8 @@
 <div class="flex min-h-screen bg-gray-50 dark:bg-gray-950 font-sans text-[14px]">
     <x-sidebar portalType="User" 
                userName="{{ Auth::user()->email }}" 
-               userRole="Security Settings" />
+               userRole="Security Settings"
+               :setupMode="true" />
 
     <main class="flex-1 ml-0 lg:ml-64 mr-0 lg:mr-80 p-4 md:p-6 lg:p-10 pt-20 lg:pt-10 text-left transition-all duration-300">
         <header class="mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
