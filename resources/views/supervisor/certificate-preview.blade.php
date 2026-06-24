@@ -9,13 +9,13 @@
                userName="{{ Auth::user()->supervisorDetails->first_name }}" 
                userRole="{{ Auth::user()->supervisorDetails->office->name }}" />
 
-    <main class="ml-0 lg:ml-64 mr-0 lg:mr-80 flex-1 p-3 sm:p-4 md:p-6 lg:p-10 pt-20 lg:pt-10 text-left">
+    <main class="ml-0 lg:ml-64 mr-0 lg:mr-80 flex-1 min-w-0 p-3 sm:p-4 md:p-6 lg:p-10 pt-20 lg:pt-10 text-left">
         {{-- Header & Back Navigation --}}
         <header class="mb-6 md:mb-8 flex flex-col sm:flex-row justify-between items-start md:items-end gap-4">
             <div>
                 <a href="{{ route('supervisor.certificates.index') }}" class="flex items-center gap-2 text-gray-400 dark:text-gray-500 hover:text-[#0B5694] dark:hover:text-blue-400 transition font-bold uppercase tracking-widest text-xs mb-3 md:mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                    Back to List
+                    <span class="sm:hidden">Back</span><span class="hidden sm:inline">Back to List</span>
                 </a>
                 <h2 class="text-xl sm:text-2xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 tracking-tight">Certificate Preview</h2>
                 <p class="text-sm md:text-base text-gray-400 dark:text-gray-500 mt-2 font-medium italic">Review the exact document output before endorsement</p>
@@ -24,17 +24,17 @@
             {{-- Action Buttons --}}
             <div class="flex flex-col sm:flex-row gap-3 md:gap-4 w-full sm:w-auto">
                 <a href="{{ route('supervisor.certificates.download', ['certificate' => $intern->user_id]) }}" 
-                   class="w-full sm:w-auto bg-gray-800 dark:bg-gray-700 text-white px-6 py-3 rounded-xl text-xs font-black shadow-lg hover:bg-black dark:hover:bg-gray-600 transition uppercase tracking-widest flex items-center justify-center gap-2">
+                   class="w-full sm:w-auto bg-gray-800 dark:bg-gray-700 text-white min-h-[48px] px-6 py-3 rounded-xl text-xs font-black shadow-lg hover:bg-black dark:hover:bg-gray-600 transition uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-                    Download PDF Draft
+                    <span class="sm:hidden">Download</span><span class="hidden sm:inline">Download PDF Draft</span>
                 </a>
 
                 @if(!$certificateRecord)
                     <button type="button" 
                             @click="showFeedbackModal = true"
-                            class="w-full sm:w-auto bg-[#0B5694] dark:bg-blue-600 text-white px-6 py-3 rounded-xl text-xs font-black shadow-lg shadow-blue-500/20 hover:bg-[#084577] dark:hover:bg-blue-700 transition uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95">
+                            class="w-full sm:w-auto bg-[#0B5694] dark:bg-blue-600 text-white min-h-[48px] px-6 py-3 rounded-xl text-xs font-black shadow-lg shadow-blue-500/20 hover:bg-[#084577] dark:hover:bg-blue-700 transition uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                        Endorse to Head
+                        <span class="sm:hidden">Endorse</span><span class="hidden sm:inline">Endorse to Head</span>
                     </button>
                 @endif
             </div>
@@ -69,6 +69,20 @@
                 position: relative;
                 box-sizing: border-box;
                 margin: 0 auto;
+            }
+
+            @media (max-width: 1023px) {
+                .pdf-simulation {
+                    transform: scale(0.7);
+                    transform-origin: top center;
+                    margin-bottom: -84mm;
+                }
+            }
+            @media (max-width: 639px) {
+                .pdf-simulation {
+                    transform: scale(0.45);
+                    margin-bottom: -154mm;
+                }
             }
 
             .gov-text {
@@ -129,7 +143,7 @@
         </template>
 
         {{-- Simulated Short Bond Paper --}}
-        <div x-show="!loading" x-transition.opacity.duration.500ms class="overflow-x-auto pb-6 md:pb-10 flex justify-center custom-scrollbar">
+        <div x-show="!loading" x-transition.opacity.duration.500ms class="overflow-x-auto pb-2 md:pb-6 flex justify-center custom-scrollbar">
             <div class="pdf-simulation">
                 
                 <!-- DRAFT Watermark -->
@@ -200,6 +214,7 @@
                 </div>
             </div>
         </div>
+        <p class="text-center text-[9px] text-gray-300 dark:text-gray-700 font-medium lg:hidden">Scroll or pinch to view full document</p>
     </main>
 
     {{-- Blind Supervisor Feedback Modal --}}
