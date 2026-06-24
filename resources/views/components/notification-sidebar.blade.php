@@ -63,18 +63,15 @@
     </div>
 
     <aside :class="{
-                'translate-y-0 lg:translate-y-0': notifOpen,
-                'translate-y-full lg:translate-y-0': !notifOpen,
+                'translate-x-0': notifOpen,
+                'translate-x-full': !notifOpen,
                 'lg:translate-x-0': !desktopNotifCollapsed,
                 'lg:translate-x-full': desktopNotifCollapsed
            }" 
-           class="w-full lg:w-80 lg:max-w-[20rem] bg-white dark:bg-gray-900 border-t lg:border-t-0 lg:border-l border-gray-150 dark:border-gray-800 p-5 sm:p-8 fixed bottom-0 lg:bottom-auto lg:right-0 lg:top-0 h-[85vh] lg:h-full text-left overflow-y-auto z-[110] rounded-t-[35px] lg:rounded-t-none transition-all duration-300 ease-in-out">
+           class="w-[85vw] sm:w-80 max-w-[20rem] bg-white dark:bg-gray-900 border-l border-gray-100 dark:border-gray-800 p-5 sm:p-8 fixed right-0 top-0 h-full text-left overflow-y-auto z-[110] transition-all duration-300 ease-in-out">
         
-        {{-- Mobile Drag Handle indicator --}}
-        <div class="w-12 h-1 bg-gray-250 dark:bg-gray-700 rounded-full mx-auto mb-6 block lg:hidden"></div>
-
         {{-- Header --}}
-        <div class="flex justify-between items-center mb-6 lg:mb-12 mt-2">
+        <div class="flex justify-between items-center mb-10 sm:mb-12 mt-4">
             <div>
                 <h4 class="font-bold text-gray-400 dark:text-gray-300 text-xs uppercase tracking-wider">Notifications</h4>
                 <template x-if="unreadCount > 0">
