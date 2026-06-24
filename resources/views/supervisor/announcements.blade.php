@@ -16,7 +16,7 @@
         >
             <x-slot name="actions">
                 <button @click="openCreateModal()" 
-                        class="flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 bg-[#0B5694] dark:bg-blue-600 text-white rounded-[22px] font-bold text-xs uppercase tracking-wider shadow-xl shadow-blue-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                        class="flex items-center justify-center gap-3 w-full sm:w-auto px-5 sm:px-8 py-3 sm:py-4 bg-[#0B5694] dark:bg-blue-600 text-white rounded-[22px] font-bold text-xs uppercase tracking-wider shadow-xl shadow-blue-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
                     Post New Announcement
                 </button>
@@ -25,7 +25,7 @@
 
         {{-- Skeletons --}}
         <template x-if="loading">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @for($i = 0; $i < min(count($announcements) ?: 3, 3); $i++)
                     <div class="flex flex-col h-full bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[30px] overflow-hidden space-y-4">
                         <x-skeleton class="h-12 w-full" />
@@ -44,11 +44,11 @@
         </template>
 
         {{-- ANNOUNCEMENTS GRID --}}
-        <div x-show="!loading" x-transition.opacity.duration.500ms class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div x-show="!loading" x-transition.opacity.duration.500ms class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($announcements as $ann)
                 <div class="flex flex-col h-full bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[30px] overflow-hidden shadow-sm transition-all duration-300 hover:shadow-xl hover:border-blue-100 dark:hover:border-blue-900/30 hover:-translate-y-1 group">
                     <!-- Card Header -->
-                    <div class="px-6 py-4 bg-gray-50/50 dark:bg-gray-800/40 border-b border-gray-100 dark:border-gray-800/80 flex items-center justify-between">
+                    <div class="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50/50 dark:bg-gray-800/40 border-b border-gray-100 dark:border-gray-800/80 flex items-center justify-between">
                         <div class="flex items-center gap-2">
                             <svg class="text-emerald-500 w-5 h-5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -59,9 +59,9 @@
                     </div>
 
                     <!-- Card Body -->
-                    <div class="p-6 flex-1 flex flex-col justify-between">
+                    <div class="p-4 sm:p-6 flex-1 flex flex-col justify-between">
                         <div class="space-y-4">
-                            <h3 class="text-base md:text-lg font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight leading-snug">
+                            <h3 class="text-sm sm:text-base md:text-lg font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight leading-snug">
                                 {{ $ann->title }}
                             </h3>
                             
@@ -107,7 +107,7 @@
                     </div>
                 </div>
             @empty
-                <div class="col-span-full bg-white dark:bg-gray-900 rounded-[35px] p-20 shadow-sm border border-gray-100 dark:border-gray-800 text-center opacity-60">
+                <div class="col-span-full bg-white dark:bg-gray-900 rounded-[25px] md:rounded-[35px] p-10 md:p-20 shadow-sm border border-gray-100 dark:border-gray-800 text-center opacity-60">
                     <div class="w-20 h-20 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
                         <svg class="text-gray-300" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
                     </div>
@@ -116,7 +116,7 @@
             @endforelse
         </div>
 
-        <div class="mt-8">
+        <div class="mt-6 md:mt-8">
             {{ $announcements->links() }}
         </div>
 
@@ -166,9 +166,9 @@
              ">
             
             <div @click.away="showModal = false" 
-                 class="bg-white dark:bg-[#090D16] w-full max-w-5xl rounded-[40px] shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]">
+                 class="bg-white dark:bg-[#090D16] w-full max-w-5xl mx-2 sm:mx-4 rounded-[40px] shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]">
 
-                <header class="p-8 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-[#0D121F] shrink-0">
+                <header class="p-5 sm:p-8 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-[#0D121F] shrink-0">
                     <div>
                         <h3 class="text-xl font-black text-gray-800 dark:text-white uppercase tracking-widest" x-text="previewMode ? 'Announcement Preview' : (isEdit ? 'Edit Announcement' : 'Compose Announcement')"></h3>
                     </div>
@@ -188,7 +188,7 @@
                     <input type="hidden" name="_method" :value="isEdit ? 'PUT' : 'POST'">
 
                     {{-- SCROLLABLE BODY --}}
-                    <div class="flex-1 overflow-y-auto custom-scrollbar p-8">
+                    <div class="flex-1 overflow-y-auto custom-scrollbar p-5 sm:p-8">
                         {{-- Validation Errors --}}
                         @if ($errors->any())
                             <div class="mb-8 p-4 bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-900/30 rounded-2xl">
@@ -228,7 +228,7 @@
 
                         {{-- PREVIEW MODE (Mimics Intern View) --}}
                         <div x-show="previewMode" class="space-y-8 animate-in zoom-in-95 duration-300" x-cloak>
-                            <div class="bg-white dark:bg-gray-900 rounded-[35px] p-6 md:p-12 shadow-sm border border-gray-100 dark:border-gray-800 relative text-left">
+                            <div class="bg-white dark:bg-gray-900 rounded-[35px] p-4 sm:p-6 md:p-12 shadow-sm border border-gray-100 dark:border-gray-800 relative text-left">
                                 {{-- Category & Date --}}
                                 <div class="flex flex-col sm:flex-row sm:items-center gap-4 mb-8">
                                     <span class="w-fit px-4 py-1.5 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border border-emerald-100 dark:border-emerald-800/50">
@@ -240,7 +240,7 @@
                                 </div>
 
                                 {{-- Title --}}
-                                <h1 class="text-2xl md:text-4xl font-black text-gray-800 dark:text-gray-100 tracking-tight mb-8 leading-tight uppercase" x-text="title"></h1>
+                                <h1 class="text-xl sm:text-2xl md:text-4xl font-black text-gray-800 dark:text-gray-100 tracking-tight mb-8 leading-tight uppercase" x-text="title"></h1>
 
                                 {{-- Text Content --}}
                                 <div class="prose prose-blue dark:prose-invert max-w-none text-gray-600 dark:text-gray-300 font-medium leading-relaxed mb-10" x-html="previewContent"></div>
@@ -286,7 +286,7 @@
                     </div>
 
                     {{-- FIXED FOOTER --}}
-                    <div class="p-8 border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row justify-between items-center gap-6 bg-gray-50 dark:bg-[#0D121F] shrink-0">
+                    <div class="p-5 sm:p-8 border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row justify-between items-center gap-6 bg-gray-50 dark:bg-[#0D121F] shrink-0">
                         {{-- EDITOR FOOTER ACTIONS --}}
                         <div x-show="!previewMode" class="flex items-center justify-between w-full">
                             <div class="relative group">
@@ -350,7 +350,7 @@
             <div @click.away="showDeleteModal = false" 
                  class="bg-white dark:bg-[#090D16] w-full max-w-lg rounded-[40px] shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300">
                 
-                <div class="p-10 text-center">
+                <div class="p-6 sm:p-10 text-center">
                     {{-- Warning Icon --}}
                     <div class="w-20 h-20 bg-rose-50 dark:bg-rose-900/20 rounded-full flex items-center justify-center mx-auto mb-8 border border-rose-100 dark:border-rose-900/30">
                         <svg class="text-rose-500" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>

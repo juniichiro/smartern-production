@@ -9,20 +9,20 @@
                userName="{{ Auth::user()->supervisorDetails->first_name }}" 
                userRole="{{ Auth::user()->supervisorDetails->office->name }}" />
 
-    <main class="ml-0 lg:ml-64 mr-0 lg:mr-80 flex-1 p-4 md:p-6 lg:p-10 pt-20 lg:pt-10 text-left">
+    <main class="ml-0 lg:ml-64 mr-0 lg:mr-80 flex-1 p-3 sm:p-4 md:p-6 lg:p-10 pt-20 lg:pt-10 text-left">
         {{-- Header & Back Navigation --}}
-        <header class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+        <header class="mb-6 md:mb-8 flex flex-col sm:flex-row justify-between items-start md:items-end gap-4">
             <div>
-                <a href="{{ route('supervisor.certificates.index') }}" class="flex items-center gap-2 text-gray-400 dark:text-gray-500 hover:text-[#0B5694] dark:hover:text-blue-400 transition font-bold uppercase tracking-widest text-xs mb-4">
+                <a href="{{ route('supervisor.certificates.index') }}" class="flex items-center gap-2 text-gray-400 dark:text-gray-500 hover:text-[#0B5694] dark:hover:text-blue-400 transition font-bold uppercase tracking-widest text-xs mb-3 md:mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                     Back to List
                 </a>
-                <h2 class="text-2xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 tracking-tight">Certificate Preview</h2>
+                <h2 class="text-xl sm:text-2xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 tracking-tight">Certificate Preview</h2>
                 <p class="text-sm md:text-base text-gray-400 dark:text-gray-500 mt-2 font-medium italic">Review the exact document output before endorsement</p>
             </div>
 
             {{-- Action Buttons --}}
-            <div class="flex flex-wrap gap-4 w-full md:w-auto">
+            <div class="flex flex-col sm:flex-row gap-3 md:gap-4 w-full sm:w-auto">
                 <a href="{{ route('supervisor.certificates.download', ['certificate' => $intern->user_id]) }}" 
                    class="w-full sm:w-auto bg-gray-800 dark:bg-gray-700 text-white px-6 py-3 rounded-xl text-xs font-black shadow-lg hover:bg-black dark:hover:bg-gray-600 transition uppercase tracking-widest flex items-center justify-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
@@ -123,13 +123,13 @@
 
         {{-- Skeletons --}}
         <template x-if="loading">
-            <div class="overflow-x-auto pb-10 flex justify-center w-full">
+            <div class="overflow-x-auto pb-6 md:pb-10 flex justify-center w-full">
                 <x-skeleton class="w-[215.9mm] h-[279.4mm] rounded-none shadow-2xl" />
             </div>
         </template>
 
         {{-- Simulated Short Bond Paper --}}
-        <div x-show="!loading" x-transition.opacity.duration.500ms class="overflow-x-auto pb-10 flex justify-center custom-scrollbar">
+        <div x-show="!loading" x-transition.opacity.duration.500ms class="overflow-x-auto pb-6 md:pb-10 flex justify-center custom-scrollbar">
             <div class="pdf-simulation">
                 
                 <!-- DRAFT Watermark -->
@@ -218,7 +218,7 @@
              x-transition:leave-end="opacity-0"></div>
 
         {{-- Modal Content Card --}}
-        <div class="relative bg-white dark:bg-gray-900 rounded-[28px] border border-gray-100 dark:border-gray-800 shadow-2xl p-8 max-w-lg w-full z-10 text-left transform transition-all"
+        <div class="relative bg-white dark:bg-gray-900 rounded-[28px] border border-gray-100 dark:border-gray-800 shadow-2xl p-5 sm:p-8 max-w-lg w-full z-10 text-left transform transition-all"
              x-show="showFeedbackModal"
              x-transition:enter="ease-out duration-300"
              x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
@@ -229,7 +229,7 @@
             
             {{-- Modal Header --}}
             <div class="flex items-start gap-4 mb-6">
-                <div class="p-3 bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 rounded-2xl">
+                <div class="p-2 sm:p-3 bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 rounded-2xl">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                 </div>
                 <div>
@@ -247,7 +247,7 @@
                         Provide qualitative feedback and evaluation for <span class="font-extrabold text-gray-700 dark:text-gray-300">{{ $intern->first_name }} {{ $intern->last_name }}</span> to review during the endorsement process. This feedback is completely confidential and will not be displayed to the intern.
                     </p>
 
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         @foreach([
                             'technical_proficiency' => 'Technical Proficiency',
                             'professionalism_ethics' => 'Professionalism & Ethics',
@@ -284,7 +284,7 @@
                 <div class="flex items-center justify-end gap-3">
                     <button type="button" 
                             @click="showFeedbackModal = false"
-                            class="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 px-5 py-3 rounded-xl text-xs font-bold transition uppercase tracking-widest">
+                            class="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl text-xs font-bold transition uppercase tracking-widest">
                         Cancel
                     </button>
                     <button type="submit" 

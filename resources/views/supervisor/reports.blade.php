@@ -17,7 +17,7 @@
         >
             <x-slot name="actions">
                 <a href="{{ route('supervisor.reports.pdf') }}" 
-                    class="flex items-center gap-3 bg-[#0B5694] dark:bg-blue-600 px-6 py-3 rounded-xl text-xs font-black text-white shadow-xl shadow-blue-500/20 hover:bg-[#084577] dark:hover:bg-blue-700 transition uppercase tracking-widest w-fit">
+                    class="flex items-center gap-3 bg-[#0B5694] dark:bg-blue-600 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl text-xs font-black text-white shadow-xl shadow-blue-500/20 hover:bg-[#084577] dark:hover:bg-blue-700 transition uppercase tracking-widest w-fit">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
                     </svg>
@@ -27,40 +27,40 @@
         </x-page-header>
 
         {{-- 1. TOP SECTION: Summary Stats --}}
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
-            <div class="bg-white dark:bg-gray-900 p-8 rounded-[35px] border border-gray-100 dark:border-gray-800 shadow-sm relative overflow-hidden group hover:border-blue-200 dark:hover:border-blue-800 transition-all">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-10">
+            <div class="bg-white dark:bg-gray-900 p-5 md:p-8 rounded-[35px] border border-gray-100 dark:border-gray-800 shadow-sm relative overflow-hidden group hover:border-blue-200 dark:hover:border-blue-800 transition-all">
                 <div class="absolute top-0 right-0 w-24 h-24 bg-blue-50/50 dark:bg-blue-900/10 rounded-bl-full -z-0"></div>
                 <div class="relative z-10">
                     <p class="text-[12px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Total Interns</p>
-                    <h3 class="text-3xl md:text-5xl font-black text-gray-900 dark:text-gray-100 tracking-tighter">{{ $activeInternsCount }}</h3>
+                    <h3 class="text-2xl sm:text-3xl md:text-5xl font-black text-gray-900 dark:text-gray-100 tracking-tighter">{{ $activeInternsCount }}</h3>
                     <p class="text-[12px] text-blue-500 dark:text-blue-400 mt-3 font-black uppercase tracking-widest">Assigned to Office</p>
                 </div>
             </div>
-            <div class="bg-white dark:bg-gray-900 p-8 rounded-[35px] border border-gray-100 dark:border-gray-800 shadow-sm relative overflow-hidden group hover:border-emerald-200 dark:hover:border-emerald-800 transition-all">
+            <div class="bg-white dark:bg-gray-900 p-5 md:p-8 rounded-[35px] border border-gray-100 dark:border-gray-800 shadow-sm relative overflow-hidden group hover:border-emerald-200 dark:hover:border-emerald-800 transition-all">
                 <div class="relative z-10">
                     <p class="text-[12px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Office Success Rate</p>
-                    <h3 class="text-3xl md:text-5xl font-black text-emerald-500 dark:text-emerald-400 tracking-tighter">{{ $completionPercentage }}%</h3>
+                    <h3 class="text-2xl sm:text-3xl md:text-5xl font-black text-emerald-500 dark:text-emerald-400 tracking-tighter">{{ $completionPercentage }}%</h3>
                     <p class="text-[12px] text-emerald-600 dark:text-emerald-400 mt-3 font-black uppercase tracking-widest">Tasks Verified</p>
                 </div>
             </div>
-            <div class="bg-white dark:bg-gray-900 p-8 rounded-[35px] border border-gray-100 dark:border-gray-800 shadow-sm relative overflow-hidden group hover:border-orange-200 dark:hover:border-orange-800 transition-all">
+            <div class="bg-white dark:bg-gray-900 p-5 md:p-8 rounded-[35px] border border-gray-100 dark:border-gray-800 shadow-sm relative overflow-hidden group hover:border-orange-200 dark:hover:border-orange-800 transition-all">
                 <div class="relative z-10">
                     <p class="text-[12px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Pending Tasks</p>
-                    <h3 class="text-3xl md:text-5xl font-black text-orange-400 tracking-tighter">{{ $pendingTasksCount }}</h3>
+                    <h3 class="text-2xl sm:text-3xl md:text-5xl font-black text-orange-400 tracking-tighter">{{ $pendingTasksCount }}</h3>
                     <p class="text-[12px] text-orange-500 dark:text-orange-400 mt-3 font-black uppercase tracking-widest">Awaiting Action</p>
                 </div>
             </div>
         </div>
 
         {{-- 2. MIDDLE SECTION: Visual Analytics (Graphs) --}}
-        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-10">
+        <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-5 gap-8 mb-10">
             {{-- Doughnut Chart --}}
-            <div class="lg:col-span-2 bg-white dark:bg-gray-900 p-6 md:p-10 rounded-[35px] shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col items-center">
+            <div class="lg:col-span-2 bg-white dark:bg-gray-900 p-4 sm:p-6 md:p-10 rounded-[25px] md:rounded-[35px] shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col items-center">
                 <h4 class="text-[12px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-8 w-full text-left">Task Distribution</h4>
-                <div class="w-full h-64 relative">
+                <div class="w-full h-48 sm:h-56 md:h-64 relative">
                     <canvas id="taskStatusChart"></canvas>
                 </div>
-                <div class="mt-8 flex flex-wrap justify-center gap-6">
+                <div class="mt-8 flex flex-wrap justify-center gap-4 md:gap-6">
                     <div class="flex items-center gap-2">
                         <div class="w-3 h-3 rounded-full bg-[#0B5694] dark:bg-blue-600"></div>
                         <span class="text-[12px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest">Verified</span>
@@ -73,25 +73,25 @@
             </div>
 
             {{-- Bar Chart --}}
-            <div class="lg:col-span-3 bg-white dark:bg-gray-900 p-6 md:p-10 rounded-[35px] shadow-sm border border-gray-100 dark:border-gray-800">
+            <div class="lg:col-span-3 bg-white dark:bg-gray-900 p-4 sm:p-6 md:p-10 rounded-[25px] md:rounded-[35px] shadow-sm border border-gray-100 dark:border-gray-800">
                 <h4 class="text-[12px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-8">Performance Leaderboard</h4>
-                <div class="w-full h-72">
+                <div class="w-full h-56 sm:h-64 md:h-72">
                     <canvas id="performanceBarChart"></canvas>
                 </div>
             </div>
         </div>
 
         {{-- 2.5 TRENDS SECTION --}}
-        <div class="bg-white dark:bg-gray-900 p-6 md:p-10 rounded-[35px] shadow-sm border border-gray-100 dark:border-gray-800 mb-10">
+        <div class="bg-white dark:bg-gray-900 p-4 sm:p-6 md:p-10 rounded-[25px] md:rounded-[35px] shadow-sm border border-gray-100 dark:border-gray-800 mb-10">
             <h4 class="text-[12px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-8">Office Performance & Attendance Trends</h4>
-            <div class="w-full h-80">
+            <div class="w-full h-60 sm:h-72 md:h-80">
                 <canvas id="officeTrendsChart"></canvas>
             </div>
         </div>
 
         {{-- 3. BOTTOM SECTION: Detailed Table Section --}}
-        <div class="bg-white dark:bg-gray-900 rounded-[35px] shadow-sm border border-gray-100 dark:border-gray-800 p-6 md:p-10 overflow-hidden">
-            <div class="mb-10 flex flex-col md:flex-row md:justify-between md:items-end gap-4">
+        <div class="bg-white dark:bg-gray-900 rounded-[25px] md:rounded-[35px] shadow-sm border border-gray-100 dark:border-gray-800 p-4 md:p-10 overflow-hidden">
+            <div class="mb-6 md:mb-10 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3 md:gap-4">
                 <div>
                     <h3 class="text-lg md:text-xl font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight">Metric Registry</h3>
                     <p class="text-xs md:text-sm text-gray-400 dark:text-gray-500 mt-1 font-medium italic">Individual performance tracking for current term</p>
@@ -103,7 +103,7 @@
                     <table class="w-full text-left">
                         <thead class="bg-gray-50 dark:bg-gray-800/50 text-[12px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] border-b border-gray-100 dark:border-gray-700">
                             <tr>
-                                <th class="px-8 py-6">Intern Details</th>
+                                <th class="px-4 md:px-8 py-3 md:py-6">Intern Details</th>
                                 <th class="px-6 py-6 text-center">Tasks Done</th>
                                 <th class="px-6 py-6 text-center">Efficiency</th>
                                 <th class="px-10 py-6 text-right">Action</th>
@@ -112,7 +112,7 @@
                         <tbody class="text-sm divide-y divide-gray-50 dark:divide-gray-800 font-medium">
                             @foreach($internPerformance as $intern)
                             <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors group">
-                                <td class="px-8 py-6 whitespace-nowrap">
+                                <td class="px-4 md:px-8 py-4 md:py-6 whitespace-nowrap">
                                     <div class="flex items-center gap-4">
                                         <x-avatar :user="$intern" size="10" border="2" />
                                         <div>
@@ -134,8 +134,8 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-8 py-6 text-right whitespace-nowrap">
-                                    <a href="{{ route('supervisor.interns.show', $intern->user) }}" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl text-[10px] sm:text-[11px] font-black text-[#0B5694] dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 transition shadow-sm uppercase tracking-widest">View Profile</a>
+                                <td class="px-4 md:px-8 py-4 md:py-6 text-right whitespace-nowrap">
+                                    <a href="{{ route('supervisor.interns.show', $intern->user) }}" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-3 sm:px-6 py-2 sm:py-2.5 rounded-xl text-[10px] sm:text-[11px] font-black text-[#0B5694] dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 transition shadow-sm uppercase tracking-widest">View Profile</a>
                                 </td>
                             </tr>
                             @endforeach

@@ -10,13 +10,13 @@
 >
     <div x-data="officeRulesManager(@js($assessmentItems), @js($rules))" class="flex flex-col">
         
-        <header class="mb-8 lg:mb-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <header class="mb-6 md:mb-8 lg:mb-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div class="flex items-center gap-4 sm:gap-6">
                 <a href="{{ route('supervisor.interns') }}" class="w-10 h-10 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl flex items-center justify-center text-gray-400 dark:text-gray-500 hover:text-[#0B5694] dark:hover:text-blue-400 hover:border-[#0B5694] dark:hover:border-blue-500 transition shadow-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                 </a>
                 <div>
-                    <h2 class="text-2xl lg:text-3xl font-bold text-gray-800 dark:text-gray-100 tracking-normal flex items-center gap-2">
+                    <h2 class="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 dark:text-gray-100 tracking-normal flex items-center gap-2">
                         Requirements & Rules: 
                         <span class="text-[#0B5694] dark:text-blue-400 font-extrabold uppercase">
                             {{ $office->name }}
@@ -27,7 +27,7 @@
             </div>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
+        <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-6 md:gap-10 items-start">
             {{-- Main Form for Office Rules --}}
             <div class="lg:col-span-2">
                 <form action="{{ route('supervisor.office.rules.update') }}" method="POST">
@@ -41,7 +41,7 @@
                                 <h3 class="text-sm font-black text-[#0B5694] dark:text-blue-400 uppercase tracking-[0.2em]">Office Capacity</h3>
                                 <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">General Configuration</span>
                             </div>
-                            <div class="p-10">
+                            <div class="p-6 md:p-10">
                                 <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
                                     <div class="md:col-span-8">
                                         <p class="text-sm font-bold text-gray-700 dark:text-gray-200 leading-relaxed">Intern Capacity Limit</p>
@@ -50,7 +50,7 @@
                                     <div class="md:col-span-4">
                                         <div class="relative group">
                                             <input type="number" name="intern_limit" value="{{ $office->intern_limit }}" min="0" max="100" required
-                                                   class="w-full bg-gray-50 dark:bg-gray-800 border-2 border-transparent focus:border-blue-500/20 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 outline-none transition-all text-center">
+                                                   class="w-full bg-gray-50 dark:bg-gray-800 border-2 border-transparent focus:border-blue-500/20 rounded-2xl px-4 md:px-5 py-3 md:py-4 text-sm font-bold text-gray-700 dark:text-gray-200 outline-none transition-all text-center">
                                             <div class="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-gray-300 uppercase tracking-wider pointer-events-none group-focus-within:text-blue-500/40">Slots</div>
                                         </div>
                                     </div>
@@ -64,9 +64,9 @@
                                     <h3 class="text-sm font-black text-[#0B5694] dark:text-blue-400 uppercase tracking-[0.2em]" x-text="category"></h3>
                                 </div>
                                 
-                                <div class="p-10 space-y-8">
+                                <div class="p-6 md:p-10 space-y-8">
                                     <template x-for="item in items" :key="item.id">
-                                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center group">
+                                        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center group">
                                             <div class="lg:col-span-8">
                                                 <p class="text-sm font-bold text-gray-700 dark:text-gray-200 leading-relaxed group-hover:text-[#0B5694] dark:group-hover:text-blue-400 transition-colors" x-text="item.competency_text"></p>
                                             </div>
@@ -106,11 +106,11 @@
                         </template>
                     </div>
 
-                    <div class="mt-10 sm:mt-12 flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 bg-white dark:bg-gray-900 p-6 sm:p-8 rounded-[25px] sm:rounded-[30px] border border-gray-100 dark:border-gray-800 sticky bottom-4 sm:bottom-8 shadow-xl z-10">
-                        <a href="{{ route('supervisor.interns') }}" class="px-8 sm:px-10 py-3 sm:py-4 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded-2xl font-bold text-[10px] sm:text-xs uppercase tracking-wider hover:bg-gray-200 dark:hover:bg-gray-700 transition text-center">
+                    <div class="mt-10 sm:mt-12 flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 bg-white dark:bg-gray-900 p-6 sm:p-8 rounded-[25px] sm:rounded-[30px] border border-gray-100 dark:border-gray-800 sticky bottom-2 sm:bottom-4 md:bottom-8 shadow-xl z-10">
+                        <a href="{{ route('supervisor.interns') }}" class="px-6 sm:px-8 md:px-10 py-3 md:py-4 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded-2xl font-bold text-[10px] sm:text-xs uppercase tracking-wider hover:bg-gray-200 dark:hover:bg-gray-700 transition text-center">
                             Discard
                         </a>
-                        <button type="submit" class="px-8 sm:px-10 py-3 sm:py-4 bg-[#0B5694] dark:bg-blue-600 text-white rounded-2xl font-bold text-[10px] sm:text-xs uppercase tracking-wider hover:bg-[#084577] dark:hover:bg-blue-700 transition shadow-lg shadow-blue-500/20 active:scale-95">
+                        <button type="submit" class="px-6 sm:px-8 md:px-10 py-3 md:py-4 bg-[#0B5694] dark:bg-blue-600 text-white rounded-2xl font-bold text-[10px] sm:text-xs uppercase tracking-wider hover:bg-[#084577] dark:hover:bg-blue-700 transition shadow-lg shadow-blue-500/20 active:scale-95">
                             Update Office Requirements
                         </button>
                     </div>
@@ -118,7 +118,7 @@
             </div>
 
             {{-- Sidebar for Adding Competency --}}
-            <div class="lg:col-span-1">
+            <div class="lg:col-span-1 md:order-first lg:order-none">
                 <div class="bg-white dark:bg-gray-900 rounded-[35px] shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden p-8 sticky top-6">
                     <h3 class="text-xs font-black text-[#0B5694] dark:text-blue-400 uppercase tracking-[0.2em] mb-6">Add Competency Requirement</h3>
                     <p class="text-[11px] text-gray-400 dark:text-gray-500 mb-6 font-medium leading-relaxed">
@@ -129,7 +129,7 @@
                         @csrf
                         <div>
                             <label for="category" class="block text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3">Category / Section</label>
-                            <input type="text" name="category" id="category" list="categories-list" required placeholder="Select or type a category..." class="w-full bg-gray-50 dark:bg-gray-800 border-2 border-transparent focus:border-blue-500/20 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 outline-none transition-all">
+                            <input type="text" name="category" id="category" list="categories-list" required placeholder="Select or type a category..." class="w-full bg-gray-50 dark:bg-gray-800 border-2 border-transparent focus:border-blue-500/20 rounded-2xl px-4 md:px-5 py-3 md:py-4 text-sm font-bold text-gray-700 dark:text-gray-200 outline-none transition-all">
                             <datalist id="categories-list">
                                 @foreach($categories as $cat)
                                     <option value="{{ $cat }}">
@@ -139,12 +139,12 @@
                         
                         <div>
                             <label for="competency_text" class="block text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3">Requirement Description</label>
-                            <textarea name="competency_text" id="competency_text" rows="3" required placeholder="e.g. Developing custom web templates and integrations" class="w-full bg-gray-50 dark:bg-gray-800 border-2 border-transparent focus:border-blue-500/20 rounded-2xl px-5 py-4 text-sm font-medium text-gray-700 dark:text-gray-200 outline-none transition-all placeholder-gray-300 dark:placeholder-gray-600"></textarea>
+                            <textarea name="competency_text" id="competency_text" rows="3" required placeholder="e.g. Developing custom web templates and integrations" class="w-full bg-gray-50 dark:bg-gray-800 border-2 border-transparent focus:border-blue-500/20 rounded-2xl px-4 md:px-5 py-3 md:py-4 text-sm font-medium text-gray-700 dark:text-gray-200 outline-none transition-all placeholder-gray-300 dark:placeholder-gray-600"></textarea>
                         </div>
 
                         <div>
                             <label for="priority" class="block text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3">Initial Priority Level</label>
-                            <select name="priority" id="priority" required class="w-full bg-gray-50 dark:bg-gray-800 border-2 border-transparent focus:border-blue-500/20 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 outline-none transition-all">
+                            <select name="priority" id="priority" required class="w-full bg-gray-50 dark:bg-gray-800 border-2 border-transparent focus:border-blue-500/20 rounded-2xl px-4 md:px-5 py-3 md:py-4 text-sm font-bold text-gray-700 dark:text-gray-200 outline-none transition-all">
                                 <option value="1">Not Required (1)</option>
                                 <option value="2">Slightly Important (2)</option>
                                 <option value="3">Moderately Important (3)</option>
@@ -153,7 +153,7 @@
                             </select>
                         </div>
 
-                        <button type="submit" class="w-full bg-[#0B5694] hover:bg-[#084577] text-white rounded-2xl font-bold py-4 text-[10px] uppercase tracking-widest transition shadow-lg shadow-blue-500/10">
+                        <button type="submit" class="w-full bg-[#0B5694] hover:bg-[#084577] text-white rounded-2xl font-bold py-3 md:py-4 text-[10px] uppercase tracking-widest transition shadow-lg shadow-blue-500/10">
                             Add & Save Competency
                         </button>
                     </form>

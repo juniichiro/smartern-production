@@ -15,7 +15,7 @@
             subtitle="Manage assigned interns and office limits/requirements" 
         >
             <x-slot:actions>
-                <nav class="flex items-center gap-1 p-1 bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl w-fit border border-gray-100 dark:border-gray-800 shrink-0">
+                <nav class="overflow-x-auto flex items-center gap-1 p-1 bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl w-fit border border-gray-100 dark:border-gray-800 shrink-0">
                     <button @click="activeTab = 'interns'" 
                             :class="activeTab === 'interns' ? 'bg-white dark:bg-gray-700 text-[#0B5694] dark:text-blue-400 shadow-sm border-gray-100 dark:border-gray-600' : 'text-gray-400 dark:text-slate-500 border-transparent hover:text-gray-600 dark:hover:text-gray-300'" 
                             class="px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all whitespace-nowrap active:scale-95">
@@ -33,15 +33,15 @@
         {{-- Intern Directory Tab --}}
         <div x-show="activeTab === 'interns'" class="space-y-6 animate-in fade-in duration-300">
             {{-- Search Bar --}}
-            <x-card-container class="mb-10" padding="p-6">
-                <form action="{{ route('supervisor.interns') }}" method="GET" class="w-full md:w-1/3">
+            <x-card-container class="mb-6 md:mb-10" padding="p-4 md:p-6">
+                <form action="{{ route('supervisor.interns') }}" method="GET" class="w-full md:w-2/3 lg:w-1/2">
                     <div class="relative group">
-                        <button type="submit" class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-[#0B5694] focus:outline-none transition-colors z-10">
+                        <button type="submit" class="absolute inset-y-0 left-0 pl-3 md:pl-4 flex items-center text-gray-400 group-focus-within:text-[#0B5694] focus:outline-none transition-colors z-10">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                         </button>
                         <input type="text" name="search" value="{{ request('search') }}" placeholder="Search intern name or ID..." 
                             @input.debounce.800ms="$el.form.submit()"
-                            class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl pl-12 pr-6 py-4 text-sm focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-600 focus:outline-none transition-all placeholder-gray-400 dark:placeholder-gray-500 font-medium dark:text-gray-100">
+                            class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl pl-10 md:pl-12 pr-4 md:pr-6 py-3 md:py-4 text-sm focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-600 focus:outline-none transition-all placeholder-gray-400 dark:placeholder-gray-500 font-medium dark:text-gray-100">
                     </div>
                 </form>
             </x-card-container>
@@ -67,7 +67,7 @@
                             <tbody x-show="loading" class="divide-y divide-gray-50 dark:divide-gray-800">
                                 @for($i = 0; $i < min(count($interns) ?: 5, 5); $i++)
                                     <tr>
-                                        <td class="px-8 py-6">
+                                        <td class="px-4 md:px-8 py-4 md:py-6">
                                             <div class="flex items-center gap-4">
                                                 <x-skeleton class="w-10 h-10 rounded-full shrink-0" />
                                                 <div class="space-y-2">
@@ -76,10 +76,10 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="px-8 py-6"><x-skeleton class="h-4 w-20 rounded-lg" /></td>
-                                        <td class="px-8 py-6"><x-skeleton class="h-4 w-40 rounded-lg" /></td>
-                                        <td class="px-8 py-6 text-center"><x-skeleton class="h-6 w-20 mx-auto rounded-full" /></td>
-                                        <td class="px-8 py-6 text-right"><x-skeleton class="h-8 w-20 ml-auto rounded-lg" /></td>
+                                        <td class="px-4 md:px-8 py-4 md:py-6"><x-skeleton class="h-4 w-20 rounded-lg" /></td>
+                                        <td class="px-4 md:px-8 py-4 md:py-6"><x-skeleton class="h-4 w-40 rounded-lg" /></td>
+                                        <td class="px-4 md:px-8 py-4 md:py-6 text-center"><x-skeleton class="h-6 w-20 mx-auto rounded-full" /></td>
+                                        <td class="px-4 md:px-8 py-4 md:py-6 text-right"><x-skeleton class="h-8 w-20 ml-auto rounded-lg" /></td>
                                     </tr>
                                 @endfor
                             </tbody>
@@ -92,7 +92,7 @@
                                         $percentage = $targetHours > 0 ? min(100, round(($intern->hours_rendered / $targetHours) * 100)) : 0;
                                     @endphp
                                     <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors group {{ $isCompleted ? 'bg-gray-50/30 dark:bg-gray-800/10' : '' }}">
-                                        <td class="px-8 py-6 whitespace-nowrap">
+                                        <td class="px-4 md:px-8 py-4 md:py-6 whitespace-nowrap">
                                             <a href="{{ route('supervisor.interns.show', $intern->user) }}" class="flex items-center gap-4 hover:opacity-80 transition-opacity">
                                                 <x-avatar :user="$intern" size="10" border="1" circular="true" textSize="xs" />
                                                 <div>
@@ -103,10 +103,10 @@
                                                 </div>
                                             </a>
                                         </td>
-                                        <td class="px-8 py-6 text-gray-500 dark:text-gray-400 font-black uppercase tracking-[0.2em] text-[11px] whitespace-nowrap">
+                                        <td class="px-4 md:px-8 py-4 md:py-6 text-gray-500 dark:text-gray-400 font-black uppercase tracking-[0.2em] text-[11px] whitespace-nowrap">
                                             {{ $intern->student_id ?? 'N/A' }}
                                         </td>
-                                        <td class="px-8 py-6 whitespace-nowrap">
+                                        <td class="px-4 md:px-8 py-4 md:py-6 whitespace-nowrap">
                                             <div class="flex items-center gap-4">
                                                 <div class="w-32 h-2.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden shadow-inner border border-gray-50 dark:border-gray-700">
                                                     <div class="{{ $isCompleted ? 'bg-emerald-500 dark:bg-emerald-400' : 'bg-[#0B5694] dark:bg-blue-600' }} h-full shadow-lg transition-all duration-1000" 
@@ -115,7 +115,7 @@
                                                 <span class="font-black text-gray-700 dark:text-gray-300 text-[11px] tracking-widest">{{ $percentage }}% ({{ round($intern->hours_rendered) }}/{{ $targetHours }}h)</span>
                                             </div>
                                         </td>
-                                        <td class="px-8 py-6 text-center whitespace-nowrap">
+                                        <td class="px-4 md:px-8 py-4 md:py-6 text-center whitespace-nowrap">
                                             @if($isCompleted)
                                                 <span class="bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest border border-emerald-100 dark:border-emerald-900/30">
                                                     Completed
@@ -126,7 +126,7 @@
                                                 </span>
                                             @endif
                                         </td>
-                                        <td class="px-8 py-6 whitespace-nowrap">
+                                        <td class="px-4 md:px-8 py-4 md:py-6 whitespace-nowrap">
                                             <div class="flex items-center justify-end gap-4">
                                                 @if(!$isCompleted)
                                                     <button title="Assign Task" class="p-2.5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-400 dark:text-gray-500 hover:text-[#0B5694] dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-xl transition shadow-sm transform hover:scale-110">
@@ -153,7 +153,7 @@
             </x-table-container>
 
             {{-- Pagination --}}
-            <div class="mt-2 flex flex-col sm:flex-row items-center justify-between gap-6 relative z-10" x-show="!loading" x-transition.opacity>
+            <div class="mt-2 flex flex-col md:flex-row items-center justify-between gap-6 relative z-10" x-show="!loading" x-transition.opacity>
                 <div class="text-[11px] text-gray-400 dark:text-gray-500 font-black uppercase tracking-[0.2em] italic">
                     Showing <b>{{ $interns->firstItem() ?? 0 }}</b> to <b>{{ $interns->lastItem() ?? 0 }}</b> of {{ $interns->total() }}
                 </div>
@@ -182,8 +182,8 @@
 
         {{-- Office Requirements Tab --}}
         <div x-show="activeTab === 'requirements'" class="space-y-6 animate-in fade-in duration-300" x-cloak>
-            <div class="max-w-2xl mx-auto">
-                <x-card-container title="Office Requirements & Allocation Settings" padding="p-6 sm:p-8">
+            <div class="max-w-2xl mx-auto w-full">
+                <x-card-container title="Office Requirements & Allocation Settings" padding="p-4 md:p-6 lg:p-8">
                     <form action="{{ route('supervisor.office.requirements') }}" method="POST" class="space-y-6">
                         @csrf
                         <div>

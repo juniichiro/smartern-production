@@ -14,33 +14,33 @@
             subtitle="Verify and endorse interns who have completed their internship hours"
         />
 
-        <div class="bg-white dark:bg-gray-900 rounded-[25px] shadow-sm border border-gray-100 dark:border-gray-800 p-6 md:p-8">
-            <h3 class="text-lg md:text-xl font-bold text-gray-800 dark:text-gray-100 mb-8 uppercase">Office Interns</h3>
+        <div class="bg-white dark:bg-gray-900 rounded-[25px] shadow-sm border border-gray-100 dark:border-gray-800 p-4 md:p-8">
+            <h3 class="text-base sm:text-lg md:text-xl font-bold text-gray-800 dark:text-gray-100 mb-8 uppercase">Office Interns</h3>
 
             <div class="overflow-hidden border border-gray-100 dark:border-gray-800 rounded-2xl">
                 <div class="overflow-x-auto custom-scrollbar">
                     <table class="w-full text-left">
                         <thead class="bg-gray-50 dark:bg-gray-800/50 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest border-b border-gray-100 dark:border-gray-700">
                             <tr>
-                                <th class="px-8 py-5">Intern Name</th>
-                                <th class="px-8 py-5">Rendered Hours</th>
-                                <th class="px-8 py-5">Certificate Status</th>
-                                <th class="px-8 py-5 text-right">Actions</th>
+                                <th class="px-4 md:px-8 py-3 md:py-5">Intern Name</th>
+                                <th class="px-4 md:px-8 py-3 md:py-5">Rendered Hours</th>
+                                <th class="px-4 md:px-8 py-3 md:py-5">Certificate Status</th>
+                                <th class="px-4 md:px-8 py-3 md:py-5 text-right">Actions</th>
                             </tr>
                         </thead>
                         {{-- Skeletons --}}
                         <tbody x-show="loading" class="divide-y divide-gray-50 dark:divide-gray-800">
                             @for($i = 0; $i < min(count($interns) ?: 3, 3); $i++)
                                 <tr>
-                                    <td class="px-8 py-6">
+                                    <td class="px-4 md:px-8 py-4 md:py-6">
                                         <div class="space-y-2">
                                             <x-skeleton class="h-4 w-32 rounded-lg" />
                                             <x-skeleton class="h-3 w-24 rounded-lg" />
                                         </div>
                                     </td>
-                                    <td class="px-8 py-6"><x-skeleton class="h-4 w-20 rounded-lg" /></td>
-                                    <td class="px-8 py-6"><x-skeleton class="h-6 w-24 rounded-full" /></td>
-                                    <td class="px-8 py-6 flex justify-end gap-2">
+                                    <td class="px-4 md:px-8 py-4 md:py-6"><x-skeleton class="h-4 w-20 rounded-lg" /></td>
+                                    <td class="px-4 md:px-8 py-4 md:py-6"><x-skeleton class="h-6 w-24 rounded-full" /></td>
+                                    <td class="px-4 md:px-8 py-4 md:py-6 flex justify-end gap-2">
                                         <x-skeleton class="h-10 w-28 rounded-xl" />
                                         <x-skeleton class="h-10 w-24 rounded-xl" />
                                     </td>
@@ -56,16 +56,16 @@
                                     $isEligible = ($intern->hours_rendered ?? 0) >= $targetHours; 
                                 @endphp
                                 <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors">
-                                    <td class="px-8 py-6 whitespace-nowrap">
+                                    <td class="px-4 md:px-8 py-4 md:py-6 whitespace-nowrap">
                                         <p class="font-bold text-gray-800 dark:text-gray-100">{{ $intern->first_name }} {{ $intern->last_name }}</p>
                                         <p class="text-xs text-gray-400 dark:text-gray-500">{{ $intern->user->email ?? 'No Email' }}</p>
                                     </td>
-                                    <td class="px-8 py-6 font-black text-gray-600 dark:text-gray-400 whitespace-nowrap">
+                                    <td class="px-4 md:px-8 py-4 md:py-6 font-black text-gray-600 dark:text-gray-400 whitespace-nowrap">
                                         <span class="{{ $isEligible ? 'text-emerald-500 dark:text-emerald-400' : 'text-[#0B5694] dark:text-blue-400' }}">
                                             {{ (int)($intern->hours_rendered ?? 0) }} / {{ $targetHours }}
                                         </span>
                                     </td>
-                                    <td class="px-8 py-6 whitespace-nowrap">
+                                    <td class="px-4 md:px-8 py-4 md:py-6 whitespace-nowrap">
                                         @if(!$cert)
                                             <span class="text-gray-300 dark:text-gray-600 text-[10px] font-black uppercase tracking-widest">No Record</span>
                                         @else
@@ -76,18 +76,18 @@
                                             </span>
                                         @endif
                                     </td>
-                                    <td class="px-8 py-6 text-right whitespace-nowrap">
+                                    <td class="px-4 md:px-8 py-4 md:py-6 text-right whitespace-nowrap">
                                         @if($isEligible)
                                             <div class="flex items-center justify-end gap-2">
                                                 <a href="{{ route('supervisor.certificates.preview', ['certificate' => $intern->user_id]) }}" 
-                                                   class="bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-gray-50 dark:hover:bg-gray-700 transition uppercase tracking-widest"
+                                                   class="bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 px-3 md:px-4 py-2 md:py-2.5 rounded-xl text-xs font-bold hover:bg-gray-50 dark:hover:bg-gray-700 transition uppercase tracking-widest"
                                                    title="Preview Draft">
                                                     Preview Draft
                                                 </a>
                                                 @if(!$cert)
                                                     <button type="button" 
                                                             @click="openFeedbackModal('{{ $intern->first_name }} {{ $intern->last_name }}', '{{ route('supervisor.certificates.endorse', ['certificate' => $intern->user_id]) }}')"
-                                                            class="bg-[#0B5694] dark:bg-blue-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-[#084577] dark:hover:bg-blue-700 transition shadow-lg shadow-blue-500/20 uppercase tracking-widest active:scale-95">
+                                                            class="bg-[#0B5694] dark:bg-blue-600 text-white px-4 md:px-5 py-2 md:py-2.5 rounded-xl text-xs font-bold hover:bg-[#084577] dark:hover:bg-blue-700 transition shadow-lg shadow-blue-500/20 uppercase tracking-widest active:scale-95">
                                                         Endorse
                                                     </button>
                                                 @else
@@ -131,7 +131,7 @@
                  x-transition:leave-end="opacity-0"></div>
 
             {{-- Modal Content Card --}}
-            <div class="relative bg-white dark:bg-gray-900 rounded-[28px] border border-gray-100 dark:border-gray-800 shadow-2xl p-8 max-w-lg w-full z-10 text-left transform transition-all"
+            <div class="relative bg-white dark:bg-gray-900 rounded-[28px] border border-gray-100 dark:border-gray-800 shadow-2xl p-5 sm:p-8 max-w-lg w-full z-10 text-left transform transition-all"
                  x-show="showFeedbackModal"
                  x-transition:enter="ease-out duration-300"
                  x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
@@ -142,7 +142,7 @@
                 
                 {{-- Modal Header --}}
                 <div class="flex items-start gap-4 mb-6">
-                    <div class="p-3 bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 rounded-2xl">
+                    <div class="p-2 sm:p-3 bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 rounded-2xl">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                     </div>
                     <div>
@@ -160,7 +160,7 @@
                             Provide qualitative feedback and evaluation for <span class="font-extrabold text-gray-700 dark:text-gray-300 x-text" x-text="selectedInternName"></span> to review during the endorsement process. This feedback is completely confidential and will not be displayed to the intern.
                         </p>
 
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             @foreach([
                                 'technical_proficiency' => 'Technical Proficiency',
                                 'professionalism_ethics' => 'Professionalism & Ethics',
@@ -197,7 +197,7 @@
                     <div class="flex items-center justify-end gap-3">
                         <button type="button" 
                                 @click="closeFeedbackModal"
-                                class="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 px-5 py-3 rounded-xl text-xs font-bold transition uppercase tracking-widest">
+                                class="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl text-xs font-bold transition uppercase tracking-widest">
                             Cancel
                         </button>
                         <button type="submit" 

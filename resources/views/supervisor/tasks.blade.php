@@ -12,7 +12,7 @@
         <div class="flex-1 flex flex-col" x-data="supervisorInternTasks">
             
             {{-- Profile Card --}}
-            <x-card-container class="mb-10" padding="p-6 md:p-10">
+            <x-card-container class="mb-10" padding="p-4 sm:p-6 md:p-10">
                 <div class="flex flex-col md:flex-row gap-8 items-center md:items-start text-center md:text-left">
                     <x-avatar :user="$intern" size="32" circular="false" border="4" textSize="4xl" />
                     
@@ -23,7 +23,7 @@
                                 Back to Monitoring
                             </a>
                         </div>
-                        <h2 class="text-2xl md:text-4xl font-black text-gray-800 dark:text-gray-100 tracking-tight uppercase leading-tight">
+                        <h2 class="text-xl sm:text-2xl md:text-4xl font-black text-gray-800 dark:text-gray-100 tracking-tight uppercase leading-tight">
                             Workload: <span class="text-[#0B5694] dark:text-blue-400">{{ $intern->first_name }} {{ $intern->last_name }}</span>
                         </h2>
                         <p class="text-sm md:text-base text-gray-400 dark:text-gray-500 mt-2 font-medium italic tracking-tight">Reviewing assigned tasks for {{ $intern->office->name }} • {{ $intern->student_id }}</p>
@@ -40,12 +40,12 @@
             </x-card-container>
 
             {{-- SEARCH BAR --}}
-            <div class="flex flex-col md:flex-row gap-4 mb-8 items-stretch md:items-center">
+            <div class="flex flex-col sm:flex-row gap-4 mb-8 items-stretch sm:items-center">
                 <div class="relative flex-1 group">
                     <span class="absolute inset-y-0 left-5 flex items-center text-gray-400 dark:text-gray-500">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                     </span>
-                    <input type="text" x-model="searchQuery" @input.debounce.250ms="searchQuery = $event.target.value" placeholder="Search by task title..." class="w-full bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[22px] pl-14 pr-6 py-4 text-sm font-bold text-gray-700 dark:text-gray-100 shadow-sm focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:border-[#0B5694] dark:focus:border-blue-600 transition-all placeholder-gray-400 dark:placeholder-gray-500">
+                    <input type="text" x-model="searchQuery" @input.debounce.250ms="searchQuery = $event.target.value" placeholder="Search by task title..." class="w-full bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[22px] pl-12 sm:pl-14 pr-6 py-3 sm:py-4 text-sm font-bold text-gray-700 dark:text-gray-100 shadow-sm focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:border-[#0B5694] dark:focus:border-blue-600 transition-all placeholder-gray-400 dark:placeholder-gray-500">
                 </div>
             </div>
 
@@ -70,9 +70,9 @@
                     </div>
                 </x-slot>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
                     <!-- Column: In Progress -->
-                    <div class="flex flex-col space-y-6 bg-gray-50/40 dark:bg-gray-800/10 p-5 rounded-[30px] border border-gray-100/50 dark:border-gray-800/50 min-h-[500px]">
+                    <div class="flex flex-col space-y-6 bg-gray-50/40 dark:bg-gray-800/10 p-4 md:p-5 rounded-[30px] border border-gray-100/50 dark:border-gray-800/50 min-h-[300px] md:min-h-[400px] lg:min-h-[500px]">
                         <div class="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-800">
                             <div class="flex items-center gap-2.5">
                                 <span class="w-3 h-3 rounded-full bg-orange-400 dark:bg-orange-500 shadow-sm shadow-orange-400/50"></span>
@@ -81,7 +81,7 @@
                             <span class="px-2.5 py-0.5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-500 dark:text-gray-400 text-[10px] font-black rounded-full shadow-sm">{{ $inProgressTasks->count() }}</span>
                         </div>
                         
-                        <div class="flex flex-col gap-4 max-h-[420px] overflow-y-auto custom-scrollbar pr-1">
+                        <div class="flex flex-col gap-4 max-h-[280px] md:max-h-[360px] lg:max-h-[420px] overflow-y-auto custom-scrollbar pr-1">
                             {{-- Skeleton --}}
                             <template x-if="loading">
                                 <div class="space-y-4">
@@ -107,7 +107,7 @@
                     </div>
 
                     <!-- Column: Needs Review -->
-                    <div class="flex flex-col space-y-6 bg-gray-50/40 dark:bg-gray-800/10 p-5 rounded-[30px] border border-gray-100/50 dark:border-gray-800/50 min-h-[500px]">
+                    <div class="flex flex-col space-y-6 bg-gray-50/40 dark:bg-gray-800/10 p-4 md:p-5 rounded-[30px] border border-gray-100/50 dark:border-gray-800/50 min-h-[300px] md:min-h-[400px] lg:min-h-[500px]">
                         <div class="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-800">
                             <div class="flex items-center gap-2.5">
                                 <span class="w-3 h-3 rounded-full bg-[#0B5694] dark:bg-blue-500 shadow-sm shadow-blue-500/50 animate-pulse"></span>
@@ -116,7 +116,7 @@
                             <span class="px-2.5 py-0.5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-500 dark:text-gray-400 text-[10px] font-black rounded-full shadow-sm">{{ $needsReviewTasks->count() }}</span>
                         </div>
                         
-                        <div class="flex flex-col gap-4 max-h-[420px] overflow-y-auto custom-scrollbar pr-1">
+                        <div class="flex flex-col gap-4 max-h-[280px] md:max-h-[360px] lg:max-h-[420px] overflow-y-auto custom-scrollbar pr-1">
                             {{-- Skeleton --}}
                             <template x-if="loading">
                                 <div class="space-y-4">
@@ -142,7 +142,7 @@
                     </div>
 
                     <!-- Column: Completed -->
-                    <div class="flex flex-col space-y-6 bg-gray-50/40 dark:bg-gray-800/10 p-5 rounded-[30px] border border-gray-100/50 dark:border-gray-800/50 min-h-[500px]">
+                    <div class="flex flex-col space-y-6 bg-gray-50/40 dark:bg-gray-800/10 p-4 md:p-5 rounded-[30px] border border-gray-100/50 dark:border-gray-800/50 min-h-[300px] md:min-h-[400px] lg:min-h-[500px]">
                         <div class="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-800">
                             <div class="flex items-center gap-2.5">
                                 <span class="w-3 h-3 rounded-full bg-emerald-500 dark:bg-emerald-600 shadow-sm shadow-emerald-500/50"></span>
@@ -151,7 +151,7 @@
                             <span class="px-2.5 py-0.5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-500 dark:text-gray-400 text-[10px] font-black rounded-full shadow-sm">{{ $completedTasks->count() }}</span>
                         </div>
                         
-                        <div class="flex flex-col gap-4 max-h-[420px] overflow-y-auto custom-scrollbar pr-1">
+                        <div class="flex flex-col gap-4 max-h-[280px] md:max-h-[360px] lg:max-h-[420px] overflow-y-auto custom-scrollbar pr-1">
                             {{-- Skeleton --}}
                             <template x-if="loading">
                                 <div class="space-y-4">
@@ -186,7 +186,7 @@
             <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" @click="showAssignModal = false; showEditModal = false; showDeleteModal = false"></div>
         
         {{-- Quick Assign Modal --}}
-        <div x-show="showAssignModal" class="relative bg-white dark:bg-gray-900 rounded-[35px] w-full max-w-xl p-8 sm:p-10 shadow-2xl overflow-y-auto max-h-[90vh] border border-gray-100 dark:border-gray-800 custom-scrollbar"
+        <div x-show="showAssignModal" class="relative bg-white dark:bg-gray-900 rounded-[35px] w-full max-w-xl p-6 sm:p-10 shadow-2xl overflow-y-auto max-h-[90vh] border border-gray-100 dark:border-gray-800 custom-scrollbar"
              x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100">
             <h3 class="text-2xl font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight mb-8">Quick Assign</h3>
             <form action="{{ route('supervisor.tasks.store') }}" method="POST" class="space-y-8 text-left">
@@ -260,7 +260,7 @@
         </div>
 
         {{-- Delete Task Modal --}}
-        <div x-show="showDeleteModal" class="relative bg-white dark:bg-gray-900 rounded-[35px] w-full max-w-md p-10 shadow-2xl border border-gray-100 dark:border-gray-800"
+        <div x-show="showDeleteModal" class="relative bg-white dark:bg-gray-900 rounded-[35px] w-full max-w-md p-8 sm:p-10 shadow-2xl border border-gray-100 dark:border-gray-800"
              x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100">
             <div class="text-center">
                 <div class="w-20 h-20 bg-red-50 dark:bg-red-900/20 text-red-500 rounded-[30px] flex items-center justify-center mx-auto mb-6 shadow-sm">

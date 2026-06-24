@@ -15,22 +15,22 @@
         />
 
         {{-- SUMMARY CARDS --}}
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            <div class="bg-white dark:bg-gray-900 p-8 rounded-[30px] shadow-sm border border-gray-100 dark:border-gray-800 relative overflow-hidden">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-12">
+            <div class="bg-white dark:bg-gray-900 p-5 md:p-8 rounded-[30px] shadow-sm border border-gray-100 dark:border-gray-800 relative overflow-hidden">
                 <p class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-6">Office Hours Rendered</p>
-                <h3 class="text-3xl md:text-5xl font-black text-gray-900 dark:text-gray-100 tracking-tighter">{{ (int)$totalRendered }}</h3>
+                <h3 class="text-2xl sm:text-3xl md:text-5xl font-black text-gray-900 dark:text-gray-100 tracking-tighter">{{ (int)$totalRendered }}</h3>
                 <span class="text-xs text-[#0B5694] dark:text-blue-400 font-black bg-blue-50 dark:bg-blue-900/20 px-3 py-1 rounded-full inline-block mt-4 uppercase tracking-widest border border-blue-100 dark:border-blue-900/30">
                     {{ $completionPercentage }}% Office Progress
                 </span>
             </div>
 
-            <div class="bg-white dark:bg-gray-900 p-8 rounded-[30px] shadow-sm border border-gray-100 dark:border-gray-800 relative overflow-hidden">
+            <div class="bg-white dark:bg-gray-900 p-5 md:p-8 rounded-[30px] shadow-sm border border-gray-100 dark:border-gray-800 relative overflow-hidden">
                 <p class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-6">Remaining Hours</p>
-                <h3 class="text-3xl md:text-5xl font-black text-gray-900 dark:text-gray-100 tracking-tighter">{{ (int)$remainingHours }}</h3>
+                <h3 class="text-2xl sm:text-3xl md:text-5xl font-black text-gray-900 dark:text-gray-100 tracking-tighter">{{ (int)$remainingHours }}</h3>
                 <p class="text-xs text-gray-400 dark:text-gray-500 mt-5 font-black uppercase tracking-widest">Hours until department completion</p>
             </div>
 
-            <div class="bg-white dark:bg-gray-900 p-8 rounded-[30px] shadow-sm border border-gray-100 dark:border-gray-800 relative overflow-hidden">
+            <div class="bg-white dark:bg-gray-900 p-5 md:p-8 rounded-[30px] shadow-sm border border-gray-100 dark:border-gray-800 relative overflow-hidden">
                 <p class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-6">Office Status</p>
                 <h3 class="text-2xl md:text-3xl font-black {{ $remainingHours == 0 ? 'text-green-500 dark:text-emerald-400' : 'text-orange-400' }} uppercase tracking-tight">
                     {{ $remainingHours == 0 ? 'Fully Completed' : 'Active Tracking' }}
@@ -40,7 +40,7 @@
         </div>
 
         {{-- INTERN DIRECTORY HEADER --}}
-        <div class="flex items-center justify-between mb-8">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
             <h3 class="font-black text-gray-800 dark:text-gray-100 text-lg md:text-xl uppercase tracking-tight">Intern Workload</h3>
             <button @click="selectedInternId = 'all'; showDrawer = true" class="bg-[#0B5694] dark:bg-blue-600 text-white px-5 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-md hover:bg-[#084577] dark:hover:bg-blue-700 transition-all flex items-center gap-2 active:scale-95">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 5v14M5 12h14"/></svg> Assign Task
@@ -49,9 +49,9 @@
 
         {{-- INTERNS GRID SKELETON --}}
         <template x-if="loading">
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-12">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
                 @for($i = 0; $i < min(count($interns) ?: 3, 3); $i++)
-                    <div class="bg-white dark:bg-gray-900 rounded-[30px] border border-gray-100 dark:border-gray-800 p-6 space-y-6">
+                    <div class="bg-white dark:bg-gray-900 rounded-[30px] border border-gray-100 dark:border-gray-800 p-4 md:p-6 space-y-6">
                         <div class="flex items-start gap-4">
                             <x-skeleton class="w-12 h-12 rounded-full shrink-0" />
                             <div class="flex-1 space-y-2">
@@ -79,13 +79,13 @@
         </template>
 
         {{-- INTERNS GRID --}}
-        <div x-show="!loading" x-transition.opacity.duration.500ms class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-12">
+        <div x-show="!loading" x-transition.opacity.duration.500ms class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
             @forelse($interns as $intern)
                 @php
                     $targetHours = $intern->required_hours ?? 480;
                     $pct = $targetHours > 0 ? min(100, max(0, ($intern->hours_rendered / $targetHours) * 100)) : 0;
                 @endphp
-                <div class="bg-white dark:bg-gray-900 rounded-[30px] border border-gray-100 dark:border-gray-800 p-6 shadow-sm hover:shadow-md hover:border-[#0B5694]/20 transition-all duration-300 flex flex-col justify-between group">
+                <div class="bg-white dark:bg-gray-900 rounded-[30px] border border-gray-100 dark:border-gray-800 p-4 md:p-6 shadow-sm hover:shadow-md hover:border-[#0B5694]/20 transition-all duration-300 flex flex-col justify-between group">
                     
                     {{-- Header: Avatar & Info --}}
                     <div class="flex items-start gap-4">
@@ -124,7 +124,7 @@
                         </span>
 
                         <div class="flex gap-2">
-                            <button @click="selectedInternId = '{{ $intern->user->getRouteKey() }}'; showDrawer = true" class="px-4 py-2 bg-gray-50 dark:bg-gray-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-gray-500 dark:text-gray-400 hover:text-[#0B5694] dark:hover:text-blue-400 border border-gray-100 dark:border-gray-700 hover:border-blue-100 dark:hover:border-blue-900/30 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all active:scale-95 flex items-center gap-1">
+                            <button @click="selectedInternId = '{{ $intern->user->getRouteKey() }}'; showDrawer = true" class="px-3 md:px-4 py-2 bg-gray-50 dark:bg-gray-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-gray-500 dark:text-gray-400 hover:text-[#0B5694] dark:hover:text-blue-400 border border-gray-100 dark:border-gray-700 hover:border-blue-100 dark:hover:border-blue-900/30 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all active:scale-95 flex items-center gap-1">
                                 Assign
                             </button>
                             <a href="{{ route('supervisor.tasks.intern', $intern->user) }}" class="p-2 bg-gray-50 dark:bg-gray-800 hover:bg-[#0B5694] hover:text-white dark:hover:bg-blue-600 border border-gray-100 dark:border-gray-700 rounded-xl transition-all active:scale-95 text-gray-400 inline-flex items-center justify-center" title="Review workload">
@@ -161,7 +161,7 @@
                  @click="showDrawer = false"></div>
 
             <div class="absolute inset-y-0 right-0 pl-10 max-w-full flex">
-                <div class="w-screen max-w-lg" 
+                <div class="w-screen sm:max-w-lg" 
                      x-show="showDrawer"
                      x-transition:enter="transform transition ease-in-out duration-500 sm:duration-700" 
                      x-transition:enter-start="translate-x-full" 
@@ -172,7 +172,7 @@
                     
                     <div class="h-full flex flex-col bg-white dark:bg-gray-900 shadow-2xl border-l border-gray-100 dark:border-gray-800">
                         {{-- Drawer Header --}}
-                        <div class="px-6 py-6 bg-gray-50 dark:bg-gray-800/40 border-b border-gray-100 dark:border-gray-800/80 flex items-center justify-between">
+                        <div class="px-4 sm:px-6 py-4 sm:py-6 bg-gray-50 dark:bg-gray-800/40 border-b border-gray-100 dark:border-gray-800/80 flex items-center justify-between">
                             <div class="flex items-center gap-3">
                                 <div class="bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 w-10 h-10 flex items-center justify-center rounded-xl border border-blue-100 dark:border-blue-900/30">
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -194,7 +194,7 @@
                             @csrf
                             
                             {{-- Scrollable Content --}}
-                            <div class="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-8 text-left">
+                            <div class="flex-1 overflow-y-auto custom-scrollbar p-4 sm:p-6 space-y-8 text-left">
                                 <div class="space-y-2">
                                     <label class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Task Title</label>
                                     <input type="text" name="title" required placeholder="Enter task name..." class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl px-5 py-3.5 text-sm font-medium text-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 outline-none transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500">
@@ -242,7 +242,7 @@
                             </div>
 
                             {{-- Footer actions --}}
-                            <div class="px-6 py-5 bg-gray-50 dark:bg-gray-800/40 border-t border-gray-100 dark:border-gray-800 flex gap-4">
+                            <div class="px-6 py-5 bg-gray-50 dark:bg-gray-800/40 border-t border-gray-100 dark:border-gray-800 flex flex-col sm:flex-row gap-3 sm:gap-4">
                                 <button type="submit" class="flex-1 bg-[#0B5694] dark:bg-blue-600 text-white py-3.5 rounded-xl font-black text-xs uppercase tracking-widest shadow-md hover:bg-[#084577] dark:hover:bg-blue-700 transition active:scale-95">Finalize & Dispatch</button>
                                 <button type="button" @click="showDrawer = false" class="px-6 bg-white dark:bg-gray-800 text-gray-400 dark:text-gray-500 py-3.5 border border-gray-200 dark:border-gray-700 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-gray-50 dark:hover:bg-gray-700 transition active:scale-95">Discard Draft</button>
                             </div>

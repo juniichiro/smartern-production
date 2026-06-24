@@ -27,7 +27,7 @@
     </div>
 
     <!-- Body -->
-    <div class="p-5 flex-1 flex flex-col justify-between">
+    <div class="p-4 md:p-5 flex-1 flex flex-col justify-between">
         <div class="space-y-3">
             <h5 class="text-[14px] font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight leading-snug group-hover/card:text-[#0B5694] dark:group-hover/card:text-blue-400 transition-colors">
                 {{ $task->title }}

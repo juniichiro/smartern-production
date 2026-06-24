@@ -19,7 +19,7 @@
         />
 
         {{-- ACTION QUEUES GRID --}}
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-10 flex-1 min-h-0">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4 md:gap-8 mb-10 flex-1 min-h-0">
         
         {{-- UPCOMING DEADLINES (Left - 7 cols) --}}
         <x-card-container 
@@ -86,8 +86,8 @@
             </div>
         </x-card-container>
 
-        {{-- RIGHT COLUMN (5 cols) --}}
-        <div class="col-span-1 lg:col-span-5 flex flex-col gap-8 overflow-hidden">
+        {{-- RIGHT COLUMN (5 cols on desktop, full width on tablet, stacked on mobile) --}}
+        <div class="col-span-1 md:col-span-2 lg:col-span-5 flex flex-col gap-4 md:gap-8 overflow-hidden">
             {{-- PENDING VERIFICATIONS --}}
             <x-card-container 
                 title="Pending Verifications"
@@ -203,9 +203,9 @@
     <x-card-container title="Cohort Performance Monitoring" padding="p-8 lg:p-10" class="shrink-0 rounded-[50px]">
         {{-- Skeleton --}}
         <template x-if="loading">
-            <div class="flex overflow-x-auto custom-scrollbar pb-4 gap-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:flex lg:overflow-x-auto custom-scrollbar pb-4 gap-4 md:gap-6 lg:gap-10">
                 @for($i = 0; $i < min(count($interns) ?: 3, 3); $i++)
-                    <div class="min-w-[300px] md:min-w-[340px] lg:min-w-[calc(33.33%-2rem)] bg-gray-50/50 dark:bg-gray-800/30 p-6 rounded-[35px] border border-gray-100 dark:border-gray-700 space-y-4">
+                    <div class="lg:min-w-[340px] bg-gray-50/50 dark:bg-gray-800/30 p-5 md:p-6 rounded-[25px] md:rounded-[35px] border border-gray-100 dark:border-gray-700 space-y-4">
                         <div class="flex justify-between items-start">
                             <div class="flex-1 space-y-2">
                                 <x-skeleton class="h-5 w-3/4 rounded-lg" />
@@ -224,7 +224,7 @@
             </div>
         </template>
 
-        <div x-show="!loading" x-transition.opacity.duration.500ms class="flex overflow-x-auto custom-scrollbar pb-4 gap-10 snap-x snap-mandatory">
+        <div x-show="!loading" x-transition.opacity.duration.500ms class="grid grid-cols-1 md:grid-cols-2 lg:flex lg:overflow-x-auto custom-scrollbar pb-4 gap-4 md:gap-6 lg:gap-10 lg:snap-x lg:snap-mandatory">
             @forelse($interns as $intern)
                 @php
                     $total = $intern->tasks->count();
@@ -234,7 +234,7 @@
                     $hoursPercent = $targetHours > 0 ? round(($intern->hours_rendered / $targetHours) * 100) : 0;
                     $statusColor = 'text-[#0B5694] dark:text-blue-400';
                 @endphp
-                <div class="flex flex-col group min-w-[300px] md:min-w-[340px] lg:min-w-[calc(33.33%-2rem)] snap-start bg-gray-50/50 dark:bg-gray-800/30 p-6 rounded-[35px] border border-gray-100 dark:border-gray-700 transition-all hover:border-[#0B5694]/10 hover:shadow-xl hover:bg-white dark:hover:bg-gray-800/50">
+                <div class="flex flex-col group lg:min-w-[340px] xl:min-w-[calc(33.33%-2rem)] lg:snap-start bg-gray-50/50 dark:bg-gray-800/30 p-5 md:p-6 rounded-[25px] md:rounded-[35px] border border-gray-100 dark:border-gray-700 transition-all hover:border-[#0B5694]/10 hover:shadow-xl hover:bg-white dark:hover:bg-gray-800/50">
                     <div class="flex justify-between items-start mb-6">
                         <div class="min-w-0 flex-1 pr-6">
                             <p class="text-[15px] font-extrabold text-gray-800 dark:text-gray-100 group-hover:text-[#0B5694] transition-colors uppercase tracking-normal truncate leading-tight">
