@@ -293,7 +293,7 @@
                                 <p x-show="errors['phone_number']" x-text="errors['phone_number']" class="text-[9px] font-black text-rose-500 uppercase tracking-widest mt-1 ml-1 animate-in fade-in slide-in-from-top-1"></p>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 col-span-2">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 col-span-1 md:col-span-2">
                                 <div class="space-y-2">
                                     <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Emergency Contact (Full Name)</label>
                                     <input type="text" name="emergency_contact" required x-model="formData.emergency_contact"
@@ -434,7 +434,7 @@
                                 <div class="w-full bg-gray-50/50 dark:bg-gray-800/50 border-2 border-gray-100 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-500 dark:text-gray-400" x-text="formData.phone_number"></div>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 col-span-2">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 col-span-1 md:col-span-2">
                                 <div class="space-y-2">
                                     <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Emergency Contact (Full Name)</label>
                                     <div class="w-full bg-gray-50/50 dark:bg-gray-800/50 border-2 border-gray-100 dark:border-gray-800 rounded-2xl px-5 py-4 text-sm font-bold text-gray-500 dark:text-gray-400" x-text="formData.emergency_contact"></div>
