@@ -26,6 +26,7 @@ class InternDetail extends Model
         'emergency_contact_number',
         'schedule_assignment',
         'hours_rendered',
+        'required_hours',
     ];
 
     protected $casts = [

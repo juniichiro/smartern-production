@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('emergency_contact_number', 20)->nullable();
             $table->string('schedule_assignment')->nullable();
             $table->decimal('hours_rendered', 5, 2)->default(0.0);
+            $table->integer('required_hours')->default(480);
         });
     }
 

@@ -72,7 +72,7 @@ class AttendanceController extends Controller
             $statusMessage = 'Shift Complete';
         }
 
-        $totalRequired = (int) ($intern->office->total_hours_required ?? 480);
+        $totalRequired = (int) ($intern->required_hours ?? $intern->office->total_hours_required ?? 480);
         $rendered = (int) ($intern->hours_rendered ?? 0);
         $percentage = $totalRequired > 0 ? (int) min(100, round(($rendered / $totalRequired) * 100)) : 0;
 
@@ -126,7 +126,7 @@ class AttendanceController extends Controller
         $nextAvailableScan = $statusData['nextAvailableScan'];
         $effectiveSchedule = $statusData['effectiveSchedule'];
 
-        $totalRequired = (int) ($intern->office->total_hours_required ?? 480);
+        $totalRequired = (int) ($intern->required_hours ?? $intern->office->total_hours_required ?? 480);
         $rendered = round($intern->hours_rendered ?? 0);
         $remaining = max(0, $totalRequired - $rendered);
         $percentage = $totalRequired > 0 ? round(($rendered / $totalRequired) * 100) : 0;
@@ -309,7 +309,7 @@ class AttendanceController extends Controller
         $nextAvailableScan = $statusData['nextAvailableScan'];
         $effectiveSchedule = $statusData['effectiveSchedule'];
 
-        $totalRequired = 480;
+        $totalRequired = (int) ($intern->required_hours ?? 480);
         $rendered = round($intern->hours_rendered ?? 0);
         $remaining = max(0, $totalRequired - $rendered);
         $percentage = $totalRequired > 0 ? round(($rendered / $totalRequired) * 100) : 0;

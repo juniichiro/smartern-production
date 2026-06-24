@@ -99,10 +99,10 @@ class InternController extends Controller
             if ($status === 'completed') {
                 $query->whereHas('certificate', fn ($q) => $q->where('status', 'published'));
             } elseif ($status === 'endorsing') {
-                $query->where('hours_rendered', '>=', 480)
+                $query->whereColumn('hours_rendered', '>=', 'required_hours')
                     ->whereDoesntHave('certificate', fn ($q) => $q->where('status', 'published'));
             } elseif ($status === 'active') {
-                $query->where('hours_rendered', '<', 480)
+                $query->whereColumn('hours_rendered', '<', 'required_hours')
                     ->whereDoesntHave('certificate', fn ($q) => $q->where('status', 'published'));
             }
         }
@@ -141,7 +141,7 @@ class InternController extends Controller
             $excused = $allLogs->where('status', 'excused')->count();
 
             // 4. Training constants
-            $requiredHours = 480;
+            $requiredHours = $intern->required_hours ?? 480;
             $renderedHours = $intern->hours_rendered ?? 0;
 
             // 5. Training Log (Timeline)

@@ -68,7 +68,7 @@ class TaskController extends Controller
             ->get();
 
         $totalRendered = (float) ($interns->sum('hours_rendered') ?? 0);
-        $totalRequirement = (int) ($interns->count() * 480);
+        $totalRequirement = (int) $interns->sum('required_hours');
         $remainingHours = max(0, $totalRequirement - $totalRendered);
 
         $completionPercentage = $totalRequirement > 0

@@ -117,8 +117,14 @@
                                     @endforeach
                                 </div>
                                 
+                                <div class="space-y-1.5">
+                                    <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Required Internship Hours</span>
+                                    <input type="number" name="required_hours" value="{{ $intern->required_hours ?? 480 }}" min="1" required
+                                        class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 rounded-xl text-xs font-bold text-gray-800 dark:text-gray-100 focus:ring-[#0B5694]/20 focus:border-[#0B5694] transition">
+                                </div>
+                                
                                 <button type="submit" class="w-full bg-[#0B5694] hover:bg-[#084577] text-white py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition active:scale-95 shadow-lg shadow-blue-500/10 cursor-pointer">
-                                    Save Weekly Schedule
+                                    Save Weekly Schedule & Hours
                                 </button>
                             </div>
                         </form>
@@ -152,9 +158,9 @@
             {{-- Progress Overview Row --}}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 @php
-                    $targetHours = 480; 
+                    $targetHours = $intern->required_hours ?? 480; 
                     $renderedInt = round($intern->hours_rendered); 
-                    $hoursPercentage = min(100, round(($renderedInt / $targetHours) * 100)); 
+                    $hoursPercentage = $targetHours > 0 ? min(100, round(($renderedInt / $targetHours) * 100)) : 0; 
                     $isCompleted = optional($intern->certificate)->status === 'published';
                 @endphp
                 

@@ -20,7 +20,7 @@ class DashboardController extends Controller
         if (! $intern || ! $intern->office_id) {
             return view('intern.dashboard', [
                 'rendered' => 0,
-                'totalRequired' => 480,
+                'totalRequired' => $intern ? ($intern->required_hours ?? 480) : 480,
                 'percentage' => 0,
                 'pendingTasksCount' => 0,
                 'logs' => collect([]),
@@ -35,7 +35,7 @@ class DashboardController extends Controller
         }
 
         // 1. Calculate Hours
-        $totalRequired = $intern->office->total_hours_required ?? 480;
+        $totalRequired = $intern->required_hours ?? $intern->office->total_hours_required ?? 480;
         $rendered = $intern->hours_rendered ?? 0;
         $percentage = $totalRequired > 0 ? round(($rendered / $totalRequired) * 100) : 0;
 

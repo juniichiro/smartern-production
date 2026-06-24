@@ -139,7 +139,7 @@
                         <tbody x-show="!loading" x-transition.opacity.duration.500ms class="text-sm divide-y divide-gray-50 dark:divide-gray-800">
                             @forelse($interns as $intern)
                             @php 
-                                $percentage = min(100, ($intern->hours_rendered / 480) * 100);
+                                $percentage = ($intern->required_hours ?? 480) > 0 ? min(100, ($intern->hours_rendered / ($intern->required_hours ?? 480)) * 100) : 0;
                                 $status = optional($intern->certificate)->status === 'published' ? 'completed' : 'active';
                                 $isPublished = $status === 'completed';
                                 $renderedInt = round($intern->hours_rendered); 
@@ -171,7 +171,7 @@
                                         </div>
                                         <span class="font-bold text-gray-700 dark:text-gray-300 text-[11px] tracking-wider">{{ round($percentage) }}%</span>
                                     </div>
-                                    <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-2 font-bold uppercase tracking-tighter">{{ $renderedInt }} / 480 HRS</p>
+                                    <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-2 font-bold uppercase tracking-tighter">{{ $renderedInt }} / {{ $intern->required_hours ?? 480 }} HRS</p>
                                 </td>
                                 <td class="px-8 py-6">
                                     @if($isPublished)

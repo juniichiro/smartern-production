@@ -27,7 +27,7 @@ class ProfileController extends Controller
         $absents = $intern->attendances->where('status', 'absent')->count();
 
         // Training constants
-        $requiredHours = 480;
+        $requiredHours = $intern->required_hours ?? 480;
         $renderedHours = $intern->hours_rendered ?? 0;
 
         $totalAttendance = $intern->attendances->count();

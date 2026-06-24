@@ -31,7 +31,7 @@ class CertificateController extends Controller
      */
     public function endorsements()
     {
-        $interns = InternDetail::where('hours_rendered', '>=', 480)
+        $interns = InternDetail::whereColumn('hours_rendered', '>=', 'required_hours')
             ->whereDoesntHave('certificate')
             ->with(['user', 'office'])
             ->get();

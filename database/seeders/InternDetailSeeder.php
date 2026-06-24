@@ -20,6 +20,7 @@ class InternDetailSeeder extends Seeder
                 'school' => 'FEU-TECH',
                 'gender' => 'Male',
                 'phone_number' => '09123456783',
+                'required_hours' => 200,
             ],
             [
                 'email' => 'rtbritos@smartern.com',
@@ -30,6 +31,7 @@ class InternDetailSeeder extends Seeder
                 'school' => 'FEU-TECH',
                 'gender' => 'Male',
                 'phone_number' => '09123456784',
+                'required_hours' => 150,
             ],
             [
                 'email' => 'tcvalera@smartern.com',
@@ -41,6 +43,7 @@ class InternDetailSeeder extends Seeder
                 'gender' => 'Female',
                 'phone_number' => '09123456785',
                 'hours_rendered' => 480,
+                'required_hours' => 480,
             ],
             [
                 'email' => 'hanni.phambb4@gmail.com',
@@ -52,6 +55,7 @@ class InternDetailSeeder extends Seeder
                 'gender' => 'Female',
                 'phone_number' => '09123456785',
                 'hours_rendered' => 480,
+                'required_hours' => 480,
             ],
             [
                 'email' => 'john.doe@smartern.com',
@@ -63,6 +67,7 @@ class InternDetailSeeder extends Seeder
                 'gender' => 'Male',
                 'phone_number' => '09123456786',
                 'hours_rendered' => 120,
+                'required_hours' => 200,
             ],
             [
                 'email' => 'jane.smith@smartern.com',
@@ -74,6 +79,7 @@ class InternDetailSeeder extends Seeder
                 'gender' => 'Female',
                 'phone_number' => '09123456787',
                 'hours_rendered' => 240,
+                'required_hours' => 300,
             ],
             [
                 'email' => 'mark.santos@smartern.com',
@@ -85,6 +91,7 @@ class InternDetailSeeder extends Seeder
                 'gender' => 'Male',
                 'phone_number' => '09123456788',
                 'hours_rendered' => 80,
+                'required_hours' => 240,
             ],
             [
                 'email' => 'sophia.lee@smartern.com',
@@ -96,6 +103,7 @@ class InternDetailSeeder extends Seeder
                 'gender' => 'Female',
                 'phone_number' => '09123456789',
                 'hours_rendered' => 320,
+                'required_hours' => 400,
             ],
             [
                 'email' => 'chloe.lim@smartern.com',
@@ -107,6 +115,7 @@ class InternDetailSeeder extends Seeder
                 'gender' => 'Female',
                 'phone_number' => '09123456790',
                 'hours_rendered' => 150,
+                'required_hours' => 300,
             ],
             [
                 'email' => 'david.tan@smartern.com',
@@ -118,6 +127,7 @@ class InternDetailSeeder extends Seeder
                 'gender' => 'Male',
                 'phone_number' => '09123456791',
                 'hours_rendered' => 200,
+                'required_hours' => 250,
             ],
         ];
 

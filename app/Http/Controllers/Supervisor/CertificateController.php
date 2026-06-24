@@ -79,7 +79,7 @@ class CertificateController extends Controller
                 'name' => $internFullName,
                 'course' => $intern->course ?? 'Information Technology',
                 'school' => $intern->school ?? 'FEU-TECH',
-                'total_hours' => $certificateRecord->completed_hours ?? $intern->hours_rendered ?? 480,
+                'total_hours' => $certificateRecord->completed_hours ?? $intern->hours_rendered ?? $intern->required_hours ?? 480,
                 'start_date' => $certificateRecord->start_date ?? $intern->start_date,
                 'end_date' => $certificateRecord->end_date ?? now(),
                 'unit' => $certificateRecord->intern_unit ?? Auth::user()->supervisorDetails->office->name ?? 'Human Resource Teaching Unit',
@@ -118,9 +118,10 @@ class CertificateController extends Controller
         // 1. Find the intern using the ID passed through the {certificate} parameter
         $intern = InternDetail::byPublicOrId($certificate)->firstOrFail();
 
-        // 2. Eligibility Check: Ensure they have reached 480 hours
-        if (($intern->hours_rendered ?? 0) < 480) {
-            return redirect()->back()->with('error', 'Intern has not yet completed the required 480 hours.');
+        // 2. Eligibility Check: Ensure they have reached their required hours
+        $reqHours = $intern->required_hours ?? 480;
+        if (($intern->hours_rendered ?? 0) < $reqHours) {
+            return redirect()->back()->with('error', 'Intern has not yet completed the required ' . $reqHours . ' hours.');
         }
 
         // 3. Validate request

@@ -40,7 +40,7 @@ class ProgressController extends Controller
         $user = Auth::user();
         $intern = $user->internDetails;
 
-        $totalRequired = 480;
+        $totalRequired = $intern->required_hours ?? 480;
         $rendered = round($intern->hours_rendered ?? 0);
         $remaining = max(0, $totalRequired - $rendered);
         $percentage = $totalRequired > 0 ? round(($rendered / $totalRequired) * 100) : 0;

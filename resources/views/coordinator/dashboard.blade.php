@@ -143,9 +143,9 @@
                             <tbody class="divide-y divide-gray-50 dark:divide-gray-850/50">
                                 @forelse($interns as $intern)
                                     @php
-                                        $goal = 480;
+                                        $goal = $intern->required_hours ?? 480;
                                         $rendered = round($intern->hours_rendered ?? 0);
-                                        $progress = min(100, round(($rendered / $goal) * 100));
+                                        $progress = $goal > 0 ? min(100, round(($rendered / $goal) * 100)) : 0;
                                         $isCertified = optional($intern->certificate)->status === 'published';
                                     @endphp
                                     <tr onclick="window.location.href='{{ route('coordinator.interns.show', $intern->user) }}'"

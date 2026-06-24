@@ -62,7 +62,7 @@
                 <strong>Office:</strong> {{ $intern->office->name }}
             </td>
             <td width="50%" align="right">
-                <strong>Total Hours:</strong> {{ $total_hours }} / {{ $intern->office->total_hours_required ?? 480 }} hrs<br>
+                <strong>Total Hours:</strong> {{ $total_hours }} / {{ $intern->required_hours ?? $intern->office->total_hours_required ?? 480 }} hrs<br>
                 <strong>Date Generated:</strong> {{ $date }}
             </td>
         </tr>

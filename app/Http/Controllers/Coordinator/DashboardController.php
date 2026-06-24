@@ -49,8 +49,10 @@ class DashboardController extends Controller
                 ->get();
 
             // 4. Cohort Milestones
-            $averageHours = InternDetail::where('school', $school)->avg('hours_rendered') ?? 0;
-            $averageProgress = min(100, round(($averageHours / 480) * 100));
+            $averageProgress = InternDetail::where('school', $school)
+                ->selectRaw('AVG(hours_rendered / required_hours * 100) as avg_prog')
+                ->value('avg_prog') ?? 0;
+            $averageProgress = min(100, round($averageProgress));
 
             $milestones = [
                 'average_progress' => $averageProgress,

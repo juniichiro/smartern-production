@@ -25,8 +25,8 @@ class InternManagementController extends Controller
         })->count();
 
         // Average progress calculation
-        $avgHours = InternDetail::avg('hours_rendered') ?? 0;
-        $avgProgress = min(100, ($avgHours / 480) * 100);
+        $avgProgress = InternDetail::selectRaw('AVG(hours_rendered / required_hours * 100) as avg_prog')->value('avg_prog') ?? 0;
+        $avgProgress = min(100, $avgProgress);
 
         // 2. Main Intern Table (With Relationships)
         $interns = InternDetail::with(['user', 'office', 'certificate'])
@@ -56,9 +56,9 @@ class InternManagementController extends Controller
         // Eager load ALL relationships needed for the tabs
         $intern = InternDetail::where('user_id', $user->id)->with(['user', 'office', 'tasks', 'attendances', 'journals'])->firstOrFail();
 
-        $targetHours = 480;
+        $targetHours = $intern->required_hours ?? 480;
         $currentHours = $intern->hours_rendered ?? 0;
-        $hoursProgress = ($currentHours / $targetHours) * 100;
+        $hoursProgress = $targetHours > 0 ? ($currentHours / $targetHours) * 100 : 0;
 
         // Statistics for the progress overview cards
         $totalTasks = $intern->tasks->count();
@@ -100,11 +100,13 @@ class InternManagementController extends Controller
         $request->validate([
             'schedule_assignment' => 'nullable|array',
             'schedule_assignment.*' => 'string|in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday',
+            'required_hours' => 'required|integer|min:1',
         ]);
 
         $intern = InternDetail::where('user_id', $user->id)->firstOrFail();
         $intern->update([
             'schedule_assignment' => $request->input('schedule_assignment'),
+            'required_hours' => $request->input('required_hours'),
         ]);
 
         return redirect()->back()->with('success', 'Intern reporting schedule updated successfully.');
