@@ -26,20 +26,6 @@ class TemplateController extends Controller
                 'description' => 'Use this form to request the reactivation or restoration of your portal account in cases of automatic security lockouts, anomalies, or suspensions.',
                 'fields' => ['Account Username/Email', 'Onboarding Status', 'Date of Lockout', 'Statement of Security Clearance'],
                 'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><line x1="12" y1="15" x2="12" y2="17"/></svg>',
-            ],
-            [
-                'id' => 'attendance_adjust',
-                'title' => 'Weekly Attendance Adjustment Form',
-                'description' => 'Use this form to request adjustments for log failures, schedule mismatches, or missing QR code check-in scans.',
-                'fields' => ['Requested Adjustment Date', 'Rendered Session Hours', 'Missed Scan Reason', 'Office Supervisor Signature'],
-                'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
-            ],
-            [
-                'id' => 'mfa_reset',
-                'title' => 'MFA Reset & Security Adjustment Request',
-                'description' => 'Use this form to request a full reset of linked authenticator apps or 2FA email settings for your registered user account.',
-                'fields' => ['Registered Email', 'Device Change Reason', 'Backup Code Availability', 'Identity Proof (ID Attachment)'],
-                'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><rect width="8" height="5" x="8" y="11" rx="1"/><circle cx="12" cy="12" r="1"/></svg>',
             ]
         ];
 
@@ -58,18 +44,27 @@ class TemplateController extends Controller
                     'form_code' => 'SMRT-FORM-001',
                     'sections' => [
                         'Section A: Current Profile Information' => [
-                            'Full Registered Name' => '________________________________________________',
-                            'Registered Email Address' => '________________________________________________',
-                            'Student ID / Unique Identifier' => '________________________________________________',
-                            'School / Affiliate Institution' => '________________________________________________',
+                            'type' => 'fields',
+                            'data' => [
+                                'Full Registered Name' => '________________________________________________',
+                                'Registered Email Address' => '________________________________________________',
+                                'Student ID / Unique Identifier' => '________________________________________________',
+                                'School / Affiliate Institution' => '________________________________________________',
+                            ]
                         ],
                         'Section B: Requested Changes & Modifications' => [
-                            'Attribute to Update (e.g. Name, School)' => '________________________________________________',
-                            'Old Value / Information' => '________________________________________________',
-                            'New Proposed Value (Corrected)' => '________________________________________________',
+                            'type' => 'fields',
+                            'data' => [
+                                'Attribute to Update (e.g. Name, School)' => '________________________________________________',
+                                'Old Value / Information' => '________________________________________________',
+                                'New Proposed Value (Corrected)' => '________________________________________________',
+                            ]
                         ],
                         'Section C: Reason for Account Modification' => [
-                            'Detailed Explanation/Justification' => "\n_________________________________________________________________________________\n_________________________________________________________________________________",
+                            'type' => 'fields',
+                            'data' => [
+                                'Detailed Explanation/Justification' => "\n_________________________________________________________________________________\n_________________________________________________________________________________",
+                            ]
                         ]
                     ],
                     'note' => 'Please attach supporting formal documentation (e.g. Certificate of Enrollment, Registrar Certificate) validating the requested change.'
@@ -81,62 +76,29 @@ class TemplateController extends Controller
                     'form_code' => 'SMRT-FORM-002',
                     'sections' => [
                         'Section A: Account Holder Information' => [
-                            'Full Registered Name' => '________________________________________________',
-                            'Registered Email Address' => '________________________________________________',
-                            'Assigned Role (Intern / Supervisor)' => '________________________________________________',
-                            'Office / Assignment Division' => '________________________________________________',
+                            'type' => 'fields',
+                            'data' => [
+                                'Full Registered Name' => '________________________________________________',
+                                'Registered Email Address' => '________________________________________________',
+                                'Assigned Role (Intern / Supervisor)' => '________________________________________________',
+                                'Office / Assignment Division' => '________________________________________________',
+                            ]
                         ],
                         'Section B: Lockout & Security Details' => [
-                            'Date / Time of Portal Suspension' => '________________________________________________',
-                            'Reason for Suspension (if provided)' => '________________________________________________',
+                            'type' => 'fields',
+                            'data' => [
+                                'Date / Time of Portal Suspension' => '________________________________________________',
+                                'Reason for Suspension (if provided)' => '________________________________________________',
+                            ]
                         ],
                         'Section C: Statement & Security Clearance' => [
-                            'Please explain the cause of lockout and state your clearance request' => "\n_________________________________________________________________________________\n_________________________________________________________________________________",
+                            'type' => 'fields',
+                            'data' => [
+                                'Please explain the cause of lockout and state your clearance request' => "\n_________________________________________________________________________________\n_________________________________________________________________________________",
+                            ]
                         ]
                     ],
                     'note' => 'Account unblocking is subject to administrative security checks. Ensure all security questions and identity confirmations are validated.'
-                ];
-                break;
-            case 'attendance_adjust':
-                $templateData = [
-                    'title' => 'WEEKLY ATTENDANCE ADJUSTMENT REQUEST',
-                    'form_code' => 'SMRT-FORM-003',
-                    'sections' => [
-                        'Section A: Intern & Office Details' => [
-                            'Intern Full Name' => '________________________________________________',
-                            'Assigned Office / Department' => '________________________________________________',
-                            'Supervising Office Head' => '________________________________________________',
-                        ],
-                        'Section B: Attendance Adjustment Entry' => [
-                            'Target Log Date (MM/DD/YYYY)' => '________________________________________________',
-                            'Type of Adjustment (Clock In / Clock Out)' => '________________________________________________',
-                            'Actual Time Rendered (e.g. 08:00 AM)' => '________________________________________________',
-                            'Missed Scan Reason (e.g., Geofence, QR Refresh)' => '________________________________________________',
-                        ],
-                        'Section C: Signatures & Certification' => [
-                            'Intern Signature' => '________________________  Date: ________________',
-                            'Supervisor Signature' => '________________________  Date: ________________',
-                        ]
-                    ],
-                    'note' => 'This request must be signed by your direct Supervisor to confirm actual presence in the assigned division.'
-                ];
-                break;
-            case 'mfa_reset':
-                $templateData = [
-                    'title' => 'MFA RESET & SECURITY ADJUSTMENT REQUEST',
-                    'form_code' => 'SMRT-FORM-004',
-                    'sections' => [
-                        'Section A: Identity Verification' => [
-                            'Registered Account Email' => '________________________________________________',
-                            'Full Legal Name' => '________________________________________________',
-                            'Contact / Mobile Number' => '________________________________________________',
-                        ],
-                        'Section B: Multi-Factor Authentication Method' => [
-                            'MFA Method to Reset' => '[  ] Authenticator App (TOTP)     [  ] Email Code Verification',
-                            'Reason for Reset Request' => "\n_________________________________________________________________________________\n_________________________________________________________________________________",
-                        ],
-                    ],
-                    'note' => 'For security integrity, MFA resets require physical validation or supervisor endorsement to prevent unauthorized account access.'
                 ];
                 break;
             default:

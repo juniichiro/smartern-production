@@ -27,7 +27,7 @@
 
         {{-- Skeletons --}}
         <div x-show="loading" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            @for($i = 0; $i < 4; $i++)
+            @for($i = 0; $i < 2; $i++)
                 <x-card-container class="h-[280px]" padding="p-8">
                     <div class="flex items-center gap-4 mb-6">
                         <x-skeleton class="w-12 h-12 rounded-2xl shrink-0" />
