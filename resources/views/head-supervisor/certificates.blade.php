@@ -121,20 +121,20 @@
                                 <td class="px-8 py-6 text-right whitespace-nowrap">
                                     <div class="flex items-center justify-end gap-3">
                                         @if(!empty($cert->certificate_id))
-                                            <a href="{{ route('head-supervisor.certificates.show', ['certificate' => $cert->certificate_id]) }}" 
+                                            <a href="{{ route('head-supervisor.certificates.show', ['certificate' => $cert]) }}" 
                                                class="p-2.5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-400 hover:text-[#0B5694] dark:hover:text-blue-400 rounded-xl transition shadow-sm transform hover:scale-110 active:scale-95 flex items-center justify-center">
                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
                                             </a>
                                             
                                             @if($cert->verification_status === 'pending')
-                                                <form action="{{ route('head-supervisor.certificates.publish', ['certificate' => $cert->certificate_id]) }}" method="POST">
+                                                <form action="{{ route('head-supervisor.certificates.publish', ['certificate' => $cert]) }}" method="POST">
                                                     @csrf
                                                     <button type="submit" class="bg-[#0B5694] dark:bg-blue-600 text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-[#084577] transition-all transform hover:scale-105 active:scale-95">
                                                         Publish
                                                     </button>
                                                 </form>
                                             @elseif($cert->status === 'published')
-                                                <a href="{{ route('head-supervisor.certificates.download', ['certificate' => $cert->certificate_id]) }}" 
+                                                <a href="{{ route('head-supervisor.certificates.download', ['certificate' => $cert]) }}" 
                                                    class="bg-gray-800 dark:bg-gray-700 text-white p-2.5 rounded-xl shadow-lg flex items-center justify-center hover:bg-black transition-all transform hover:scale-110 active:scale-95"
                                                    title="Download Record">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
