@@ -32,15 +32,23 @@ class TemplateController extends Controller
         return view('templates.index', compact('templates'));
     }
 
-    /**
-     * Download the printable request form PDF.
-     */
-    public function download($type)
+    public function download(Request $request, $type)
     {
         switch ($type) {
             case 'account_edit':
                 $user = auth()->user();
                 $role = $user?->role_id;
+
+                if (!$role && $request->has('role')) {
+                    $role = match (strtolower($request->query('role'))) {
+                        'intern' => \App\Enums\UserRole::INTERN,
+                        'supervisor' => \App\Enums\UserRole::SUPERVISOR,
+                        'head_supervisor' => \App\Enums\UserRole::HEAD_SUPERVISOR,
+                        'school_coordinator' => \App\Enums\UserRole::SCHOOL_COORDINATOR,
+                        'admin' => \App\Enums\UserRole::ADMIN,
+                        default => null,
+                    };
+                }
 
                 $profileFields = [
                     'Full Registered Name' => '________________________________________________',

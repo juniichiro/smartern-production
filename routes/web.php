@@ -67,14 +67,9 @@ Route::get('/dashboard', function () {
     return redirect($destination);
 
 })->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('/security/run-analysis', [SecurityController::class, 'runAnalysis'])->name('security.run');
-
-    // Document Templates
-    Route::get('/templates', [TemplateController::class, 'index'])->name('templates.index');
-    Route::get('/templates/download/{type}', [TemplateController::class, 'download'])->name('templates.download');
 
     Route::get('profile/change-password', [PasswordUpdateController::class, 'edit'])
         ->name('profile.change-password');
@@ -269,5 +264,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::post('/privacy/acknowledge', [ProfileController::class, 'acknowledgePrivacy'])->name('privacy.acknowledge');
 });
+
+// Document Templates (Accessible without login for locked-out users)
+Route::get('/templates', [TemplateController::class, 'index'])->name('templates.index');
+Route::get('/templates/download/{type}', [TemplateController::class, 'download'])->name('templates.download');
 
 require __DIR__.'/auth.php';

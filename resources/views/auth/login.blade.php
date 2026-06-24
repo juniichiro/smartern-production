@@ -119,8 +119,9 @@
                     </button>
                 </div>
 
-                <div class="text-center pt-2">
+                <div class="text-center pt-2 flex flex-col gap-2">
                     <a href="{{ route('password.request') }}" class="text-[10px] font-bold text-gray-400 dark:text-gray-500 hover:text-[#0B5694] dark:hover:text-blue-400 transition-colors uppercase tracking-wider">Forgot password?</a>
+                    <a href="{{ route('templates.index') }}" class="text-[10px] font-bold text-gray-400 dark:text-gray-500 hover:text-[#0B5694] dark:hover:text-blue-400 transition-colors uppercase tracking-wider">Request Letter Templates</a>
                 </div>
             </form>
         </div>
