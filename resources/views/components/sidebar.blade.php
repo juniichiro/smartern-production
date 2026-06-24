@@ -236,7 +236,7 @@ class="relative">
                      document.documentElement.classList.remove('font-size-sm', 'font-size-md', 'font-size-lg', 'font-size-xl');
                      document.documentElement.classList.add('font-size-' + val);
                  });
-             },",StartLine:194,TargetContent:
+             },
              
              fetchTotpSetup() {
                  this.mfaSetupStep = 'totp_setup';
