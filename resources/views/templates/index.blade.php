@@ -5,18 +5,11 @@
 @section('content')
 @php
     $user = Auth::user();
-    $roleName = match($user->role_id) {
-        \App\Enums\UserRole::ADMIN => 'Admin',
-        \App\Enums\UserRole::HEAD_SUPERVISOR => 'Head Supervisor',
-        \App\Enums\UserRole::SUPERVISOR => 'Supervisor',
-        \App\Enums\UserRole::SCHOOL_COORDINATOR => 'School Coordinator',
-        \App\Enums\UserRole::INTERN => 'Intern',
-        default => 'User',
-    };
+    $roleName = $user->role_id->label();
 
     $details = $user->internDetails ?? $user->supervisorDetails ?? $user->schoolCoordinatorDetails;
-    $displayName = $details ? $details->first_name : ($user->role->name === 'admin' ? 'Admin' : 'User');
-    $displayRole = $details ? ($details->office->name ?? 'ICT Unit') : ($user->role->name === 'admin' ? 'System Admin' : 'Affiliate');
+    $displayName = $details ? $details->first_name : 'Admin';
+    $displayRole = $details ? ($details->office->name ?? $details->school ?? 'SDO Quezon City') : 'System Admin';
 @endphp
 
 <x-page-layout 
