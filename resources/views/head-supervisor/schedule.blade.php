@@ -529,6 +529,10 @@
                                                      'bg-rose-400': evt.type === 'absence_request' && evt.status === 'rejected'
                                                  }"></div>
                                         </template>
+                                        {{-- School schedule dot when filter is active --}}
+                                        <template x-if="selectedSchool && schoolSchedules[selectedSchool] && !day.isWeekend && (day.events || []).filter(e => e.type !== 'absence_request').length === 0">
+                                            <div class="w-1 h-1 rounded-full bg-blue-300 dark:bg-blue-500/60"></div>
+                                        </template>
                                     </div>
                                 </button>
                             </template>
