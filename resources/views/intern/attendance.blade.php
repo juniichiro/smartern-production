@@ -98,16 +98,25 @@
                                     {{ $date_status['description'] }}
                                 </p>
                                 </div>
+                                @elseif($timeline_not_set)
+                                <div class="flex flex-col items-center animate-in fade-in zoom-in duration-500">
+                                <div class="w-36 h-36 bg-amber-50 dark:bg-amber-900/20 rounded-full flex items-center justify-center text-amber-500 mb-10 border-4 border-amber-100 dark:border-amber-800 shadow-inner">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                                </div>
+                                <h3 class="text-4xl font-extrabold text-gray-800 dark:text-gray-100 uppercase tracking-normal">Timeline Pending</h3>
+                                <p class="text-[11px] text-gray-400 dark:text-gray-500 max-w-sm mt-6 font-bold uppercase tracking-[0.2em] italic leading-relaxed text-center px-6">
+                                    Your specific internship starting date and expected end date are not configured yet. Please contact your coordinator.
+                                </p>
+                                </div>
                                 @else
                                 <div class="flex flex-col items-center">
                                 <div class="w-36 h-36 bg-orange-50 dark:bg-orange-900/20 rounded-full flex items-center justify-center text-orange-500 mb-10 border-4 border-orange-100 dark:border-orange-800 shadow-inner">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12" y1="16" y2="16.01"/></svg>
                                 </div>
-                                <h3 class="text-4xl font-extrabold text-gray-800 dark:text-gray-100 uppercase tracking-normal">Scanner Security</h3>
-                                <p class="text-[11px] text-gray-400 dark:text-gray-500 max-w-sm mt-6 font-bold uppercase tracking-[0.2em] italic leading-relaxed px-6">Scanning is temporarily locked for security. You can scan for Time-Out at:</p>
-                                <div class="mt-10 px-12 py-5 bg-gray-50 dark:bg-gray-800/50 rounded-[40px] border border-gray-100 dark:border-gray-700 shadow-sm ring-1 ring-black/[0.02]">
-                                    <span class="text-[#0B5694] dark:text-blue-400 font-extrabold text-5xl tracking-normal">{{ $next_available_scan ? $next_available_scan->format('h:i A') : '---' }}</span>
-                                </div>
+                                <h3 class="text-4xl font-extrabold text-gray-800 dark:text-gray-100 uppercase tracking-normal">Attendance Locked</h3>
+                                <p class="text-[11px] text-gray-400 dark:text-gray-500 max-w-sm mt-6 font-bold uppercase tracking-[0.2em] italic leading-relaxed text-center px-6">
+                                    {{ $status_message }}
+                                </p>
                                 </div>
                                 @endif
                     </div>

@@ -49,11 +49,23 @@ class AttendanceController extends Controller
         $completedToday = $statusData['completedToday'];
         $effectiveSchedule = $statusData['effectiveSchedule'];
 
+        $schoolSchedule = null;
+        if ($intern->school) {
+            $schoolSchedule = Schedule::where('type', 'school_default')
+                ->where('school_name', $intern->school)
+                ->first();
+        }
+
+        $timelineNotSet = !$schoolSchedule || !$schoolSchedule->start_date || !$schoolSchedule->target_end_date;
+
         $isEnabled = true;
         $nextAvailableScan = null;
         $statusMessage = 'Daily Session Pending';
 
-        if ($effectiveSchedule['blocked'] && ! $todayRecord && ! $completedToday) {
+        if ($timelineNotSet) {
+            $isEnabled = false;
+            $statusMessage = 'Your program timeline has not been configured yet.';
+        } elseif ($effectiveSchedule['blocked'] && ! $todayRecord && ! $completedToday) {
             $isEnabled = false;
             $labelMap = [
                 'holiday' => 'Holiday',
@@ -65,30 +77,25 @@ class AttendanceController extends Controller
             $statusMessage = "Attendance Disabled ({$label}: {$effectiveSchedule['description']})";
         }
 
-        if ($todayRecord) {
-            $statusMessage = 'Ready for Time-Out';
-            if ($statusData['nextAvailableScan']) {
-                $nextAvailableScan = Carbon::parse($statusData['nextAvailableScan']);
-                $statusMessage = 'Security Lock Active';
+        if (!$timelineNotSet) {
+            if ($todayRecord) {
+                $statusMessage = 'Ready for Time-Out';
+                if ($statusData['nextAvailableScan']) {
+                    $nextAvailableScan = Carbon::parse($statusData['nextAvailableScan']);
+                    $statusMessage = 'Security Lock Active';
+                }
+            } elseif ($completedToday) {
+                $isEnabled = false;
+                $statusMessage = 'Shift Complete';
+            } elseif (! $statusData['canScan']) {
+                $isEnabled = false;
+                $statusMessage = $statusData['statusMessage'];
             }
-        } elseif ($completedToday) {
-            $isEnabled = false;
-            $statusMessage = 'Shift Complete';
-        } elseif (! $statusData['canScan']) {
-            $isEnabled = false;
-            $statusMessage = $statusData['statusMessage'];
         }
 
         $totalRequired = (int) ($intern->required_hours ?? $intern->office->total_hours_required ?? 480);
         $rendered = (int) ($intern->hours_rendered ?? 0);
         $percentage = $totalRequired > 0 ? (int) min(100, round(($rendered / $totalRequired) * 100)) : 0;
-
-        $schoolSchedule = null;
-        if ($intern->school) {
-            $schoolSchedule = Schedule::where('type', 'school_default')
-                ->where('school_name', $intern->school)
-                ->first();
-        }
 
         return view('intern.attendance', [
             'qrPayload' => $qrPayload,
@@ -105,6 +112,7 @@ class AttendanceController extends Controller
             'percentage' => $percentage,
             'date_status' => $effectiveSchedule,
             'schoolSchedule' => $schoolSchedule,
+            'timeline_not_set' => $timelineNotSet,
         ]);
     }
 
