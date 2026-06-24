@@ -301,7 +301,7 @@
                             <div class="lg:col-span-3 space-y-2 text-left" x-show="selectedInternId" x-cloak>
                                 <label class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Active Reporting Days</label>
                                 <div class="flex flex-wrap gap-2">
-                                    <template x-for="day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']" :key="day">
+                                    <template x-for="day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']" :key="day">
                                         <label class="flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-950 rounded-xl border border-gray-200 dark:border-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-850 transition">
                                             <input type="checkbox" name="schedule_assignment[]" :value="day" x-model="selectedInternDays"
                                                 class="rounded text-[#0B5694] focus:ring-[#0B5694] border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700">
