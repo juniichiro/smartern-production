@@ -45,6 +45,21 @@
             <x-skeleton class="w-[215.9mm] max-w-full h-[279.4mm] rounded-none shadow-2xl" />
         </div>
 
+        {{-- Blind Supervisor Feedback Alert --}}
+        @if($certificate->supervisor_feedback)
+            <div x-show="!loading" x-transition.opacity.duration.500ms class="mb-8 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[24px] p-6 shadow-sm max-w-[215.9mm] mx-auto text-left flex items-start gap-4">
+                <div class="p-3 bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 rounded-xl shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <div>
+                    <h4 class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest leading-none">Supervisor Feedback (Confidential)</h4>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-2.5 font-medium italic leading-relaxed">
+                        "{{ $certificate->supervisor_feedback }}"
+                    </p>
+                </div>
+            </div>
+        @endif
+
         <div x-show="!loading" x-transition.opacity.duration.500ms class="my-6 sm:my-10 flex justify-center overflow-x-auto pb-10 -mx-3 sm:-mx-6 lg:-mx-10 px-3 sm:px-6 lg:px-10">
             <style>
                 /* 1. Exact Font Mapping for Browser Preview */

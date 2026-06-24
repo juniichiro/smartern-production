@@ -39,6 +39,7 @@ return new class extends Migration
             // File & Security
             $table->string('file_path')->nullable();
             $table->string('verification_code')->unique()->nullable();
+            $table->text('supervisor_feedback')->nullable();
             $table->timestamp('published_at')->nullable();
 
             $table->timestamps();

@@ -123,7 +123,12 @@ class CertificateController extends Controller
             return redirect()->back()->with('error', 'Intern has not yet completed the required 480 hours.');
         }
 
-        // 3. Create or Update the Certificate record
+        // 3. Validate request
+        $request->validate([
+            'supervisor_feedback' => 'nullable|string|max:5000',
+        ]);
+
+        // 4. Create or Update the Certificate record
         Certificate::updateOrCreate(
             ['intern_id' => $intern->user_id],
             [
@@ -135,6 +140,7 @@ class CertificateController extends Controller
                 'end_date' => now(),                    // End date of internship
                 'intern_unit' => Auth::user()->supervisorDetails->office->name ?? 'N/A',
                 'endorsed_at' => now(),
+                'supervisor_feedback' => $request->input('supervisor_feedback'),
             ]
         );
 

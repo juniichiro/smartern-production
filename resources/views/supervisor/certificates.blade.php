@@ -84,13 +84,11 @@
                                                     Preview Draft
                                                 </a>
                                                 @if(!$cert)
-                                                    <form action="{{ route('supervisor.certificates.endorse', ['certificate' => $intern->user_id]) }}" method="POST">
-                                                        @csrf
-                                                        <button type="submit" 
-                                                                class="bg-[#0B5694] dark:bg-blue-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-[#084577] dark:hover:bg-blue-700 transition shadow-lg shadow-blue-500/20 uppercase tracking-widest active:scale-95">
-                                                            Endorse
-                                                        </button>
-                                                    </form>
+                                                    <button type="button" 
+                                                            @click="openFeedbackModal('{{ $intern->first_name }} {{ $intern->last_name }}', '{{ route('supervisor.certificates.endorse', ['certificate' => $intern->user_id]) }}')"
+                                                            class="bg-[#0B5694] dark:bg-blue-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-[#084577] dark:hover:bg-blue-700 transition shadow-lg shadow-blue-500/20 uppercase tracking-widest active:scale-95">
+                                                        Endorse
+                                                    </button>
                                                 @else
                                                     <span class="text-[10px] font-black text-emerald-500 dark:text-emerald-400 uppercase tracking-widest flex items-center justify-end gap-2 px-2">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -113,6 +111,77 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+
+        {{-- Blind Supervisor Feedback Modal --}}
+        <div x-show="showFeedbackModal" 
+             class="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
+             x-cloak>
+            {{-- Backdrop --}}
+            <div class="fixed inset-0 bg-gray-900/60 dark:bg-black/70 backdrop-blur-md transition-opacity" 
+                 @click="closeFeedbackModal"
+                 x-show="showFeedbackModal"
+                 x-transition:enter="ease-out duration-300"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 x-transition:leave="ease-in duration-200"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"></div>
+
+            {{-- Modal Content Card --}}
+            <div class="relative bg-white dark:bg-gray-900 rounded-[28px] border border-gray-100 dark:border-gray-800 shadow-2xl p-8 max-w-lg w-full z-10 text-left transform transition-all"
+                 x-show="showFeedbackModal"
+                 x-transition:enter="ease-out duration-300"
+                 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                 x-transition:leave="ease-in duration-200"
+                 x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                 x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+                
+                {{-- Modal Header --}}
+                <div class="flex items-start gap-4 mb-6">
+                    <div class="p-3 bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 rounded-2xl">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 Outfit font-extrabold tracking-tight">Supervisor Feedback</h3>
+                        <p class="text-xs text-gray-400 dark:text-gray-500 mt-1 uppercase tracking-wider font-bold">Confidential Evaluation</p>
+                    </div>
+                </div>
+
+                {{-- Form wrapper --}}
+                <form :action="endorseUrl" method="POST">
+                    @csrf
+                    
+                    <div class="space-y-4 mb-6">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed font-medium">
+                            Provide qualitative feedback and evaluation for <span class="font-extrabold text-gray-700 dark:text-gray-300 x-text" x-text="selectedInternName"></span> to review during the endorsement process. This feedback is completely confidential and will not be displayed to the intern.
+                        </p>
+
+                        <div class="space-y-2">
+                            <label for="supervisor_feedback" class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Feedback & Notes</label>
+                            <textarea id="supervisor_feedback" 
+                                      name="supervisor_feedback" 
+                                      rows="5" 
+                                      class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-4 text-xs text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-600 focus:border-transparent placeholder-gray-400 resize-none font-medium"
+                                      placeholder="Write your feedback regarding the intern's work behavior, competency, attendance, and overall performance..."></textarea>
+                        </div>
+                    </div>
+
+                    {{-- Actions --}}
+                    <div class="flex items-center justify-end gap-3">
+                        <button type="button" 
+                                @click="closeFeedbackModal"
+                                class="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 px-5 py-3 rounded-xl text-xs font-bold transition uppercase tracking-widest">
+                            Cancel
+                        </button>
+                        <button type="submit" 
+                                class="bg-[#0B5694] dark:bg-blue-600 hover:bg-[#084577] dark:hover:bg-blue-700 text-white px-6 py-3 rounded-xl text-xs font-bold transition shadow-lg shadow-blue-500/20 uppercase tracking-widest active:scale-95">
+                            Endorse Intern
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

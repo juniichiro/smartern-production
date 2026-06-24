@@ -1059,6 +1059,9 @@ Alpine.data('headSupervisorCertificatesManager', () => ({
  */
 Alpine.data('supervisorCertificatesManager', (justFinishedEndorsing = false) => ({
     loading: true,
+    showFeedbackModal: false,
+    selectedInternName: '',
+    endorseUrl: '',
     init() {
         if (justFinishedEndorsing && window.showToast) {
             window.showToast('Intern Endorsed Successfully', 'success');
@@ -1067,6 +1070,16 @@ Alpine.data('supervisorCertificatesManager', (justFinishedEndorsing = false) => 
         setTimeout(() => {
             this.loading = false;
         }, 800);
+    },
+    openFeedbackModal(name, url) {
+        this.selectedInternName = name;
+        this.endorseUrl = url;
+        this.showFeedbackModal = true;
+    },
+    closeFeedbackModal() {
+        this.showFeedbackModal = false;
+        this.selectedInternName = '';
+        this.endorseUrl = '';
     }
 }));
 
@@ -1075,6 +1088,7 @@ Alpine.data('supervisorCertificatesManager', (justFinishedEndorsing = false) => 
  */
 Alpine.data('supervisorCertificatePreviewManager', () => ({
     loading: true,
+    showFeedbackModal: false,
     init() {
         setTimeout(() => {
             this.loading = false;

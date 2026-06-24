@@ -89,6 +89,16 @@
                                                 {{ $cert->intern->first_name ?? 'N/A' }} {{ $cert->intern->last_name ?? '' }}
                                             </p>
                                             <p class="text-[11px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest mt-0.5 leading-none">{{ $cert->intern->user->email ?? 'No email' }}</p>
+                                            @if($cert->supervisor_feedback)
+                                                <div class="mt-2 flex items-start gap-1.5 p-2.5 bg-gray-50 dark:bg-gray-800/40 rounded-xl max-w-[280px] border border-gray-100 dark:border-gray-800">
+                                                    <span class="text-[#0B5694] dark:text-blue-400 shrink-0 mt-0.5">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                                    </span>
+                                                    <p class="text-[10px] text-gray-500 dark:text-gray-400 font-medium italic leading-normal" title="{{ $cert->supervisor_feedback }}">
+                                                        "{{ $cert->supervisor_feedback }}"
+                                                    </p>
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </td>

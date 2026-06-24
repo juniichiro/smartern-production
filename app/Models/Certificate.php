@@ -30,6 +30,7 @@ class Certificate extends Model
         'file_path',
         'verification_code',
         'published_at',
+        'supervisor_feedback',
     ];
 
     protected $casts = [
