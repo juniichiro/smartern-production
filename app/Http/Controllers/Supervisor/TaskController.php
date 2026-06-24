@@ -9,6 +9,7 @@ use App\Http\Requests\Supervisor\StoreTaskRequest;
 use App\Http\Requests\Supervisor\UpdateTaskRequest;
 use App\Http\Requests\Supervisor\UpdateTaskStatusRequest;
 use App\Mail\TaskNotificationMail;
+use App\Models\Attendance;
 use App\Models\InternDetail;
 use App\Models\Task;
 use App\Models\User;
@@ -240,6 +241,27 @@ class TaskController extends Controller
         $targetUrl = route('intern.tasks.show', $task);
 
         if ($request->status === 'completed') {
+            if (now()->isFriday()) {
+                $hasAttendance = Attendance::where('intern_id', $task->intern_id)
+                    ->whereDate('clock_in', now()->toDateString())
+                    ->exists();
+
+                if (! $hasAttendance) {
+                    Attendance::create([
+                        'intern_id' => $task->intern_id,
+                        'office_id' => $task->office_id,
+                        'clock_in' => now()->startOfDay()->hour(8),
+                        'clock_out' => now()->startOfDay()->hour(17),
+                        'status' => 'on_time',
+                        'remarks' => "Remote Friday - Approved Task: {$task->title}",
+                    ]);
+
+                    if ($task->internDetails) {
+                        $task->internDetails->increment('hours_rendered', 8);
+                    }
+                }
+            }
+
             $notification = NotificationController::send(
                 $task->intern_id,
                 'Task Approved',

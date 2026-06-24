@@ -9,7 +9,6 @@ use App\Models\AssessmentItem;
 use App\Models\OnboardingApplicant;
 use App\Models\Role;
 use App\Models\User;
-use App\Services\OnboardingService;
 use App\Services\SmartMatchingService;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
@@ -22,12 +21,9 @@ class OnboardingController extends Controller
 
     protected $matchingService;
 
-    protected $onboardingService;
-
-    public function __construct(SmartMatchingService $matchingService, OnboardingService $onboardingService)
+    public function __construct(SmartMatchingService $matchingService)
     {
         $this->matchingService = $matchingService;
-        $this->onboardingService = $onboardingService;
     }
 
     public function create()
@@ -49,18 +45,18 @@ class OnboardingController extends Controller
     {
         $resumePath = null;
 
-        // Prepare Skill Data using Service
-        $techSkills = $this->onboardingService->formatSkills($request->tech_skills ?? [], $request->tech_scores ?? []);
-        $softSkills = $this->onboardingService->formatSkills($request->soft_skills ?? [], $request->soft_scores ?? []);
+        // Prepare Skill Data
+        $techSkills = $this->formatSkills($request->tech_skills ?? [], $request->tech_scores ?? []);
+        $softSkills = $this->formatSkills($request->soft_skills ?? [], $request->soft_scores ?? []);
 
         // Logic check: Ensure at least ONE skill is provided (Tech OR Soft)
         if (empty($techSkills) && empty($softSkills)) {
             return back()->withErrors(['tech_skills' => 'Please provide at least one technical or soft skill.'])->withInput();
         }
 
-        // Handle resume PDF via Service
+        // Handle resume PDF
         if ($request->hasFile('resume_pdf')) {
-            $resumePath = $this->onboardingService->storeResume($request->file('resume_pdf'));
+            $resumePath = $request->file('resume_pdf')->store('resumes', 'public');
             \Log::info('Resume stored successfully at: '.$resumePath);
         }
 
@@ -70,7 +66,7 @@ class OnboardingController extends Controller
         }
 
         $fullName = trim($request->first_name.' '.($request->middle_name ? $request->middle_name.' ' : '').$request->last_name);
-        $applicantId = $this->onboardingService->generateApplicantId();
+        $applicantId = 'APP-'.rand(1000, 9999);
 
         // Save to Database
         $applicant = OnboardingApplicant::create([
@@ -324,5 +320,20 @@ class OnboardingController extends Controller
 
         fputcsv($handle, $data);
         fclose($handle);
+    }
+
+    /**
+     * Process skills from the request into a structured array.
+     */
+    private function formatSkills(array $skills, array $scores): array
+    {
+        $formatted = [];
+        foreach ($skills as $index => $skill) {
+            if (! empty(trim($skill))) {
+                $formatted[trim($skill)] = (int) ($scores[$index] ?? 3);
+            }
+        }
+
+        return $formatted;
     }
 }

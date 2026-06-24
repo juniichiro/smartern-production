@@ -8,7 +8,6 @@ use App\Models\Attendance;
 use App\Models\Schedule;
 use App\Models\User;
 use App\Services\AttendanceService;
-use App\Services\GeofenceService;
 use App\Services\SecurityAuditService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -19,15 +18,12 @@ use Vinkla\Hashids\Facades\Hashids;
 
 class AttendanceController extends Controller
 {
-    protected $geofenceService;
-
     protected $attendanceService;
 
     protected $auditService;
 
-    public function __construct(GeofenceService $geofenceService, AttendanceService $attendanceService, SecurityAuditService $auditService)
+    public function __construct(AttendanceService $attendanceService, SecurityAuditService $auditService)
     {
-        $this->geofenceService = $geofenceService;
         $this->attendanceService = $attendanceService;
         $this->auditService = $auditService;
     }
@@ -206,7 +202,7 @@ class AttendanceController extends Controller
                 return response()->json(['message' => 'Location coordinates required.'], 403);
             }
 
-            $distance = $this->geofenceService->calculateDistance(
+            $distance = $this->calculateDistance(
                 $request->latitude,
                 $request->longitude,
                 $office->latitude,
@@ -357,5 +353,26 @@ class AttendanceController extends Controller
             'remaining' => $remaining,
             'date_status' => $effectiveSchedule,
         ]);
+    }
+
+    /**
+     * Calculate the distance between two points in meters using the Haversine formula.
+     */
+    private function calculateDistance($lat1, $lon1, $lat2, $lon2): float
+    {
+        $earthRadius = 6371000; // Radius of the earth in meters
+
+        $latFrom = deg2rad($lat1);
+        $lonFrom = deg2rad($lon1);
+        $latTo = deg2rad($lat2);
+        $lonTo = deg2rad($lon2);
+
+        $latDelta = $latTo - $latFrom;
+        $lonDelta = $lonTo - $lonFrom;
+
+        $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
+            cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
+
+        return $angle * $earthRadius;
     }
 }
