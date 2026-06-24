@@ -492,22 +492,44 @@
                     </div>
                 </div>
 
-                {{-- MOBILE AGENDA VIEW (< lg) — Google Calendar-style --}}
+                {{-- MOBILE MONTH + AGENDA VIEW (< lg) — Google Calendar-style --}}
                 <div class="lg:hidden -mx-4 sm:-mx-6 px-4 sm:px-6">
-                    {{-- Horizontal day strip --}}
-                    <div class="mb-4 overflow-x-auto no-scrollbar -mx-4 px-4">
-                        <div class="flex gap-1.5 min-w-max">
+                    {{-- Month grid (compact, like Google Calendar mobile month view) --}}
+                    <div class="bg-white dark:bg-gray-900 rounded-[20px] border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm mb-5">
+                        <div class="grid grid-cols-7 border-b border-gray-50 dark:border-gray-800 text-center bg-gray-50 dark:bg-gray-800/30">
+                            <template x-for="day in ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']">
+                                <div class="py-2.5 text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest" x-text="day"></div>
+                            </template>
+                        </div>
+                        <div class="grid grid-cols-7">
+                            <template x-for="blank in blankDays">
+                                <div class="bg-gray-50/30 dark:bg-gray-900/20"></div>
+                            </template>
                             <template x-for="(day, i) in daysInMonth" :key="day.dateStr">
                                 <button @click="mobileSelectedDay = day.dateStr; mobileSelectedIndex = i"
-                                        class="flex flex-col items-center gap-1 px-3 py-2.5 rounded-2xl transition-all min-w-[56px] min-h-[72px]"
+                                        class="relative flex flex-col items-center justify-center py-2.5 transition-all active:scale-90"
                                         :class="mobileSelectedDay === day.dateStr
-                                            ? 'bg-[#0B5694] dark:bg-blue-600 text-white shadow-md shadow-blue-500/20 scale-105'
-                                            : day.isWeekend
-                                                ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500'
-                                                : 'bg-gray-50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'">
-                                    <span class="text-[9px] font-bold uppercase tracking-wider leading-none"
-                                          x-text="day.dayNameShort"></span>
-                                    <span class="text-sm font-black leading-none" x-text="day.day"></span>
+                                            ? 'bg-[#0B5694]/10 dark:bg-blue-600/20'
+                                            : isPast(day.dateStr) ? 'opacity-40' : 'hover:bg-gray-50 dark:hover:bg-gray-800/30'">
+                                    <span class="text-sm font-bold leading-none"
+                                          :class="mobileSelectedDay === day.dateStr
+                                              ? 'text-[#0B5694] dark:text-blue-400'
+                                              : day.isWeekend ? 'text-gray-300 dark:text-gray-600' : 'text-gray-700 dark:text-gray-300'"
+                                          x-text="day.day"></span>
+                                    {{-- Event dot indicators (like Google Calendar) --}}
+                                    <div class="flex items-center gap-0.5 mt-1 h-1.5">
+                                        <template x-for="(evt, ei) in (day.events || []).slice(0, 3)" :key="ei">
+                                            <div class="w-1 h-1 rounded-full"
+                                                 :class="{
+                                                     'bg-emerald-500': evt.type === 'holiday',
+                                                     'bg-purple-500': evt.type === 'suspension',
+                                                     'bg-blue-500': evt.type === 'work_day',
+                                                     'bg-orange-500': evt.type === 'absence_request' && evt.status === 'pending',
+                                                     'bg-emerald-400': evt.type === 'absence_request' && evt.status === 'approved',
+                                                     'bg-rose-400': evt.type === 'absence_request' && evt.status === 'rejected'
+                                                 }"></div>
+                                        </template>
+                                    </div>
                                 </button>
                             </template>
                         </div>
@@ -521,12 +543,10 @@
                             <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest mt-0.5"
                                x-text="mobileSelectedDay ? (selectedSchool ? schoolSchedules[selectedSchool]?.school_name + ' schedule' : 'Standard hours') : ''"></p>
                         </div>
-                        <div class="flex gap-2">
-                            <button @click="selectedDateStr = mobileSelectedDay; selectedEvents = getMobileDayEvents(); const hasAbsence = selectedEvents.some(e => e.type === 'absence_request'); const hasEvent = selectedEvents.some(e => e.id !== undefined && e.type !== 'absence_request'); if (hasAbsence) { showAbsenceReviewModal = true } else if (hasEvent) { const dayObj = daysInMonth[mobileSelectedIndex]; if (dayObj) openViewModal(dayObj) } else if (!isPast(mobileSelectedDay)) { const dayObj = daysInMonth[mobileSelectedIndex]; if (dayObj) openCreateModal(dayObj) }"
-                                    class="p-3 bg-[#0B5694] dark:bg-blue-600 text-white rounded-2xl shadow-lg shadow-blue-500/20 hover:scale-105 active:scale-95 transition-all min-w-[44px] min-h-[44px] flex items-center justify-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-                            </button>
-                        </div>
+                        <button @click="selectedDateStr = mobileSelectedDay; selectedEvents = getMobileDayEvents(); const hasAbsence = selectedEvents.some(e => e.type === 'absence_request'); const hasEvent = selectedEvents.some(e => e.id !== undefined && e.type !== 'absence_request'); if (hasAbsence) { showAbsenceReviewModal = true } else if (hasEvent) { const dayObj = daysInMonth[mobileSelectedIndex]; if (dayObj) openViewModal(dayObj) } else if (!isPast(mobileSelectedDay)) { const dayObj = daysInMonth[mobileSelectedIndex]; if (dayObj) openCreateModal(dayObj) }"
+                                class="p-3 bg-[#0B5694] dark:bg-blue-600 text-white rounded-2xl shadow-lg shadow-blue-500/20 hover:scale-105 active:scale-95 transition-all min-w-[44px] min-h-[44px] flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                        </button>
                     </div>
 
                     {{-- Agenda list for selected day --}}
