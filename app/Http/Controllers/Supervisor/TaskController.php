@@ -241,7 +241,7 @@ class TaskController extends Controller
         $targetUrl = route('intern.tasks.show', $task);
 
         if ($request->status === 'completed') {
-            if (now()->isFriday() || now()->isWednesday()) {
+            if (now()->isFriday()) {
                 $hasAttendance = Attendance::where('intern_id', $task->intern_id)
                     ->whereDate('clock_in', now()->toDateString())
                     ->exists();
