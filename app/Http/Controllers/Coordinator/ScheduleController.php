@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Coordinator;
 
 use App\Http\Controllers\Controller;
 use App\Models\Schedule;
+use App\Models\User;
+use App\Models\AbsenceRequest;
 use App\Services\AttendanceService;
 use Illuminate\Support\Facades\Auth;
 
@@ -50,6 +52,29 @@ class ScheduleController extends Controller
                     'description' => $item->description,
                 ],
             ];
+        }
+
+        // 3. Add Absence Requests of interns from this coordinator's school
+        if ($coordinator && $coordinator->school) {
+            $school = $coordinator->school;
+            $internIds = User::whereHas('internDetails', function ($query) use ($school) {
+                $query->where('school', $school);
+            })->pluck('id');
+
+            $absences = AbsenceRequest::with('intern.internDetails')->whereIn('intern_id', $internIds)->get();
+            foreach ($absences as $absence) {
+                $dateStr = $absence->date->toDateString();
+                $eventsByDate[$dateStr][] = [
+                    'id' => $absence->getRouteKey(),
+                    'type' => 'absence_request',
+                    'request_type' => $absence->type,
+                    'intern_name' => $absence->intern->internDetails->full_name ?? $absence->intern->name,
+                    'reason' => $absence->reason,
+                    'status' => $absence->status,
+                    'remarks' => $absence->supervisor_remarks,
+                    'has_attachment' => (bool) $absence->attachment_path,
+                ];
+            }
         }
 
         $schedulesJson = json_encode($eventsByDate);
