@@ -104,7 +104,7 @@
                                 </td>
                                 <td class="px-8 py-6 text-center whitespace-nowrap">
                                     <span class="font-black text-gray-700 dark:text-gray-300 text-[12px] tracking-widest uppercase leading-none">
-                                        {{ (int)($cert->completed_hours ?? 0) }} / 480 HRS
+                                        {{ (int)($cert->completed_hours ?? 0) }} / {{ $cert->intern->required_hours ?? 480 }} HRS
                                     </span>
                                 </td>
                                 <td class="px-8 py-6 text-center whitespace-nowrap">

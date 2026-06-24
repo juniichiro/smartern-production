@@ -381,7 +381,7 @@
                                             @endif
                                         </td>
                                         <td class="px-8 py-6 text-center whitespace-nowrap">
-                                            <span class="font-bold text-gray-800 dark:text-gray-200 text-xs tracking-wider uppercase">{{ (int)$intern->hours_rendered }} / 480 HRS</span>
+                                            <span class="font-bold text-gray-800 dark:text-gray-200 text-xs tracking-wider uppercase">{{ (int)$intern->hours_rendered }} / {{ $intern->required_hours ?? 480 }} HRS</span>
                                         </td>
                                         <td class="px-8 py-6 whitespace-nowrap">
                                             @if($isCompleted)

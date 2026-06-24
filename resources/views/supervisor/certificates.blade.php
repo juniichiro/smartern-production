@@ -52,7 +52,8 @@
                             @forelse($interns as $intern)
                                 @php 
                                     $cert = $intern->certificate;
-                                    $isEligible = ($intern->hours_rendered ?? 0) >= 480; 
+                                    $targetHours = $intern->required_hours ?? 480;
+                                    $isEligible = ($intern->hours_rendered ?? 0) >= $targetHours; 
                                 @endphp
                                 <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors">
                                     <td class="px-8 py-6 whitespace-nowrap">
@@ -61,7 +62,7 @@
                                     </td>
                                     <td class="px-8 py-6 font-black text-gray-600 dark:text-gray-400 whitespace-nowrap">
                                         <span class="{{ $isEligible ? 'text-emerald-500 dark:text-emerald-400' : 'text-[#0B5694] dark:text-blue-400' }}">
-                                            {{ (int)($intern->hours_rendered ?? 0) }} / 480
+                                            {{ (int)($intern->hours_rendered ?? 0) }} / {{ $targetHours }}
                                         </span>
                                     </td>
                                     <td class="px-8 py-6 whitespace-nowrap">
@@ -98,7 +99,7 @@
                                             </div>
                                         @else
                                             <span class="text-[10px] font-black text-gray-300 dark:text-gray-600 uppercase tracking-widest">
-                                                {{ 480 - (int)($intern->hours_rendered ?? 0) }} Hours Left
+                                                {{ $targetHours - (int)($intern->hours_rendered ?? 0) }} Hours Left
                                             </span>
                                         @endif
                                     </td>

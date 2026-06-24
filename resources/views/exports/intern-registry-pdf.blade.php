@@ -152,7 +152,7 @@
                 if ($intern->certificate && $intern->certificate->status === 'published') {
                     $status = 'completed';
                     $statusLabel = 'Certified';
-                } elseif ($intern->hours_rendered >= 480) {
+                } elseif ($intern->hours_rendered >= ($intern->required_hours ?? 480)) {
                     $status = 'endorsing';
                     $statusLabel = 'Endorsement Due';
                 }

@@ -82,7 +82,8 @@
         <div x-show="!loading" x-transition.opacity.duration.500ms class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-12">
             @forelse($interns as $intern)
                 @php
-                    $pct = min(100, max(0, ($intern->hours_rendered / 480) * 100));
+                    $targetHours = $intern->required_hours ?? 480;
+                    $pct = $targetHours > 0 ? min(100, max(0, ($intern->hours_rendered / $targetHours) * 100)) : 0;
                 @endphp
                 <div class="bg-white dark:bg-gray-900 rounded-[30px] border border-gray-100 dark:border-gray-800 p-6 shadow-sm hover:shadow-md hover:border-[#0B5694]/20 transition-all duration-300 flex flex-col justify-between group">
                     
@@ -101,7 +102,7 @@
                     <div class="flex items-center justify-between my-6 bg-gray-50/50 dark:bg-gray-800/20 p-4 rounded-2xl border border-gray-50/50 dark:border-gray-800/30">
                         <div class="text-left">
                             <p class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Logged Hours</p>
-                            <p class="text-base font-black text-gray-800 dark:text-gray-100 tracking-tight mt-0.5">{{ number_format($intern->hours_rendered) }} / 480 hrs</p>
+                            <p class="text-base font-black text-gray-800 dark:text-gray-100 tracking-tight mt-0.5">{{ number_format($intern->hours_rendered) }} / {{ $targetHours }} hrs</p>
                         </div>
 
                         {{-- Circular Progress SVG --}}

@@ -230,7 +230,8 @@
                     $total = $intern->tasks->count();
                     $done = $intern->tasks->where('status', 'completed')->count();
                     $percentage = $total > 0 ? round(($done / $total) * 100) : 0;
-                    $hoursPercent = round(($intern->hours_rendered / 480) * 100);
+                    $targetHours = $intern->required_hours ?? 480;
+                    $hoursPercent = $targetHours > 0 ? round(($intern->hours_rendered / $targetHours) * 100) : 0;
                     $statusColor = 'text-[#0B5694] dark:text-blue-400';
                 @endphp
                 <div class="flex flex-col group min-w-[300px] md:min-w-[340px] lg:min-w-[calc(33.33%-2rem)] snap-start bg-gray-50/50 dark:bg-gray-800/30 p-6 rounded-[35px] border border-gray-100 dark:border-gray-700 transition-all hover:border-[#0B5694]/10 hover:shadow-xl hover:bg-white dark:hover:bg-gray-800/50">
@@ -255,7 +256,7 @@
                         {{-- Hours Progress --}}
                         <div class="flex justify-between items-center text-[12px] font-bold uppercase tracking-wider">
                             <span class="text-gray-400">Hours Completed</span>
-                            <span class="text-gray-800 dark:text-gray-200">{{ (int)$intern->hours_rendered }} / 480 HRS</span>
+                            <span class="text-gray-800 dark:text-gray-200">{{ (int)$intern->hours_rendered }} / {{ $targetHours }} HRS</span>
                         </div>
                         <div class="w-full bg-gray-100 dark:bg-gray-700 h-2 rounded-full overflow-hidden shadow-inner border border-gray-100 dark:border-gray-600">
                             <div class="h-full bg-emerald-500 rounded-full transition-all duration-700" style="width: {{ $hoursPercent }}%"></div>

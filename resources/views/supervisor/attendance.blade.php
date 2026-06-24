@@ -381,7 +381,8 @@
                         }
                     }
                     
-                    $pct = min(100, max(0, ($intern->hours_rendered / 480) * 100));
+                    $targetHours = $intern->required_hours ?? 480;
+                    $pct = $targetHours > 0 ? min(100, max(0, ($intern->hours_rendered / $targetHours) * 100)) : 0;
                 @endphp
 
                 <div x-show="searchQuery === '' || '{{ addslashes(strtolower($intern->first_name . ' ' . $intern->last_name)) }}'.includes(searchQuery.toLowerCase()) || '{{ addslashes(strtolower($intern->student_id)) }}'.includes(searchQuery.toLowerCase())"
@@ -426,7 +427,7 @@
                     <div class="bg-gray-50/50 dark:bg-gray-800/20 p-4 rounded-2xl border border-gray-50/50 dark:border-gray-800/30 flex items-center justify-between mb-4">
                         <div class="text-left">
                             <p class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Logged Hours</p>
-                            <p class="text-sm font-black text-gray-800 dark:text-gray-100 tracking-tight mt-0.5">{{ number_format($intern->hours_rendered) }} / 480 hrs</p>
+                            <p class="text-sm font-black text-gray-800 dark:text-gray-100 tracking-tight mt-0.5">{{ number_format($intern->hours_rendered) }} / {{ $targetHours }} hrs</p>
                         </div>
                         <div class="relative w-14 h-14 flex items-center justify-center shrink-0">
                             <svg class="w-full h-full transform -rotate-90">
