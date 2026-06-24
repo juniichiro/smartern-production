@@ -21,119 +21,256 @@
         <div class="bg-white dark:bg-gray-900 rounded-[35px] shadow-sm border border-gray-100 dark:border-gray-800 p-6 lg:p-10 overflow-hidden flex flex-col">
             
             {{-- CALENDAR MONTH NAVIGATION HEADER --}}
-            <div class="flex items-center justify-between mb-8">
-                <div>
-                    <h3 class="text-xl md:text-2xl font-black text-gray-800 dark:text-gray-100 tracking-tight uppercase" x-text="monthName()"></h3>
-                    <p class="text-xs text-gray-400 dark:text-gray-500 mt-1 font-semibold">Click on any marked date to view override details.</p>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button @click="prevMonth()" class="p-3 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-2xl transition-all border border-gray-100 dark:border-gray-700 active:scale-95">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m15 18-6-6 6-6"/></svg>
-                    </button>
-                    <button @click="nextMonth()" class="p-3 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-2xl transition-all border border-gray-100 dark:border-gray-700 active:scale-95">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m9 18 6-6-6-6"/></svg>
-                    </button>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                    <div>
+                        <h3 class="text-xl md:text-2xl font-black text-gray-800 dark:text-gray-100 tracking-tight uppercase" x-text="monthName()"></h3>
+                        <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-1 font-semibold">Click on any marked date to view override details.</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button @click="prevMonth()" class="p-3 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-2xl transition-all border border-gray-100 dark:border-gray-700 active:scale-95 min-w-[44px] min-h-[44px] flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m15 18-6-6 6-6"/></svg>
+                        </button>
+                        <button @click="nextMonth()" class="p-3 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-2xl transition-all border border-gray-100 dark:border-gray-700 active:scale-95 min-w-[44px] min-h-[44px] flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m9 18 6-6-6-6"/></svg>
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            {{-- CALENDAR GRID --}}
-            <div class="border border-gray-100 dark:border-gray-850 rounded-[25px] overflow-hidden shadow-inner bg-gray-50/50 dark:bg-gray-950/20">
-                
-                {{-- Week Days Labels --}}
-                <div class="grid grid-cols-7 border-b border-gray-100 dark:border-gray-850 text-center bg-gray-50 dark:bg-gray-800/40">
-                    <template x-for="day in ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']">
-                        <div class="py-4 text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest" x-text="day"></div>
-                    </template>
+            {{-- DESKTOP CALENDAR GRID (lg+) --}}
+            <div class="hidden lg:block">
+                <div class="border border-gray-100 dark:border-gray-850 rounded-[25px] overflow-hidden shadow-inner bg-gray-50/50 dark:bg-gray-950/20">
+                    
+                    {{-- Week Days Labels --}}
+                    <div class="grid grid-cols-7 border-b border-gray-100 dark:border-gray-850 text-center bg-gray-50 dark:bg-gray-800/40">
+                        <template x-for="day in ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']">
+                            <div class="py-4 text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest" x-text="day"></div>
+                        </template>
+                    </div>
+
+                    {{-- Date Grid Cells --}}
+                    <div class="grid grid-cols-7 divide-x divide-y divide-gray-100 dark:divide-gray-850">
+                        
+                        {{-- Blank offsets --}}
+                        <template x-for="blank in blankDays">
+                            <div class="min-h-[120px] bg-gray-100/30 dark:bg-gray-900/10"></div>
+                        </template>
+
+                        {{-- Days in Month --}}
+                        <template x-for="day in daysInMonth" :key="day.dateStr">
+                            <div @click="selectDate(day)"
+                                 class="min-h-[120px] p-4 bg-white dark:bg-gray-900 flex flex-col justify-between transition-all group border-t border-l border-gray-100 dark:border-gray-850 first-of-type:border-t-0 cursor-pointer hover:bg-blue-50/20 dark:hover:bg-blue-900/5"
+                                 :class="{
+                                    'opacity-50 cursor-not-allowed': isPastDate(day.dateStr) && day.events.length === 0,
+                                    'ring-2 ring-blue-500 ring-inset z-10': isToday(day.dateStr)
+                                 }">
+                                
+                                {{-- Day number and base type --}}
+                                <div class="flex justify-between items-start">
+                                    <span class="text-xs font-bold text-gray-400 dark:text-gray-500 transition-colors uppercase tracking-[0.1em]"
+                                          :class="day.events.length > 0 ? 'group-hover:text-blue-500' : ''"
+                                          x-text="getCellLabel(day)"></span>
+                                    <span class="text-lg font-black text-gray-850 dark:text-gray-100 leading-none transition-transform"
+                                          :class="day.events.length > 0 ? 'group-hover:scale-110' : ''"
+                                          x-text="day.day"></span>
+                                </div>
+
+                                {{-- Override Indicators & Tasks --}}
+                                <div class="mt-4 space-y-2 flex-1 flex flex-col justify-end">
+                                    <template x-for="(event, index) in day.events" :key="event.id || event.title">
+                                        <div x-show="index < 2">
+                                            <template x-if="event.type === 'task'">
+                                                <a :href="'{{ $portalType }}' === 'Intern' ? `/intern/tasks/${event.id}` : `/supervisor/tasks/review/${event.id}`"
+                                                   @click.stop
+                                                   class="block rounded-2xl p-3 text-xs font-bold text-left leading-tight tracking-tight shadow-sm border bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 border-amber-100 dark:border-amber-900/50 hover:scale-[1.02] active:scale-[0.98] transition-all hover:bg-amber-100/50 dark:hover:bg-amber-950/50">
+                                                    <div class="font-black uppercase tracking-widest text-[9px] mb-1 opacity-90 flex justify-between items-center">
+                                                        <span>Task Due</span>
+                                                        <template x-if="event.is_overdue">
+                                                            <span class="text-[8px] bg-rose-100 dark:bg-rose-950 text-rose-600 dark:text-rose-400 px-1.5 py-0.5 rounded-full font-black animate-pulse uppercase">Overdue</span>
+                                                        </template>
+                                                    </div>
+                                                    <div class="truncate font-bold" x-text="event.title"></div>
+                                                </a>
+                                            </template>
+
+                                            <template x-if="['holiday', 'suspension', 'work_day'].includes(event.type)">
+                                                <div class="rounded-2xl p-3 text-xs font-bold text-left leading-tight tracking-tight shadow-sm border"
+                                                     :class="{
+                                                         'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/50': event.type === 'holiday',
+                                                         'bg-purple-50 dark:bg-purple-950/30 text-purple-600 dark:text-purple-400 border-purple-100 dark:border-purple-900/50': event.type === 'suspension',
+                                                         'bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 border-blue-100 dark:border-blue-900/50': event.type === 'work_day'
+                                                     }">
+                                                    <div class="font-black uppercase tracking-widest text-[9px] mb-1 opacity-90"
+                                                         x-text="event.type === 'holiday' ? 'Holiday' : (event.type === 'suspension' ? 'Suspended' : 'Weekend Work')"></div>
+                                                    <div class="truncate font-bold" x-text="event.description"></div>
+                                                </div>
+                                            </template>
+
+                                            <template x-if="event.type === 'absence_request'">
+                                                <div class="rounded-2xl p-3 text-xs font-bold text-left leading-tight tracking-tight shadow-sm border"
+                                                     :class="{
+                                                         'bg-orange-50 dark:bg-orange-950/30 text-orange-600 dark:text-orange-400 border-orange-100 dark:border-orange-900/50': event.status === 'pending',
+                                                         'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/50': event.status === 'approved',
+                                                         'bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 border-rose-100 dark:border-rose-900/50': event.status === 'rejected'
+                                                     }">
+                                                    <div class="font-black uppercase tracking-widest text-[9px] mb-1 opacity-90 flex justify-between items-center">
+                                                        <span x-text="(event.request_type === 'early_leave' ? 'Early Leave ' : 'Absence ') + (event.status === 'pending' ? 'Pending' : (event.status === 'approved' ? 'Approved' : 'Rejected'))"></span>
+                                                        <template x-if="event.status === 'pending'">
+                                                            <div class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse"></div>
+                                                        </template>
+                                                    </div>
+                                                    <div class="truncate font-bold" x-text="('{{ $portalType }}' !== 'Intern' ? event.intern_name + ': ' : '') + event.reason"></div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+
+                                    <template x-if="day.events.length > 2">
+                                        <div class="rounded-2xl p-2 text-center text-[10px] font-black uppercase tracking-wider bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 border border-gray-100 dark:border-gray-800/80 mt-1 select-none">
+                                            + <span x-text="day.events.length - 2"></span> more requests
+                                        </div>
+                                    </template>
+                                </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+            {{-- MOBILE MONTH + AGENDA VIEW (< lg) - Google Calendar-style --}}
+            <div class="lg:hidden -mx-4 sm:-mx-6 px-4 sm:px-6">
+                {{-- Month grid (compact) --}}
+                <div class="bg-white dark:bg-gray-900 rounded-[20px] border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm mb-5">
+                    <div class="grid grid-cols-7 border-b border-gray-50 dark:border-gray-800 text-center bg-gray-50 dark:bg-gray-800/30">
+                        <template x-for="day in ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']">
+                            <div class="py-2.5 text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest" x-text="day"></div>
+                        </template>
+                    </div>
+                    <div class="grid grid-cols-7">
+                        <template x-for="blank in blankDays">
+                            <div class="bg-gray-50/30 dark:bg-gray-900/20"></div>
+                        </template>
+                        <template x-for="(day, i) in daysInMonth" :key="day.dateStr">
+                            <button @click="mobileSelectedDay = day.dateStr; mobileSelectedIndex = i; selectDate(day)"
+                                    class="relative flex flex-col items-center justify-center py-2.5 transition-all active:scale-90 min-h-[48px]"
+                                    :class="mobileSelectedDay === day.dateStr
+                                        ? 'bg-[#0B5694]/10 dark:bg-blue-600/20'
+                                        : isPastDate(day.dateStr) && day.events.length === 0 ? 'opacity-40' : 'hover:bg-gray-50 dark:hover:bg-gray-800/30'">
+                                <span class="text-sm font-bold leading-none"
+                                      :class="mobileSelectedDay === day.dateStr
+                                          ? 'text-[#0B5694] dark:text-blue-400'
+                                          : isToday(day.dateStr) ? 'text-[#0B5694] dark:text-blue-400' : day.isWeekend ? 'text-gray-300 dark:text-gray-600' : 'text-gray-700 dark:text-gray-300'"
+                                      x-text="day.day"></span>
+                                {{-- Event dot indicators --}}
+                                <div class="flex items-center gap-0.5 mt-1 h-1.5">
+                                    <template x-for="(evt, ei) in (day.events || []).slice(0, 3)" :key="ei">
+                                        <div class="w-1 h-1 rounded-full"
+                                             :class="{
+                                                 'bg-emerald-500': evt.type === 'holiday',
+                                                 'bg-purple-500': evt.type === 'suspension',
+                                                 'bg-blue-500': evt.type === 'work_day',
+                                                 'bg-amber-500': evt.type === 'task',
+                                                 'bg-orange-500': evt.type === 'absence_request' && evt.status === 'pending',
+                                                 'bg-emerald-400': evt.type === 'absence_request' && evt.status === 'approved',
+                                                 'bg-rose-400': evt.type === 'absence_request' && evt.status === 'rejected'
+                                             }"></div>
+                                    </template>
+                                </div>
+                            </button>
+                        </template>
+                    </div>
                 </div>
 
-                {{-- Date Grid Cells --}}
-                <div class="grid grid-cols-7 divide-x divide-y divide-gray-100 dark:divide-gray-850">
-                    
-                    {{-- Blank offsets --}}
-                    <template x-for="blank in blankDays">
-                        <div class="min-h-[120px] bg-gray-100/30 dark:bg-gray-900/10"></div>
+                {{-- Selected date label --}}
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h4 class="text-base font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight"
+                            x-text="mobileSelectedDay ? formatDateLong(mobileSelectedDay) : ''"></h4>
+                        <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest mt-0.5"
+                           x-text="mobileSelectedDay && getMobileDayEvents().length > 0 ? getMobileDayEvents().length + ' event(s)' : ''"></p>
+                    </div>
+                </div>
+
+                {{-- Agenda list for selected day --}}
+                <div class="space-y-2.5">
+                    <template x-if="getMobileDayEvents().length === 0">
+                        <div class="flex flex-col items-center justify-center py-10 px-4 bg-gray-50 dark:bg-gray-800/30 rounded-3xl">
+                            <div class="w-12 h-12 bg-gray-100 dark:bg-gray-800 text-gray-300 dark:text-gray-600 rounded-2xl flex items-center justify-center mb-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            </div>
+                            <p class="text-sm font-bold text-gray-300 dark:text-gray-600 uppercase tracking-wider">No events for this date</p>
+                        </div>
                     </template>
 
-                    {{-- Days in Month --}}
-                    <template x-for="day in daysInMonth" :key="day.dateStr">
-                        <div @click="selectDate(day)"
-                             class="min-h-[120px] p-4 bg-white dark:bg-gray-900 flex flex-col justify-between transition-all group border-t border-l border-gray-100 dark:border-gray-850 first-of-type:border-t-0 cursor-pointer hover:bg-blue-50/20 dark:hover:bg-blue-900/5"
-                             :class="{
-                                'opacity-50 cursor-not-allowed': isPastDate(day.dateStr) && day.events.length === 0,
-                                'ring-2 ring-blue-500 ring-inset z-10': isToday(day.dateStr)
-                             }">
-                            
-                            {{-- Day number and base type --}}
-                            <div class="flex justify-between items-start">
-                                <span class="text-xs font-bold text-gray-400 dark:text-gray-500 transition-colors uppercase tracking-[0.1em]"
-                                      :class="day.events.length > 0 ? 'group-hover:text-blue-500' : ''"
-                                      x-text="getCellLabel(day)"></span>
-                                <span class="text-lg font-black text-gray-850 dark:text-gray-100 leading-none transition-transform"
-                                      :class="day.events.length > 0 ? 'group-hover:scale-110' : ''"
-                                      x-text="day.day"></span>
+                    <template x-for="event in getMobileDayEvents()" :key="event.id || event.title || event.reason">
+                        <div @click="selectDate({dateStr: mobileSelectedDay, events: [event]}); showModal = true"
+                             class="flex items-start gap-3 sm:gap-4 p-4 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md active:scale-[0.99] transition-all cursor-pointer">
+                            <div class="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 mt-0.5"
+                                 :class="{
+                                     'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400': event.type === 'holiday',
+                                     'bg-purple-50 dark:bg-purple-950/30 text-purple-600 dark:text-purple-400': event.type === 'suspension',
+                                     'bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400': event.type === 'work_day',
+                                     'bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400': event.type === 'task',
+                                     'bg-orange-50 dark:bg-orange-950/30 text-orange-600 dark:text-orange-400': event.type === 'absence_request' && event.status === 'pending',
+                                     'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400': event.type === 'absence_request' && event.status === 'approved',
+                                     'bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400': event.type === 'absence_request' && event.status === 'rejected'
+                                 }">
+                                <template x-if="event.type === 'holiday' || event.type === 'suspension' || event.type === 'work_day'">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                </template>
+                                <template x-if="event.type === 'task'">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="4" y="4" rx="2"/><path d="m9 12 2 2 4-4"/></svg>
+                                </template>
+                                <template x-if="event.type === 'absence_request'">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                                </template>
                             </div>
-
-                            {{-- Override Indicators & Tasks --}}
-                            <div class="mt-4 space-y-2 flex-1 flex flex-col justify-end">
-                                <template x-for="(event, index) in day.events" :key="event.id || event.title">
-                                    <div x-show="index < 2">
-                                        {{-- 1. Render Tasks as Clickable Links --}}
-                                        <template x-if="event.type === 'task'">
-                                            <a :href="'{{ $portalType }}' === 'Intern' ? `/intern/tasks/${event.id}` : `/supervisor/tasks/review/${event.id}`"
-                                               @click.stop
-                                               class="block rounded-2xl p-3 text-xs font-bold text-left leading-tight tracking-tight shadow-sm border bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 border-amber-100 dark:border-amber-900/50 hover:scale-[1.02] active:scale-[0.98] transition-all hover:bg-amber-100/50 dark:hover:bg-amber-950/50">
-                                                <div class="font-black uppercase tracking-widest text-[9px] mb-1 opacity-90 flex justify-between items-center">
-                                                    <span>Task Due</span>
-                                                    <template x-if="event.is_overdue">
-                                                        <span class="text-[8px] bg-rose-100 dark:bg-rose-950 text-rose-600 dark:text-rose-400 px-1.5 py-0.5 rounded-full font-black animate-pulse uppercase">Overdue</span>
-                                                    </template>
-                                                </div>
-                                                <div class="truncate font-bold" x-text="event.title"></div>
-                                            </a>
-                                        </template>
-
-                                        {{-- 2. Render Calendar Exceptions (Holidays, Suspensions, Weekend Work) --}}
-                                        <template x-if="['holiday', 'suspension', 'work_day'].includes(event.type)">
-                                            <div class="rounded-2xl p-3 text-xs font-bold text-left leading-tight tracking-tight shadow-sm border"
-                                                 :class="{
-                                                     'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/50': event.type === 'holiday',
-                                                     'bg-purple-50 dark:bg-purple-950/30 text-purple-600 dark:text-purple-400 border-purple-100 dark:border-purple-900/50': event.type === 'suspension',
-                                                     'bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 border-blue-100 dark:border-blue-900/50': event.type === 'work_day'
-                                                 }">
-                                                <div class="font-black uppercase tracking-widest text-[9px] mb-1 opacity-90"
-                                                     x-text="event.type === 'holiday' ? 'Holiday' : (event.type === 'suspension' ? 'Suspended' : 'Weekend Work')"></div>
-                                                <div class="truncate font-bold" x-text="event.description"></div>
-                                            </div>
-                                        </template>
-
-                                        {{-- 3. Render Absence Requests --}}
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2 mb-0.5">
+                                    <span class="text-[9px] font-black uppercase tracking-widest"
+                                          :class="{
+                                              'text-emerald-600 dark:text-emerald-400': event.type === 'holiday',
+                                              'text-purple-600 dark:text-purple-400': event.type === 'suspension',
+                                              'text-blue-600 dark:text-blue-400': event.type === 'work_day',
+                                              'text-amber-600 dark:text-amber-400': event.type === 'task',
+                                              'text-orange-600 dark:text-orange-400': event.type === 'absence_request' && event.status === 'pending',
+                                              'text-emerald-600 dark:text-emerald-400': event.type === 'absence_request' && event.status === 'approved',
+                                              'text-rose-600 dark:text-rose-400': event.type === 'absence_request' && event.status === 'rejected'
+                                          }">
+                                        <template x-if="event.type === 'holiday'">Holiday</template>
+                                        <template x-if="event.type === 'suspension'">Suspended</template>
+                                        <template x-if="event.type === 'work_day'">Weekend Work</template>
+                                        <template x-if="event.type === 'task'">Task Due</template>
                                         <template x-if="event.type === 'absence_request'">
-                                            <div class="rounded-2xl p-3 text-xs font-bold text-left leading-tight tracking-tight shadow-sm border"
-                                                 :class="{
-                                                     'bg-orange-50 dark:bg-orange-950/30 text-orange-600 dark:text-orange-400 border-orange-100 dark:border-orange-900/50': event.status === 'pending',
-                                                     'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/50': event.status === 'approved',
-                                                     'bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 border-rose-100 dark:border-rose-900/50': event.status === 'rejected'
-                                                 }">
-                                                <div class="font-black uppercase tracking-widest text-[9px] mb-1 opacity-90 flex justify-between items-center">
-                                                    <span x-text="(event.request_type === 'early_leave' ? 'Early Leave ' : 'Absence ') + (event.status === 'pending' ? 'Pending' : (event.status === 'approved' ? 'Approved' : 'Rejected'))"></span>
-                                                    <template x-if="event.status === 'pending'">
-                                                        <div class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse"></div>
-                                                    </template>
-                                                </div>
-                                                <div class="truncate font-bold" x-text="('{{ $portalType }}' !== 'Intern' ? event.intern_name + ': ' : '') + event.reason"></div>
-                                            </div>
+                                            <span x-text="(event.request_type === 'early_leave' ? 'Early Leave' : 'Absence') + ' - ' + event.status"></span>
                                         </template>
-                                    </div>
+                                    </span>
+                                    <template x-if="event.type === 'absence_request' && event.status === 'pending'">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse shrink-0"></span>
+                                    </template>
+                                </div>
+                                <template x-if="event.type === 'task'">
+                                    <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate" x-text="event.title"></p>
                                 </template>
-
-                                {{-- More Events Indicator --}}
-                                <template x-if="day.events.length > 2">
-                                    <div class="rounded-2xl p-2 text-center text-[10px] font-black uppercase tracking-wider bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 border border-gray-100 dark:border-gray-800/80 mt-1 select-none">
-                                        + <span x-text="day.events.length - 2"></span> more requests
-                                    </div>
+                                <template x-if="event.type !== 'task' && event.type !== 'absence_request'">
+                                    <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate" x-text="event.description"></p>
                                 </template>
+                                <template x-if="event.type === 'absence_request'">
+                                    <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate" x-text="('{{ $portalType }}' !== 'Intern' ? event.intern_name + ': ' : '') + event.reason"></p>
+                                </template>
+                                <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest mt-0.5 truncate">
+                                    <template x-if="event.type === 'holiday'">Non-working day</template>
+                                    <template x-if="event.type === 'suspension'">Work suspended</template>
+                                    <template x-if="event.type === 'work_day'">Make-up day</template>
+                                    <template x-if="event.type === 'task'">Task assignment</template>
+                                    <template x-if="event.type === 'absence_request'">
+                                        <span x-text="event.status === 'pending' ? 'Awaiting review' : (event.status === 'approved' ? 'Approved' : 'Rejected')"></span>
+                                    </template>
+                                </p>
                             </div>
-                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 text-gray-300 dark:text-gray-600 mt-2"><path d="m9 18 6-6-6-6"/></svg>
                         </div>
                     </template>
                 </div>
@@ -489,6 +626,8 @@
             selectedDateStr: '',
             selectedDateStrFormatted: '',
             selectedEvents: [],
+            mobileSelectedDay: '',
+            mobileSelectedIndex: 0,
 
             // Absence Form State
             isEditingAbsence: false,
@@ -504,6 +643,13 @@
 
             init() {
                 this.generateCalendar();
+                const today = new Date();
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                this.mobileSelectedDay = `${yyyy}-${mm}-${dd}`;
+                this.mobileSelectedIndex = this.daysInMonth.findIndex(d => d.dateStr === this.mobileSelectedDay);
+                if (this.mobileSelectedIndex < 0) this.mobileSelectedIndex = 0;
             },
 
             openDocumentPreview(absenceId) {
@@ -533,6 +679,7 @@
             generateCalendar() {
                 const year = this.currentDate.getFullYear();
                 const month = this.currentDate.getMonth();
+                const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
                 const firstDay = new Date(year, month, 1).getDay();
                 const totalDays = new Date(year, month + 1, 0).getDate();
@@ -543,7 +690,6 @@
                     const dayNum = i + 1;
                     const dateObj = new Date(year, month, dayNum);
                     
-                    // Format Date string as YYYY-MM-DD
                     const yyyy = dateObj.getFullYear();
                     const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
                     const dd = String(dateObj.getDate()).padStart(2, '0');
@@ -556,9 +702,15 @@
                         day: dayNum,
                         dateStr: dateStr,
                         isWeekend: isWeekend,
+                        dayNameShort: dayNames[dateObj.getDay()],
                         events: events
                     };
                 });
+                if (this.mobileSelectedDay && !this.daysInMonth.some(d => d.dateStr === this.mobileSelectedDay)) {
+                    this.mobileSelectedDay = this.daysInMonth[0]?.dateStr || '';
+                    this.mobileSelectedIndex = 0;
+                }
+                this.mobileSelectedIndex = Math.max(0, this.daysInMonth.findIndex(d => d.dateStr === this.mobileSelectedDay));
             },
 
             getCellLabel(day) {
@@ -637,6 +789,17 @@
                         this.showModal = true;
                     }
                 }
+            },
+
+            getMobileDayEvents() {
+                if (!this.mobileSelectedDay) return [];
+                return this.events[this.mobileSelectedDay] || [];
+            },
+
+            formatDateLong(dateStr) {
+                if (!dateStr) return '';
+                const d = new Date(dateStr + 'T00:00:00');
+                return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
             }
         };
     }
