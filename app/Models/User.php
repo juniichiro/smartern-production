@@ -55,7 +55,18 @@ class User extends Authenticatable
     protected static function booted(): void
     {
         static::addGlobalScope('hide_super_admin', function ($builder) {
-            $authId = \Illuminate\Support\Facades\Auth::id();
+            $authId = null;
+            if (session() && app()->bound('auth')) {
+                try {
+                    $guard = \Illuminate\Support\Facades\Auth::guard('web');
+                    if (method_exists($guard, 'getName')) {
+                        $authId = session()->get($guard->getName());
+                    }
+                } catch (\Exception $e) {
+                    // Safe fallback if session is not started or guard is not bound
+                }
+            }
+
             if ($authId) {
                 $builder->where(function ($q) use ($authId) {
                     $q->where('role_id', '!=', UserRole::SUPER_ADMIN->value)
