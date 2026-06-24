@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AuditLog;
 use App\Models\User;
 use App\Services\AnomalyDetectionService;
+use App\Services\SecurityAuditService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -157,7 +158,7 @@ class SecurityController extends Controller
         return $pdf->download('SmarTern-Security-Technical-Specification.pdf');
     }
 
-    public function markSafe(User $user, AuditLog $log, Request $request, AnomalyDetectionService $service): RedirectResponse
+    public function markSafe(User $user, AuditLog $log, Request $request, AnomalyDetectionService $service, SecurityAuditService $auditService): RedirectResponse
     {
         $authUser = auth()->user();
         $userRoleVal = $user->role_id instanceof UserRole ? $user->role_id->value : (int)$user->role_id;
@@ -177,19 +178,16 @@ class SecurityController extends Controller
 
         $service->warmBaseline($log);
 
-        AuditLog::create([
-            'user_id' => auth()->id(),
-            'action' => 'Evaluated Anomaly: Marked Safe',
-            'resource' => 'Security Monitor (User: '.Hashids::encode($user->id).', Log: '.Hashids::encode($log->log_id).')',
-            'ip_address' => $request->ip(),
-            'user_agent' => $request->userAgent(),
-            'device' => AuditLog::parseDeviceFromUserAgent($request->userAgent()),
-        ]);
+        $auditService->log(
+            'Evaluated Anomaly: Marked Safe',
+            'Security Monitor (User: '.Hashids::encode($user->id).', Log: '.Hashids::encode($log->log_id).')',
+            auth()->id()
+        );
 
         return back()->with('success', 'Anomaly evaluated as safe. User baseline updated.');
     }
 
-    public function markCompromised(User $user, AuditLog $log, Request $request): RedirectResponse
+    public function markCompromised(User $user, AuditLog $log, Request $request, SecurityAuditService $auditService): RedirectResponse
     {
         $authUser = auth()->user();
         $userRoleVal = $user->role_id instanceof UserRole ? $user->role_id->value : (int)$user->role_id;
@@ -216,19 +214,16 @@ class SecurityController extends Controller
             // Suppress broadcast errors when offline
         }
 
-        AuditLog::create([
-            'user_id' => auth()->id(),
-            'action' => 'Evaluated Anomaly: Compromised Account - Credentials Reset',
-            'resource' => 'Security Monitor (User: '.Hashids::encode($user->id).', Log: '.Hashids::encode($log->log_id).')',
-            'ip_address' => $request->ip(),
-            'user_agent' => $request->userAgent(),
-            'device' => AuditLog::parseDeviceFromUserAgent($request->userAgent()),
-        ]);
+        $auditService->log(
+            'Evaluated Anomaly: Compromised Account - Credentials Reset',
+            'Security Monitor (User: '.Hashids::encode($user->id).', Log: '.Hashids::encode($log->log_id).')',
+            auth()->id()
+        );
 
         return back()->with('success', 'Anomaly marked as compromised. User credentials and MFA reset.');
     }
 
-    public function markSuspended(User $user, AuditLog $log, Request $request): RedirectResponse
+    public function markSuspended(User $user, AuditLog $log, Request $request, SecurityAuditService $auditService): RedirectResponse
     {
         $authUser = auth()->user();
         $userRoleVal = $user->role_id instanceof UserRole ? $user->role_id->value : (int)$user->role_id;
@@ -252,14 +247,11 @@ class SecurityController extends Controller
             // Suppress broadcast errors when offline
         }
 
-        AuditLog::create([
-            'user_id' => auth()->id(),
-            'action' => 'Evaluated Anomaly: Malicious Insider - Suspended Account',
-            'resource' => 'Security Monitor (User: '.Hashids::encode($user->id).', Log: '.Hashids::encode($log->log_id).')',
-            'ip_address' => $request->ip(),
-            'user_agent' => $request->userAgent(),
-            'device' => AuditLog::parseDeviceFromUserAgent($request->userAgent()),
-        ]);
+        $auditService->log(
+            'Evaluated Anomaly: Malicious Insider - Suspended Account',
+            'Security Monitor (User: '.Hashids::encode($user->id).', Log: '.Hashids::encode($log->log_id).')',
+            auth()->id()
+        );
 
         return back()->with('success', 'Anomaly marked as malicious insider. User suspended indefinitely.');
     }
