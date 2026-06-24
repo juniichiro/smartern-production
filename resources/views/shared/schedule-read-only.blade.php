@@ -8,7 +8,7 @@
     <x-sidebar :portalType="$portalType" :userName="$userName" :userRole="$userRole" />
 
     {{-- Main Content --}}
-    <main class="flex-1 ml-0 lg:ml-64 mr-0 lg:mr-80 p-4 md:p-6 lg:p-10 pt-20 lg:pt-10 text-left transition-all duration-300"
+    <main class="flex-1 min-w-0 ml-0 lg:ml-64 mr-0 lg:mr-80 p-4 md:p-6 lg:p-10 pt-20 lg:pt-10 text-left transition-all duration-300"
           x-data="calendarManager(JSON.parse('{{ addslashes($schedulesJson) }}'))">
         
         {{-- Header --}}
@@ -154,14 +154,14 @@
                         </template>
                         <template x-for="(day, i) in daysInMonth" :key="day.dateStr">
                             <button @click="mobileSelectedDay = day.dateStr; mobileSelectedIndex = i"
-                                    class="relative flex flex-col items-center justify-center py-2.5 focus:outline-none"
+                                    class="relative flex flex-col items-center justify-center py-2.5 transition-all active:scale-90"
                                     :class="mobileSelectedDay === day.dateStr
                                         ? 'bg-[#0B5694]/10 dark:bg-blue-600/20'
-                                        : isPastDate(day.dateStr) && day.events.length === 0 ? 'opacity-40' : 'hover:bg-gray-50 dark:hover:bg-gray-800/30'">
+                                        : isPastDate(day.dateStr) ? 'opacity-40' : 'hover:bg-gray-50 dark:hover:bg-gray-800/30'">
                                 <span class="text-sm font-bold leading-none"
                                       :class="mobileSelectedDay === day.dateStr
                                           ? 'text-[#0B5694] dark:text-blue-400'
-                                          : isToday(day.dateStr) ? 'text-[#0B5694] dark:text-blue-400' : day.isWeekend ? 'text-gray-300 dark:text-gray-600' : 'text-gray-700 dark:text-gray-300'"
+                                          : day.isWeekend ? 'text-gray-300 dark:text-gray-600' : 'text-gray-700 dark:text-gray-300'"
                                       x-text="day.day"></span>
                                 {{-- Event dot indicators --}}
                                 <div class="flex items-center gap-0.5 mt-1 h-1.5">
@@ -195,17 +195,26 @@
 
                 {{-- Agenda list for selected day --}}
                 <div class="space-y-2.5">
-                    <template x-if="getMobileDayEvents().length === 0">
+                    <template x-if="getMobileDayEvents().length === 0 && !isPastDate(mobileSelectedDay)">
+                        <div class="flex flex-col items-center justify-center py-10 px-4 bg-gray-50 dark:bg-gray-800/30 rounded-3xl">
+                            <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 rounded-2xl flex items-center justify-center mb-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                            </div>
+                            <p class="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">No events scheduled</p>
+                        </div>
+                    </template>
+
+                    <template x-if="getMobileDayEvents().length === 0 && isPastDate(mobileSelectedDay)">
                         <div class="flex flex-col items-center justify-center py-10 px-4 bg-gray-50 dark:bg-gray-800/30 rounded-3xl">
                             <div class="w-12 h-12 bg-gray-100 dark:bg-gray-800 text-gray-300 dark:text-gray-600 rounded-2xl flex items-center justify-center mb-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                             </div>
-                            <p class="text-sm font-bold text-gray-300 dark:text-gray-600 uppercase tracking-wider">No events for this date</p>
+                            <p class="text-sm font-bold text-gray-300 dark:text-gray-600 uppercase tracking-wider">No records for this date</p>
                         </div>
                     </template>
 
-                    <template x-for="event in getMobileDayEvents()" :key="event.id || event.title || event.reason">
-                        <div @click="selectDate({dateStr: mobileSelectedDay, events: [event]}); showModal = true"
+                    <template x-for="event in getMobileDayEvents()" :key="event.id || event.description || event.reason">
+                        <div @click="openMobileEvent(event)"
                              class="flex items-start gap-3 sm:gap-4 p-4 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md active:scale-[0.99] transition-all cursor-pointer">
                             <div class="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 mt-0.5"
                                  :class="{
@@ -626,6 +635,8 @@
             selectedDateStr: '',
             selectedDateStrFormatted: '',
             selectedEvents: [],
+            selectedEvent: null,
+            deleteActionUrl: '',
             mobileSelectedDay: '',
             mobileSelectedIndex: 0,
 
@@ -789,6 +800,26 @@
                         this.showModal = true;
                     }
                 }
+            },
+
+            openMobileEvent(event) {
+                this.selectedDateStr = this.mobileSelectedDay;
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                this.selectedDateStrFormatted = new Date(this.mobileSelectedDay).toLocaleDateString(undefined, options);
+                this.selectedEvents = [event];
+
+                this.isEditingAbsence = false;
+                this.absenceToEdit = null;
+                this.absenceFormData.reason = '';
+
+                if (event.type === 'absence_request') {
+                    this.modalMode = 'review';
+                    this.modalTitle = 'Review Request';
+                } else {
+                    this.modalMode = 'view';
+                    this.modalTitle = 'Event Details';
+                }
+                this.showModal = true;
             },
 
             getMobileDayEvents() {
