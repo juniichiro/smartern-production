@@ -63,15 +63,14 @@ class LoginRequest extends FormRequest
                 ]);
             }
 
-            $diff = now()->diffInSeconds($user->locked_until);
-            
             if ($user->failed_attempts >= 5) {
+                $diff = ceil(now()->diffInSeconds($user->locked_until) / 60);
                 throw ValidationException::withMessages([
-                    'email' => "Account locked due to multiple failed login attempts. Please try again in {$diff} seconds.",
+                    'email' => "Account locked due to multiple failed login attempts. Please try again in {$diff} minutes.",
                 ]);
             } else {
                 throw ValidationException::withMessages([
-                    'email' => "Your account has been locked due to suspicious activity. Please try again in {$diff} seconds, or submit a formal request letter for reactivation.",
+                    'email' => "Your account has been locked due to suspicious activity. Please submit a formal request letter to the administration to reactivate your access.",
                 ]);
             }
         }
