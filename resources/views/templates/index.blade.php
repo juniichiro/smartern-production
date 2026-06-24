@@ -174,11 +174,19 @@
                         </div>
 
                         {{-- Download CTA Button --}}
-                        <a :href="'{{ route('templates.download', ['type' => $tpl['id']]) }}' + ($tpl['id'] === 'account_edit' ? '?role=' + selectedRole : '')" 
-                           class="w-full bg-[#0B5694] dark:bg-blue-600 hover:bg-[#084577] dark:hover:bg-blue-700 text-white font-bold py-3.5 px-6 rounded-2xl text-xs uppercase tracking-widest transition flex items-center justify-center gap-2 active:scale-95 shadow-md shadow-blue-500/10">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                            Download PDF Template
-                        </a>
+                        @if($tpl['id'] === 'account_edit')
+                            <a :href="'{{ route('templates.download', ['type' => 'account_edit']) }}?role=' + selectedRole" 
+                               class="w-full bg-[#0B5694] dark:bg-blue-600 hover:bg-[#084577] dark:hover:bg-blue-700 text-white font-bold py-3.5 px-6 rounded-2xl text-xs uppercase tracking-widest transition flex items-center justify-center gap-2 active:scale-95 shadow-md shadow-blue-500/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                Download PDF Template
+                            </a>
+                        @else
+                            <a href="{{ route('templates.download', ['type' => $tpl['id']]) }}" 
+                               class="w-full bg-[#0B5694] dark:bg-blue-600 hover:bg-[#084577] dark:hover:bg-blue-700 text-white font-bold py-3.5 px-6 rounded-2xl text-xs uppercase tracking-widest transition flex items-center justify-center gap-2 active:scale-95 shadow-md shadow-blue-500/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                Download PDF Template
+                            </a>
+                        @endif
                     </div>
                 @endforeach
             </div>
