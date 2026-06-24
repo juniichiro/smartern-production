@@ -188,7 +188,7 @@ class="relative">
 
 {{-- SYSTEM SETTINGS MODAL --}}
 <x-modal name="system-settings-modal" maxWidth="4xl">
-    <div class="flex flex-col md:flex-row text-gray-900 dark:text-gray-100 min-h-[400px] md:min-h-[500px]"
+    <div class="flex flex-col md:flex-row text-gray-900 dark:text-gray-100 min-h-0 md:min-h-[500px]"
          x-data="{
              activeTab: 'general',
              darkMode: localStorage.getItem('darkMode') === 'true' || 
@@ -412,7 +412,7 @@ class="relative">
          }"
     >
         <!-- LEFT SIDEBAR PANEL -->
-        <div class="w-full md:w-56 bg-gray-50/50 dark:bg-gray-950/40 p-4 border-b md:border-b-0 md:border-r border-gray-200/60 dark:border-gray-800/80 flex flex-col justify-between shrink-0">
+        <div class="w-full md:w-56 bg-gray-50/50 dark:bg-gray-950/40 p-3 md:p-4 border-b md:border-b-0 md:border-r border-gray-200/60 dark:border-gray-800/80 flex flex-col justify-between shrink-0">
             <div class="space-y-6">
                 <div class="px-3 text-left">
                     <h3 class="text-xs font-extrabold text-gray-800 dark:text-gray-200 uppercase tracking-wider">Settings</h3>
@@ -442,12 +442,12 @@ class="relative">
                 </nav>
             </div>
             <div class="hidden md:block pt-4 border-t border-gray-200/40 dark:border-gray-800/60 text-[10px] text-gray-400 dark:text-gray-550 font-bold uppercase tracking-wider text-left pl-3">
-                SmarTern v2.0
+                SmarTern v1.0
             </div>
         </div>
 
         <!-- RIGHT CONTENT DISPLAY -->
-        <div class="flex-1 bg-white dark:bg-gray-900 p-5 sm:p-6 md:p-8 flex flex-col justify-between min-h-[400px] md:min-h-[500px]">
+        <div class="flex-1 bg-white dark:bg-gray-900 p-4 sm:p-6 md:p-8 flex flex-col justify-between min-h-0 md:min-h-[500px]">
             <div>
                 <!-- Right Header -->
                 <div class="flex justify-between items-start mb-6">
@@ -551,7 +551,7 @@ class="relative">
                     <!-- Setup Options List -->
                     <div x-show="mfaSetupStep === 'idle'" class="divide-y divide-gray-150 dark:divide-gray-800" x-transition>
                         <!-- Authenticator App Row -->
-                        <div class="flex justify-between items-start py-5 gap-4 text-left">
+                        <div class="flex flex-col sm:flex-row justify-between items-start py-5 gap-3 sm:gap-4 text-left">
                             <div class="space-y-1">
                                 <h5 class="font-bold text-gray-800 dark:text-gray-100 text-xs tracking-tight">Authenticator Application (TOTP)</h5>
                                 <p class="text-[11px] text-gray-400 dark:text-gray-500 font-semibold max-w-lg leading-relaxed">
@@ -573,7 +573,7 @@ class="relative">
                         </div>
 
                         <!-- Email Row -->
-                        <div class="flex justify-between items-start py-5 gap-4 text-left">
+                        <div class="flex flex-col sm:flex-row justify-between items-start py-5 gap-3 sm:gap-4 text-left">
                             <div class="space-y-1">
                                 <h5 class="font-bold text-gray-800 dark:text-gray-100 text-xs tracking-tight">Email Verification (OTP)</h5>
                                 <p class="text-[11px] text-gray-400 dark:text-gray-500 font-semibold max-w-lg leading-relaxed">
@@ -617,7 +617,7 @@ class="relative">
                                     2. Type the generated 6-digit confirmation code:
                                 </p>
                                 
-                                <div class="grid grid-cols-6 gap-2">
+                                <div class="grid grid-cols-6 gap-1 sm:gap-2">
                                     @for($i = 0; $i < 6; $i++)
                                         <input type="text"
                                                x-ref="totpInput{{ $i }}"
@@ -627,7 +627,7 @@ class="relative">
                                                inputmode="numeric"
                                                pattern="[0-9]*"
                                                maxlength="2"
-                                               class="w-full h-12 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl text-center text-xl font-extrabold text-[#0B5694] dark:text-blue-400 focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 focus:border-[#0B5694] outline-none transition-all">
+                                               class="w-full h-10 sm:h-12 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl sm:rounded-2xl text-center text-lg sm:text-xl font-extrabold text-[#0B5694] dark:text-blue-400 focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 focus:border-[#0B5694] outline-none transition-all">
                                     @endfor
                                 </div>
                                 
@@ -681,7 +681,7 @@ class="relative">
                                 <p class="text-[11px] text-gray-550 dark:text-gray-400 font-medium text-center">
                                     Enter the 6-digit verification code you received:
                                 </p>
-                                <div class="grid grid-cols-6 gap-2">
+                                <div class="grid grid-cols-6 gap-1 sm:gap-2">
                                     @for($i = 0; $i < 6; $i++)
                                         <input type="text"
                                                x-ref="emailInput{{ $i }}"
@@ -691,7 +691,7 @@ class="relative">
                                                inputmode="numeric"
                                                pattern="[0-9]*"
                                                maxlength="2"
-                                               class="w-full h-12 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl text-center text-xl font-extrabold text-[#0B5694] dark:text-blue-400 focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 focus:border-[#0B5694] outline-none transition-all">
+                                               class="w-full h-10 sm:h-12 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl sm:rounded-2xl text-center text-lg sm:text-xl font-extrabold text-[#0B5694] dark:text-blue-400 focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 focus:border-[#0B5694] outline-none transition-all">
                                     @endfor
                                 </div>
                                 
