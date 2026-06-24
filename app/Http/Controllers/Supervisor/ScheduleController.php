@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\AbsenceRequest;
 use App\Models\Schedule;
 use App\Models\User;
+use App\Models\Role;
+use App\Http\Controllers\NotificationController;
 use App\Services\AttendanceService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -107,14 +109,35 @@ class ScheduleController extends Controller
             'supervisor_remarks' => 'nullable|string|max:1000',
         ]);
 
+        $reviewer = Auth::user();
+        $statusLabel = $validated['status'] === 'approved' ? 'approved' : 'rejected';
+
         $absence->update([
             'status' => $validated['status'],
             'supervisor_remarks' => $validated['supervisor_remarks'],
-            'reviewed_by' => Auth::id(),
+            'reviewed_by' => $reviewer->id,
             'reviewed_at' => now(),
         ]);
 
-        $statusLabel = $validated['status'] === 'approved' ? 'approved' : 'rejected';
+        // Notify Head Supervisors if reviewed by a standard supervisor
+        if ($reviewer->role->name === 'supervisor') {
+            $headSupervisorRole = Role::where('name', 'head_supervisor')->first();
+            if ($headSupervisorRole) {
+                $headSupervisors = User::where('role_id', $headSupervisorRole->id)->get();
+                $internName = $absence->intern->internDetails->full_name ?? $absence->intern->name;
+                $reviewerName = $reviewer->supervisorDetails->first_name ?? $reviewer->name;
+
+                foreach ($headSupervisors as $headSupervisor) {
+                    NotificationController::send(
+                        $headSupervisor->id,
+                        'Absence Request Reviewed',
+                        'schedule',
+                        "Supervisor {$reviewerName} has {$statusLabel} the absence request of intern {$internName}.",
+                        route('head-supervisor.schedule.index')
+                    );
+                }
+            }
+        }
 
         return back()->with('success', "Absence request {$statusLabel}.");
     }
