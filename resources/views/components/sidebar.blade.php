@@ -416,14 +416,14 @@ class="relative">
             <div class="space-y-6">
                 <div class="px-3 text-left">
                     <h3 class="text-xs font-extrabold text-gray-800 dark:text-gray-200 uppercase tracking-wider">Settings</h3>
-                    <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider mt-1">System Preferences</p>
+                    <p class="text-[11px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider mt-1">System Preferences</p>
                 </div>
                 <nav class="flex flex-row md:flex-col overflow-x-auto md:overflow-x-visible no-scrollbar">
                     <button type="button" 
                             @click="activeTab = 'general'"
                             :class="activeTab === 'general' ? 'border-l-4 border-[#0B5694] dark:border-blue-500 font-bold text-[#0B5694] dark:text-blue-400 bg-gray-100/60 dark:bg-gray-900/30' : 'border-l-4 border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-50/50 dark:hover:bg-gray-900/10'"
-                            class="flex items-center gap-3 px-4 py-3 text-[10px] uppercase tracking-wider transition-all text-left whitespace-nowrap md:w-full border-t border-b border-transparent focus:outline-none shrink-0 rounded-r-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            class="flex items-center gap-3 px-4 py-3 text-xs uppercase tracking-wider transition-all text-left whitespace-nowrap md:w-full border-t border-b border-transparent focus:outline-none shrink-0 rounded-r-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="3"/>
                             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
                         </svg>
@@ -432,8 +432,8 @@ class="relative">
                     <button type="button" 
                             @click="activeTab = 'security'"
                             :class="activeTab === 'security' ? 'border-l-4 border-[#0B5694] dark:border-blue-500 font-bold text-[#0B5694] dark:text-blue-400 bg-gray-100/60 dark:bg-gray-900/30' : 'border-l-4 border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-50/50 dark:hover:bg-gray-900/10'"
-                            class="flex items-center gap-3 px-4 py-3 text-[10px] uppercase tracking-wider transition-all text-left whitespace-nowrap md:w-full border-t border-b border-transparent focus:outline-none shrink-0 rounded-r-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            class="flex items-center gap-3 px-4 py-3 text-xs uppercase tracking-wider transition-all text-left whitespace-nowrap md:w-full border-t border-b border-transparent focus:outline-none shrink-0 rounded-r-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                             <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                         </svg>
@@ -441,7 +441,7 @@ class="relative">
                     </button>
                 </nav>
             </div>
-            <div class="hidden md:block pt-4 border-t border-gray-200/40 dark:border-gray-800/60 text-[9px] text-gray-400 dark:text-gray-550 font-bold uppercase tracking-wider text-left pl-3">
+            <div class="hidden md:block pt-4 border-t border-gray-200/40 dark:border-gray-800/60 text-[10px] text-gray-400 dark:text-gray-550 font-bold uppercase tracking-wider text-left pl-3">
                 SmarTern v2.0
             </div>
         </div>
@@ -470,15 +470,25 @@ class="relative">
                             <h5 class="text-xs font-bold text-gray-850 dark:text-gray-200">Theme</h5>
                             <p class="text-[11px] text-gray-400 dark:text-gray-555 font-medium">Switch between light and dark visual interfaces</p>
                         </div>
-                        <div class="flex items-center gap-6">
-                            <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-gray-600 dark:text-gray-400">
-                                <input type="radio" name="darkMode" :checked="!darkMode" @change="darkMode = false" class="text-[#0B5694] dark:text-blue-500 focus:ring-[#0B5694] dark:bg-gray-850 dark:border-gray-700">
-                                Light Mode
-                            </label>
-                            <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-gray-600 dark:text-gray-400">
-                                <input type="radio" name="darkMode" :checked="darkMode" @change="darkMode = true" class="text-[#0B5694] dark:text-blue-500 focus:ring-[#0B5694] dark:bg-gray-850 dark:border-gray-700">
-                                Dark Mode
-                            </label>
+                        <div class="flex items-center gap-1 bg-gray-100/80 dark:bg-gray-800/80 rounded-lg p-1 border border-gray-200/60 dark:border-gray-700/60">
+                            <button type="button"
+                                    @click="darkMode = false"
+                                    :class="!darkMode ? 'bg-white dark:bg-gray-700 shadow-sm text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
+                                    class="px-4 py-2 text-xs font-bold rounded-md transition-all cursor-pointer">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-1.5 -mt-0.5">
+                                    <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                                </svg>
+                                Light
+                            </button>
+                            <button type="button"
+                                    @click="darkMode = true"
+                                    :class="darkMode ? 'bg-white dark:bg-gray-700 shadow-sm text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
+                                    class="px-4 py-2 text-xs font-bold rounded-md transition-all cursor-pointer">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-1.5 -mt-0.5">
+                                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                                </svg>
+                                Dark
+                            </button>
                         </div>
                     </div>
 
@@ -488,20 +498,25 @@ class="relative">
                             <h5 class="text-xs font-bold text-gray-850 dark:text-gray-200">Text Display Scale</h5>
                             <p class="text-[11px] text-gray-400 dark:text-gray-555 font-medium">Adjust the readable text sizing of all elements</p>
                         </div>
-                        <div class="flex flex-wrap items-center gap-4 sm:gap-6 mt-1">
-                            @foreach(['sm' => 'Small', 'md' => 'Medium (Default)', 'lg' => 'Large', 'xl' => 'X-Large'] as $sizeKey => $sizeLabel)
-                                <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-gray-600 dark:text-gray-400">
-                                    <input type="radio" name="fontSize" :checked="fontSize === '{{ $sizeKey }}'" @change="fontSize = '{{ $sizeKey }}'" class="text-[#0B5694] dark:text-blue-500 focus:ring-[#0B5694] dark:bg-gray-850 dark:border-gray-700">
+                        <div class="flex flex-wrap items-center gap-1.5 mt-1">
+                            @foreach(['sm' => 'S', 'md' => 'M', 'lg' => 'L', 'xl' => 'XL'] as $sizeKey => $sizeLabel)
+                                <button type="button"
+                                        @click="fontSize = '{{ $sizeKey }}'"
+                                        :class="fontSize === '{{ $sizeKey }}' ? 'bg-[#0B5694] dark:bg-blue-600 text-white shadow-sm' : 'bg-gray-100/80 dark:bg-gray-800/80 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'"
+                                        class="px-3 py-2 text-xs font-bold rounded-md transition-all cursor-pointer min-w-[36px] text-center border border-gray-200/60 dark:border-gray-700/60"
+                                        title="{{ ['sm' => 'Small', 'md' => 'Medium', 'lg' => 'Large', 'xl' => 'X-Large'][$sizeKey] }}">
                                     {{ $sizeLabel }}
-                                </label>
+                                </button>
                             @endforeach
+                            <span class="text-[10px] text-gray-400 dark:text-gray-500 font-semibold ml-2"
+                                  x-text="fontSize === 'sm' ? 'Small' : (fontSize === 'md' ? 'Medium' : (fontSize === 'lg' ? 'Large' : 'X-Large'))"></span>
                         </div>
                     </div>
                     
                     <!-- Font Scaling Preview Box -->
                     <div class="py-4 text-left">
                         <div class="pl-4 border-l-2 border-[#0B5694] dark:border-blue-500">
-                            <p class="text-[10px] font-extrabold text-[#0B5694] dark:text-blue-400 uppercase tracking-wider">Preview Content</p>
+                            <p class="text-[10px] font-extrabold text-[#0B5694] dark:text-blue-400 uppercase tracking-wider">Type Preview</p>
                             <p class="text-gray-550 dark:text-gray-450 italic mt-2 font-medium leading-relaxed">
                                 "Adjust font size to see how it scales text readability across all dashboard panels."
                             </p>
@@ -549,10 +564,10 @@ class="relative">
                                     <span x-text="totpActive ? 'Active' : 'Inactive'"></span>
                                 </span>
                                 <template x-if="!totpActive">
-                                    <button type="button" @click="fetchTotpSetup()" class="text-xs font-bold text-[#0B5694] dark:text-blue-400 hover:underline tracking-wider focus:outline-none uppercase">Configure</button>
+                                    <button type="button" @click="fetchTotpSetup()" class="text-xs font-bold text-[#0B5694] dark:text-blue-400 hover:underline tracking-wider focus:outline-none uppercase">Set Up</button>
                                 </template>
                                 <template x-if="totpActive">
-                                    <button type="button" @click="disableTotp()" class="text-xs font-bold text-red-500 hover:underline tracking-wider focus:outline-none uppercase">Remove</button>
+                                    <button type="button" @click="disableTotp()" class="text-xs font-bold text-red-500 hover:underline tracking-wider focus:outline-none uppercase">Revoke</button>
                                 </template>
                             </div>
                         </div>
@@ -571,7 +586,7 @@ class="relative">
                                     <span x-text="emailActive ? 'Active' : 'Inactive'"></span>
                                 </span>
                                 <template x-if="!emailActive">
-                                    <button type="button" @click="fetchEmailSetup()" class="text-xs font-bold text-[#0B5694] dark:text-blue-400 hover:underline tracking-wider focus:outline-none uppercase">Configure</button>
+                                    <button type="button" @click="fetchEmailSetup()" class="text-xs font-bold text-[#0B5694] dark:text-blue-400 hover:underline tracking-wider focus:outline-none uppercase">Set Up</button>
                                 </template>
                                 <template x-if="emailActive">
                                     <span class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase">Always Backup</span>
