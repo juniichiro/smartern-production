@@ -116,16 +116,16 @@
         {{-- CONTROLS TOOLBAR --}}
         <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 md:gap-4 bg-white dark:bg-gray-900 p-3 md:p-4 rounded-2xl md:rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm">
             <!-- Left side: Tabs for filtering -->
-            <div x-show="activeView === 'timeline'" x-transition class="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 custom-scrollbar">
+            <div x-show="activeView === 'timeline'" x-transition class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2 md:pb-0">
                 <a href="{{ route('supervisor.attendance', ['tab' => 'all', 'search' => request('search')]) }}" 
                         :class="activeTab === 'all' ? 'bg-[#0B5694] dark:bg-blue-600 text-white shadow-md shadow-blue-500/10' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'" 
                         class="px-3 sm:px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap active:scale-95 flex items-center justify-center">
-                    All Logs
+                    <span class="sm:hidden">All</span><span class="hidden sm:inline">All Logs</span>
                 </a>
                 <a href="{{ route('supervisor.attendance', ['tab' => 'active', 'search' => request('search')]) }}" 
                         :class="activeTab === 'active' ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/10' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'" 
                         class="px-3 sm:px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap active:scale-95 flex items-center justify-center">
-                    Active Now
+                    Active
                 </a>
                 <a href="{{ route('supervisor.attendance', ['tab' => 'exceptions', 'search' => request('search')]) }}" 
                         :class="activeTab === 'exceptions' ? 'bg-orange-500 text-white shadow-md shadow-orange-500/10' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'" 
@@ -135,7 +135,7 @@
                 <a href="{{ route('supervisor.attendance', ['tab' => 'offdays', 'search' => request('search')]) }}" 
                         :class="activeTab === 'offdays' ? 'bg-purple-500 text-white shadow-md shadow-purple-500/10' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'" 
                         class="px-3 sm:px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap active:scale-95 flex items-center justify-center">
-                    Off-days
+                    <span class="sm:hidden">Off-days</span><span class="hidden sm:inline">Off-days</span>
                 </a>
             </div>
 
@@ -189,121 +189,199 @@
                         @endfor
                     </div>
                 </template>
-                <div x-show="!loading" x-transition.opacity.duration.500ms class="overflow-x-auto custom-scrollbar">
-                    <table class="w-full text-left">
-                        <thead class="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-700">
-                            <tr class="text-gray-400 dark:text-gray-500 uppercase text-[9px] font-black tracking-widest">
-                                <th class="py-3 md:py-5 px-3 md:px-6">Intern</th>
-                                <th class="py-3 md:py-5 px-3 md:px-4 text-center">Date</th>
-                                <th class="py-3 md:py-5 px-3 md:px-4 text-center">Time In</th>
-                                <th class="py-3 md:py-5 px-3 md:px-4 text-center">Time Out</th>
-                                <th class="py-3 md:py-5 px-3 md:px-4 text-center">Duration</th>
-                                <th class="py-3 md:py-5 px-3 md:px-6 text-center">Status</th>
-                                <th class="py-3 md:py-5 px-3 md:px-6 text-left">Remarks</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-50 dark:divide-gray-800 text-xs font-semibold text-gray-600 dark:text-gray-400">
-                            @forelse($attendances as $log)
-                                @php
-                                    $logIntern = $log['intern'];
-                                    $isTodayActive = $log['type'] === 'actual' && empty($log['clock_out']) && $log['clock_in'] && $log['clock_in']->isToday();
-                                @endphp
-                                <tr x-show="(activeTab === 'all' || 
-                                             (activeTab === 'active' && {{ $isTodayActive ? 'true' : 'false' }}) || 
-                                             (activeTab === 'exceptions' && ('{{ $log['status'] }}' === 'late' || '{{ $log['status'] }}' === 'absent')) || 
-                                             (activeTab === 'offdays' && ('{{ $log['status'] }}' === 'holiday' || '{{ $log['status'] }}' === 'suspension')))
-                                           && (searchQuery === '' || '{{ addslashes(strtolower($logIntern->first_name . ' ' . $logIntern->last_name)) }}'.includes(searchQuery.toLowerCase()) || '{{ addslashes(strtolower($logIntern->student_id)) }}'.includes(searchQuery.toLowerCase()))"
-                                    class="hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors group">
-                                    
-                                    {{-- Intern Profile --}}
-                                    <td class="py-3 md:py-5 px-3 md:px-6">
-                                        <div class="flex items-center gap-4">
-                                            <x-avatar :user="$logIntern" size="12" border="0" textSize="xs" />
-                                            <div>
-                                                <p class="font-bold text-gray-900 dark:text-gray-100 text-sm tracking-tight group-hover:text-[#0B5694] dark:group-hover:text-blue-400 transition-colors capitalize">
-                                                    {{ strtolower($logIntern->first_name) }} {{ strtolower($logIntern->last_name) }}
-                                                </p>
-                                                <p class="text-xs text-gray-400 dark:text-gray-500 font-bold mt-0.5">
-                                                    {{ $logIntern->student_id }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </td>
-
-                                    {{-- Date --}}
-                                    <td class="py-3 md:py-5 px-3 md:px-4 text-center font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap text-sm">
-                                        {{ $log['date']->format('M d, Y') }}
-                                    </td>
-
-                                    {{-- Time In --}}
-                                    <td class="py-3 md:py-5 px-3 md:px-4 text-center text-gray-700 dark:text-gray-300 font-medium whitespace-nowrap text-sm">
-                                        {{ $log['clock_in'] ? $log['clock_in']->format('h:i A') : '---' }}
-                                    </td>
-
-                                    {{-- Time Out --}}
-                                    <td class="py-3 md:py-5 px-3 md:px-4 text-center text-gray-700 dark:text-gray-300 font-medium whitespace-nowrap text-sm">
-                                        {{ $log['clock_out'] ? $log['clock_out']->format('h:i A') : '---' }}
-                                    </td>
-
-                                    {{-- Duration --}}
-                                    <td class="py-3 md:py-5 px-3 md:px-4 text-center font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap text-sm">
-                                        @if($log['type'] === 'actual')
-                                            @if($log['clock_out'])
-                                                {{ fmod($log['duration'], 1) == 0 ? (int)$log['duration'] : round($log['duration'], 2) }} HRS
-                                            @else
-                                                <span class="text-blue-500 dark:text-blue-400 italic text-xs font-semibold animate-pulse">In Progress</span>
-                                            @endif
-                                        @else
-                                            0 HRS
-                                        @endif
-                                    </td>
-
-                                    {{-- Status Badge --}}
-                                    <td class="py-3 md:py-5 px-3 md:px-6 text-center whitespace-nowrap">
-                                        <div class="flex items-center justify-center gap-1.5">
-                                            @php
-                                                $status = $log['status'];
-                                                if ($log['type'] === 'actual' && !$log['clock_out']) $status = 'active';
-
-                                                $statusConfig = match($status) {
-                                                    'late' => ['label' => 'Late', 'class' => 'bg-orange-50 dark:bg-orange-950/20 text-orange-500 dark:text-orange-400 border-orange-100/30 dark:border-orange-900/30'],
-                                                    'absent' => ['label' => 'Absent', 'class' => 'bg-rose-50 dark:bg-rose-950/20 text-rose-600 dark:text-rose-400 border-rose-100/30 dark:border-rose-900/30'],
-                                                    'excused' => ['label' => 'Excused', 'class' => 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-blue-100/30 dark:border-blue-900/30'],
-                                                    'holiday' => ['label' => 'Holiday', 'class' => 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border-emerald-100/30 dark:border-emerald-900/30'],
-                                                    'suspension' => ['label' => 'Suspended', 'class' => 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 border-purple-100/30 dark:border-purple-900/30 animate-pulse'],
-                                                    'active' => ['label' => 'Active', 'class' => 'bg-blue-50 dark:bg-blue-900/20 text-blue-500 dark:text-blue-400 border-blue-100/30 dark:border-blue-900/30 animate-pulse'],
-                                                    default => ['label' => 'On-Time', 'class' => 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border-emerald-100/30 dark:border-emerald-900/30'],
-                                                };
-                                            @endphp
-                                            <span class="px-3 py-1.5 {{ $statusConfig['class'] }} text-[10px] font-bold rounded-full border tracking-wider" title="{{ $log['remarks'] }}">
-                                                {{ $statusConfig['label'] }}
-                                            </span>
-
-                                            @if($log['type'] === 'actual' && !empty($log['record']->latitude) && !empty($log['record']->longitude))
-                                                <a href="https://www.google.com/maps/search/?api=1&query={{ $log['record']->latitude }},{{ $log['record']->longitude }}" 
-                                                   target="_blank" 
-                                                   class="inline-flex items-center justify-center w-6 h-6 bg-blue-50 dark:bg-blue-900/20 hover:bg-[#0B5694] hover:text-white text-[#0B5694] dark:text-blue-400 rounded-lg border border-blue-100 dark:border-blue-900/30 transition active:scale-95 shrink-0" 
-                                                   title="Verify Location ({{ $log['record']->latitude }}, {{ $log['record']->longitude }})">
-                                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                                                </a>
-                                            @endif
-                                        </div>
-                                    </td>
-
-                                    {{-- Remarks --}}
-                                    <td class="py-3 md:py-5 px-3 md:px-6 text-left">
-                                        <span class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-tight italic line-clamp-1 max-w-[150px]" title="{{ $log['remarks'] }}">
-                                            {{ $log['remarks'] ?? '---' }}
+                <div x-show="!loading" x-transition.opacity.duration.500ms>
+                    {{-- Mobile & Tablet: Card List --}}
+                    <div class="lg:hidden divide-y divide-gray-50 dark:divide-gray-800">
+                        @forelse($attendances as $log)
+                            @php
+                                $logIntern = $log['intern'];
+                                $isTodayActive = $log['type'] === 'actual' && empty($log['clock_out']) && $log['clock_in'] && $log['clock_in']->isToday();
+                                $status = $log['status'];
+                                if ($log['type'] === 'actual' && !$log['clock_out']) $status = 'active';
+                                $statusConfig = match($status) {
+                                    'late' => ['label' => 'Late', 'class' => 'bg-orange-50 dark:bg-orange-950/20 text-orange-500 dark:text-orange-400 border-orange-100/30 dark:border-orange-900/30'],
+                                    'absent' => ['label' => 'Absent', 'class' => 'bg-rose-50 dark:bg-rose-950/20 text-rose-600 dark:text-rose-400 border-rose-100/30 dark:border-rose-900/30'],
+                                    'excused' => ['label' => 'Excused', 'class' => 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-blue-100/30 dark:border-blue-900/30'],
+                                    'holiday' => ['label' => 'Holiday', 'class' => 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border-emerald-100/30 dark:border-emerald-900/30'],
+                                    'suspension' => ['label' => 'Suspended', 'class' => 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 border-purple-100/30 dark:border-purple-900/30 animate-pulse'],
+                                    'active' => ['label' => 'Active', 'class' => 'bg-blue-50 dark:bg-blue-900/20 text-blue-500 dark:text-blue-400 border-blue-100/30 dark:border-blue-900/30 animate-pulse'],
+                                    default => ['label' => 'On-Time', 'class' => 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border-emerald-100/30 dark:border-emerald-900/30'],
+                                };
+                            @endphp
+                            <div x-show="(activeTab === 'all' || 
+                                         (activeTab === 'active' && {{ $isTodayActive ? 'true' : 'false' }}) || 
+                                         (activeTab === 'exceptions' && ('{{ $log['status'] }}' === 'late' || '{{ $log['status'] }}' === 'absent')) || 
+                                         (activeTab === 'offdays' && ('{{ $log['status'] }}' === 'holiday' || '{{ $log['status'] }}' === 'suspension')))
+                                       && (searchQuery === '' || '{{ addslashes(strtolower($logIntern->first_name . ' ' . $logIntern->last_name)) }}'.includes(searchQuery.toLowerCase()) || '{{ addslashes(strtolower($logIntern->student_id)) }}'.includes(searchQuery.toLowerCase()))"
+                                 class="p-4 sm:p-5 hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors">
+                                <div class="flex items-start gap-3 sm:gap-4 mb-3">
+                                    <x-avatar :user="$logIntern" size="10" border="0" textSize="xs" />
+                                    <div class="min-w-0 flex-1">
+                                        <p class="font-black text-gray-900 dark:text-gray-100 text-sm uppercase truncate leading-tight">{{ strtolower($logIntern->first_name) }} {{ strtolower($logIntern->last_name) }}</p>
+                                        <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider">{{ $logIntern->student_id }}</p>
+                                    </div>
+                                    <div class="shrink-0 flex items-center gap-1.5">
+                                        <span class="px-3 py-1.5 {{ $statusConfig['class'] }} text-[10px] font-bold rounded-full border tracking-wider" title="{{ $log['remarks'] }}">
+                                            {{ $statusConfig['label'] }}
                                         </span>
-                                    </td>
+                                        @if($log['type'] === 'actual' && !empty($log['record']->latitude) && !empty($log['record']->longitude))
+                                            <a href="https://www.google.com/maps/search/?api=1&query={{ $log['record']->latitude }},{{ $log['record']->longitude }}" target="_blank" class="inline-flex items-center justify-center w-7 h-7 bg-blue-50 dark:bg-blue-900/20 hover:bg-[#0B5694] hover:text-white text-[#0B5694] dark:text-blue-400 rounded-lg border border-blue-100 dark:border-blue-900/30 transition active:scale-95 shrink-0" title="Verify Location">
+                                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                                            </a>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 text-xs">
+                                    <div>
+                                        <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Date</span>
+                                        <span class="font-bold text-gray-900 dark:text-gray-100">{{ $log['date']->format('M d, Y') }}</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Time In</span>
+                                        <span class="font-medium text-gray-700 dark:text-gray-300">{{ $log['clock_in'] ? $log['clock_in']->format('h:i A') : '---' }}</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Time Out</span>
+                                        <span class="font-medium text-gray-700 dark:text-gray-300">{{ $log['clock_out'] ? $log['clock_out']->format('h:i A') : '---' }}</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Duration</span>
+                                        <span class="font-bold text-gray-900 dark:text-gray-100">
+                                            @if($log['type'] === 'actual')
+                                                @if($log['clock_out'])
+                                                    {{ fmod($log['duration'], 1) == 0 ? (int)$log['duration'] : round($log['duration'], 2) }} HRS
+                                                @else
+                                                    <span class="text-blue-500 dark:text-blue-400 italic text-[11px] font-semibold animate-pulse">In Progress</span>
+                                                @endif
+                                            @else
+                                                0 HRS
+                                            @endif
+                                        </span>
+                                    </div>
+                                </div>
+                                @if($log['remarks'])
+                                    <p class="mt-2 text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-tight italic line-clamp-1">{{ $log['remarks'] }}</p>
+                                @endif
+                            </div>
+                        @empty
+                            <div class="py-12 text-center text-gray-400 italic">No logs found.</div>
+                        @endforelse
+                    </div>
+
+                    {{-- Desktop: Table --}}
+                    <div class="hidden lg:block overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left">
+                            <thead class="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-700">
+                                <tr class="text-gray-400 dark:text-gray-500 uppercase text-[9px] font-black tracking-widest">
+                                    <th class="py-3 md:py-5 px-3 md:px-6">Intern</th>
+                                    <th class="py-3 md:py-5 px-3 md:px-4 text-center">Date</th>
+                                    <th class="py-3 md:py-5 px-3 md:px-4 text-center">Time In</th>
+                                    <th class="py-3 md:py-5 px-3 md:px-4 text-center">Time Out</th>
+                                    <th class="py-3 md:py-5 px-3 md:px-4 text-center">Duration</th>
+                                    <th class="py-3 md:py-5 px-3 md:px-6 text-center">Status</th>
+                                    <th class="py-3 md:py-5 px-3 md:px-6 text-left">Remarks</th>
                                 </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="6" class="py-12 text-center text-gray-400 italic">No logs found.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody class="divide-y divide-gray-50 dark:divide-gray-800 text-xs font-semibold text-gray-600 dark:text-gray-400">
+                                @forelse($attendances as $log)
+                                    @php
+                                        $logIntern = $log['intern'];
+                                        $isTodayActive = $log['type'] === 'actual' && empty($log['clock_out']) && $log['clock_in'] && $log['clock_in']->isToday();
+                                        $status = $log['status'];
+                                        if ($log['type'] === 'actual' && !$log['clock_out']) $status = 'active';
+                                        $statusConfig = match($status) {
+                                            'late' => ['label' => 'Late', 'class' => 'bg-orange-50 dark:bg-orange-950/20 text-orange-500 dark:text-orange-400 border-orange-100/30 dark:border-orange-900/30'],
+                                            'absent' => ['label' => 'Absent', 'class' => 'bg-rose-50 dark:bg-rose-950/20 text-rose-600 dark:text-rose-400 border-rose-100/30 dark:border-rose-900/30'],
+                                            'excused' => ['label' => 'Excused', 'class' => 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-blue-100/30 dark:border-blue-900/30'],
+                                            'holiday' => ['label' => 'Holiday', 'class' => 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border-emerald-100/30 dark:border-emerald-900/30'],
+                                            'suspension' => ['label' => 'Suspended', 'class' => 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 border-purple-100/30 dark:border-purple-900/30 animate-pulse'],
+                                            'active' => ['label' => 'Active', 'class' => 'bg-blue-50 dark:bg-blue-900/20 text-blue-500 dark:text-blue-400 border-blue-100/30 dark:border-blue-900/30 animate-pulse'],
+                                            default => ['label' => 'On-Time', 'class' => 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border-emerald-100/30 dark:border-emerald-900/30'],
+                                        };
+                                    @endphp
+                                    <tr x-show="(activeTab === 'all' || 
+                                                 (activeTab === 'active' && {{ $isTodayActive ? 'true' : 'false' }}) || 
+                                                 (activeTab === 'exceptions' && ('{{ $log['status'] }}' === 'late' || '{{ $log['status'] }}' === 'absent')) || 
+                                                 (activeTab === 'offdays' && ('{{ $log['status'] }}' === 'holiday' || '{{ $log['status'] }}' === 'suspension')))
+                                               && (searchQuery === '' || '{{ addslashes(strtolower($logIntern->first_name . ' ' . $logIntern->last_name)) }}'.includes(searchQuery.toLowerCase()) || '{{ addslashes(strtolower($logIntern->student_id)) }}'.includes(searchQuery.toLowerCase()))"
+                                        class="hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors group">
+
+                                        {{-- Intern Profile --}}
+                                        <td class="py-3 md:py-5 px-3 md:px-6">
+                                            <div class="flex items-center gap-4">
+                                                <x-avatar :user="$logIntern" size="12" border="0" textSize="xs" />
+                                                <div>
+                                                    <p class="font-bold text-gray-900 dark:text-gray-100 text-sm tracking-tight group-hover:text-[#0B5694] dark:group-hover:text-blue-400 transition-colors capitalize">
+                                                        {{ strtolower($logIntern->first_name) }} {{ strtolower($logIntern->last_name) }}
+                                                    </p>
+                                                    <p class="text-xs text-gray-400 dark:text-gray-500 font-bold mt-0.5">
+                                                        {{ $logIntern->student_id }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        {{-- Date --}}
+                                        <td class="py-3 md:py-5 px-3 md:px-4 text-center font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap text-sm">
+                                            {{ $log['date']->format('M d, Y') }}
+                                        </td>
+
+                                        {{-- Time In --}}
+                                        <td class="py-3 md:py-5 px-3 md:px-4 text-center text-gray-700 dark:text-gray-300 font-medium whitespace-nowrap text-sm">
+                                            {{ $log['clock_in'] ? $log['clock_in']->format('h:i A') : '---' }}
+                                        </td>
+
+                                        {{-- Time Out --}}
+                                        <td class="py-3 md:py-5 px-3 md:px-4 text-center text-gray-700 dark:text-gray-300 font-medium whitespace-nowrap text-sm">
+                                            {{ $log['clock_out'] ? $log['clock_out']->format('h:i A') : '---' }}
+                                        </td>
+
+                                        {{-- Duration --}}
+                                        <td class="py-3 md:py-5 px-3 md:px-4 text-center font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap text-sm">
+                                            @if($log['type'] === 'actual')
+                                                @if($log['clock_out'])
+                                                    {{ fmod($log['duration'], 1) == 0 ? (int)$log['duration'] : round($log['duration'], 2) }} HRS
+                                                @else
+                                                    <span class="text-blue-500 dark:text-blue-400 italic text-xs font-semibold animate-pulse">In Progress</span>
+                                                @endif
+                                            @else
+                                                0 HRS
+                                            @endif
+                                        </td>
+
+                                        {{-- Status Badge --}}
+                                        <td class="py-3 md:py-5 px-3 md:px-6 text-center whitespace-nowrap">
+                                            <div class="flex items-center justify-center gap-1.5">
+                                                <span class="px-3 py-1.5 {{ $statusConfig['class'] }} text-[10px] font-bold rounded-full border tracking-wider" title="{{ $log['remarks'] }}">
+                                                    {{ $statusConfig['label'] }}
+                                                </span>
+
+                                                @if($log['type'] === 'actual' && !empty($log['record']->latitude) && !empty($log['record']->longitude))
+                                                    <a href="https://www.google.com/maps/search/?api=1&query={{ $log['record']->latitude }},{{ $log['record']->longitude }}" 
+                                                       target="_blank" 
+                                                       class="inline-flex items-center justify-center w-6 h-6 bg-blue-50 dark:bg-blue-900/20 hover:bg-[#0B5694] hover:text-white text-[#0B5694] dark:text-blue-400 rounded-lg border border-blue-100 dark:border-blue-900/30 transition active:scale-95 shrink-0" 
+                                                       title="Verify Location ({{ $log['record']->latitude }}, {{ $log['record']->longitude }})">
+                                                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                                                    </a>
+                                                @endif
+                                            </div>
+                                        </td>
+
+                                        {{-- Remarks --}}
+                                        <td class="py-3 md:py-5 px-3 md:px-6 text-left">
+                                            <span class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-tight italic line-clamp-1 max-w-[150px]" title="{{ $log['remarks'] }}">
+                                                {{ $log['remarks'] ?? '---' }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="py-12 text-center text-gray-400 italic">No logs found.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 
                 {{-- Pagination Links --}}
@@ -542,7 +620,77 @@
                                     @endif
 
                                     <div class="border border-gray-100 dark:border-gray-800 rounded-2xl overflow-hidden shadow-inner">
-                                        <div class="overflow-x-auto custom-scrollbar">
+                                        {{-- Mobile: Card List --}}
+                                        <div class="lg:hidden divide-y divide-gray-50 dark:divide-gray-800">
+                                            @forelse($internLogs as $log)
+                                                <div x-show="drawerTab === 'all' || 
+                                                            (drawerTab === 'active' && {{ $log['type'] === 'actual' && empty($log['clock_out']) && $log['clock_in'] && $log['clock_in']->isToday() ? 'true' : 'false' }}) || 
+                                                            (drawerTab === 'exceptions' && ('{{ $log['status'] }}' === 'late' || '{{ $log['status'] }}' === 'absent')) || 
+                                                            (drawerTab === 'overrides' && ('{{ $log['status'] }}' === 'holiday' || '{{ $log['status'] }}' === 'suspension'))"
+                                                     class="p-4 space-y-2">
+                                                    <div class="flex items-center justify-between">
+                                                        <span class="font-bold text-gray-900 dark:text-gray-100 text-sm">{{ $log['date']->format('M d, Y') }}</span>
+                                                        <span>
+                                                            @if($log['type'] === 'actual')
+                                                                @if(!$log['clock_out'])
+                                                                    <span class="px-2.5 py-1 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400 text-[10px] font-bold rounded-full border border-yellow-100/30 dark:border-yellow-900/30 animate-pulse">Active</span>
+                                                                @elseif($log['status'] === 'late')
+                                                                    <span class="px-2.5 py-1 bg-orange-50 dark:bg-orange-950/20 text-orange-500 dark:text-orange-400 text-[10px] font-bold rounded-full border border-orange-100/30 dark:border-orange-900/30">Late</span>
+                                                                @else
+                                                                    <span class="px-2.5 py-1 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold rounded-full border border-emerald-100/30 dark:border-emerald-900/30">Completed</span>
+                                                                @endif
+                                                            @else
+                                                                @if($log['status'] === 'holiday')
+                                                                    <span class="px-2.5 py-1 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold rounded-full border border-emerald-100/30 dark:border-emerald-900/30">Holiday</span>
+                                                                @elseif($log['status'] === 'suspension')
+                                                                    <span class="px-2.5 py-1 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 text-[10px] font-bold rounded-full border border-purple-100/30 dark:border-purple-900/30 animate-pulse">Suspended</span>
+                                                                @elseif($log['status'] === 'absent')
+                                                                    <span class="px-2.5 py-1 bg-rose-50 dark:bg-rose-950/20 text-rose-600 dark:text-rose-400 text-[10px] font-bold rounded-full border border-rose-100/30 dark:border-rose-900/30">Absent</span>
+                                                                @endif
+                                                            @endif
+                                                        </span>
+                                                    </div>
+                                                    <div class="grid grid-cols-3 gap-2 text-xs">
+                                                        <div>
+                                                            <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">In</span>
+                                                            <span class="font-medium text-gray-700 dark:text-gray-300">{{ $log['clock_in'] ? $log['clock_in']->format('h:i A') : '---' }}</span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Out</span>
+                                                            <span class="font-medium text-gray-700 dark:text-gray-300">{{ $log['clock_out'] ? $log['clock_out']->format('h:i A') : '---' }}</span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Hrs</span>
+                                                            <span class="font-bold text-gray-900 dark:text-gray-100">
+                                                                @if($log['type'] === 'actual')
+                                                                    @if($log['clock_out'])
+                                                                        {{ fmod($log['duration'], 1) == 0 ? (int)$log['duration'] : round($log['duration'], 2) }}
+                                                                    @else
+                                                                        <span class="text-blue-500 dark:text-blue-400 italic text-[11px] font-semibold animate-pulse">In Progress</span>
+                                                                    @endif
+                                                                @else
+                                                                    0
+                                                                @endif
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    @if($log['remarks'])
+                                                        <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-tight italic">{{ $log['remarks'] }}</p>
+                                                    @endif
+                                                    @if($log['type'] === 'actual' && !empty($log['record']->latitude) && !empty($log['record']->longitude))
+                                                        <a href="https://www.google.com/maps/search/?api=1&query={{ $log['record']->latitude }},{{ $log['record']->longitude }}" target="_blank" class="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 text-[9px] font-bold rounded-lg border border-blue-100/30 dark:border-blue-900/30 transition">
+                                                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                                                            View Location
+                                                        </a>
+                                                    @endif
+                                                </div>
+                                            @empty
+                                                <div class="py-8 text-center text-gray-400 italic">No logs found.</div>
+                                            @endforelse
+                                        </div>
+
+                                        {{-- Desktop: Table --}}
+                                        <div class="hidden lg:block overflow-x-auto custom-scrollbar">
                                             <table class="w-full text-left text-xs">
                                                 <thead class="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-700 text-gray-400 dark:text-gray-500 uppercase text-[9px] font-black tracking-widest">
                                                     <tr>
@@ -574,7 +722,7 @@
                                                                     0
                                                                 @endif
                                                             </td>
-                                                             <td class="py-3 md:py-4 px-3 md:px-5 text-center whitespace-nowrap flex items-center justify-center gap-1.5">
+                                                            <td class="py-3 md:py-4 px-3 md:px-5 text-center whitespace-nowrap flex items-center justify-center gap-1.5">
                                                                 @if($log['type'] === 'actual')
                                                                     @if(!$log['clock_out'])
                                                                         <span class="px-3 py-1.5 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400 text-[10px] font-bold rounded-full border border-yellow-100/30 dark:border-yellow-900/30 tracking-wider animate-pulse">Active</span>
