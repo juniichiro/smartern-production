@@ -64,9 +64,8 @@ class LoginRequest extends FormRequest
             }
 
             if ($user->failed_attempts >= 5) {
-                $diff = ceil(now()->diffInSeconds($user->locked_until) / 60);
                 throw ValidationException::withMessages([
-                    'email' => "Account locked due to multiple failed login attempts. Please try again in {$diff} minutes.",
+                    'email' => "Account locked due to multiple failed login attempts. Please try again later.",
                 ]);
             } else {
                 throw ValidationException::withMessages([
