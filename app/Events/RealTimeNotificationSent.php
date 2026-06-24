@@ -42,4 +42,21 @@ class RealTimeNotificationSent implements ShouldBroadcast
     {
         return 'notification.sent';
     }
+
+    /**
+     * Get the data to broadcast.
+     */
+    public function broadcastWith(): array
+    {
+        return [
+            'notification' => [
+                'id' => $this->notification->getRouteKey(),
+                'category' => $this->notification->category,
+                'message' => $this->notification->message,
+                'target_url' => $this->notification->target_url,
+                'is_read' => (bool) $this->notification->is_read,
+                'created_at' => $this->notification->created_at->toISOString(),
+            ]
+        ];
+    }
 }

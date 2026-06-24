@@ -881,9 +881,10 @@ Alpine.data('sidebarManager', () => ({
     }
 }));
 
-Alpine.data('notificationManager', (userId, initialCount) => ({
+Alpine.data('notificationManager', (userId, initialNotifications) => ({
     notifOpen: false,
-    unreadCount: initialCount,
+    notifications: initialNotifications,
+    unreadCount: initialNotifications.filter(n => !n.is_read).length,
     allRead: false,
     desktopNotifCollapsed: localStorage.getItem('notifCollapsed') === 'true',
     init() {
@@ -910,9 +911,20 @@ Alpine.data('notificationManager', (userId, initialCount) => ({
                     this.unreadCount++;
                     this.allRead = false;
                     
-                    // Show a toast or update list
-                    // Since the list is Blade-rendered, we might need to reload or append
-                    // For now, let's at least update the count and show a small alert
+                    // Format the incoming notification
+                    const newNotif = {
+                        id: e.notification.id,
+                        category: e.notification.category,
+                        message: e.notification.message,
+                        is_read: false,
+                        target_url: e.notification.target_url,
+                        time_ago: '1s',
+                        date_group: 'Today'
+                    };
+                    
+                    // Unshift to the top of our array
+                    this.notifications.unshift(newNotif);
+                    
                     if (window.showToast) {
                         window.showToast(e.notification.message, 'info');
                     } else {
@@ -921,10 +933,25 @@ Alpine.data('notificationManager', (userId, initialCount) => ({
                 });
         }
     },
+    get groupedNotifications() {
+        const groups = {};
+        this.notifications.forEach(notif => {
+            const group = notif.date_group;
+            if (!groups[group]) groups[group] = [];
+            groups[group].push(notif);
+        });
+        return groups;
+    },
     clearNotifications() {
         if (this.unreadCount > 0) {
             this.unreadCount = 0;
             this.allRead = true;
+            
+            // Mark all local notifications as read
+            this.notifications.forEach(notif => {
+                notif.is_read = true;
+            });
+            
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             fetch('/notifications/read-all', {
                 method: 'POST',
