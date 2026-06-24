@@ -607,47 +607,56 @@
                 <div class="p-10 max-h-[65vh] overflow-y-auto custom-scrollbar">
                     <div class="space-y-6">
                         <template x-for="event in selectedEvents.filter(e => e.type === 'absence_request')" :key="event.id">
-                            <div class="space-y-6">
-                                <div class="rounded-3xl p-6 border text-left bg-gray-50/50 dark:bg-gray-800/20 border-gray-100 dark:border-gray-800">
-                                    <div class="flex justify-between items-start mb-4">
-                                        <span class="text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full border bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800"
-                                              x-text="(event.request_type === 'early_leave' ? 'Early Leave Request from ' : 'Absence Request from ') + event.intern_name"></span>
-                                        <span class="text-[9px] font-black uppercase px-3 py-1.5 rounded-full border"
-                                              :class="{
-                                                  'bg-orange-50 text-orange-600 border-orange-100': event.status === 'pending',
-                                                  'bg-emerald-50 text-emerald-600 border-emerald-100': event.status === 'approved',
-                                                  'bg-rose-50 text-rose-600 border-rose-100': event.status === 'rejected'
-                                              }"
-                                              x-text="event.status"></span>
+                            <div class="rounded-3xl p-6 border text-left bg-gray-50/50 dark:bg-gray-850/20 border-gray-100 dark:border-gray-850 space-y-4 mb-4 last:mb-0">
+                                {{-- Request Info Header --}}
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 dark:border-gray-800/80 pb-3">
+                                    <div class="min-w-0">
+                                        <p class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest leading-none mb-1.5"
+                                           x-text="event.request_type === 'early_leave' ? 'Early Leave Request' : 'Absence Request'"></p>
+                                        <h5 class="font-extrabold text-gray-850 dark:text-gray-100 text-sm truncate" x-text="event.intern_name"></h5>
                                     </div>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed font-medium italic" x-text="'&quot;' + event.reason + '&quot;'"></p>
+                                    <span class="text-[9px] font-black uppercase px-3 py-1.5 rounded-full border w-fit"
+                                          :class="{
+                                              'bg-orange-50 text-orange-600 border-orange-100': event.status === 'pending',
+                                              'bg-emerald-50 text-emerald-600 border-emerald-100': event.status === 'approved',
+                                              'bg-rose-50 text-rose-600 border-rose-100': event.status === 'rejected'
+                                          }"
+                                          x-text="event.status"></span>
+                                </div>
+                                
+                                {{-- Reason --}}
+                                <div class="space-y-1">
+                                    <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Reason / Details</span>
+                                    <p class="text-xs text-gray-700 dark:text-gray-300 leading-relaxed font-semibold italic" x-text="'&quot;' + event.reason + '&quot;'"></p>
                                 </div>
 
+                                {{-- Pending actions form --}}
                                 <template x-if="event.status === 'pending'">
-                                    <form :action="`/head-supervisor/schedule/absence/${event.id}`" method="POST" class="space-y-6">
+                                    <form :action="`/head-supervisor/schedule/absence/${event.id}`" method="POST" class="space-y-4 pt-3 border-t border-gray-100 dark:border-gray-800/80">
                                         @csrf
                                         @method('PATCH')
                                         <div>
-                                            <label class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3 block text-left">Head Supervisor Remarks</label>
-                                            <textarea name="supervisor_remarks" rows="3"
-                                                      class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-5 text-sm text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-[#0B5694] transition-all placeholder:text-gray-300 dark:placeholder:text-gray-700"
+                                            <label class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1.5 block">Head Supervisor Remarks</label>
+                                            <textarea name="supervisor_remarks" rows="2"
+                                                      class="w-full bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-850 rounded-2xl p-4 text-xs text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-[#0B5694] transition-all placeholder:text-gray-300 dark:placeholder:text-gray-700 resize-none font-semibold"
                                                       placeholder="Optional remarks for the intern..."></textarea>
                                         </div>
-                                        <div class="flex gap-3">
-                                            <button type="submit" name="status" value="rejected" class="flex-1 py-4 bg-rose-50 text-rose-600 border border-rose-100 rounded-2xl font-bold text-xs uppercase tracking-wider hover:bg-rose-100 transition-all">
+                                        <div class="flex gap-2.5">
+                                            <button type="submit" name="status" value="rejected" class="flex-1 py-3.5 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/20 dark:hover:bg-rose-900/30 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/30 rounded-xl font-bold text-xs uppercase tracking-wider transition-all">
                                                 Reject
                                             </button>
-                                            <button type="submit" name="status" value="approved" class="flex-1 py-4 bg-[#0B5694] text-white rounded-2xl font-bold text-xs uppercase tracking-wider shadow-xl shadow-blue-500/20 hover:scale-[1.02] active:scale-95 transition-all">
+                                            <button type="submit" name="status" value="approved" class="flex-1 py-3.5 bg-[#0B5694] hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-xl font-bold text-xs uppercase tracking-wider shadow-md hover:scale-[1.01] active:scale-95 transition-all">
                                                 Approve
                                             </button>
                                         </div>
                                     </form>
                                 </template>
 
+                                {{-- Processed remarks --}}
                                 <template x-if="event.status !== 'pending'">
-                                    <div class="p-6 bg-gray-50 dark:bg-gray-900/50 rounded-3xl border border-gray-100 dark:border-gray-800 text-left">
-                                        <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3 block">Review Remarks</span>
-                                        <p class="text-sm text-gray-700 dark:text-gray-200 font-bold" x-text="event.remarks || 'No remarks provided.'"></p>
+                                    <div class="pt-3 border-t border-gray-100 dark:border-gray-800/80">
+                                        <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block mb-1">Review Remarks</span>
+                                        <p class="text-xs text-gray-700 dark:text-gray-200 font-bold" x-text="event.remarks || 'No remarks provided.'"></p>
                                     </div>
                                 </template>
                             </div>
