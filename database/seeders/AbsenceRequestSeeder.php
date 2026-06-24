@@ -24,7 +24,8 @@ class AbsenceRequestSeeder extends Seeder
             $userId = $intern->user_id;
 
             // 1. Approved Absence (Date in the past)
-            $pastDate1 = Carbon::now()->subDays(10)->format('Y-m-d');
+            $pastDate1Obj = $this->getPastWeekday(10);
+            $pastDate1 = $pastDate1Obj->format('Y-m-d');
             // Delete any existing attendance on this day to simulate real absence
             Attendance::where('intern_id', $userId)->whereDate('clock_in', $pastDate1)->delete();
 
@@ -36,11 +37,12 @@ class AbsenceRequestSeeder extends Seeder
                 'status' => 'approved',
                 'supervisor_remarks' => 'Approved. Please submit your medical certificate.',
                 'reviewed_by' => $supervisor->user_id,
-                'reviewed_at' => Carbon::now()->subDays(10),
+                'reviewed_at' => $pastDate1Obj,
             ]);
 
             // 2. Approved Early Leave (Date in the past)
-            $pastDate2 = Carbon::now()->subDays(6)->format('Y-m-d');
+            $pastDate2Obj = $this->getPastWeekday(6);
+            $pastDate2 = $pastDate2Obj->format('Y-m-d');
             
             // Adjust attendance for early leave (clock out at 12:00 PM instead of 5:00 PM)
             $attendance = Attendance::where('intern_id', $userId)->whereDate('clock_in', $pastDate2)->first();
@@ -68,11 +70,12 @@ class AbsenceRequestSeeder extends Seeder
                 'status' => 'approved',
                 'supervisor_remarks' => 'Approved. Keep safe.',
                 'reviewed_by' => $supervisor->user_id,
-                'reviewed_at' => Carbon::now()->subDays(6),
+                'reviewed_at' => $pastDate2Obj,
             ]);
 
             // 3. Pending Request (Date in the future)
-            $futureDate = Carbon::now()->addDays(3)->format('Y-m-d');
+            $futureDateObj = $this->getFutureWeekday(3);
+            $futureDate = $futureDateObj->format('Y-m-d');
             
             // Delete any unique conflicts just in case
             AbsenceRequest::where('intern_id', $userId)->where('date', $futureDate)->delete();
@@ -85,5 +88,23 @@ class AbsenceRequestSeeder extends Seeder
                 'status' => 'pending',
             ]);
         }
+    }
+
+    private function getPastWeekday(int $subDays): Carbon
+    {
+        $date = Carbon::now()->subDays($subDays);
+        while ($date->isWeekend()) {
+            $date->subDay();
+        }
+        return $date;
+    }
+
+    private function getFutureWeekday(int $addDays): Carbon
+    {
+        $date = Carbon::now()->addDays($addDays);
+        while ($date->isWeekend()) {
+            $date->addDay();
+        }
+        return $date;
     }
 }
