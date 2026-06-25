@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="flex min-h-screen bg-gray-50 dark:bg-gray-950 font-sans text-[14px]" 
-     x-data="supervisorTaskPreview">
+     x-data="{ loading: true, showPreview: false, fileUrl: '', fileType: '', init() { setTimeout(() => { this.loading = false; }, 800); } }">
      
     <x-sidebar portalType="Supervisor" userName="{{ Auth::user()->supervisorDetails->first_name }}" userRole="{{ Auth::user()->supervisorDetails->office->name }}" />
 
