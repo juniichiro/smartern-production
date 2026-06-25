@@ -212,12 +212,12 @@
                                      $isPreviewable = in_array($ext, ['pdf', 'jpg', 'jpeg', 'png', 'gif', 'webp']);
                                  @endphp
                                  @if($isPreviewable)
-                                     <button @click="showPreview = true; fileUrl = '{{ asset($submission->file_path) }}'; fileType = '{{ $ext === 'pdf' ? 'pdf' : 'image' }}'" 
+                                     <button @click="showPreview = true; fileUrl = '{{ route('submissions.file', $submission) }}'; fileType = '{{ $ext === 'pdf' ? 'pdf' : 'image' }}'" 
                                              class="w-full text-center py-2 bg-white dark:bg-gray-900 text-[9px] font-bold text-[#0B5694] dark:text-blue-400 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all uppercase tracking-wider border border-gray-200 dark:border-gray-700 active:scale-95 shadow-sm">
                                          Preview File
                                      </button>
                                  @else
-                                     <a href="{{ asset($submission->file_path) }}" target="_blank" class="w-full text-center py-2 bg-white dark:bg-gray-900 text-[9px] font-bold text-[#0B5694] dark:text-blue-400 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all uppercase tracking-wider border border-gray-200 dark:border-gray-700">
+                                     <a href="{{ route('submissions.file', $submission) }}" target="_blank" class="w-full text-center py-2 bg-white dark:bg-gray-900 text-[9px] font-bold text-[#0B5694] dark:text-blue-400 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all uppercase tracking-wider border border-gray-200 dark:border-gray-700">
                                          Download File
                                      </a>
                                  @endif

@@ -71,6 +71,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('/security/run-analysis', [SecurityController::class, 'runAnalysis'])->name('security.run');
 
+    Route::get('/submissions/{submission}/file', [App\Http\Controllers\SubmissionController::class, 'viewFile'])->name('submissions.file');
+
     Route::get('profile/change-password', [PasswordUpdateController::class, 'edit'])
         ->name('profile.change-password');
 
