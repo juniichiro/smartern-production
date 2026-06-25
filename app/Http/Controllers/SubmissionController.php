@@ -17,22 +17,24 @@ class SubmissionController extends Controller
         // Authorization checks:
         // 1. Interns can only view their own submissions.
         if ($roleName === 'intern' && $submission->intern_id !== $user->id) {
-            abort(403, 'Unauthorized access to this submission.');
+            abort(403, "Unauthorized: You are logged in as an intern but this submission belongs to intern ID {$submission->intern_id} (your ID is {$user->id}).");
         }
 
         // 2. School coordinators can only view submissions of interns from their school.
         if ($roleName === 'school_coordinator') {
             $coordinatorSchool = $user->schoolCoordinatorDetails->school ?? null;
-            if ($submission->intern->internDetails->school !== $coordinatorSchool) {
-                abort(403, 'Unauthorized access to this student\'s submission.');
+            $internSchool = $submission->intern->internDetails->school ?? null;
+            if ($internSchool !== $coordinatorSchool) {
+                abort(403, "Unauthorized: Coordinator school '{$coordinatorSchool}' does not match intern school '{$internSchool}'.");
             }
         }
 
-        // 3. Supervisors can only view submissions of interns in their office (if they are normal supervisors)
-        if ($roleName === 'supervisor') {
+        // 3. Supervisors and Head Supervisors can only view submissions of interns in their office
+        if ($roleName === 'supervisor' || $roleName === 'head_supervisor') {
             $officeId = $user->supervisorDetails->office_id ?? null;
-            if ($submission->intern->internDetails->office_id !== $officeId) {
-                abort(403, 'Unauthorized access to this office\'s submission.');
+            $internOfficeId = $submission->intern->internDetails->office_id ?? null;
+            if ($internOfficeId !== $officeId) {
+                abort(403, "Unauthorized: Office ID mismatch (User office: '{$officeId}', Intern office: '{$internOfficeId}').");
             }
         }
 
@@ -61,6 +63,6 @@ class SubmissionController extends Controller
             return response()->file(public_path($filePath));
         }
 
-        abort(404, 'File not found on disk.');
+        abort(404, "File not found on disk (tried storage: '{$cleanStoragePath}' and public: '{$filePath}').");
     }
 }
