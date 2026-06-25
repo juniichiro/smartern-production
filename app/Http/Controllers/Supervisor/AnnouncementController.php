@@ -13,6 +13,7 @@ use App\Services\SecurityAuditService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 class AnnouncementController extends Controller
 {
@@ -44,9 +45,8 @@ class AnnouncementController extends Controller
         $filePath = null;
         if ($request->hasFile('attachment')) {
             $file = $request->file('attachment');
-            $fileName = time().'_'.$file->getClientOriginalName();
-            $file->move(public_path('announcement'), $fileName);
-            $filePath = 'announcement/'.$fileName;
+            $path = $file->store('announcements', 'public');
+            $filePath = 'storage/' . $path;
         }
 
         $announcement = Announcement::create([
@@ -94,10 +94,13 @@ class AnnouncementController extends Controller
 
         $filePath = $announcement->attachment;
         if ($request->hasFile('attachment')) {
+            if ($announcement->attachment) {
+                $relativeStoragePath = str_replace('storage/', '', $announcement->attachment);
+                Storage::disk('public')->delete($relativeStoragePath);
+            }
             $file = $request->file('attachment');
-            $fileName = time().'_'.$file->getClientOriginalName();
-            $file->move(public_path('announcement'), $fileName);
-            $filePath = 'announcement/'.$fileName;
+            $path = $file->store('announcements', 'public');
+            $filePath = 'storage/' . $path;
         }
 
         $announcement->update([

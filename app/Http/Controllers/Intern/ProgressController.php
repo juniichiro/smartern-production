@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Vinkla\Hashids\Facades\Hashids;
 
 class ProgressController extends Controller
@@ -272,24 +273,17 @@ class ProgressController extends Controller
             if ($request->hasFile('submission_file')) {
                 $file = $request->file('submission_file');
 
-                // Unique filename to prevent overwriting
-                $fileName = time().'_'.$file->getClientOriginalName();
-                $destinationPath = public_path('tasks');
-
-                if (! File::isDirectory($destinationPath)) {
-                    File::makeDirectory($destinationPath, 0777, true, true);
-                }
-
                 // Cleanup: Delete previous submission file for this task if it exists
                 if ($task->submissions()->exists()) {
                     $oldSubmission = $task->submissions()->latest()->first();
-                    if ($oldSubmission && File::exists(public_path($oldSubmission->file_path))) {
-                        File::delete(public_path($oldSubmission->file_path));
+                    if ($oldSubmission && $oldSubmission->file_path) {
+                        $relativeStoragePath = str_replace('storage/', '', $oldSubmission->file_path);
+                        Storage::disk('public')->delete($relativeStoragePath);
                     }
                 }
 
-                $file->move($destinationPath, $fileName);
-                $filePath = 'tasks/'.$fileName;
+                $path = $file->store('tasks', 'public');
+                $filePath = 'storage/' . $path;
             }
 
             // Create submission record
