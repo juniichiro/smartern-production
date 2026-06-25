@@ -85,12 +85,12 @@
                             
                             <div class="flex gap-2 w-full sm:w-auto">
                                 @if($isImage || $isPDF)
-                                    <button @click="showPreview = true; fileUrl = '{{ asset($latestFile) }}'; fileType = '{{ $isPDF ? 'pdf' : 'image' }}'" 
+                                    <button @click="showPreview = true; fileUrl = '{{ route('submissions.file', $task->submissions->first()) }}'; fileType = '{{ $isPDF ? 'pdf' : 'image' }}'" 
                                         class="flex-1 sm:flex-none px-4 md:px-6 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-50 dark:hover:bg-gray-700 transition-all active:scale-95 shadow-sm">
                                         Preview
                                     </button>
                                 @endif
-                                <a href="{{ asset($latestFile) }}" target="_blank" class="flex-1 sm:flex-none px-4 md:px-6 py-3 bg-[#0B5694] dark:bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-800 dark:hover:bg-blue-700 transition-all shadow-lg dark:shadow-none active:scale-95 text-center">Download</a>
+                                <a href="{{ route('submissions.file', $task->submissions->first()) }}" target="_blank" class="flex-1 sm:flex-none px-4 md:px-6 py-3 bg-[#0B5694] dark:bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-800 dark:hover:bg-blue-700 transition-all shadow-lg dark:shadow-none active:scale-95 text-center">Download</a>
                             </div>
                         </div>
                     @elseif($task->is_file_required)
