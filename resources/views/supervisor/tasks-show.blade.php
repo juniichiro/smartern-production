@@ -167,14 +167,14 @@
                 </button>
             </div>
             <div class="flex-1 bg-white dark:bg-gray-900 rounded-[40px] overflow-hidden shadow-2xl">
-                <template x-if="fileType === 'pdf'">
+                <div x-show="fileType === 'pdf'" class="w-full h-full">
                     <iframe :src="fileUrl" class="w-full h-full border-none"></iframe>
-                </template>
-                <template x-if="fileType === 'image'">
+                </div>
+                <div x-show="fileType === 'image'" class="w-full h-full">
                     <div class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-800 p-4 md:p-8 overflow-auto">
                         <img :src="fileUrl" class="max-w-full max-h-full rounded-2xl shadow-lg object-contain">
                     </div>
-                </template>
+                </div>
             </div>
         </div>
     </div>
