@@ -53,8 +53,16 @@ class InternManagementController extends Controller
      */
     public function show(User $user, AttendanceService $attendanceService)
     {
-        // Eager load ALL relationships needed for the tabs
-        $intern = InternDetail::where('user_id', $user->id)->with(['user', 'office', 'tasks', 'attendances', 'journals'])->firstOrFail();
+        // Eager load ALL relationships needed for the tabs, ordering journals to show most recent first
+        $intern = InternDetail::where('user_id', $user->id)->with([
+            'user', 
+            'office', 
+            'tasks', 
+            'attendances', 
+            'journals' => function ($query) {
+                $query->orderBy('entry_date', 'desc')->orderBy('created_at', 'desc');
+            }
+        ])->firstOrFail();
 
         $targetHours = $intern->required_hours ?? 480;
         $currentHours = $intern->hours_rendered ?? 0;

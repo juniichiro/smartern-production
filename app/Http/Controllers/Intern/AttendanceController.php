@@ -202,10 +202,6 @@ class AttendanceController extends Controller
                 return response()->json(['message' => 'This QR code has already been scanned.'], 403);
             }
 
-            // Burn the token immediately to ensure that any scan attempt (whether successful or blocked)
-            // invalidates this token/QR code instantly.
-            Cache::put($cacheKey, true, now()->addMinutes(10));
-
             $decoded = Hashids::decode($token);
             if (count($decoded) < 2) {
                 return response()->json(['message' => 'Invalid QR token format.'], 400);
@@ -214,13 +210,11 @@ class AttendanceController extends Controller
             [$userId, $timestamp] = $decoded;
             logger()->info('Token Decoded', ['userId' => $userId, 'timestamp' => $timestamp]);
 
-            // Clear the active QR token cache for this user immediately so that the polling
-            // endpoint checkStatus() will generate a new token on the next poll.
-            Cache::forget("active_qr_token_{$userId}");
-
             // 1. Replay Protection (60s)
             $tokenTime = Carbon::createFromTimestamp($timestamp);
             if ($tokenTime->diffInSeconds(now()) > 60) {
+                Cache::put($cacheKey, true, now()->addMinutes(10));
+                Cache::forget("active_qr_token_{$userId}");
                 return response()->json(['message' => 'Security token expired.'], 403);
             }
 
@@ -229,6 +223,8 @@ class AttendanceController extends Controller
 
             // 2. Geofence Check
             if (! $request->latitude || ! $request->longitude) {
+                Cache::put($cacheKey, true, now()->addMinutes(10));
+                Cache::forget("active_qr_token_{$userId}");
                 return response()->json(['message' => 'Location coordinates required.'], 403);
             }
 
@@ -241,6 +237,8 @@ class AttendanceController extends Controller
 
             if ($distance > $office->radius_meters) {
                 $this->auditService->log('Geofence Violation', "User #{$userId} attempted scan outside boundary ({$distance}m)");
+                Cache::put($cacheKey, true, now()->addMinutes(10));
+                Cache::forget("active_qr_token_{$userId}");
 
                 return response()->json(['message' => 'Location verification failed.'], 403);
             }
@@ -258,6 +256,8 @@ class AttendanceController extends Controller
                     ->exists();
 
                 if (! $hasDailyJournal) {
+                    Cache::put($cacheKey, true, now()->addMinutes(10));
+                    Cache::forget("active_qr_token_{$userId}");
                     return response()->json([
                         'message' => 'You must submit your Daily Journal entry for today before clocking out.',
                     ], 403);
@@ -283,14 +283,24 @@ class AttendanceController extends Controller
                             ? 'You have an approved Early Leave request for today. Proceed to clock out?'
                             : 'You are clocking out before your scheduled end time ('.$endTime->format('h:i A').'). Proceed?';
 
+                        // Note: We do NOT burn the token or clear the active token yet,
+                        // because the user needs to submit the confirmation using the same token.
                         return response()->json([
                             'requires_confirmation' => true,
-                            'requires_reason' => ! $hasApprovedEarlyLeave, // Skip reason if already approved
+                            'requires_reason' => ! $hasApprovedEarlyLeave,
                             'message' => $message,
                         ]);
                     }
                 }
             }
+
+            // Burn the token immediately to ensure that any scan attempt (whether successful or blocked)
+            // invalidates this token/QR code instantly.
+            Cache::put($cacheKey, true, now()->addMinutes(10));
+
+            // Clear the active QR token cache for this user immediately so that the polling
+            // endpoint checkStatus() will generate a new token on the next poll.
+            Cache::forget("active_qr_token_{$userId}");
 
             // 4. Final Processing
             $result = $this->attendanceService->recordAttendance(
