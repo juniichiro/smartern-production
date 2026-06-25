@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="flex min-h-screen bg-gray-50 dark:bg-gray-950 font-sans text-[14px]" x-data="{ showPreview: false, fileUrl: '', fileType: '' }">
+<div class="flex min-h-screen bg-gray-50 dark:bg-gray-950 font-sans text-[14px]">
     {{-- SIDEBAR --}}
     <x-sidebar portalType="Intern" userName="{{ Auth::user()->internDetails->first_name }}" userRole="{{ Auth::user()->internDetails->office->name }}"/>
 
@@ -207,20 +207,9 @@
                                 </div>
                             </div>
                              @if($submission->file_path)
-                                 @php
-                                     $ext = strtolower(pathinfo($submission->file_path, PATHINFO_EXTENSION));
-                                     $isPreviewable = in_array($ext, ['pdf', 'jpg', 'jpeg', 'png', 'gif', 'webp']);
-                                 @endphp
-                                 @if($isPreviewable)
-                                     <button @click="showPreview = true; fileUrl = '{{ route('submissions.file', $submission) }}'; fileType = '{{ $ext === 'pdf' ? 'pdf' : 'image' }}'" 
-                                             class="w-full text-center py-2 bg-white dark:bg-gray-900 text-[9px] font-bold text-[#0B5694] dark:text-blue-400 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all uppercase tracking-wider border border-gray-200 dark:border-gray-700 active:scale-95 shadow-sm">
-                                         Preview File
-                                     </button>
-                                 @else
-                                     <a href="{{ route('submissions.file', $submission) }}" target="_blank" class="w-full text-center py-2 bg-white dark:bg-gray-900 text-[9px] font-bold text-[#0B5694] dark:text-blue-400 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all uppercase tracking-wider border border-gray-200 dark:border-gray-700">
-                                         Download File
-                                     </a>
-                                 @endif
+                                 <a href="{{ route('submissions.file', $submission) }}" target="_blank" class="w-full text-center py-2 bg-white dark:bg-gray-900 text-[9px] font-bold text-[#0B5694] dark:text-blue-400 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all uppercase tracking-wider border border-gray-200 dark:border-gray-700">
+                                     View File
+                                 </a>
                              @else
                                  <div class="w-full text-center py-2 bg-white dark:bg-gray-900 text-[9px] font-bold text-gray-400 rounded-xl uppercase tracking-wider border border-gray-200 dark:border-gray-700">No File</div>
                              @endif
@@ -235,29 +224,5 @@
 
     <x-notification-sidebar :notifications="$notifications" />
 
-    {{-- PREVIEW MODAL --}}
-    <div x-show="showPreview" x-cloak class="fixed inset-0 z-[150] flex items-center justify-center p-3 sm:p-4 md:p-12 bg-black/90 backdrop-blur-md">
-        <div class="relative w-full max-w-6xl h-full flex flex-col" @click.away="showPreview = false">
-            <div class="flex justify-end mb-4">
-                <button @click="showPreview = false" class="text-white/50 hover:text-white p-2 transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
-            </div>
-            <div class="flex-1 bg-white dark:bg-gray-900 rounded-[40px] overflow-hidden shadow-2xl">
-                <div x-show="fileType === 'pdf'" class="w-full h-full">
-                    <iframe :src="fileUrl" class="w-full h-full border-none"></iframe>
-                </div>
-                <div x-show="fileType === 'image'" class="w-full h-full">
-                    <div class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-800 p-4 md:p-8 overflow-auto">
-                        <img :src="fileUrl" class="max-w-full max-h-full rounded-2xl shadow-lg object-contain">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
-
-<style>
-    [x-cloak] { display: none !important; }
-</style>
 @endsection

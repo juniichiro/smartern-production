@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="flex min-h-screen bg-gray-50 dark:bg-gray-950 font-sans text-[14px]" 
-     x-data="{ loading: true, showPreview: false, fileUrl: '', fileType: '', init() { setTimeout(() => { this.loading = false; }, 800); } }">
+     x-data="{ loading: true, init() { setTimeout(() => { this.loading = false; }, 800); } }">
      
     <x-sidebar portalType="Supervisor" userName="{{ Auth::user()->supervisorDetails->first_name }}" userRole="{{ Auth::user()->supervisorDetails->office->name }}" />
 
@@ -84,13 +84,7 @@
                             </div>
                             
                             <div class="flex gap-2 w-full sm:w-auto">
-                                @if($isImage || $isPDF)
-                                    <button @click="showPreview = true; fileUrl = '{{ route('submissions.file', $task->submissions->first()) }}'; fileType = '{{ $isPDF ? 'pdf' : 'image' }}'" 
-                                        class="flex-1 sm:flex-none px-4 md:px-6 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-50 dark:hover:bg-gray-700 transition-all active:scale-95 shadow-sm">
-                                        Preview
-                                    </button>
-                                @endif
-                                <a href="{{ route('submissions.file', $task->submissions->first()) }}" target="_blank" class="flex-1 sm:flex-none px-4 md:px-6 py-3 bg-[#0B5694] dark:bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-800 dark:hover:bg-blue-700 transition-all shadow-lg dark:shadow-none active:scale-95 text-center">Download</a>
+                                <a href="{{ route('submissions.file', $task->submissions->first()) }}" target="_blank" class="flex-1 sm:flex-none px-6 py-3 bg-[#0B5694] dark:bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-800 dark:hover:bg-blue-700 transition-all shadow-lg dark:shadow-none active:scale-95 text-center">View File</a>
                             </div>
                         </div>
                     @elseif($task->is_file_required)
@@ -158,29 +152,5 @@
         </div>
     </main>
 
-    {{-- PREVIEW MODAL --}}
-    <div x-show="showPreview" x-cloak class="fixed inset-0 z-[150] flex items-center justify-center p-3 sm:p-4 md:p-12 bg-black/90 backdrop-blur-md">
-        <div class="relative w-full max-w-6xl h-full flex flex-col" @click.away="showPreview = false">
-            <div class="flex justify-end mb-4">
-                <button @click="showPreview = false" class="text-white/50 hover:text-white p-2 transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
-            </div>
-            <div class="flex-1 bg-white dark:bg-gray-900 rounded-[40px] overflow-hidden shadow-2xl">
-                <div x-show="fileType === 'pdf'" class="w-full h-full">
-                    <iframe :src="fileUrl" class="w-full h-full border-none"></iframe>
-                </div>
-                <div x-show="fileType === 'image'" class="w-full h-full">
-                    <div class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-800 p-4 md:p-8 overflow-auto">
-                        <img :src="fileUrl" class="max-w-full max-h-full rounded-2xl shadow-lg object-contain">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
-
-<style>
-    [x-cloak] { display: none !important; }
-</style>
 @endsection
