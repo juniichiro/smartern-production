@@ -62,7 +62,7 @@
                 {{-- Schedule Quick View --}}
                 <div class="xl:col-span-5 flex flex-col gap-4" x-data="{
                     requiredHours: {{ $intern->required_hours ?? 480 }},
-                    scheduleDays: @js($assignedDays),
+                    scheduleDays: @js($intern->schedule_assignment ?? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']),
                     startDate: '{{ $schoolSchedule && $schoolSchedule->start_date ? $schoolSchedule->start_date->format('Y-m-d') : '' }}',
                     dailyHours: {{ $schoolSchedule ? $schoolSchedule->daily_hours ?? 8 : 8 }},
                     holidays: @js($holidaysAndSuspensions ?? []),

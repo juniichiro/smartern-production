@@ -87,7 +87,7 @@ class InternManagementController extends Controller
             $holidaysAndSuspensions = Schedule::where('school_name', $intern->school)
                 ->whereIn('type', ['holiday', 'suspension'])
                 ->pluck('date')
-                ->map(fn($d) => $d->format('Y-m-d'))
+                ->map(fn($d) => \Carbon\Carbon::parse($d)->format('Y-m-d'))
                 ->toArray();
         }
 
