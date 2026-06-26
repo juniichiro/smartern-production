@@ -32,23 +32,23 @@
                 $status = 'hours_completed';
             }
 
-            // Step 1: Preparation (Active if hours met or draft started, completed if endorsed/published)
-            $step1Active = ($status === 'hours_completed' || $status === 'pending');
-            $step1Completed = in_array($status, ['endorsed', 'published']);
+            // Step 1: Preparation (Active if hours met but draft not created yet; Completed if draft is created)
+            $step1Active = ($status === 'hours_completed');
+            $step1Completed = in_array($status, ['pending', 'endorsed', 'published']);
 
-            // Step 2: Supervisor Endorsement (Active if endorsed, completed if published)
-            $step2Active = ($status === 'endorsed');
-            $step2Completed = ($status === 'published');
+            // Step 2: Supervisor Endorsement (Active if draft is created but not yet endorsed; Completed if endorsed or published)
+            $step2Active = ($status === 'pending');
+            $step2Completed = in_array($status, ['endorsed', 'published']);
 
-            // Step 3: Head Supervisor Approval (Active/Completed when published)
-            $step3Active = ($status === 'published');
+            // Step 3: Head Supervisor Approval (Active if endorsed; Completed if published)
+            $step3Active = ($status === 'endorsed');
             $step3Completed = ($status === 'published');
 
             // Desktop connecting line percentage
             $stepPercent = 0;
             if ($status === 'hours_completed') $stepPercent = 15;
-            elseif ($status === 'pending') $stepPercent = 33;
-            elseif ($status === 'endorsed') $stepPercent = 66;
+            elseif ($status === 'pending') $stepPercent = 50;
+            elseif ($status === 'endorsed') $stepPercent = 83;
             elseif ($status === 'published') $stepPercent = 100;
         @endphp
 
