@@ -67,7 +67,7 @@
                 <div class="bg-white dark:bg-gray-900 p-6 rounded-[calc(24px-6px)] border border-gray-100 dark:border-gray-800/50 text-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]">
                     <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-2">Training Hours</p>
                     <p class="text-base font-extrabold text-gray-800 dark:text-gray-100 tracking-tight">
-                        {{ $internDetails->hours_rendered ?? 0 }} <span class="text-xs text-gray-400 font-medium">rendered hrs</span>
+                        {{ (float)($internDetails->hours_rendered ?? 0) }} <span class="text-xs text-gray-400 font-medium">rendered hrs</span>
                     </p>
                 </div>
             </div>
