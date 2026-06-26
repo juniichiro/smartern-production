@@ -17,14 +17,14 @@ class DatabaseSeeder extends Seeder
         // Core seeders required for the system to function
         $this->call([
             RoleSeeder::class,           // RBAC
-            // OfficeSeeder::class,         // Departments
+            OfficeSeeder::class,         // Departments
             AssessmentItemSeeder::class, // The dynamic competency list (New)
-            // OfficeRuleSeeder::class,     // Default matching requirements (Updated)
+            OfficeRuleSeeder::class,     // Default matching requirements (Updated)
             UserSeeder::class,           // Auth accounts
             SupervisorDetailSeeder::class, // Profile info for supervisors
             InternDetailSeeder::class,    // Profile info for interns
             SchoolCoordinatorDetailSeeder::class, // Profile info for school coordinators
-            OnboardingApplicantSeeder::class, // 5 onboarding applications
+            // OnboardingApplicantSeeder::class, // 5 onboarding applications
             TaskSeeder::class, // Completed, submitted, pending tasks
             AttendanceSeeder::class, // Attendance records mapping to hours_rendered
             JournalSeeder::class, // Daily and weekly log journals

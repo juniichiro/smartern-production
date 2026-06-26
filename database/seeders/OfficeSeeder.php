@@ -15,7 +15,7 @@ class OfficeSeeder extends Seeder
         DB::table('offices')->insert([
             [
                 'id' => 1,
-                'name' => 'ICT Department',
+                'name' => 'Information and Communication Technology (ICT) Unit',
                 'location_data' => json_encode([
                     'building' => 'Main Building',
                     'floor' => '3rd Floor',
@@ -23,10 +23,11 @@ class OfficeSeeder extends Seeder
                 'latitude' => 14.61504850,
                 'longitude' => 121.01059830,
                 'radius_meters' => 100,
+                'intern_limit' => 10,
             ],
             [
-                'id' => 2, // This matches Michelle's office_id from the payload
-                'name' => 'Human Resources',
+                'id' => 2,
+                'name' => 'Human Resource Management Unit (HRMU)',
                 'location_data' => json_encode([
                     'building' => 'Main Building',
                     'floor' => '2nd Floor',
@@ -34,10 +35,11 @@ class OfficeSeeder extends Seeder
                 'latitude' => 14.61504850,
                 'longitude' => 121.01059830,
                 'radius_meters' => 100,
+                'intern_limit' => 10,
             ],
             [
                 'id' => 3,
-                'name' => 'Finance & Accounting',
+                'name' => 'Budget & GSIS LOAN & Remittance Units',
                 'location_data' => json_encode([
                     'building' => 'Annex Building',
                     'floor' => '1st Floor',
@@ -45,10 +47,11 @@ class OfficeSeeder extends Seeder
                 'latitude' => 14.61504850,
                 'longitude' => 121.01059830,
                 'radius_meters' => 100,
+                'intern_limit' => 10,
             ],
             [
                 'id' => 4,
-                'name' => 'Administrative Services',
+                'name' => 'Records Unit',
                 'location_data' => json_encode([
                     'building' => 'Annex Building',
                     'floor' => '2nd Floor',
@@ -56,6 +59,7 @@ class OfficeSeeder extends Seeder
                 'latitude' => 14.61504850,
                 'longitude' => 121.01059830,
                 'radius_meters' => 100,
+                'intern_limit' => 10,
             ],
         ]);
     }
