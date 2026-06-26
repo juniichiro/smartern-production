@@ -122,11 +122,32 @@
                             }, { passive: true });
                         });
 
-                        // Heartbeat check every 10 seconds
+                        // 1. Instant check for cookie injection/tampering locally every 1 second
                         setInterval(() => {
                             if (this.showTakenOverModal) return;
 
-                            // 1. Check if the session is taken over by another device
+                            const clientId = localStorage.getItem('smartern_client_id');
+                            const cookies = document.cookie.split('; ').reduce((acc, cookie) => {
+                                const parts = cookie.split('=');
+                                const name = parts[0] ? parts[0].trim() : '';
+                                const value = parts[1] ? parts[1].trim() : '';
+                                if (name) acc[name] = value;
+                                return acc;
+                            }, {});
+
+                            const cookieClientId = cookies['smartern_client_id'];
+                            const hasSession = cookies['smartern-session'];
+
+                            if (hasSession && cookieClientId && cookieClientId !== clientId) {
+                                this.logoutAndRedirect(true);
+                            }
+                        }, 1000);
+
+                        // 2. Heartbeat check every 10 seconds (server-side verification)
+                        setInterval(() => {
+                            if (this.showTakenOverModal) return;
+
+                            // Check if the session is taken over by another device
                             fetch('{{ route('session.ping') }}', {
                                 headers: {
                                     'X-Requested-With': 'XMLHttpRequest',
@@ -146,7 +167,7 @@
                             })
                             .catch(err => console.error('Session check failed', err));
 
-                            // 2. Local inactivity check
+                            // Local inactivity check
                             const storedActivity = parseInt(localStorage.getItem('smartern_last_activity') || Date.now());
                             const inactiveDuration = Date.now() - storedActivity;
 
@@ -162,7 +183,7 @@
                         }, 10000);
                     },
 
-                    logoutAndRedirect() {
+                    logoutAndRedirect(isTakenOver = false) {
                         const csrfToken = document.querySelector('meta[name=\'csrf-token\']')?.getAttribute('content');
                         fetch('{{ route('logout') }}', {
                             method: 'POST',
@@ -171,7 +192,7 @@
                                 'X-CSRF-TOKEN': csrfToken
                             }
                         }).finally(() => {
-                            window.location.href = '{{ route('login') }}?timeout=1';
+                            window.location.href = '{{ route('login') }}?' + (isTakenOver ? 'taken_over=1' : 'timeout=1');
                         });
                     }
                  }"
