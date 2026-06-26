@@ -22,7 +22,7 @@
 
         <div class="space-y-8">
             {{-- Top Row: Identity & Progress --}}
-            <div class="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
+            <div class="grid grid-cols-1 xl:grid-cols-12 gap-8 items-stretch">
                 {{-- Intern Header Section --}}
                 <div class="xl:col-span-7 bg-white dark:bg-gray-900 rounded-[20px] sm:rounded-[30px] border border-gray-100 dark:border-gray-800 shadow-sm p-4 sm:p-8 lg:p-10 flex flex-col sm:flex-row items-center gap-4 sm:gap-8 transition-all">
                     <x-avatar :user="$intern" size="32" circular="false" border="4" textSize="4xl" />
@@ -59,13 +59,14 @@
                     </div>
                 </div>
 
-                {{-- Schedule Quick View --}}
-                <div class="xl:col-span-5 flex flex-col gap-4" x-data="{
+                {{-- Schedule & Timeline Quick View --}}
+                <div class="xl:col-span-5 flex flex-col h-full" x-data="{
                     requiredHours: {{ $intern->required_hours ?? 480 }},
                     scheduleDays: @js($intern->schedule_assignment ?? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']),
                     startDate: '{{ $schoolSchedule && $schoolSchedule->start_date ? $schoolSchedule->start_date->format('Y-m-d') : '' }}',
                     dailyHours: {{ $schoolSchedule ? $schoolSchedule->daily_hours ?? 8 : 8 }},
                     holidays: @js($holidaysAndSuspensions ?? []),
+                    configModalOpen: false,
                     
                     get targetEndDate() {
                         if (!this.startDate || !this.requiredHours || this.requiredHours <= 0 || !this.scheduleDays.length) {
@@ -105,97 +106,125 @@
                         return currentDate.toLocaleDateString('en-US', options).toUpperCase();
                     }
                 }">
-                    <div class="bg-white dark:bg-gray-900 rounded-[20px] sm:rounded-[30px] border border-gray-100 dark:border-gray-800 shadow-sm p-4 sm:p-8 transition-all">
-                        <p class="text-[10px] sm:text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Current Deployment Schedule</p>
-                        <div class="flex items-center gap-4 min-w-0">
-                            <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center text-[#0B5694] dark:text-blue-400 flex-shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                            </div>
-                            <div class="min-w-0 flex-1">
-                                <p class="text-sm sm:text-base font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight truncate" title="{{ $effectiveSchedule['description'] }}">{{ $effectiveSchedule['description'] }}</p>
-                                <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest truncate" title="{{ $effectiveSchedule['type'] === 'school_default' ? $intern->school : 'Institutional Default' }}">{{ $effectiveSchedule['type'] === 'school_default' ? $intern->school : 'Institutional Default' }}</p>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-gray-100 dark:border-gray-800">
-                            <div>
-                                <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block mb-1">Shift Windows</span>
-                                <p class="text-xs sm:text-sm font-black text-gray-700 dark:text-gray-300">
-                                    @if(isset($effectiveSchedule['start_time']))
-                                        {{ \Carbon\Carbon::parse($effectiveSchedule['start_time'])->format('h:i A') }} - {{ \Carbon\Carbon::parse($effectiveSchedule['end_time'])->format('h:i A') }}
-                                    @else
-                                        Blocked
-                                    @endif
-                                </p>
-                            </div>
-                            <div>
-                                <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block mb-1">Daily Credit</span>
-                                <p class="text-sm sm:text-lg font-black text-gray-800 dark:text-white tracking-widest uppercase">
-                                    {{ isset($effectiveSchedule['daily_hours']) ? (float)$effectiveSchedule['daily_hours'] . ' HRS' : '0 HRS' }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Reporting Schedule Configuration --}}
-                    <div class="bg-white dark:bg-gray-900 rounded-[20px] sm:rounded-[30px] border border-gray-100 dark:border-gray-800 shadow-sm p-4 sm:p-8 transition-all">
-                        <p class="text-[10px] sm:text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Configure Weekly Schedule</p>
-                        
-                        <form action="{{ route('head-supervisor.interns.update-schedule', $intern->user) }}" method="POST">
-                            @csrf
-                            @method('PUT')
+                    <div class="bg-white dark:bg-gray-900 rounded-[20px] sm:rounded-[30px] border border-gray-100 dark:border-gray-800 shadow-sm p-4 sm:p-8 flex flex-col justify-between h-full transition-all">
+                        <div>
+                            <p class="text-[10px] sm:text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Current Deployment & Timeline</p>
                             
-                            <div class="space-y-4">
-                                <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Active Reporting Days</span>
-                                
-                                <div class="grid grid-cols-3 sm:grid-cols-5 gap-2">
-                                    @php
-                                        $assignedDays = $intern->schedule_assignment ?? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-                                    @endphp
-                                    @foreach(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] as $day)
-                                        <label class="flex items-center gap-2 p-2.5 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-700 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition">
-                                            <input type="checkbox" name="schedule_assignment[]" value="{{ $day }}" 
-                                                x-model="scheduleDays"
-                                                class="rounded text-[#0B5694] focus:ring-[#0B5694]/20 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700">
-                                            <span class="text-[10px] font-bold text-gray-700 dark:text-gray-200">{{ substr($day, 0, 3) }}</span>
-                                        </label>
-                                    @endforeach
+                            <div class="flex items-center gap-4 min-w-0">
+                                <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center text-[#0B5694] dark:text-blue-400 flex-shrink-0">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                                 </div>
-                                
-                                <div class="space-y-1.5">
-                                    <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Required Internship Hours</span>
-                                    <input type="number" name="required_hours" x-model.number="requiredHours" min="1" required
-                                        class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 rounded-xl text-xs font-bold text-gray-800 dark:text-gray-100 focus:ring-[#0B5694]/20 focus:border-[#0B5694] transition">
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-sm sm:text-base font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight truncate" title="{{ $effectiveSchedule['description'] }}">{{ $effectiveSchedule['description'] }}</p>
+                                    <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest truncate" title="{{ $effectiveSchedule['type'] === 'school_default' ? $intern->school : 'Institutional Default' }}">{{ $effectiveSchedule['type'] === 'school_default' ? $intern->school : 'Institutional Default' }}</p>
                                 </div>
-                                
-                                <button type="submit" class="w-full bg-[#0B5694] hover:bg-[#084577] text-white py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition active:scale-95 shadow-lg shadow-blue-500/10 cursor-pointer">
-                                    Save Weekly Schedule & Hours
-                                </button>
                             </div>
-                        </form>
+                            
+                            <div class="grid grid-cols-2 gap-x-6 gap-y-4 mt-6 pt-6 border-t border-gray-100 dark:border-gray-800">
+                                <div>
+                                    <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block mb-1">Shift Windows</span>
+                                    <p class="text-xs sm:text-sm font-black text-gray-700 dark:text-gray-300">
+                                        @if(isset($effectiveSchedule['start_time']))
+                                            {{ \Carbon\Carbon::parse($effectiveSchedule['start_time'])->format('h:i A') }} - {{ \Carbon\Carbon::parse($effectiveSchedule['end_time'])->format('h:i A') }}
+                                        @else
+                                            Blocked
+                                        @endif
+                                    </p>
+                                </div>
+                                <div>
+                                    <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block mb-1">Daily Credit</span>
+                                    <p class="text-xs sm:text-sm font-black text-gray-800 dark:text-white uppercase">
+                                        {{ isset($effectiveSchedule['daily_hours']) ? (float)$effectiveSchedule['daily_hours'] . ' HRS' : '0 HRS' }}
+                                    </p>
+                                </div>
+
+                                @if($schoolSchedule && $schoolSchedule->start_date)
+                                <div>
+                                    <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block mb-1">Official Start</span>
+                                    <p class="text-xs font-black text-gray-800 dark:text-gray-100 uppercase">{{ $schoolSchedule->start_date->format('M d, Y') }}</p>
+                                </div>
+                                @if($schoolSchedule->target_end_date)
+                                <div>
+                                    <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block mb-1">Target End</span>
+                                    <p class="text-xs font-black text-[#0B5694] dark:text-blue-400 uppercase" x-text="targetEndDate">{{ $schoolSchedule->target_end_date->format('M d, Y') }}</p>
+                                </div>
+                                @endif
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="mt-6 pt-4 border-t border-gray-100 dark:border-gray-800">
+                            <button @click="configModalOpen = true" type="button" class="w-full bg-[#0B5694] hover:bg-[#084577] text-white py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition active:scale-95 shadow-md hover:shadow-lg cursor-pointer flex items-center justify-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                                Configure Weekly Schedule
+                            </button>
+                        </div>
                     </div>
 
-                    @if($schoolSchedule && $schoolSchedule->start_date)
-                    <div class="bg-blue-50/50 dark:bg-blue-900/10 rounded-[20px] sm:rounded-[30px] border border-blue-100/50 dark:border-blue-800/50 p-4 sm:p-6 shadow-sm">
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="w-8 h-8 bg-blue-100 dark:bg-blue-800/30 rounded-xl flex items-center justify-center text-[#0B5694] dark:text-blue-400">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    {{-- Schedule Configuration Modal --}}
+                    <div x-show="configModalOpen" 
+                         class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm" 
+                         x-cloak
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0"
+                         x-transition:enter-end="opacity-100"
+                         x-transition:leave="transition ease-in duration-200"
+                         x-transition:leave-start="opacity-100"
+                         x-transition:leave-end="opacity-0">
+                        
+                        <div @click.away="configModalOpen = false" 
+                             class="bg-white dark:bg-gray-900 w-full max-w-lg rounded-[30px] sm:rounded-[40px] shadow-2xl overflow-hidden border border-gray-100 dark:border-gray-800">
+                            
+                            <div class="p-6 sm:p-8">
+                                <div class="flex justify-between items-start mb-6">
+                                    <div>
+                                        <p class="text-[10px] font-black text-[#0B5694] dark:text-blue-400 uppercase tracking-[0.2em] mb-1">Configuration</p>
+                                        <h3 class="text-xl sm:text-2xl font-black text-gray-900 dark:text-white tracking-tight">Weekly Schedule & Hours</h3>
+                                    </div>
+                                    <button @click="configModalOpen = false" type="button" class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                    </button>
+                                </div>
+                
+                                <form action="{{ route('head-supervisor.interns.update-schedule', $intern->user) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    
+                                    <div class="space-y-6">
+                                        <div class="space-y-2">
+                                            <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Active Reporting Days</span>
+                                            
+                                            <div class="grid grid-cols-4 gap-2">
+                                                @foreach(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as $day)
+                                                    <label class="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-700 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                                                        <input type="checkbox" name="schedule_assignment[]" value="{{ $day }}" 
+                                                            x-model="scheduleDays"
+                                                            class="rounded text-[#0B5694] focus:ring-[#0B5694]/20 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700">
+                                                        <span class="text-[10px] font-bold text-gray-700 dark:text-gray-200">{{ substr($day, 0, 3) }}</span>
+                                                    </label>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="space-y-2">
+                                            <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Required Internship Hours</span>
+                                            <input type="number" name="required_hours" x-model.number="requiredHours" min="1" required
+                                                class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 rounded-xl text-xs font-bold text-gray-800 dark:text-gray-100 focus:ring-[#0B5694]/20 focus:border-[#0B5694] transition">
+                                        </div>
+                                        
+                                        <div class="pt-4 flex flex-col sm:flex-row gap-3">
+                                            <button @click="configModalOpen = false" type="button" class="w-full sm:w-auto px-6 py-3.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-750 transition active:scale-95 text-center">
+                                                Cancel
+                                            </button>
+                                            <button type="submit" class="flex-1 bg-[#0B5694] hover:bg-[#084577] text-white py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition active:scale-95 shadow-md shadow-blue-500/10 cursor-pointer text-center">
+                                                Save Changes
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
-                            <p class="text-[10px] font-black text-[#0B5694] dark:text-blue-400 uppercase tracking-[0.2em]">Program Timeline</p>
-                        </div>
-                        <div class="grid grid-cols-2 gap-6">
-                            <div>
-                                <p class="text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">Official Start</p>
-                                <p class="text-xs font-black text-gray-800 dark:text-gray-100 uppercase">{{ $schoolSchedule->start_date->format('M d, Y') }}</p>
-                            </div>
-                            @if($schoolSchedule->target_end_date)
-                            <div>
-                                <p class="text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">Target End</p>
-                                <p class="text-xs font-black text-gray-800 dark:text-gray-100 uppercase" x-text="targetEndDate">{{ $schoolSchedule->target_end_date->format('M d, Y') }}</p>
-                            </div>
-                            @endif
                         </div>
                     </div>
-                    @endif
                 </div>
             </div>
 
