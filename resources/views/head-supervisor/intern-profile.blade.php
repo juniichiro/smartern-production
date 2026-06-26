@@ -194,8 +194,8 @@
                                         <div class="space-y-2">
                                             <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Active Reporting Days</span>
                                             
-                                            <div class="grid grid-cols-4 gap-2">
-                                                @foreach(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as $day)
+                                            <div class="grid grid-cols-5 gap-2">
+                                                @foreach(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] as $day)
                                                     <label class="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-700 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition">
                                                         <input type="checkbox" name="schedule_assignment[]" value="{{ $day }}" 
                                                             x-model="scheduleDays"
