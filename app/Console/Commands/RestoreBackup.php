@@ -150,7 +150,7 @@ class RestoreBackup extends Command
 
                     // Construct mysql import command
                     $command = sprintf(
-                        '%s --user=%s --password=%s --host=%s --port=%s %s < %s',
+                        '%s --user=%s --password=%s --host=%s --port=%s %s < %s 2>&1',
                         escapeshellarg($mysqlBin),
                         escapeshellarg($config['username']),
                         escapeshellarg($config['password']),
@@ -165,7 +165,8 @@ class RestoreBackup extends Command
                     if ($returnVar === 0) {
                         $this->info('MySQL database imported successfully.');
                     } else {
-                        $msg = "Failed to import MySQL database. Ensure the 'mysql' client is installed and accessible.";
+                        $outputStr = implode("\n", $output);
+                        $msg = "Failed to import MySQL database. Ensure the 'mysql' client is installed and accessible. Error details: " . $outputStr;
                         $this->error($msg);
                         Log::error($msg.' Command exit code: '.$returnVar);
                         $zip->close();

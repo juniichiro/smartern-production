@@ -94,7 +94,7 @@ class RunBackup extends Command
 
                 // Construct mysqldump command
                 $command = sprintf(
-                    '%s --user=%s --password=%s --host=%s --port=%s %s > %s',
+                    '%s --user=%s --password=%s --host=%s --port=%s %s > %s 2>&1',
                     escapeshellarg($mysqldumpBin),
                     escapeshellarg($config['username']),
                     escapeshellarg($config['password']),
@@ -110,7 +110,8 @@ class RunBackup extends Command
                     $zip->addFile($tempSqlPath, 'database/database.sql');
                     $this->info('MySQL database exported successfully.');
                 } else {
-                    $msg = "MySQL export failed. Ensure 'mysqldump' is installed and accessible.";
+                    $outputStr = implode("\n", $output);
+                    $msg = "MySQL export failed. Ensure 'mysqldump' is installed and accessible. Error details: " . $outputStr;
                     $this->error($msg);
                     Log::error($msg.' Command exit code: '.$returnVar);
                     $zip->close();
