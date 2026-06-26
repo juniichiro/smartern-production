@@ -17,9 +17,9 @@ class DatabaseSeeder extends Seeder
         // Core seeders required for the system to function
         $this->call([
             RoleSeeder::class,           // RBAC
-            OfficeSeeder::class,         // Departments
+            // OfficeSeeder::class,         // Departments
             AssessmentItemSeeder::class, // The dynamic competency list (New)
-            OfficeRuleSeeder::class,     // Default matching requirements (Updated)
+            // OfficeRuleSeeder::class,     // Default matching requirements (Updated)
             UserSeeder::class,           // Auth accounts
             SupervisorDetailSeeder::class, // Profile info for supervisors
             InternDetailSeeder::class,    // Profile info for interns
