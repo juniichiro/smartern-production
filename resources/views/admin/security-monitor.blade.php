@@ -207,15 +207,32 @@
                             <td class="px-6 lg:px-8 py-6">
                                 <div class="flex items-center gap-3">
                                     <x-avatar :user="$log->internDetails ?? $log->supervisorDetails ?? $log->user" size="8" border="1" circular="true" textSize="xs" />
-                                    <span class="text-xs lg:text-sm font-bold text-gray-500 dark:text-gray-400">
-                                        @if($log->internDetails)
-                                            {{ $log->internDetails->first_name }} {{ $log->internDetails->last_name }}
-                                        @elseif($log->supervisorDetails)
-                                            {{ $log->supervisorDetails->first_name }} {{ $log->supervisorDetails->last_name }}
-                                        @else
-                                            {{ ($log->user && $log->user->role_id === \App\Enums\UserRole::ADMIN) ? 'SmarTern Admin' : ($log->user->email ?? 'System') }}
+                                    <div>
+                                        <span class="text-xs lg:text-sm font-bold text-gray-500 dark:text-gray-400 block">
+                                            @if($log->internDetails)
+                                                {{ $log->internDetails->first_name }} {{ $log->internDetails->last_name }}
+                                            @elseif($log->supervisorDetails)
+                                                {{ $log->supervisorDetails->first_name }} {{ $log->supervisorDetails->last_name }}
+                                            @else
+                                                {{ ($log->user && $log->user->role_id === \App\Enums\UserRole::ADMIN) ? 'SmarTern Admin' : ($log->user->email ?? 'System') }}
+                                            @endif
+                                        </span>
+                                        @if($log->user && $log->user->locked_until && now()->lessThan($log->user->locked_until))
+                                            <div class="mt-1 flex items-center gap-1">
+                                                <span class="inline-flex items-center gap-1 bg-rose-50 dark:bg-rose-500/10 text-rose-500 dark:text-rose-400 border border-rose-100 dark:border-rose-900/30 rounded-full px-2 py-0.5 text-[8px] font-black uppercase tracking-wider">
+                                                    <span class="relative flex h-1 w-1">
+                                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                                                        <span class="relative inline-flex rounded-full h-1 w-1 bg-rose-500"></span>
+                                                    </span>
+                                                    @if(\Carbon\Carbon::parse($log->user->locked_until)->year > 9000)
+                                                        Suspended
+                                                    @else
+                                                        Locked (Temp)
+                                                    @endif
+                                                </span>
+                                            </div>
                                         @endif
-                                    </span>
+                                    </div>
                                 </div>
                             </td>
                             <td class="px-6 lg:px-8 py-6">
@@ -255,20 +272,9 @@
                                     }
                                 @endphp
                                 @if($canEvaluate)
-                                    <div class="flex flex-col items-end gap-1">
-                                        @if($log->user->locked_until && now()->lessThan($log->user->locked_until))
-                                            <span class="inline-block text-[9px] font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/20 px-2 py-0.5 rounded-md border border-rose-100 dark:border-rose-800/50 mb-1">
-                                                @if(\Carbon\Carbon::parse($log->user->locked_until)->year > 9000)
-                                                    Suspended
-                                                @else
-                                                    Locked (Temp)
-                                                @endif
-                                            </span>
-                                        @endif
-                                        <button @click="openEvaluation(@js($log->user), @js($log), '{{ addslashes($displayName) }}')" type="button" class="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-indigo-100 dark:hover:bg-indigo-900/40 border border-indigo-100 dark:border-indigo-800 transition cursor-pointer">
-                                            Evaluate
-                                        </button>
-                                    </div>
+                                    <button @click="openEvaluation(@js($log->user), @js($log), '{{ addslashes($displayName) }}')" type="button" class="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-indigo-100 dark:hover:bg-indigo-900/40 border border-indigo-100 dark:border-indigo-800 transition cursor-pointer">
+                                        Evaluate
+                                    </button>
                                 @endif
                             </td>
                         </tr>
@@ -338,9 +344,13 @@
                             @endphp
                         <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800/50 space-y-2">
                             @if($log->user->locked_until && now()->lessThan($log->user->locked_until))
-                                <div class="text-center mb-2">
-                                    <span class="inline-block text-[9px] font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/20 px-2 py-0.5 rounded-md border border-rose-100 dark:border-rose-800/50">
-                                        Status: @if(\Carbon\Carbon::parse($log->user->locked_until)->year > 9000) Suspended @else Locked (Temp) @endif
+                                <div class="text-center mb-3">
+                                    <span class="inline-flex items-center gap-1.5 bg-rose-50 dark:bg-rose-500/10 text-rose-500 dark:text-rose-400 border border-rose-100 dark:border-rose-900/30 rounded-full px-3 py-1 text-[9px] font-black uppercase tracking-wider">
+                                        <span class="relative flex h-1.5 w-1.5">
+                                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                                            <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-rose-500"></span>
+                                        </span>
+                                        Account Status: @if(\Carbon\Carbon::parse($log->user->locked_until)->year > 9000) Suspended @else Locked (Temp) @endif
                                     </span>
                                 </div>
                             @endif
