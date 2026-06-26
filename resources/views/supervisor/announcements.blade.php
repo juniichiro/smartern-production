@@ -89,11 +89,11 @@
 
                             <div class="flex items-center justify-end gap-2">
                                 {{-- View Button --}}
-                                <button @click="openViewModal({{ json_encode($ann) }})" 
-                                        title="View announcement details"
-                                        class="p-2 bg-gray-50 dark:bg-gray-800/20 text-gray-400 dark:text-slate-400 hover:text-[#0B5694] dark:hover:text-blue-400 rounded-xl transition-all border border-gray-150 dark:border-gray-800 shadow-sm active:scale-95">
+                                <a href="{{ route('supervisor.announcements.show', $ann->getRouteKey()) }}" 
+                                   title="View announcement details"
+                                   class="p-2 bg-gray-50 dark:bg-gray-800/20 text-gray-400 dark:text-slate-400 hover:text-[#0B5694] dark:hover:text-blue-400 rounded-xl transition-all border border-gray-150 dark:border-gray-800 shadow-sm active:scale-95 inline-flex items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                                </button>
+                                </a>
 
                                 {{-- Edit Button --}}
                                 <button @click="openEditModal({{ json_encode($ann) }}, '{{ $ann->getRouteKey() }}')" 
@@ -343,113 +343,6 @@
             </div>
         </div>
 
-        {{-- VIEW ANNOUNCEMENT MODAL --}}
-        <div x-show="showViewModal" 
-             x-transition:enter="transition ease-out duration-300"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             x-transition:leave="transition ease-in duration-200"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0"
-             class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-950/80 backdrop-blur-md"
-             x-cloak>
-            
-            <div @click.away="showViewModal = false" 
-                 class="bg-white dark:bg-[#090D16] w-full max-w-4xl mx-2 sm:mx-4 rounded-[40px] shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]">
-
-                <header class="p-5 sm:p-8 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-[#0D121F] shrink-0">
-                    <div>
-                        <h3 class="text-xl font-black text-gray-800 dark:text-white uppercase tracking-widest">View Announcement</h3>
-                    </div>
-                    <button @click="showViewModal = false" class="p-3 bg-gray-200 dark:bg-gray-800/50 hover:bg-gray-300 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white rounded-2xl transition-all">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" x2="6" y1="20" y2="18"/></svg>
-                    </button>
-                </header>
-
-                <div class="flex-1 overflow-y-auto custom-scrollbar p-5 sm:p-8">
-                    <template x-if="viewAnnouncement">
-                        <div class="space-y-6">
-                            {{-- Category & Date --}}
-                            <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-                                <span class="w-fit px-4 py-1.5 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] border border-emerald-100 dark:border-emerald-800/50">
-                                    Official Office Announcement
-                                </span>
-                                <span class="text-[11px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider" 
-                                      x-text="'Posted on ' + new Date(viewAnnouncement.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })">
-                                </span>
-                            </div>
-
-                            {{-- Title --}}
-                            <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-gray-800 dark:text-gray-100 tracking-normal leading-tight uppercase" 
-                                x-text="viewAnnouncement.title">
-                            </h1>
-
-                            {{-- Text Content --}}
-                            <div class="prose prose-blue dark:prose-invert max-w-none text-gray-600 dark:text-gray-300 font-medium leading-relaxed" 
-                                 x-html="viewAnnouncement.content || '<p class=\'italic text-gray-400\'>This announcement has no additional text content.</p>'">
-                            </div>
-
-                            {{-- Attachment --}}
-                            <template x-if="viewAnnouncement.attachment">
-                                <div class="mt-6">
-                                    <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">Attachment</p>
-                                    
-                                    {{-- Determine if attachment is image --}}
-                                    <template x-if="viewAnnouncement.attachment.match(/\.(jpg|jpeg|png|gif|webp)$/i)">
-                                        <div class="rounded-3xl overflow-hidden border border-gray-100 dark:border-gray-800 shadow-sm bg-gray-50 dark:bg-gray-800/50">
-                                            <img :src="'/' + viewAnnouncement.attachment" 
-                                                 class="w-full h-auto object-cover max-h-[500px]" 
-                                                 alt="Announcement Image">
-                                        </div>
-                                    </template>
-
-                                    <template x-if="!viewAnnouncement.attachment.match(/\.(jpg|jpeg|png|gif|webp)$/i)">
-                                        <div class="flex flex-col sm:flex-row items-center justify-between bg-gray-50 dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 gap-4">
-                                            <div class="flex items-center gap-4 overflow-hidden w-full">
-                                                <div class="w-12 h-12 bg-white dark:bg-gray-800 rounded-xl flex-shrink-0 flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-800">
-                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0B5694" stroke-width="2.5"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
-                                                </div>
-                                                <div class="truncate">
-                                                    <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-0.5">Attached Resource</p>
-                                                    <p class="text-sm font-bold text-gray-700 dark:text-gray-200 truncate pr-4" 
-                                                       x-text="viewAnnouncement.attachment.split('/').pop()">
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <a :href="'/' + viewAnnouncement.attachment" 
-                                               target="_blank"
-                                               class="w-full sm:w-auto flex-shrink-0 px-6 py-3 bg-[#0B5694] text-white text-[10px] font-bold uppercase tracking-[0.2em] rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 text-center">
-                                                Access Materials
-                                            </a>
-                                        </div>
-                                    </template>
-                                    
-                                    {{-- If PDF preview is nice, we can embed it --}}
-                                    <template x-if="viewAnnouncement.attachment.match(/\.pdf$/i)">
-                                        <div class="mt-6">
-                                            <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">Document Preview</p>
-                                            <div class="rounded-3xl overflow-hidden border border-gray-100 dark:border-gray-800 shadow-sm bg-gray-50 dark:bg-gray-800/50 p-1">
-                                                <iframe :src="'/' + viewAnnouncement.attachment" 
-                                                        class="w-full h-[400px] rounded-2xl" 
-                                                        style="border: none;">
-                                                </iframe>
-                                            </div>
-                                        </div>
-                                    </template>
-                                </div>
-                            </template>
-                        </div>
-                    </template>
-                </div>
-                
-                <footer class="p-5 sm:p-8 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-[#0D121F] shrink-0 flex justify-end">
-                    <button @click="showViewModal = false" 
-                            class="px-8 py-3.5 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-700 transition-all">
-                        Close
-                    </button>
-                </footer>
-            </div>
-        </div>
 
         {{-- DELETE CONFIRMATION MODAL --}}
         <div x-show="showDeleteModal" 

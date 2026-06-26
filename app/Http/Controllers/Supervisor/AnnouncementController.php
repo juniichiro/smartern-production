@@ -40,6 +40,27 @@ class AnnouncementController extends Controller
         return view('supervisor.announcements', compact('announcements'));
     }
 
+    public function show($announcementKey)
+    {
+        try {
+            $id = \Vinkla\Hashids\Facades\Hashids::decode($announcementKey)[0] ?? null;
+            $announcement = Announcement::with([
+                'user.supervisorDetails.office',
+            ])->find($id);
+
+            if (! $announcement) {
+                return redirect()->route('supervisor.announcements')
+                    ->with('error', 'We couldn\'t find that announcement. It may have been withdrawn.');
+            }
+
+            return view('supervisor.announcements-show', compact('announcement'));
+
+        } catch (\Exception $e) {
+            return redirect()->route('supervisor.announcements')
+                ->with('error', 'The announcement link is invalid or has expired.');
+        }
+    }
+
     public function store(StoreAnnouncementRequest $request)
     {
         $filePath = null;

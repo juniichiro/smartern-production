@@ -145,6 +145,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::patch('/tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.update-status');
 
         Route::get('/announcements', [SupervisorAnnouncement::class, 'index'])->name('announcements');
+        Route::get('/announcements/{announcementKey}', [SupervisorAnnouncement::class, 'show'])->name('announcements.show');
         Route::post('/announcements/store', [SupervisorAnnouncement::class, 'store'])->name('announcements.store');
         Route::put('/announcements/{announcement}', [SupervisorAnnouncement::class, 'update'])->name('announcements.update');
         Route::delete('/announcements/{announcement}', [SupervisorAnnouncement::class, 'destroy'])->name('announcements.destroy');
