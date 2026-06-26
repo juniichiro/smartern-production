@@ -178,12 +178,6 @@ class AnomalyDetectionService
                                 } catch (\Exception $e) {
                                     // Suppress socket broadcasting errors
                                 }
-
-                                try {
-                                    Mail::to($recipient->email)->send(new SecurityAlertMail($log, $recipient));
-                                } catch (\Exception $e) {
-                                    Log::error("Failed to send security warning email to {$recipient->email}: ".$e->getMessage());
-                                }
                             }
                         }
                     }

@@ -8,7 +8,9 @@ use App\Http\Requests\HeadSupervisor\FinalizeMatchBatchRequest;
 use App\Http\Requests\HeadSupervisor\StoreEvaluationRequest;
 use App\Http\Requests\HeadSupervisor\UploadAssessmentRequest;
 use App\Http\Requests\HeadSupervisor\UndoFinalizeRequest;
+use App\Mail\OfficeAssignmentFinalizedMail;
 use App\Models\ApplicantEvaluation;
+use Illuminate\Support\Facades\Mail;
 use App\Models\AssessmentItem;
 use App\Models\MatchResult;
 use App\Models\Office;
@@ -334,6 +336,16 @@ class OfficeMatchingController extends Controller
                     'status' => 'manual_override',
                     'is_confirmed' => true,
                 ]);
+            }
+
+            // Trigger email to the applicant once finalized
+            $applicant = OnboardingApplicant::where('full_name', $name)->first();
+            if ($applicant) {
+                try {
+                    Mail::to($applicant->email)->send(new OfficeAssignmentFinalizedMail($applicant, $office));
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error("Failed to send office assignment finalized email to {$applicant->email}: " . $e->getMessage());
+                }
             }
         }
 
