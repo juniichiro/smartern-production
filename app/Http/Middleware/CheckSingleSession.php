@@ -24,6 +24,13 @@ class CheckSingleSession
         if (Auth::check()) {
             $user = Auth::user();
 
+            // If the user has MFA enabled but has not verified it in this session yet,
+            // bypass single session checks to avoid invalidating the active session
+            // until the new session is fully verified and authorized.
+            if ($user->google2fa_enabled && !session('mfa_verified')) {
+                return $next($request);
+            }
+
             // If the session has not been marked as verified in this session lifecycle yet,
             // register its finalized session ID into the active cache and bind it to browser fingerprints.
             if (!session()->has('session_verified')) {
