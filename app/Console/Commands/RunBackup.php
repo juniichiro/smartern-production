@@ -94,7 +94,7 @@ class RunBackup extends Command
 
                 // Construct mysqldump command
                 $command = sprintf(
-                    '%s --user=%s --password=%s --host=%s --port=%s %s > %s 2>&1',
+                    '%s --user=%s --password=%s --host=%s --port=%s --set-gtid-purged=OFF --no-tablespaces %s > %s 2>&1',
                     escapeshellarg($mysqldumpBin),
                     escapeshellarg($config['username']),
                     escapeshellarg($config['password']),

@@ -142,6 +142,20 @@ class RestoreBackup extends Command
                 $extractedSql = $tempPath.'/database/database.sql';
 
                 if (file_exists($extractedSql)) {
+                    // Clean SQL file of RDS incompatible commands
+                    $sqlContent = file_get_contents($extractedSql);
+                    
+                    // Comment out lines requiring SUPER privileges
+                    $sqlContent = preg_replace('/SET @@SESSION\.SQL_LOG_BIN\s*=\s*0\s*;/i', '-- SET @@SESSION.SQL_LOG_BIN = 0;', $sqlContent);
+                    $sqlContent = preg_replace('/SET @@SESSION\.SQL_LOG_BIN\s*=\s*@MYSQLDUMP_TEMP_LOG_BIN\s*;/i', '-- SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;', $sqlContent);
+                    $sqlContent = preg_replace('/SET @@GLOBAL\.GTID_PURGED\s*=\s*[^;]+;/i', '-- SET @@GLOBAL.GTID_PURGED = ...;', $sqlContent);
+                    
+                    // Strip DEFINER statements so they are created under the current connection user
+                    $sqlContent = preg_replace('/\sDEFINER\s*=\s*`[^`]+`@`[^`]+`/i', '', $sqlContent);
+                    $sqlContent = preg_replace('/\sDEFINER\s*=\s*[^\s]+/i', '', $sqlContent);
+                    
+                    file_put_contents($extractedSql, $sqlContent);
+
                     // Determine binary path
                     $mysqlBin = 'mysql';
                     if (file_exists('/usr/bin/mysql') && is_executable('/usr/bin/mysql')) {
