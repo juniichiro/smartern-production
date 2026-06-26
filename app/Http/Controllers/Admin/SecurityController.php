@@ -97,27 +97,6 @@ class SecurityController extends Controller
             ->limit(30)
             ->get();
 
-        // 2. Fetch File logs (Super Admin evaluations)
-        $evalLogsFile = [];
-        $logPath = storage_path('logs/secure_audit.log');
-        if (\Illuminate\Support\Facades\File::exists($logPath)) {
-            try {
-                $lines = \Illuminate\Support\Facades\File::lines($logPath);
-                foreach ($lines as $line) {
-                    $line = trim($line);
-                    if (empty($line)) continue;
-                    $decoded = json_decode($line, true);
-                    if (json_last_error() === JSON_ERROR_NONE) {
-                        if (isset($decoded['action']) && str_starts_with($decoded['action'], 'Evaluated Anomaly:')) {
-                            $evalLogsFile[] = $decoded;
-                        }
-                    }
-                }
-            } catch (\Exception $e) {
-                // Fail silently
-            }
-        }
-
         // 3. Unify, extract targets and sort
         $unifiedLogs = [];
         $targetUserIds = [];
@@ -152,28 +131,6 @@ class SecurityController extends Controller
                 'ip_address' => $log->ip_address,
                 'device' => str_replace('|', ' • ', $log->device ?? 'System'),
                 'user_agent' => $log->user_agent,
-            ];
-        }
-
-        foreach ($evalLogsFile as $log) {
-            $parsed = $parseResource($log['resource'] ?? '');
-            $targetUid = $parsed ? $parsed['user_id'] : null;
-            $targetLid = $parsed ? $parsed['log_id'] : null;
-            
-            if ($targetUid) $targetUserIds[] = $targetUid;
-            if ($targetLid) $targetLogIds[] = $targetLid;
-
-            $unifiedLogs[] = (object) [
-                'timestamp' => \Carbon\Carbon::parse($log['timestamp']),
-                'evaluator_id' => $log['user_id'],
-                'evaluator_email' => $log['email'] ?? 'Super Admin',
-                'evaluator_role' => 'Super Admin',
-                'action' => $log['action'],
-                'target_user_id' => $targetUid,
-                'target_log_id' => $targetLid,
-                'ip_address' => $log['ip_address'] ?? null,
-                'device' => str_replace('|', ' • ', AuditLog::parseDeviceFromUserAgent($log['user_agent'] ?? '')),
-                'user_agent' => $log['user_agent'] ?? null,
             ];
         }
 
