@@ -185,7 +185,7 @@
                         
                         <div class="flex flex-col items-center justify-center p-6 bg-gray-50 dark:bg-gray-800/40 rounded-2xl border border-gray-100 dark:border-gray-800">
                             @if($template->logo_path)
-                                <img src="{{ asset('storage/' . $template->logo_path) }}" alt="Logo" class="h-24 w-auto mb-4 object-contain">
+                                <img src="{{ Storage::disk('public')->url($template->logo_path) }}" alt="Logo" class="h-24 w-auto mb-4 object-contain">
                             @else
                                 <img src="{{ asset('images/Deped Logo.png') }}" alt="Default Logo" class="h-24 w-auto mb-4 object-contain">
                             @endif
@@ -207,7 +207,7 @@
                         
                         <div class="flex flex-col items-center justify-center p-6 bg-gray-50 dark:bg-gray-800/40 rounded-2xl border border-gray-100 dark:border-gray-800">
                             @if($template->footer_path)
-                                <img src="{{ asset('storage/' . $template->footer_path) }}" alt="Footer Banner" class="h-16 w-full object-contain mb-4">
+                                <img src="{{ Storage::disk('public')->url($template->footer_path) }}" alt="Footer Banner" class="h-16 w-full object-contain mb-4">
                             @else
                                 <img src="{{ asset('images/certificate-footer.png') }}" alt="Default Footer" class="h-16 w-full object-contain mb-4">
                             @endif

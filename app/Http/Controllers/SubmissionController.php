@@ -54,8 +54,7 @@ class SubmissionController extends Controller
         $cleanStoragePath = str_replace('storage/', '', $filePath);
 
         if (Storage::disk('public')->exists($cleanStoragePath)) {
-            $path = Storage::disk('public')->path($cleanStoragePath);
-            return response()->file($path);
+            return Storage::disk('public')->response($cleanStoragePath);
         }
 
         // Fallback: Check public_path for older files (direct public directory uploads)

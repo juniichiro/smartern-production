@@ -151,8 +151,8 @@ class OnboardingController extends Controller
     public function parseResume(ParseResumeRequest $request)
     {
         $file = $request->file('resume_pdf');
-        $path = $file->store('temp_resumes', 'public');
-        $fullPath = Storage::disk('public')->path($path);
+        $path = $file->store('temp_resumes', 'local');
+        $fullPath = Storage::disk('local')->path($path);
 
         $pythonPath = env('PYTHON_PATH') ?: ((strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') ? 'python' : 'python3');
         $process = new Process([$pythonPath, base_path('scripts/pdf_parser.py'), $fullPath]);
@@ -250,7 +250,7 @@ class OnboardingController extends Controller
         }
 
         // Cleanup
-        Storage::disk('public')->delete($path);
+        Storage::disk('local')->delete($path);
 
         return response()->json([
             'first_name' => mb_convert_case($firstName, MB_CASE_TITLE, 'UTF-8'),

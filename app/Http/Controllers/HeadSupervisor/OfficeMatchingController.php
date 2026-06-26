@@ -482,9 +482,7 @@ class OfficeMatchingController extends Controller
             abort(404, 'Resume file not found.');
         }
 
-        $fullPath = Storage::disk('public')->path($applicant->resume_path);
-
-        return response()->file($fullPath, [
+        return Storage::disk('public')->response($applicant->resume_path, $applicant->full_name.'_Resume.pdf', [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'inline; filename="'.$applicant->full_name.'_Resume.pdf"',
         ]);
@@ -495,15 +493,29 @@ class OfficeMatchingController extends Controller
         if (! $path) {
             return '';
         }
-        $fullPath = Storage::disk('public')->path($path);
-        if (! file_exists($fullPath)) {
+        
+        $disk = Storage::disk('public');
+        if (! $disk->exists($path)) {
             return '';
+        }
+
+        $tempFile = null;
+        if (config('filesystems.disks.public.driver') === 's3') {
+            $tempFile = tempnam(sys_get_temp_dir(), 'resume_');
+            file_put_contents($tempFile, $disk->get($path));
+            $fullPath = $tempFile;
+        } else {
+            $fullPath = $disk->path($path);
         }
 
         try {
             $pythonPath = env('PYTHON_PATH') ?: ((strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') ? 'python' : 'python3');
             $process = new Process([$pythonPath, base_path('scripts/pdf_parser.py'), $fullPath]);
             $process->run();
+
+            if ($tempFile && file_exists($tempFile)) {
+                unlink($tempFile);
+            }
 
             if (! $process->isSuccessful()) {
                 return '';
@@ -513,6 +525,9 @@ class OfficeMatchingController extends Controller
 
             return $output['text'] ?? '';
         } catch (\Exception $e) {
+            if ($tempFile && file_exists($tempFile)) {
+                unlink($tempFile);
+            }
             \Log::error("Failed to extract resume text: " . $e->getMessage());
             return '';
         }

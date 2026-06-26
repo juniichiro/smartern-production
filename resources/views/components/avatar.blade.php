@@ -47,8 +47,8 @@
     $profileUrl = null;
     if ($profilePic) {
         // Handle paths that might or might not have 'storage/' prefix
-        if (str_starts_with($profilePic, 'profiles/')) {
-            $profileUrl = asset('storage/' . $profilePic);
+        if (str_starts_with($profilePic, 'profiles/') || str_starts_with($profilePic, 'profile-pictures/')) {
+            $profileUrl = Storage::disk('public')->url($profilePic);
         } else {
             $profileUrl = asset($profilePic);
         }

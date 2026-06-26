@@ -102,13 +102,13 @@ class ScheduleController extends Controller
             abort(404);
         }
 
-        $path = Storage::disk('public')->path($absence->attachment_path);
+        $disk = Storage::disk('public');
 
         if ($request->has('download')) {
-            return response()->download($path);
+            return $disk->download($absence->attachment_path);
         }
 
-        return response()->file($path);
+        return $disk->response($absence->attachment_path);
     }
 
     public function reviewAbsenceRequest(Request $request, AbsenceRequest $absence)

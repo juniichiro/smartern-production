@@ -106,21 +106,42 @@ class SmartMatchingService
             return '';
         }
 
-        $fullPath = Storage::disk('public')->path($path);
-        if (! file_exists($fullPath)) {
+        $disk = Storage::disk('public');
+        if (! $disk->exists($path)) {
             return '';
         }
 
-        $pythonPath = env('PYTHON_PATH') ?: ((strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') ? 'python' : 'python3');
-        $process = new Process([$pythonPath, base_path('scripts/pdf_parser.py'), $fullPath]);
-        $process->run();
-
-        if (! $process->isSuccessful()) {
-            return '';
+        $tempFile = null;
+        if (config('filesystems.disks.public.driver') === 's3') {
+            $tempFile = tempnam(sys_get_temp_dir(), 'resume_');
+            file_put_contents($tempFile, $disk->get($path));
+            $fullPath = $tempFile;
+        } else {
+            $fullPath = $disk->path($path);
         }
 
-        $output = json_decode($process->getOutput(), true);
+        try {
+            $pythonPath = env('PYTHON_PATH') ?: ((strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') ? 'python' : 'python3');
+            $process = new Process([$pythonPath, base_path('scripts/pdf_parser.py'), $fullPath]);
+            $process->run();
 
-        return $output['text'] ?? '';
+            if ($tempFile && file_exists($tempFile)) {
+                unlink($tempFile);
+            }
+
+            if (! $process->isSuccessful()) {
+                return '';
+            }
+
+            $output = json_decode($process->getOutput(), true);
+
+            return $output['text'] ?? '';
+        } catch (\Exception $e) {
+            if ($tempFile && file_exists($tempFile)) {
+                unlink($tempFile);
+            }
+            \Log::error("Failed to extract resume text in SmartMatchingService: " . $e->getMessage());
+            return '';
+        }
     }
 }
