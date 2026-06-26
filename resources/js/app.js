@@ -1539,10 +1539,12 @@ Alpine.data('analyticsManager', (months, applicantsTrends, completionTrends, com
 /**
  * Intern Attendance Manager
  */
-Alpine.data('attendanceManager', (checkStatusRoute, isClockedIn, isCompleted, initialToken) => ({
+Alpine.data('attendanceManager', (checkStatusRoute, isClockedIn, isCompleted, initialToken, initialLink) => ({
     isClockedIn: isClockedIn,
     isCompleted: isCompleted,
     currentToken: initialToken,
+    verificationLink: initialLink,
+    showLink: false,
     loading: true,
     init() {
         // Simulated loading for "Instagram" feel transitions
@@ -1567,6 +1569,9 @@ Alpine.data('attendanceManager', (checkStatusRoute, isClockedIn, isCompleted, in
                     if (qrContainer) {
                         qrContainer.innerHTML = data.qr_code_html;
                         this.currentToken = data.token;
+                        if (data.verification_link) {
+                            this.verificationLink = data.verification_link;
+                        }
                     }
                 }
             })

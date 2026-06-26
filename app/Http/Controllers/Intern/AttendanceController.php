@@ -167,11 +167,13 @@ class AttendanceController extends Controller
             $baseUrl = url('/');
             $qrPayload = "{$baseUrl}/attendance/verify?token={$token}";
             $data['qr_code_html'] = (string) QrCode::size(350)->generate($qrPayload);
+            $data['verification_link'] = $qrPayload;
         }
 
         return response()->json([
             'geofence' => $data['geofence'],
             'qr_code_html' => $data['qr_code_html'] ?? null,
+            'verification_link' => $data['verification_link'] ?? null,
             'token' => $token,
             'can_scan' => $data['can_scan'],
             'next_available_scan' => $nextAvailableScan,
@@ -376,11 +378,13 @@ class AttendanceController extends Controller
             $baseUrl = config('app.url');
             $qrPayload = "{$baseUrl}/attendance/verify?token={$token}";
             $data['qr_code_html'] = (string) QrCode::size(350)->generate($qrPayload);
+            $data['verification_link'] = $qrPayload;
         }
 
         return response()->json([
             'geofence' => $data['geofence'],
             'qr_code_html' => $data['qr_code_html'] ?? null,
+            'verification_link' => $data['verification_link'] ?? null,
             'can_scan' => $data['can_scan'],
             'next_available_scan' => $nextAvailableScan,
             'is_clocked_in' => (bool) $todayRecord,

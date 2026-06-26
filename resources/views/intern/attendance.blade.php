@@ -8,7 +8,7 @@
     userName="{{ Auth::user()->internDetails->first_name }}" 
     userRole="{{ Auth::user()->internDetails->office->name }}"
 >
-    <div x-data="attendanceManager('{{ route('intern.attendance.check-status') }}', {{ $current_record ? 'true' : 'false' }}, {{ $completed_today ? 'true' : 'false' }}, '{{ $token }}')" class="flex flex-col flex-1">
+    <div x-data="attendanceManager('{{ route('intern.attendance.check-status') }}', {{ $current_record ? 'true' : 'false' }}, {{ $completed_today ? 'true' : 'false' }}, '{{ $token }}', '{{ $qrPayload }}')" class="flex flex-col flex-1">
         
         {{-- Header --}}
         <x-page-header 
@@ -64,8 +64,25 @@
                                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
                                     <span class="relative inline-flex rounded-full h-8 w-8 bg-blue-500 border-4 border-white dark:border-gray-900"></span>
                                 </div>
+                            </div>
+                            <p class="mt-12 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">Ready for Verification</p>
+                            
+                            {{-- Forgot phone / rotating link section --}}
+                            <div class="mt-6 w-full max-w-[380px]">
+                                <button @click="showLink = !showLink" class="text-xs font-semibold text-[#0B5694] dark:text-blue-400 hover:underline">
+                                    Forgot your phone? Use verification link
+                                </button>
+                                
+                                <div x-show="showLink" x-transition class="mt-4 p-5 bg-gray-50/50 dark:bg-gray-800/30 border border-gray-100 dark:border-gray-800 rounded-3xl text-center">
+                                    <p class="text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3">Rotating Verification URL</p>
+                                    <div class="flex flex-col gap-3">
+                                        <a :href="verificationLink" target="_blank" class="w-full py-3 bg-[#0B5694] hover:bg-blue-700 text-white text-xs font-black rounded-2xl tracking-widest transition-colors inline-block uppercase shadow-md shadow-blue-500/10">
+                                            Click to Clock In / Out
+                                        </a>
+                                        <span class="text-[9px] text-gray-400 dark:text-gray-500 break-all select-all font-mono bg-white dark:bg-gray-900 p-2.5 rounded-xl border border-gray-100/50 dark:border-gray-800" x-text="verificationLink"></span>
+                                    </div>
                                 </div>
-                                <p class="mt-12 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">Ready for Verification</p>
+                            </div>
                                 @elseif($completed_today)
                                 <div class="flex flex-col items-center animate-in fade-in zoom-in duration-500">
                                 <div class="w-36 h-36 bg-emerald-50 dark:bg-emerald-900/20 rounded-full flex items-center justify-center text-emerald-500 mb-10 border-4 border-emerald-100 dark:border-emerald-800 shadow-inner">
