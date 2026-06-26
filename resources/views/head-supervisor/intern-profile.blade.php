@@ -60,7 +60,51 @@
                 </div>
 
                 {{-- Schedule Quick View --}}
-                <div class="xl:col-span-5 flex flex-col gap-4">
+                <div class="xl:col-span-5 flex flex-col gap-4" x-data="{
+                    requiredHours: {{ $intern->required_hours ?? 480 }},
+                    scheduleDays: @js($assignedDays),
+                    startDate: '{{ $schoolSchedule && $schoolSchedule->start_date ? $schoolSchedule->start_date->format('Y-m-d') : '' }}',
+                    dailyHours: {{ $schoolSchedule ? $schoolSchedule->daily_hours ?? 8 : 8 }},
+                    holidays: @js($holidaysAndSuspensions ?? []),
+                    
+                    get targetEndDate() {
+                        if (!this.startDate || !this.requiredHours || this.requiredHours <= 0 || !this.scheduleDays.length) {
+                            return 'N/A';
+                        }
+                        
+                        let hoursLeft = this.requiredHours;
+                        let currentDate = new Date(this.startDate);
+                        
+                        let safetyCounter = 0;
+                        const maxIterations = 365 * 5; 
+                        
+                        while (hoursLeft > 0 && safetyCounter < maxIterations) {
+                            safetyCounter++;
+                            
+                            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                            const currentDayName = dayNames[currentDate.getDay()];
+                            
+                            const yyyy = currentDate.getFullYear();
+                            const mm = String(currentDate.getMonth() + 1).padStart(2, '0');
+                            const dd = String(currentDate.getDate()).padStart(2, '0');
+                            const dateStr = `${yyyy}-${mm}-${dd}`;
+                            
+                            const isReportingDay = this.scheduleDays.includes(currentDayName);
+                            const isNonWorkingDay = this.holidays.includes(dateStr);
+                            
+                            if (isReportingDay && !isNonWorkingDay) {
+                                hoursLeft -= this.dailyHours;
+                            }
+                            
+                            if (hoursLeft > 0) {
+                                currentDate.setDate(currentDate.getDate() + 1);
+                            }
+                        }
+                        
+                        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+                        return currentDate.toLocaleDateString('en-US', options).toUpperCase();
+                    }
+                }">
                     <div class="bg-white dark:bg-gray-900 rounded-[20px] sm:rounded-[30px] border border-gray-100 dark:border-gray-800 shadow-sm p-4 sm:p-8 transition-all">
                         <p class="text-[10px] sm:text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Current Deployment Schedule</p>
                         <div class="flex items-center gap-4">
@@ -110,7 +154,7 @@
                                     @foreach(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] as $day)
                                         <label class="flex items-center gap-2 p-2.5 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-700 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition">
                                             <input type="checkbox" name="schedule_assignment[]" value="{{ $day }}" 
-                                                {{ in_array($day, $assignedDays) ? 'checked' : '' }}
+                                                x-model="scheduleDays"
                                                 class="rounded text-[#0B5694] focus:ring-[#0B5694]/20 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700">
                                             <span class="text-[10px] font-bold text-gray-700 dark:text-gray-200">{{ substr($day, 0, 3) }}</span>
                                         </label>
@@ -119,7 +163,7 @@
                                 
                                 <div class="space-y-1.5">
                                     <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Required Internship Hours</span>
-                                    <input type="number" name="required_hours" value="{{ $intern->required_hours ?? 480 }}" min="1" required
+                                    <input type="number" name="required_hours" x-model.number="requiredHours" min="1" required
                                         class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 rounded-xl text-xs font-bold text-gray-800 dark:text-gray-100 focus:ring-[#0B5694]/20 focus:border-[#0B5694] transition">
                                 </div>
                                 
@@ -146,7 +190,7 @@
                             @if($schoolSchedule->target_end_date)
                             <div>
                                 <p class="text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">Target End</p>
-                                <p class="text-xs font-black text-gray-800 dark:text-gray-100 uppercase">{{ $schoolSchedule->target_end_date->format('M d, Y') }}</p>
+                                <p class="text-xs font-black text-gray-800 dark:text-gray-100 uppercase" x-text="targetEndDate">{{ $schoolSchedule->target_end_date->format('M d, Y') }}</p>
                             </div>
                             @endif
                         </div>

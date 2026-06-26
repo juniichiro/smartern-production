@@ -78,10 +78,17 @@ class InternManagementController extends Controller
 
         // Fetch official school schedule for timeline
         $schoolSchedule = null;
+        $holidaysAndSuspensions = [];
         if ($intern->school) {
             $schoolSchedule = Schedule::where('type', 'school_default')
                 ->where('school_name', $intern->school)
                 ->first();
+
+            $holidaysAndSuspensions = Schedule::where('school_name', $intern->school)
+                ->whereIn('type', ['holiday', 'suspension'])
+                ->pluck('date')
+                ->map(fn($d) => $d->format('Y-m-d'))
+                ->toArray();
         }
 
         // Fetch Merged Logs for consistent history
@@ -96,7 +103,8 @@ class InternManagementController extends Controller
             'taskCompletionRate',
             'effectiveSchedule',
             'schoolSchedule',
-            'attendanceHistory'
+            'attendanceHistory',
+            'holidaysAndSuspensions'
         ));
     }
 
