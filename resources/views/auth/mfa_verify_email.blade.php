@@ -21,20 +21,14 @@
                  }
              });
 
+             this.emailSent = true;
              if (this.resendCountdown > 0) {
-                 this.emailSent = true;
                  this.statusMessage = 'A verification code has been sent to your email.';
                  this.statusType = 'success';
                  this.startResendTimer();
              } else {
-                 // Only auto-send if there are no validation errors
-                 @if(!$errors->any())
-                     this.sendEmailCode();
-                 @else
-                     this.emailSent = true;
-                     this.statusMessage = 'Please enter the verification code sent to your email.';
-                     this.statusType = 'info';
-                 @endif
+                 this.statusMessage = 'Please enter the verification code sent to your email.';
+                 this.statusType = 'info';
              }
          },
          
