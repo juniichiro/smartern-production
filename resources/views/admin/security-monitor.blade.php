@@ -400,6 +400,194 @@
             </div>
         </div>
     </x-table-container>
+
+    {{-- Recent Admin Evaluations Log Trail --}}
+    <div class="mt-10">
+        <x-table-container 
+            title="Recent Admin Evaluations Log Trail" 
+            subtitle="Historical record of security decisions (safe, compromised, suspended)"
+        >
+            {{-- Desktop Table --}}
+            <div class="hidden md:block border border-gray-100 dark:border-gray-800 rounded-3xl overflow-hidden shadow-inner">
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left">
+                        <thead class="bg-gray-50 dark:bg-gray-800/50 text-[10px] lg:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider border-b border-gray-100 dark:border-gray-800">
+                            <tr>
+                                <th class="px-6 lg:px-8 py-5">Date & Time</th>
+                                <th class="px-6 lg:px-8 py-5">Evaluator</th>
+                                <th class="px-6 lg:px-8 py-5">Action Taken</th>
+                                <th class="px-6 lg:px-8 py-5">Target Account</th>
+                                <th class="px-6 lg:px-8 py-5">Reference Context</th>
+                                <th class="px-6 lg:px-8 py-5">IP & Device</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
+                            @forelse($unifiedLogs as $log)
+                            @php
+                                $targetUser = $log->target_user_id ? $targetUsers->get($log->target_user_id) : null;
+                                $targetLog = $log->target_log_id ? $targetLogs->get($log->target_log_id) : null;
+                                
+                                // Color theme based on action
+                                if (str_contains($log->action, 'Marked Safe')) {
+                                    $badgeColor = 'bg-emerald-50 text-emerald-500 border-emerald-100 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-800/30';
+                                    $actionLabel = 'Marked Safe';
+                                    $icon = '<span class="w-2 h-2 rounded-full bg-emerald-500 mr-2 inline-block"></span>';
+                                } elseif (str_contains($log->action, 'Compromised')) {
+                                    $badgeColor = 'bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-800/30';
+                                    $actionLabel = 'Compromised (Reset)';
+                                    $icon = '<span class="w-2 h-2 rounded-full bg-amber-500 mr-2 inline-block"></span>';
+                                } else {
+                                    $badgeColor = 'bg-rose-50 text-rose-500 border-rose-100 dark:bg-rose-950/20 dark:text-rose-400 dark:border-rose-800/30';
+                                    $actionLabel = 'Suspended';
+                                    $icon = '<span class="w-2 h-2 rounded-full bg-rose-500 mr-2 inline-block"></span>';
+                                }
+                            @endphp
+                            <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors group">
+                                <td class="px-6 lg:px-8 py-6 text-xs lg:text-sm text-gray-500 dark:text-gray-400 font-bold whitespace-nowrap">
+                                    {{ $log->timestamp->format('Y-m-d H:i:s') }}
+                                    <span class="block text-[9px] text-gray-300 dark:text-gray-600 font-medium uppercase tracking-wider mt-1">{{ $log->timestamp->diffForHumans() }}</span>
+                                </td>
+                                <td class="px-6 lg:px-8 py-6 text-xs lg:text-sm font-bold text-gray-800 dark:text-gray-200">
+                                    <span class="block">{{ $log->evaluator_email }}</span>
+                                    <span class="inline-block text-[9px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 px-2 py-0.5 rounded-md border border-indigo-100 dark:border-indigo-800/50 mt-1">{{ $log->evaluator_role }}</span>
+                                </td>
+                                <td class="px-6 lg:px-8 py-6">
+                                    <span class="inline-flex items-center px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider border {{ $badgeColor }}">
+                                        {!! $icon !!}
+                                        {{ $actionLabel }}
+                                    </span>
+                                </td>
+                                <td class="px-6 lg:px-8 py-6">
+                                    @if($targetUser)
+                                        <div class="flex items-center gap-3">
+                                            <x-avatar :user="$targetUser->internDetails ?? $targetUser->supervisorDetails ?? $targetUser" size="8" border="1" circular="true" textSize="xs" />
+                                            <div>
+                                                <span class="block text-xs lg:text-sm font-bold text-gray-700 dark:text-gray-300">
+                                                    @if($targetUser->internDetails)
+                                                        {{ $targetUser->internDetails->first_name }} {{ $targetUser->internDetails->last_name }}
+                                                    @elseif($targetUser->supervisorDetails)
+                                                        {{ $targetUser->supervisorDetails->first_name }} {{ $targetUser->supervisorDetails->last_name }}
+                                                    @else
+                                                        System User
+                                                    @endif
+                                                </span>
+                                                <span class="text-[9px] font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider block mt-0.5">
+                                                    {{ $targetUser->email }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <span class="text-xs lg:text-sm text-gray-400 dark:text-gray-500 font-medium italic">Deleted Account (UID: {{ $log->target_user_id }})</span>
+                                    @endif
+                                </td>
+                                <td class="px-6 lg:px-8 py-6 text-xs lg:text-sm">
+                                    @if($targetLog)
+                                        <span class="font-extrabold text-gray-800 dark:text-gray-200 uppercase tracking-tight block">{{ $targetLog->action }}</span>
+                                        <div class="flex items-center gap-2 mt-1">
+                                            <span class="text-[9px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider">Score: {{ number_format($targetLog->anomaly_score, 2) }}</span>
+                                            <span class="w-1.5 h-1.5 rounded-full bg-{{ $targetLog->anomaly_score > 0.7 ? 'rose' : ($targetLog->anomaly_score > 0.5 ? 'orange' : 'emerald') }}-500"></span>
+                                        </div>
+                                    @else
+                                        <span class="text-xs text-gray-400 dark:text-gray-500 font-medium italic block">Log context not found</span>
+                                        <span class="text-[9px] text-gray-300 dark:text-gray-600 font-bold uppercase tracking-wider mt-1 block">ID: {{ $log->target_log_id }}</span>
+                                    @endif
+                                </td>
+                                <td class="px-6 lg:px-8 py-6 text-xs lg:text-sm text-gray-400 dark:text-gray-500 font-medium leading-relaxed whitespace-nowrap">
+                                    <span class="block">IP: {{ $log->ip_address ?? 'N/A' }}</span>
+                                    <span class="block text-[10px] text-gray-300 dark:text-gray-600 mt-1 uppercase tracking-tight" title="{{ $log->user_agent }}">{{ $log->device ?? 'Unknown' }}</span>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="6" class="py-20 text-center">
+                                    <x-empty-state title="No admin evaluations logged yet" compact="true" />
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {{-- Mobile Cards --}}
+            <div class="md:hidden space-y-6">
+                @forelse($unifiedLogs as $log)
+                @php
+                    $targetUser = $log->target_user_id ? $targetUsers->get($log->target_user_id) : null;
+                    $targetLog = $log->target_log_id ? $targetLogs->get($log->target_log_id) : null;
+
+                    if (str_contains($log->action, 'Marked Safe')) {
+                        $mobileBorder = 'border-emerald-500';
+                        $actionLabel = 'Marked Safe';
+                        $badgeColor = 'bg-emerald-50 text-emerald-500 border-emerald-100 dark:bg-emerald-950/20 dark:text-emerald-400';
+                    } elseif (str_contains($log->action, 'Compromised')) {
+                        $mobileBorder = 'border-amber-500';
+                        $actionLabel = 'Compromised (Reset)';
+                        $badgeColor = 'bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-950/20 dark:text-amber-400';
+                    } else {
+                        $mobileBorder = 'border-rose-500';
+                        $actionLabel = 'Suspended';
+                        $badgeColor = 'bg-rose-50 text-rose-500 border-rose-100 dark:bg-rose-950/20 dark:text-rose-400';
+                    }
+                @endphp
+                <div class="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-3xl border border-gray-100 dark:border-gray-700 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-2 h-full {{ str_replace('border', 'bg', $mobileBorder) }}"></div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <span class="inline-block text-[9px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 px-2 py-0.5 rounded-md border border-indigo-100 dark:border-indigo-800/50 mb-1.5">{{ $log->evaluator_role }}</span>
+                            <h5 class="text-gray-800 dark:text-gray-100 font-black text-xs uppercase tracking-tight">{{ $log->evaluator_email }}</h5>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider border {{ $badgeColor }}">
+                            {{ $actionLabel }}
+                        </span>
+                    </div>
+
+                    <div class="bg-white/50 dark:bg-gray-900/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-700 space-y-3">
+                        <div>
+                            <p class="text-[9px] text-gray-400 dark:text-gray-500 font-extrabold uppercase tracking-wider mb-1">Target Account</p>
+                            @if($targetUser)
+                                <p class="text-xs font-bold text-gray-700 dark:text-gray-300">
+                                    @if($targetUser->internDetails)
+                                        {{ $targetUser->internDetails->first_name }} {{ $targetUser->internDetails->last_name }}
+                                    @elseif($targetUser->supervisorDetails)
+                                        {{ $targetUser->supervisorDetails->first_name }} {{ $targetUser->supervisorDetails->last_name }}
+                                    @else
+                                        System User
+                                    @endif
+                                </p>
+                                <p class="text-[10px] text-gray-400 dark:text-gray-500 font-medium">{{ $targetUser->email }}</p>
+                            @else
+                                <p class="text-xs font-medium text-gray-400 dark:text-gray-500 italic">Deleted Account (UID: {{ $log->target_user_id }})</p>
+                            @endif
+                        </div>
+
+                        <div>
+                            <p class="text-[9px] text-gray-400 dark:text-gray-500 font-extrabold uppercase tracking-wider mb-1">Incident Context</p>
+                            @if($targetLog)
+                                <p class="text-xs font-bold text-gray-700 dark:text-gray-300">{{ $targetLog->action }}</p>
+                                <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase">Score: {{ number_format($targetLog->anomaly_score, 2) }}</p>
+                            @else
+                                <p class="text-xs font-medium text-gray-400 dark:text-gray-500 italic">Context log not found</p>
+                            @endif
+                        </div>
+
+                        <div class="pt-2 border-t border-gray-100 dark:border-gray-800 flex justify-between text-[9px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+                            <p>IP: {{ $log->ip_address ?? 'N/A' }}</p>
+                            <p>{{ $log->device ?? 'System' }}</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-3 flex justify-between items-center text-[9px] text-gray-300 dark:text-gray-600 font-bold uppercase tracking-wider">
+                        <span>{{ $log->timestamp->format('m/d Y, H:i') }}</span>
+                        <span>{{ $log->timestamp->diffForHumans() }}</span>
+                    </div>
+                </div>
+                @empty
+                    <x-empty-state title="No admin evaluations logged yet" compact="true" />
+                @endforelse
+            </div>
+        </x-table-container>
+    </div>
         </div>
     </div>
 </x-page-layout>
