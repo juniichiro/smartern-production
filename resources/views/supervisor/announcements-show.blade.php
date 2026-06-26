@@ -95,12 +95,14 @@
                         $extension = pathinfo($announcement->attachment, PATHINFO_EXTENSION);
                         $isImage = in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif', 'webp']);
                         $fileName = basename($announcement->attachment);
+                        $cleanPath = str_replace('storage/', '', $announcement->attachment);
+                        $attachmentUrl = Storage::disk('public')->url($cleanPath);
                     @endphp
 
                     @if($isImage)
                         {{-- Image Display --}}
                         <div class="rounded-3xl overflow-hidden border border-gray-100 dark:border-gray-800 shadow-sm bg-gray-50 dark:bg-gray-800/50">
-                            <img src="{{ asset($announcement->attachment) }}" 
+                            <img src="{{ $attachmentUrl }}" 
                                  class="w-full h-auto object-cover max-h-[700px] hover:scale-[1.01] transition-transform duration-500" 
                                  alt="Announcement Image">
                         </div>
@@ -118,7 +120,7 @@
                                     </p>
                                 </div>
                             </div>
-                            <a href="{{ asset($announcement->attachment) }}" 
+                            <a href="{{ $attachmentUrl }}" 
                                target="_blank"
                                class="w-full sm:w-auto flex-shrink-0 px-6 py-3 bg-[#0B5694] text-white text-[10px] font-bold uppercase tracking-[0.2em] rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 text-center">
                                 Access Materials
@@ -129,7 +131,7 @@
                             <div class="mt-6">
                                 <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">Document Preview</p>
                                 <div class="rounded-3xl overflow-hidden border border-gray-100 dark:border-gray-800 shadow-sm bg-gray-50 dark:bg-gray-800/50 p-1">
-                                    <iframe src="{{ asset($announcement->attachment) }}" 
+                                    <iframe src="{{ $attachmentUrl }}" 
                                             class="w-full h-[600px] rounded-2xl" 
                                             style="border: none;">
                                     </iframe>

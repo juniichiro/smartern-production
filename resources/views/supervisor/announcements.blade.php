@@ -81,7 +81,10 @@
                                 </div>
                                 
                                 @if($ann->attachment)
-                                    <a href="{{ asset($ann->attachment) }}" target="_blank" class="p-1 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300" title="Access Reference Materials">
+                                    @php
+                                        $cleanPath = str_replace('storage/', '', $ann->attachment);
+                                    @endphp
+                                    <a href="{{ Storage::disk('public')->url($cleanPath) }}" target="_blank" class="p-1 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300" title="Access Reference Materials">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
                                     </a>
                                 @endif
