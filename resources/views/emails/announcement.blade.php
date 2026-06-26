@@ -64,7 +64,7 @@
                         @if($logoExists)
                             <img src="{{ $message->embedData(file_get_contents($logoPath), 'smartern.png', 'image/png') }}" alt="" style="height: 28px; width: auto; display: block;">
                         @else
-                            <img src="{{ asset('images/blue-smartern.png') }}" alt="" style="height: 28px; width: auto; display: block;">
+                            <img src="{{ env('AWS_URL') ? env('AWS_URL') . '/images/blue-smartern.png' : asset('images/blue-smartern.png') }}" alt="" style="height: 28px; width: auto; display: block;">
                         @endif
                     </td>
                     <td style="font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 800; color: #1e3a8a; vertical-align: middle; line-height: 28px; letter-spacing: -0.01em;">
