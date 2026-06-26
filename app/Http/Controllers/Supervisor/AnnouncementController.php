@@ -96,7 +96,7 @@ class AnnouncementController extends Controller
             );
 
             try {
-                Mail::to($intern->email)->send(new OfficeAnnouncementMail($announcement, $intern));
+                Mail::to($intern->email)->queue(new OfficeAnnouncementMail($announcement, $intern));
             } catch (\Exception $e) {
                 Log::error("Failed to send announcement email to {$intern->email}: ".$e->getMessage());
             }
@@ -149,7 +149,7 @@ class AnnouncementController extends Controller
                 );
 
                 try {
-                    Mail::to($intern->email)->send(new OfficeAnnouncementMail($announcement, $intern));
+                    Mail::to($intern->email)->queue(new OfficeAnnouncementMail($announcement, $intern));
                 } catch (\Exception $e) {
                     Log::error("Failed to send updated announcement email to {$intern->email}: ".$e->getMessage());
                 }
