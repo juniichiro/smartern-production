@@ -49,13 +49,18 @@ class OfficeMatchingController extends Controller
         $totalApplicants = OnboardingApplicant::count();
         $confirmedApplicants = MatchResult::where('is_confirmed', true)->distinct('applicant_name')->count();
 
+        // Get emails of already registered users to check if account is created
+        $existingEmails = \App\Models\User::whereIn('email', $applicants->pluck('email'))
+            ->pluck('email')
+            ->toArray();
+
         $stats = [
             'total' => $totalApplicants,
             'average' => MatchResult::avg('score') ?? 0,
             'pending' => $totalApplicants - $confirmedApplicants,
         ];
 
-        return view('head-supervisor.office-matching', compact('results', 'applicants', 'stats', 'offices'));
+        return view('head-supervisor.office-matching', compact('results', 'applicants', 'stats', 'offices', 'existingEmails'));
     }
 
     public function storeEvaluation(StoreEvaluationRequest $request, OnboardingApplicant $applicant)
@@ -338,6 +343,12 @@ class OfficeMatchingController extends Controller
     public function unfinalize(UndoFinalizeRequest $request)
     {
         $name = $request->applicant_name;
+
+        // Block undo if an account has already been created for the applicant
+        $applicant = OnboardingApplicant::where('full_name', $name)->first();
+        if ($applicant && \App\Models\User::where('email', $applicant->email)->exists()) {
+            return back()->with('error', "Cannot undo placement. User account has already been created for {$name}.");
+        }
 
         // Find confirmed matches for this applicant name
         $matches = MatchResult::where('applicant_name', $name)
