@@ -269,6 +269,9 @@ class MFAController extends Controller
         if ($valid) {
             session(['mfa_verified' => true]);
 
+            // Clear the cooldown so subsequent logins start with a fresh timer
+            Cache::forget('mfa_email_code_sent_at_'.$user->id);
+
             $this->auditService->log('Authentication', 'MFA Verified Login');
 
             return redirect()->intended(route('dashboard'));
