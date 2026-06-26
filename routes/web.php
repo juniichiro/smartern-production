@@ -69,6 +69,8 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 Route::middleware(['auth', 'verified'])->group(function () {
 
+    Route::get('/session/ping', fn () => response()->json(['status' => 'ok']))->name('session.ping');
+
     Route::post('/security/run-analysis', [SecurityController::class, 'runAnalysis'])->name('security.run');
 
     Route::get('/submissions/{submission}/file', [App\Http\Controllers\SubmissionController::class, 'viewFile'])->name('submissions.file');

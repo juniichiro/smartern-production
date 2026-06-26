@@ -144,4 +144,16 @@
     </script>
 @endif
 
+@if(request()->has('taken_over') || session('session_taken_over'))
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                if (window.showToast) {
+                    window.showToast('Your account was logged in on another device. This session has been terminated.', 'error');
+                }
+            }, 500);
+        });
+    </script>
+@endif
+
 @endsection

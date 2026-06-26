@@ -26,6 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->web(append: [
             AuthenticateSession::class,
+            \App\Http\Middleware\CheckSingleSession::class,
             ForcePasswordChange::class,
             MFACheck::class,
             SecurityAnalysisMiddleware::class,
