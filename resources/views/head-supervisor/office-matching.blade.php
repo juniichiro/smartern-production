@@ -255,8 +255,10 @@
                                         </div>
                                         <p class="text-xs text-gray-500 font-bold uppercase tracking-tight mt-1">{{ $applicant->university }}</p>
                                     </td>
-                                    <td class="px-3 sm:px-6 py-4 sm:py-6 font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight text-xs sm:text-sm">
-                                        {{ $displayMatch ? $displayMatch->office->name : 'No Results' }}
+                                    <td class="px-3 sm:px-6 py-4 sm:py-6 font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight text-xs sm:text-sm max-w-[180px] sm:max-w-[220px]">
+                                        <div class="truncate" title="{{ $displayMatch ? $displayMatch->office->name : 'No Results' }}">
+                                            {{ $displayMatch ? $displayMatch->office->name : 'No Results' }}
+                                        </div>
                                     </td>
                                     <td class="px-3 sm:px-6 py-4 sm:py-6">
                                         @if($displayMatch)
