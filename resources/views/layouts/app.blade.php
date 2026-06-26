@@ -24,41 +24,39 @@
             const fontSize = localStorage.getItem('fontSize') || 'md';
             document.documentElement.classList.add('font-size-' + fontSize);
 
-            @auth
-                // Client-side Unique Device / Browser Profile Binding
-                let clientId = localStorage.getItem('smartern_client_id');
-                if (!clientId) {
-                    clientId = 'cli_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-                    localStorage.setItem('smartern_client_id', clientId);
+            // Client-side Unique Device / Browser Profile Binding
+            let clientId = localStorage.getItem('smartern_client_id');
+            if (!clientId) {
+                clientId = 'cli_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+                localStorage.setItem('smartern_client_id', clientId);
+            }
+
+            // Parse cookies to verify if smartern_client_id matches our local profile storage
+            const cookies = document.cookie.split('; ').reduce((acc, cookie) => {
+                const parts = cookie.split('=');
+                const name = parts[0] ? parts[0].trim() : '';
+                const value = parts[1] ? parts[1].trim() : '';
+                if (name) {
+                    acc[name] = value;
                 }
+                return acc;
+            }, {});
 
-                // Parse cookies to verify if smartern_client_id matches our local profile storage
-                const cookies = document.cookie.split('; ').reduce((acc, cookie) => {
-                    const parts = cookie.split('=');
-                    const name = parts[0] ? parts[0].trim() : '';
-                    const value = parts[1] ? parts[1].trim() : '';
-                    if (name) {
-                        acc[name] = value;
-                    }
-                    return acc;
-                }, {});
+            const cookieClientId = cookies['smartern_client_id'];
+            const hasSession = cookies['smartern-session'];
 
-                const cookieClientId = cookies['smartern_client_id'];
+            // Only trigger cookie mismatch redirect if they possess an active session cookie.
+            if (hasSession && cookieClientId && cookieClientId !== clientId) {
+                // Clear the session cookies immediately and reload
+                document.cookie = "smartern_device_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                document.cookie = "smartern_client_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                document.cookie = "smartern-session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                window.location.href = '{{ route('login') }}?taken_over=1';
+                return;
+            }
 
-                // If a client ID exists in the cookie but doesn't match this profile's localStorage,
-                // it means the cookie was imported / injected from another profile.
-                if (cookieClientId && cookieClientId !== clientId) {
-                    // Clear the session cookies immediately and reload
-                    document.cookie = "smartern_device_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                    document.cookie = "smartern_client_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                    document.cookie = "smartern-session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                    window.location.href = '{{ route('login') }}?taken_over=1';
-                    return;
-                }
-
-                // Write/sync the cookie value to our unique local client ID
-                document.cookie = "smartern_client_id=" + clientId + "; path=/; Secure; SameSite=Lax";
-            @endauth
+            // Write/sync the cookie value to our unique local client ID
+            document.cookie = "smartern_client_id=" + clientId + "; path=/; Secure; SameSite=Lax";
         })();
     </script>
 
