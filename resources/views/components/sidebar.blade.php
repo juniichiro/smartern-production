@@ -217,7 +217,7 @@ class="relative">
              statusMessage: '',
              statusType: 'success',
              submitting: false,
-             csrfToken: document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '',
+             csrfToken: document.querySelector('meta[name=csrf-token]') ? document.querySelector('meta[name=csrf-token]').getAttribute('content') : '',
              
              init() {
                  this.isMobile = window.innerWidth < 768;
