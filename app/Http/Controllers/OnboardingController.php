@@ -98,10 +98,8 @@ class OnboardingController extends Controller
         }
 
         // Automated Background Matching
-        if ($resumePath) {
-            \Log::info('Triggering background matching for applicant: '.$fullName);
-            $this->matchingService->runMatchingForApplicant($applicant);
-        }
+        \Log::info('Triggering background matching for applicant: '.$fullName);
+        $this->matchingService->runMatchingForApplicant($applicant);
 
         // Keep Legacy CSV Update for compatibility
         $techSerialized = [];
