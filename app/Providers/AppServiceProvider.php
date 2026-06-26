@@ -30,14 +30,6 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-        \Illuminate\Support\Facades\Event::listen(
-            \Illuminate\Auth\Events\Login::class,
-            function (\Illuminate\Auth\Events\Login $event) {
-                if ($event->user) {
-                    \Illuminate\Support\Facades\Cache::put('user-session-' . $event->user->id, session()->getId());
-                }
-            }
-        );
 
         if (str_starts_with(config('app.url'), 'https://') && request()->getHost() !== 'localhost' && request()->getHost() !== '127.0.0.1') {
             URL::forceScheme('https');
