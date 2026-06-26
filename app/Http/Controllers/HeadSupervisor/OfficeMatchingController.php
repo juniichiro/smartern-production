@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\HeadSupervisor\FinalizeMatchBatchRequest;
 use App\Http\Requests\HeadSupervisor\StoreEvaluationRequest;
 use App\Http\Requests\HeadSupervisor\UploadAssessmentRequest;
+use App\Http\Requests\HeadSupervisor\UndoFinalizeRequest;
 use App\Models\ApplicantEvaluation;
 use App\Models\AssessmentItem;
 use App\Models\MatchResult;
@@ -332,6 +333,28 @@ class OfficeMatchingController extends Controller
         }
 
         return back()->with('success', 'Assignments finalized.');
+    }
+
+    public function unfinalize(UndoFinalizeRequest $request)
+    {
+        $name = $request->applicant_name;
+
+        // Find confirmed matches for this applicant name
+        $matches = MatchResult::where('applicant_name', $name)
+            ->where('is_confirmed', true)
+            ->get();
+
+        if ($matches->isEmpty()) {
+            return back()->with('error', "No finalized office placement found for {$name}.");
+        }
+
+        foreach ($matches as $match) {
+            $match->update(['is_confirmed' => false]);
+            $officeName = $match->office ? $match->office->name : "Unknown Office";
+            $this->auditService->log('Match Unfinalized', "Undid office placement for {$name} from {$officeName}");
+        }
+
+        return back()->with('success', "Placement undone for {$name}.");
     }
 
     public function exportCsv()

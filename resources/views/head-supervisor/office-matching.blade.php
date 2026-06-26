@@ -276,7 +276,15 @@
                                     <td class="px-3 sm:px-6 py-4 sm:py-6 text-right">
                                         <div class="flex justify-end gap-2 sm:gap-3">
                                             <button @click="if (expanded === '{{ $applicant->applicant_id }}') { expanded = null; } else { expanded = '{{ $applicant->applicant_id }}'; evaluating = null; }" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl text-[10px] sm:text-xs font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white dark:hover:border-gray-500 transition shadow-sm uppercase tracking-wider active:scale-95">Analysis</button>
-                                            @if(!$confirmedMatch)
+                                            @if($confirmedMatch)
+                                                <form action="{{ route('head-supervisor.matching.unfinalize') }}" method="POST" class="inline">
+                                                    @csrf
+                                                    <input type="hidden" name="applicant_name" value="{{ $applicant->full_name }}">
+                                                    <button type="submit" class="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 hover:bg-red-100 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl text-[10px] sm:text-xs font-bold transition shadow-sm uppercase tracking-wider active:scale-95">
+                                                        Undo Placement
+                                                    </button>
+                                                </form>
+                                            @else
                                                 <button @click="if (evaluating === '{{ $applicant->applicant_id }}') { evaluating = null; } else { evaluating = '{{ $applicant->applicant_id }}'; expanded = null; }" class="bg-[#0B5694] dark:bg-blue-600 text-white px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl text-[10px] sm:text-xs font-bold hover:bg-[#084577] transition shadow-sm uppercase tracking-wider active:scale-95">Evaluate</button>
                                             @endif
                                         </div>
@@ -902,7 +910,17 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
                                     <span>Analysis</span>
                                 </button>
-                                @if(!$confirmedMatch)
+                                @if($confirmedMatch)
+                                <form action="{{ route('head-supervisor.matching.unfinalize') }}" method="POST" class="flex-1 flex">
+                                    @csrf
+                                    <input type="hidden" name="applicant_name" value="{{ $applicant->full_name }}">
+                                    <button type="submit" 
+                                            class="w-full min-h-[44px] flex items-center justify-center gap-1.5 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 rounded-xl text-[9px] sm:text-[10px] font-bold uppercase tracking-wider active:bg-red-100 dark:active:bg-red-900/40 transition active:scale-[0.97]">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/></svg>
+                                        Undo Placement
+                                    </button>
+                                </form>
+                                @else
                                 <button @click="if (evaluating === '{{ $applicant->applicant_id }}') { evaluating = null; } else { evaluating = '{{ $applicant->applicant_id }}'; expanded = null; }" 
                                         class="flex-1 min-h-[44px] flex items-center justify-center gap-1.5 bg-[#0B5694] dark:bg-blue-600 text-white rounded-xl text-[9px] sm:text-[10px] font-bold uppercase tracking-wider active:bg-[#084577] dark:active:bg-blue-700 transition shadow-sm active:scale-[0.97]"
                                         :class="evaluating === '{{ $applicant->applicant_id }}' ? 'ring-2 ring-[#0B5694]/30' : ''">

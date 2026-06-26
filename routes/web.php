@@ -205,6 +205,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/office-matching/upload', [OfficeMatchingController::class, 'upload'])->name('upload');
         Route::delete('/office-matching/clear', [OfficeMatchingController::class, 'clearResults'])->name('matching.clear');
         Route::post('/office-matching/finalize', [OfficeMatchingController::class, 'finalizeBatch'])->name('matching.finalize');
+        Route::post('/office-matching/unfinalize', [OfficeMatchingController::class, 'unfinalize'])->name('matching.unfinalize');
         Route::get('/office-matching/export', [OfficeMatchingController::class, 'exportCsv'])->name('matching.export');
         Route::get('/office-matching/{applicant}/resume', [OfficeMatchingController::class, 'viewResume'])->name('matching.resume');
         Route::post('/office-matching/{applicant}/evaluate', [OfficeMatchingController::class, 'storeEvaluation'])->name('matching.evaluate');
