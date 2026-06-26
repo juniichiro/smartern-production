@@ -587,6 +587,8 @@ Alpine.data('announcementsManager', () => ({
     previewMode: false,
     previewContent: '',
     showDeleteModal: false,
+    showViewModal: false,
+    viewAnnouncement: null,
     deleteRoute: '',
     deleteTitle: '',
     
@@ -649,6 +651,11 @@ Alpine.data('announcementsManager', () => ({
         this.deleteTitle = title;
         this.deleteRoute = route;
         this.showDeleteModal = true;
+    },
+
+    openViewModal(ann) {
+        this.viewAnnouncement = ann;
+        this.showViewModal = true;
     }
 }));
 
