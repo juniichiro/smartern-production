@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('intern_id')->constrained('users')->onDelete('cascade');
             $table->text('content')->nullable();
             $table->string('file_path')->nullable();
+            $table->string('original_filename')->nullable();
             $table->timestamps();
         });
     }

@@ -91,7 +91,7 @@
                     <td>
                         @if($latestSubmission && $latestSubmission->file_path)
                             <div class="file-name">
-                                {{ basename($latestSubmission->file_path) }}
+                                {{ $latestSubmission->original_filename ?? basename($latestSubmission->file_path) }}
                             </div>
                         @else
                             <span style="color: #ccc; font-style: italic;">No file</span>

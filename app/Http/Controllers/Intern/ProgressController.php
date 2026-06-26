@@ -269,9 +269,11 @@ class ProgressController extends Controller
     {
         try {
             $filePath = null;
+            $originalFilename = null;
 
             if ($request->hasFile('submission_file')) {
                 $file = $request->file('submission_file');
+                $originalFilename = $file->getClientOriginalName();
 
                 // Cleanup: Delete previous submission file for this task if it exists
                 if ($task->submissions()->exists()) {
@@ -292,6 +294,7 @@ class ProgressController extends Controller
                 'intern_id' => Auth::id(),
                 'content' => $request->content,
                 'file_path' => $filePath,
+                'original_filename' => $originalFilename,
             ]);
 
             // Update task status and clear previous remarks so Supervisor gets a clean review screen

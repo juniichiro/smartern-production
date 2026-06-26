@@ -14,6 +14,7 @@ class Submission extends Model
         'intern_id',
         'content',
         'file_path',
+        'original_filename',
     ];
 
     /**

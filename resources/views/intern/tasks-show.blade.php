@@ -202,7 +202,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
                                 </div>
                                 <div class="min-w-0 flex-1">
-                                    <p class="text-xs font-bold text-gray-800 dark:text-gray-100 truncate" title="{{ basename($submission->file_path) }}">{{ basename($submission->file_path) }}</p>
+                                    <p class="text-xs font-bold text-gray-800 dark:text-gray-100 truncate" title="{{ $submission->original_filename ?? basename($submission->file_path) }}">{{ $submission->original_filename ?? basename($submission->file_path) }}</p>
                                     <p class="text-[9px] text-gray-500 dark:text-gray-400 font-bold uppercase">{{ $submission->created_at->format('M d • h:i A') }}</p>
                                 </div>
                             </div>
