@@ -24,6 +24,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'attendance/process',
         ]);
 
+        $middleware->encryptCookies(except: [
+            'smartern_client_id',
+        ]);
+
         $middleware->web(append: [
             AuthenticateSession::class,
             \App\Http\Middleware\CheckSingleSession::class,
