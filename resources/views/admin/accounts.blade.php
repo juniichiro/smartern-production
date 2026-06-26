@@ -268,7 +268,7 @@
                                         emergency_contact: '{{ $details->emergency_contact ?? '' }}',
                                         initials: '{{ $uInitials }}',
                                         is_hr_head: {{ $isHrHead ? 'true' : 'false' }},
-                                        profile_picture: '{{ $details?->profile_picture ? asset($details->profile_picture) : '' }}'
+                                        profile_picture: '{{ $details?->profile_picture ? (str_starts_with($details->profile_picture, 'profiles/') || str_starts_with($details->profile_picture, 'profile-pictures/') ? Storage::disk('public')->url($details->profile_picture) : asset($details->profile_picture)) : '' }}'
                                     }; showEditModal = true" class="text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition transform hover:scale-110 cursor-pointer">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
                                     </button>
@@ -349,7 +349,7 @@
                             emergency_contact: '{{ $details->emergency_contact ?? '' }}',
                             initials: '{{ $uInitials }}',
                             is_hr_head: {{ $isHrHead ? 'true' : 'false' }},
-                            profile_picture: '{{ $details?->profile_picture ? asset($details->profile_picture) : '' }}'
+                            profile_picture: '{{ $details?->profile_picture ? (str_starts_with($details->profile_picture, 'profiles/') || str_starts_with($details->profile_picture, 'profile-pictures/') ? Storage::disk('public')->url($details->profile_picture) : asset($details->profile_picture)) : '' }}'
                         }; showEditModal = true" class="flex-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-blue-600 dark:text-blue-400 min-h-[44px] rounded-xl text-[10px] font-bold uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-2 shadow-sm cursor-pointer">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
                             Edit
@@ -464,7 +464,7 @@
                                                 emergency_contact: '{{ $applicant->emergency_contact ?? '' }}',
                                                 initials: '{{ strtoupper(substr($applicant->first_name, 0, 1) . substr($applicant->last_name, 0, 1)) }}',
                                                 isOnboarding: true,
-                                                profile_picture: '{{ $applicant->profile_picture ? asset($applicant->profile_picture) : '' }}'
+                                                profile_picture: '{{ $applicant->profile_picture ? (str_starts_with($applicant->profile_picture, 'profiles/') || str_starts_with($applicant->profile_picture, 'profile-pictures/') ? Storage::disk('public')->url($applicant->profile_picture) : asset($applicant->profile_picture)) : '' }}'
                                             }; showEditModal = true" class="bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/30 text-blue-600 dark:text-blue-400 px-4 py-2 rounded-xl text-xs font-bold transition active:scale-95 flex items-center gap-1 shadow-sm cursor-pointer">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
                                                 Edit
@@ -525,7 +525,7 @@
                                     emergency_contact: '{{ $applicant->emergency_contact ?? '' }}',
                                     initials: '{{ strtoupper(substr($applicant->first_name, 0, 1) . substr($applicant->last_name, 0, 1)) }}',
                                     isOnboarding: true,
-                                    profile_picture: '{{ $applicant->profile_picture ? asset($applicant->profile_picture) : '' }}'
+                                    profile_picture: '{{ $applicant->profile_picture ? (str_starts_with($applicant->profile_picture, 'profiles/') || str_starts_with($applicant->profile_picture, 'profile-pictures/') ? Storage::disk('public')->url($applicant->profile_picture) : asset($applicant->profile_picture)) : '' }}'
                                 }; showEditModal = true" class="flex-1 bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/30 text-blue-600 dark:text-blue-400 min-h-[44px] rounded-xl text-xs font-bold uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-2 shadow-sm cursor-pointer">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
                                     Edit
