@@ -170,6 +170,47 @@
         }
     </style>
 </head>
+@php
+    $logoUrl = (isset($template) && $template->logo_path) 
+        ? public_path('storage/' . $template->logo_path) 
+        : public_path('images/Deped Logo.png');
+    $footerUrl = (isset($template) && $template->footer_path) 
+        ? public_path('storage/' . $template->footer_path) 
+        : public_path('images/certificate-footer.png');
+    
+    $govText = $template->gov_text ?? 'Republic of the Philippines';
+    $deptText = $template->dept_text ?? 'Department of Education';
+    $regionText = $template->region_text ?? 'NATIONAL CAPITAL REGION';
+    $officeText = $template->office_text ?? 'SCHOOLS DIVISION OFFICE QUEZON CITY';
+    
+    $titleText = $template->title_text ?? 'CERTIFICATE OF COMPLETION';
+    $bodyTextPattern = $template->body_text ?? 'This is to certify that {name} {article} {course} student of {school}, has completed {hours} hours On-the-Job Training on {start_date} to {end_date} at the Schools Division Office-Quezon City, {unit}.';
+    
+    $signatoryName = $template->signatory_name ?? 'MICHELLE A. MAL-IN';
+    $signatoryTitle = $template->signatory_title ?? 'Administrative Officer IV';
+    $initials = $template->initials ?? 'HRNTP/rocelle/Pj';
+
+    $courseStr = $intern->course ?? 'Information Technology';
+    $article = in_array(strtolower(substr($courseStr, 0, 1)), ['a','e','i','o','u']) ? 'an' : 'a';
+    
+    $startDate = $intern->start_date ? \Carbon\Carbon::parse($intern->start_date)->format('F d, Y') : 'N/A';
+    $endDate = $intern->end_date ? \Carbon\Carbon::parse($intern->end_date)->format('F d, Y') : 'N/A';
+    
+    $processedBody = str_replace(
+        ['{name}', '{article}', '{course}', '{school}', '{hours}', '{start_date}', '{end_date}', '{unit}'],
+        [
+            '<span class="bold-uppercase">' . ($intern->name ?? '') . '</span>',
+            $article,
+            '<span>' . $courseStr . '</span>',
+            '<span>' . ($intern->school ?? 'FEU-TECH') . '</span>',
+            '<span>' . (int)($intern->total_hours ?? 0) . '</span>',
+            $startDate,
+            $endDate,
+            '<span>' . ($intern->unit ?? 'Human Resource Teaching Unit') . '</span>'
+        ],
+        $bodyTextPattern
+    );
+@endphp
 <body>
 
     @if(!isset($verificationCode) || str_starts_with($verificationCode, 'DRAFT-'))
@@ -178,7 +219,7 @@
 
     <!-- Footer fixed element -->
     <div class="footer">
-        <img src="{{ public_path('images/certificate-footer.png') }}" alt="certificate footer">
+        <img src="{{ $footerUrl }}" alt="certificate footer">
     </div>
 
     <!-- Verification code overlay -->
@@ -190,34 +231,21 @@
 
     <!-- Header Section -->
     <div class="header">
-        <img src="{{ public_path('images/Deped Logo.png') }}" alt="DepEd Logo" class="logo">
-        <div class="gov-text">Republic of the Philippines</div>
-        <div class="dept-text">Department of Education</div>
-        <div class="region-text">NATIONAL CAPITAL REGION</div>
-        <div class="office-text">SCHOOLS DIVISION OFFICE QUEZON CITY</div>
+        <img src="{{ $logoUrl }}" alt="DepEd Logo" class="logo">
+        <div class="gov-text">{{ $govText }}</div>
+        <div class="dept-text">{{ $deptText }}</div>
+        <div class="region-text">{{ $regionText }}</div>
+        <div class="office-text">{{ $officeText }}</div>
         <div class="header-line"></div>
     </div>
 
     <!-- Title Section -->
-    <div class="title">CERTIFICATE OF COMPLETION</div>
+    <div class="title">{{ $titleText }}</div>
 
     <!-- Main Certificate Content -->
     <div class="content">
-        @php
-            $courseStr = $intern->course ?? 'Information Technology';
-            $article = in_array(strtolower(substr($courseStr, 0, 1)), ['a','e','i','o','u']) ? 'an' : 'a';
-            
-            $startDate = $intern->start_date ? \Carbon\Carbon::parse($intern->start_date)->format('F d, Y') : 'N/A';
-            $endDate = $intern->end_date ? \Carbon\Carbon::parse($intern->end_date)->format('F d, Y') : 'N/A';
-        @endphp
-        
         <p>
-            This is to certify that <span class="bold-uppercase">{{ $intern->name }}</span> {{ $article }} 
-            <span>{{ $courseStr }}</span> student of 
-            <span>{{ $intern->school ?? 'FEU-TECH' }}</span>, 
-            has completed {{ (int)($intern->total_hours ?? 0) }} hours On-the-Job Training 
-            on {{ $startDate }} to {{ $endDate }} 
-            at the Schools Division Office-Quezon City, <span>{{ $intern->unit ?? 'Human Resource Teaching Unit' }}</span>.
+            {!! $processedBody !!}
         </p>
 
         <p>
@@ -230,17 +258,17 @@
         <tr>
             <!-- Left side: Initials -->
             <td style="vertical-align: bottom; font-size: 10px; font-style: italic; font-weight: bold; width: 50%;">
-                HRNTP/rocelle/Pj
+                {{ $initials }}
             </td>
             
             <!-- Right side: Signature Block -->
             <td align="right" style="vertical-align: bottom; width: 50%;">
                 <div style="text-align: center; width: 250px; display: inline-block;">
                     <div style="font-weight: bold; font-size: 15px; text-transform: uppercase; margin-bottom: 2px;">
-                        MICHELLE A. MAL-IN
+                        {{ $signatoryName }}
                     </div>
                     <div style="font-size: 14px;">
-                        Administrative Officer IV
+                        {{ $signatoryTitle }}
                     </div>
                 </div>
             </td>

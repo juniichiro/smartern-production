@@ -86,6 +86,7 @@ class CertificateController extends Controller
             ],
             'date' => $certificateRecord->issue_date ?? now(),
             'verificationCode' => $certificateRecord->verification_code ?? 'DRAFT-'.strtoupper(Str::random(8)),
+            'template' => \App\Models\CertificateTemplate::getActive(),
         ];
 
         $pdf = Pdf::loadView('certificates.temp-certificate', $data);

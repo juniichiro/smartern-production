@@ -85,7 +85,73 @@
                     </div>
                 @endif
             </div>
+            </div>
         @endif
+
+        {{-- Collapsible Edit Certificate Details Form --}}
+        <div x-data="{ openEditForm: false }" class="mb-8 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[24px] shadow-sm max-w-[215.9mm] mx-auto overflow-hidden">
+            <button @click="openEditForm = !openEditForm" type="button" class="w-full flex items-center justify-between p-6 hover:bg-gray-50/50 dark:hover:bg-gray-800/35 transition cursor-pointer text-left">
+                <div class="flex items-center gap-4">
+                    <div class="p-3 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 rounded-xl shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-black text-gray-800 dark:text-gray-100 uppercase tracking-wider">Correct Certificate Details</h4>
+                        <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Adjust name, hours, school, course, and dates to override system glitches</p>
+                    </div>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400 transition-transform duration-200" :class="openEditForm ? 'rotate-180' : ''"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+
+            <div x-show="openEditForm" x-collapse x-cloak class="border-t border-gray-100 dark:border-gray-800 p-6 sm:p-8 bg-gray-50/50 dark:bg-gray-800/10">
+                <form action="{{ route('head-supervisor.certificates.update-details', ['certificate' => $certificate]) }}" method="POST" class="space-y-6">
+                    @csrf
+                    @method('PUT')
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                            <label for="intern_name" class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Intern Full Name</label>
+                            <input type="text" name="intern_name" id="intern_name" value="{{ old('intern_name', $certificate->intern_name ?? (($certificate->intern->first_name ?? '') . ' ' . ($certificate->intern->last_name ?? ''))) }}" class="w-full bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0B5694] transition text-gray-800 dark:text-gray-100 font-bold uppercase" required>
+                        </div>
+
+                        <div>
+                            <label for="intern_course" class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Intern Course</label>
+                            <input type="text" name="intern_course" id="intern_course" value="{{ old('intern_course', $certificate->intern_course ?? $certificate->intern->course ?? 'Information Technology') }}" class="w-full bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0B5694] transition text-gray-800 dark:text-gray-100 font-medium" required>
+                        </div>
+
+                        <div>
+                            <label for="intern_school" class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">School / University</label>
+                            <input type="text" name="intern_school" id="intern_school" value="{{ old('intern_school', $certificate->intern_school ?? $certificate->intern->school ?? 'FEU-TECH') }}" class="w-full bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0B5694] transition text-gray-800 dark:text-gray-100 font-medium" required>
+                        </div>
+
+                        <div>
+                            <label for="completed_hours" class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Completed Hours</label>
+                            <input type="number" name="completed_hours" id="completed_hours" value="{{ old('completed_hours', (int)($certificate->completed_hours ?? 0)) }}" class="w-full bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0B5694] transition text-gray-800 dark:text-gray-100 font-medium" required>
+                        </div>
+
+                        <div>
+                            <label for="start_date" class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Start Date</label>
+                            <input type="date" name="start_date" id="start_date" value="{{ old('start_date', $certificate->start_date ? $certificate->start_date->format('Y-m-d') : '') }}" class="w-full bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0B5694] transition text-gray-800 dark:text-gray-100 font-medium" required>
+                        </div>
+
+                        <div>
+                            <label for="end_date" class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">End Date</label>
+                            <input type="date" name="end_date" id="end_date" value="{{ old('end_date', $certificate->end_date ? $certificate->end_date->format('Y-m-d') : '') }}" class="w-full bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0B5694] transition text-gray-800 dark:text-gray-100 font-medium" required>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="intern_unit" class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Assigned Office Unit</label>
+                            <input type="text" name="intern_unit" id="intern_unit" value="{{ old('intern_unit', $certificate->intern_unit ?? 'Human Resource Teaching Unit') }}" class="w-full bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0B5694] transition text-gray-800 dark:text-gray-100 font-medium" required>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-800">
+                        <button type="button" @click="openEditForm = false" class="px-5 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 rounded-xl text-xs font-black uppercase tracking-wider hover:bg-gray-50 dark:hover:bg-gray-700 transition active:scale-95 shadow-sm">Cancel</button>
+                        <button type="submit" class="px-5 py-3 bg-[#0B5694] dark:bg-blue-600 text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-sm hover:bg-[#084577] transition active:scale-95">Save Correction</button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
         <div x-show="!loading" x-transition.opacity.duration.500ms class="my-6 sm:my-10 flex justify-center overflow-x-auto pb-10 -mx-3 sm:-mx-6 lg:-mx-10 px-3 sm:px-6 lg:px-10">
             <style>
@@ -196,16 +262,17 @@
                 <!-- Main Content -->
                 <div class="body-text relative z-10">
                     @php
-                        $course = $certificate->intern->course ?? 'Information Technology';
+                        $course = $certificate->intern_course ?? $certificate->intern->course ?? 'Information Technology';
                         $article = in_array(strtolower(substr($course, 0, 1)), ['a','e','i','o','u']) ? 'an' : 'a';
                         $startDate = $certificate->start_date ? \Carbon\Carbon::parse($certificate->start_date)->format('F d, Y') : 'N/A';
                         $endDate = $certificate->end_date ? \Carbon\Carbon::parse($certificate->end_date)->format('F d, Y') : 'N/A';
                         $displayDate = $certificate->issue_date ? \Carbon\Carbon::parse($certificate->issue_date) : now();
+                        $displayName = $certificate->intern_name ?? (($certificate->intern->first_name ?? '') . ' ' . ($certificate->intern->last_name ?? ''));
                     @endphp
                     <p>
-                        This is to certify that <span class="font-bold uppercase">{{ $certificate->intern->first_name ?? '' }} {{ $certificate->intern->last_name ?? '' }}</span> {{ $article }} 
+                        This is to certify that <span class="font-bold uppercase">{{ $displayName }}</span> {{ $article }} 
                         <span>{{ $course }}</span> student of 
-                        <span>{{ $certificate->intern->school ?? 'FEU-TECH' }}</span>, 
+                        <span>{{ $certificate->intern_school ?? $certificate->intern->school ?? 'FEU-TECH' }}</span>, 
                         has completed {{ (int)($certificate->completed_hours ?? 0) }} hours On-the-Job Training 
                         on {{ $startDate }} to {{ $endDate }} 
                         at the Schools Division Office-Quezon City, <span>{{ $certificate->intern_unit ?? 'Human Resource Teaching Unit' }}</span>.

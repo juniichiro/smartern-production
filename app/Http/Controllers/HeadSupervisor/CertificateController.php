@@ -86,6 +86,8 @@ class CertificateController extends Controller
             ? trim($intern->first_name.' '.$intern->last_name)
             : 'Unknown Intern';
 
+        $template = \App\Models\CertificateTemplate::getActive();
+
         $data = [
             'intern' => (object) [
                 'name' => $internFullName,
@@ -98,6 +100,7 @@ class CertificateController extends Controller
             ],
             'date' => $certificate->issue_date ?? now(),
             'verificationCode' => $certificate->verification_code,
+            'template' => $template,
         ];
 
         $pdf = Pdf::loadView('certificates.temp-certificate', $data);
@@ -132,5 +135,93 @@ class CertificateController extends Controller
         }
 
         return view('certificates.verification-success', compact('certificate'));
+    }
+
+    /**
+     * Show the page to edit the certificate template.
+     */
+    public function editTemplate()
+    {
+        $template = \App\Models\CertificateTemplate::getActive();
+        return view('head-supervisor.certificate-template', compact('template'));
+    }
+
+    /**
+     * Update/upload the certificate template.
+     */
+    public function updateTemplate(\Illuminate\Http\Request $request)
+    {
+        $request->validate([
+            'logo' => 'nullable|image|max:2048',
+            'footer' => 'nullable|image|max:4096',
+            'gov_text' => 'required|string|max:255',
+            'dept_text' => 'required|string|max:255',
+            'region_text' => 'required|string|max:255',
+            'office_text' => 'required|string|max:255',
+            'title_text' => 'required|string|max:255',
+            'body_text' => 'required|string',
+            'signatory_name' => 'required|string|max:255',
+            'signatory_title' => 'required|string|max:255',
+            'initials' => 'required|string|max:255',
+        ]);
+
+        $template = \App\Models\CertificateTemplate::latest()->first() ?? new \App\Models\CertificateTemplate();
+
+        $data = $request->only([
+            'gov_text',
+            'dept_text',
+            'region_text',
+            'office_text',
+            'title_text',
+            'body_text',
+            'signatory_name',
+            'signatory_title',
+            'initials',
+        ]);
+
+        if ($request->hasFile('logo')) {
+            $data['logo_path'] = $request->file('logo')->store('templates', 'public');
+        }
+
+        if ($request->hasFile('footer')) {
+            $data['footer_path'] = $request->file('footer')->store('templates', 'public');
+        }
+
+        if ($template->exists) {
+            $template->update($data);
+        } else {
+            \App\Models\CertificateTemplate::create($data);
+        }
+
+        return redirect()->route('head-supervisor.certificates.template.edit')
+            ->with('success', 'Certificate template updated successfully.');
+    }
+
+    /**
+     * Update the certificate metadata snapshot details directly (e.g. in case of system glitches).
+     */
+    public function updateDetails(\Illuminate\Http\Request $request, Certificate $certificate)
+    {
+        $request->validate([
+            'intern_name' => 'required|string|max:255',
+            'intern_course' => 'required|string|max:255',
+            'intern_school' => 'required|string|max:255',
+            'completed_hours' => 'required|integer|min:0',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+            'intern_unit' => 'required|string|max:255',
+        ]);
+
+        $certificate->update($request->only([
+            'intern_name',
+            'intern_course',
+            'intern_school',
+            'completed_hours',
+            'start_date',
+            'end_date',
+            'intern_unit',
+        ]));
+
+        return back()->with('success', 'Certificate information corrected successfully.');
     }
 }

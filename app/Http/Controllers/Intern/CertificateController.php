@@ -45,7 +45,7 @@ class CertificateController extends Controller
             ? trim($intern->first_name.' '.$intern->last_name)
             : 'Unknown Intern';
 
-        // Prepare data for the PDF template[cite: 7, 8]
+        // Prepare data for the PDF template
         $data = [
             'intern' => (object) [
                 'name' => $internFullName,
@@ -58,6 +58,7 @@ class CertificateController extends Controller
             ],
             'date' => $certificate->issue_date ?? now(),
             'verificationCode' => $certificate->verification_code,
+            'template' => $template = \App\Models\CertificateTemplate::getActive(),
         ];
 
         $pdf = Pdf::loadView('certificates.temp-certificate', $data);

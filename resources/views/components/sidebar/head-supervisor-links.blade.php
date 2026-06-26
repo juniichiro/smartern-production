@@ -3,7 +3,7 @@
     $isDeptSupervisor = $user->supervisorDetails && $user->supervisorDetails->office_id;
 
     $deptActive = Route::is('supervisor.tasks*') || Route::is('supervisor.announcements*') || Route::is('supervisor.attendance*') || Route::is('supervisor.certificates.*');
-    $divisionActive = Route::is('head-supervisor.schedule.*') || Route::is('head-supervisor.matching*') || Route::is('head-supervisor.onboarding.*') || Route::is('head-supervisor.offices.*') || Route::is('head-supervisor.interns*') || Route::is('head-supervisor.analytics*') || Route::is('head-supervisor.report*') || Route::is('head-supervisor.certificates.index');
+    $divisionActive = Route::is('head-supervisor.schedule.*') || Route::is('head-supervisor.matching*') || Route::is('head-supervisor.onboarding.*') || Route::is('head-supervisor.offices.*') || Route::is('head-supervisor.interns*') || Route::is('head-supervisor.analytics*') || Route::is('head-supervisor.report*') || Route::is('head-supervisor.certificates.*');
 @endphp
 
 <div x-data="{ 

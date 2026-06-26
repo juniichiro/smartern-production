@@ -212,6 +212,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Head Supervisor Certificates
         Route::get('/certificates', [HeadSupervisorCertificate::class, 'index'])->name('certificates.index');
         Route::get('/endorsements', [HeadSupervisorCertificate::class, 'endorsements'])->name('certificates.endorsements');
+        Route::get('/certificates-template', [HeadSupervisorCertificate::class, 'editTemplate'])->name('certificates.template.edit');
+        Route::post('/certificates-template', [HeadSupervisorCertificate::class, 'updateTemplate'])->name('certificates.template.update');
+        Route::put('/certificates/{certificate}/update-details', [HeadSupervisorCertificate::class, 'updateDetails'])->name('certificates.update-details');
         Route::get('/certificates/{certificate}', [HeadSupervisorCertificate::class, 'show'])->name('certificates.show');
         Route::post('/certificates/{certificate}/publish', [HeadSupervisorCertificate::class, 'publish'])->name('certificates.publish');
         Route::get('/certificates/{certificate}/download', [HeadSupervisorCertificate::class, 'download'])->name('certificates.download');
