@@ -95,7 +95,7 @@
                 {{-- Step 1 --}}
                 <div class="relative z-10 flex flex-col items-center text-center">
                     <div class="w-12 h-12 rounded-full flex items-center justify-center border-4 font-black transition-all duration-300
-                        {{ $step1Completed ? 'bg-[#0B5694] border-[#0B5694] text-white' : ($step1Active ? 'bg-white dark:bg-gray-900 border-[#0B5694] text-[#0B5694]' : 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-400') }}">
+                        {{ $step1Completed ? 'bg-[#0B5694] border-[#0B5694] text-white' : ($step1Active ? 'bg-[#0B5694] border-[#0B5694] text-white shadow-lg shadow-blue-500/30' : 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-400') }}">
                         @if($step1Completed)
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                         @else
@@ -109,7 +109,7 @@
                 {{-- Step 2 --}}
                 <div class="relative z-10 flex flex-col items-center text-center">
                     <div class="w-12 h-12 rounded-full flex items-center justify-center border-4 font-black transition-all duration-300
-                        {{ $step2Completed ? 'bg-[#0B5694] border-[#0B5694] text-white' : ($step2Active ? 'bg-white dark:bg-gray-900 border-[#0B5694] text-[#0B5694]' : 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-400') }}">
+                        {{ $step2Completed ? 'bg-[#0B5694] border-[#0B5694] text-white' : ($step2Active ? 'bg-[#0B5694] border-[#0B5694] text-white shadow-lg shadow-blue-500/30' : 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-400') }}">
                         @if($step2Completed)
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                         @else
@@ -123,7 +123,7 @@
                 {{-- Step 3 --}}
                 <div class="relative z-10 flex flex-col items-center text-center">
                     <div class="w-12 h-12 rounded-full flex items-center justify-center border-4 font-black transition-all duration-300
-                        {{ $step3Completed ? 'bg-green-600 border-green-600 text-white' : ($step3Active ? 'bg-white dark:bg-gray-900 border-[#0B5694] text-[#0B5694]' : 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-400') }}">
+                        {{ $step3Completed ? 'bg-green-600 border-green-600 text-white' : ($step3Active ? 'bg-[#0B5694] border-[#0B5694] text-white shadow-lg shadow-blue-500/30' : 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-400') }}">
                         @if($step3Completed)
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                         @else
