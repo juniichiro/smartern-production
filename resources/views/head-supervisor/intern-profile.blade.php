@@ -22,7 +22,7 @@
 
         <div class="space-y-8">
             {{-- Top Row: Identity & Progress --}}
-            <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+            <div class="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
                 {{-- Intern Header Section --}}
                 <div class="xl:col-span-7 bg-white dark:bg-gray-900 rounded-[20px] sm:rounded-[30px] border border-gray-100 dark:border-gray-800 shadow-sm p-4 sm:p-8 lg:p-10 flex flex-col sm:flex-row items-center gap-4 sm:gap-8 transition-all">
                     <x-avatar :user="$intern" size="32" circular="false" border="4" textSize="4xl" />
