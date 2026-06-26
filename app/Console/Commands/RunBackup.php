@@ -128,12 +128,31 @@ class RunBackup extends Command
 
             // 3. Backup Storage
             $this->info('Backing up storage files...');
-            $files = Storage::disk('public')->allFiles();
+            $disk = Storage::disk('public');
+            $files = $disk->allFiles();
+            $tempFilesToClean = [];
+
             foreach ($files as $file) {
-                $zip->addFile(Storage::disk('public')->path($file), 'storage/'.$file);
+                if (config('filesystems.disks.public.driver') === 's3') {
+                    $tempLocalFile = tempnam(sys_get_temp_dir(), 's3_zip_');
+                    file_put_contents($tempLocalFile, $disk->get($file));
+                    $zip->addFile($tempLocalFile, 'storage/'.$file);
+                    $tempFilesToClean[] = $tempLocalFile;
+                } else {
+                    $zip->addFile($disk->path($file), 'storage/'.$file);
+                }
             }
 
             $zip->close();
+
+            // Cleanup S3 temp files
+            if (!empty($tempFilesToClean)) {
+                foreach ($tempFilesToClean as $tempFile) {
+                    if (file_exists($tempFile)) {
+                        @unlink($tempFile);
+                    }
+                }
+            }
 
             // Cleanup temp SQL if it exists
             if (isset($tempSqlPath) && file_exists($tempSqlPath)) {

@@ -279,8 +279,8 @@ class AdminController extends Controller
 
     public function downloadBackup(SystemBackup $backup)
     {
-        if ($backup->file_path && Storage::exists($backup->file_path)) {
-            return Storage::download($backup->file_path);
+        if ($backup->file_path && Storage::disk('local')->exists($backup->file_path)) {
+            return Storage::disk('local')->download($backup->file_path);
         }
 
         return back()->with('error', 'Backup file not found.');
@@ -288,8 +288,8 @@ class AdminController extends Controller
 
     public function destroyBackup(SystemBackup $backup)
     {
-        if ($backup->file_path && Storage::exists($backup->file_path)) {
-            Storage::delete($backup->file_path);
+        if ($backup->file_path && Storage::disk('local')->exists($backup->file_path)) {
+            Storage::disk('local')->delete($backup->file_path);
         }
         $backup->delete();
 
