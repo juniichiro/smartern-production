@@ -33,26 +33,32 @@ class CheckSingleSession
                     'session_user_agent' => $request->userAgent(),
                     'session_ip' => $request->ip(),
                     'session_device_id' => $deviceId,
+                    'session_client_id' => $request->cookie('smartern_client_id'),
                 ]);
                 Cookie::queue('smartern_device_id', $deviceId, 0, '/', null, true, true);
                 Cache::put('user-session-' . $user->id, session()->getId());
             } else {
                 // Prevent Session Hijacking/Cookie Injection:
-                // Check if the User-Agent, IP, and the custom device ID cookie match the bound session details.
+                // Check if the User-Agent, IP, custom device ID cookie, and client ID cookie match.
                 $cookieDeviceId = $request->cookie('smartern_device_id');
                 $sessionDeviceId = session('session_device_id');
+                $cookieClientId = $request->cookie('smartern_client_id');
+                $sessionClientId = session('session_client_id');
 
                 if (session('session_user_agent') !== $request->userAgent() || 
                     session('session_ip') !== $request->ip() ||
                     !$cookieDeviceId || 
-                    $cookieDeviceId !== $sessionDeviceId) {
+                    $cookieDeviceId !== $sessionDeviceId ||
+                    !$cookieClientId ||
+                    $cookieClientId !== $sessionClientId) {
                     
                     Auth::guard('web')->logout();
                     $request->session()->invalidate();
                     $request->session()->regenerateToken();
 
-                    // Queue deletion of the device ID cookie to clean up
+                    // Queue deletion of the cookies to clean up
                     Cookie::queue(Cookie::forget('smartern_device_id'));
+                    Cookie::queue(Cookie::forget('smartern_client_id'));
 
                     if ($request->expectsJson() || $request->ajax()) {
                         return response()->json([
@@ -72,6 +78,7 @@ class CheckSingleSession
                     $request->session()->invalidate();
                     $request->session()->regenerateToken();
                     Cookie::queue(Cookie::forget('smartern_device_id'));
+                    Cookie::queue(Cookie::forget('smartern_client_id'));
 
                     if ($request->expectsJson() || $request->ajax()) {
                         return response()->json([
