@@ -20,6 +20,39 @@
         </header>
 
         {{-- Meta Data Cards --}}
+        @php
+            $internDetails = Auth::user()->internDetails;
+            $hasReachedHours = $internDetails && ($internDetails->hours_rendered >= $internDetails->required_hours);
+            
+            // Resolve tracker status
+            $status = 'not_initiated';
+            if ($certificate) {
+                $status = $certificate->status; // 'pending', 'endorsed', 'published'
+            } elseif ($hasReachedHours) {
+                $status = 'hours_completed';
+            }
+
+            // Step 1: Preparation (Active if hours met or draft started, completed if endorsed/published)
+            $step1Active = ($status === 'hours_completed' || $status === 'pending');
+            $step1Completed = in_array($status, ['endorsed', 'published']);
+
+            // Step 2: Supervisor Endorsement (Active if endorsed, completed if published)
+            $step2Active = ($status === 'endorsed');
+            $step2Completed = ($status === 'published');
+
+            // Step 3: Head Supervisor Approval (Active/Completed when published)
+            $step3Active = ($status === 'published');
+            $step3Completed = ($status === 'published');
+
+            // Desktop connecting line percentage
+            $stepPercent = 0;
+            if ($status === 'hours_completed') $stepPercent = 15;
+            elseif ($status === 'pending') $stepPercent = 33;
+            elseif ($status === 'endorsed') $stepPercent = 66;
+            elseif ($status === 'published') $stepPercent = 100;
+        @endphp
+
+        {{-- Meta Data Cards --}}
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
             <div class="bg-white dark:bg-gray-900 p-6 rounded-[20px] shadow-sm border border-gray-100 dark:border-gray-800 text-center">
                 <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">Certificate ID</p>
@@ -27,18 +60,22 @@
             </div>
             <div class="bg-white dark:bg-gray-900 p-6 rounded-[20px] shadow-sm border border-gray-100 dark:border-gray-800 text-center">
                 <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">Training Hours</p>
-                <p class="text-lg font-black text-gray-800 dark:text-gray-100 tracking-tight">{{ $certificate->completed_hours ?? 0 }} Hours</p>
+                <p class="text-lg font-black text-gray-800 dark:text-gray-100 tracking-tight">
+                    {{ $certificate->completed_hours ?? ($internDetails->hours_rendered ?? 0) }} / {{ $internDetails->required_hours ?? 0 }} Hours
+                </p>
             </div>
             <div class="bg-white dark:bg-gray-900 p-6 rounded-[20px] shadow-sm border border-gray-100 dark:border-gray-800 text-center">
                 <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">Status</p>
-                @if($certificate && $certificate->status === 'published')
+                @if($status === 'published')
                     <p class="text-lg font-black text-green-600 dark:text-green-500 uppercase tracking-wider">Ready for Pickup</p>
-                @elseif($certificate && $certificate->status === 'endorsed')
+                @elseif($status === 'endorsed')
                     <p class="text-lg font-black text-blue-500 uppercase tracking-wider">Awaiting Approval</p>
-                @elseif($certificate && $certificate->status === 'pending')
+                @elseif($status === 'pending')
                     <p class="text-lg font-black text-amber-500 uppercase tracking-wider">Under Review</p>
+                @elseif($status === 'hours_completed')
+                    <p class="text-lg font-black text-[#0B5694] uppercase tracking-wider">Awaiting Draft</p>
                 @else
-                    <p class="text-lg font-black text-gray-500 uppercase tracking-wider">Not Initiated</p>
+                    <p class="text-lg font-black text-gray-500 uppercase tracking-wider">In Progress</p>
                 @endif
             </div>
         </div>
@@ -53,92 +90,82 @@
                 <div class="absolute top-1/2 left-0 right-0 h-1 bg-gray-200 dark:bg-gray-800 -translate-y-1/2 hidden md:block z-0"></div>
                 
                 {{-- Active indicator line (desktop) --}}
-                @php
-                    $stepPercent = 0;
-                    if ($certificate) {
-                        if ($certificate->status === 'pending') $stepPercent = 25;
-                        elseif ($certificate->status === 'endorsed') $stepPercent = 60;
-                        elseif ($certificate->status === 'published') $stepPercent = 100;
-                    }
-                @endphp
                 <div class="absolute top-1/2 left-0 h-1 bg-[#0B5694] -translate-y-1/2 hidden md:block transition-all duration-500 z-0" style="width: {{ $stepPercent }}%;"></div>
 
                 {{-- Step 1 --}}
-                @php
-                    $step1Active = $certificate ? true : false;
-                    $step1Completed = $certificate && in_array($certificate->status, ['pending', 'endorsed', 'published']);
-                @endphp
                 <div class="relative z-10 flex flex-col items-center text-center">
                     <div class="w-12 h-12 rounded-full flex items-center justify-center border-4 font-black transition-all duration-300
-                        {{ $step1Completed ? 'bg-[#0B5694] border-[#0B5694] text-white' : ($step1Active ? 'bg-white border-[#0B5694] text-[#0B5694]' : 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-400') }}">
+                        {{ $step1Completed ? 'bg-[#0B5694] border-[#0B5694] text-white' : ($step1Active ? 'bg-white dark:bg-gray-900 border-[#0B5694] text-[#0B5694]' : 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-400') }}">
                         @if($step1Completed)
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                         @else
                             1
                         @endif
                     </div>
-                    <p class="mt-3 text-xs font-bold uppercase tracking-wider {{ $step1Active ? 'text-gray-800 dark:text-gray-200' : 'text-gray-400' }}">Preparation</p>
+                    <p class="mt-3 text-xs font-bold uppercase tracking-wider {{ ($step1Active || $step1Completed) ? 'text-gray-800 dark:text-gray-200' : 'text-gray-400' }}">Preparation</p>
                     <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-1 max-w-[150px]">Certificate details prepared by supervisor</p>
                 </div>
 
                 {{-- Step 2 --}}
-                @php
-                    $step2Active = $certificate && in_array($certificate->status, ['pending', 'endorsed', 'published']);
-                    $step2Completed = $certificate && in_array($certificate->status, ['endorsed', 'published']);
-                @endphp
                 <div class="relative z-10 flex flex-col items-center text-center">
                     <div class="w-12 h-12 rounded-full flex items-center justify-center border-4 font-black transition-all duration-300
-                        {{ $step2Completed ? 'bg-[#0B5694] border-[#0B5694] text-white' : ($step2Active ? 'bg-white border-[#0B5694] text-[#0B5694]' : 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-400') }}">
+                        {{ $step2Completed ? 'bg-[#0B5694] border-[#0B5694] text-white' : ($step2Active ? 'bg-white dark:bg-gray-900 border-[#0B5694] text-[#0B5694]' : 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-400') }}">
                         @if($step2Completed)
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                         @else
                             2
                         @endif
                     </div>
-                    <p class="mt-3 text-xs font-bold uppercase tracking-wider {{ $step2Active ? 'text-gray-800 dark:text-gray-200' : 'text-gray-400' }}">Supervisor Endorsement</p>
+                    <p class="mt-3 text-xs font-bold uppercase tracking-wider {{ ($step2Active || $step2Completed) ? 'text-gray-800 dark:text-gray-200' : 'text-gray-400' }}">Supervisor Endorsement</p>
                     <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-1 max-w-[150px]">Endorsed to Head Supervisor for signature</p>
                 </div>
 
                 {{-- Step 3 --}}
-                @php
-                    $step3Active = $certificate && in_array($certificate->status, ['endorsed', 'published']);
-                    $step3Completed = $certificate && $certificate->status === 'published';
-                @endphp
                 <div class="relative z-10 flex flex-col items-center text-center">
                     <div class="w-12 h-12 rounded-full flex items-center justify-center border-4 font-black transition-all duration-300
-                        {{ $step3Completed ? 'bg-green-600 border-green-600 text-white' : ($step3Active ? 'bg-white border-[#0B5694] text-[#0B5694]' : 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-400') }}">
+                        {{ $step3Completed ? 'bg-green-600 border-green-600 text-white' : ($step3Active ? 'bg-white dark:bg-gray-900 border-[#0B5694] text-[#0B5694]' : 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-400') }}">
                         @if($step3Completed)
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                         @else
                             3
                         @endif
                     </div>
-                    <p class="mt-3 text-xs font-bold uppercase tracking-wider {{ $step3Active ? 'text-gray-800 dark:text-gray-200' : 'text-gray-400' }}">Head Supervisor Approval</p>
+                    <p class="mt-3 text-xs font-bold uppercase tracking-wider {{ ($step3Active || $step3Completed) ? 'text-gray-800 dark:text-gray-200' : 'text-gray-400' }}">Head Supervisor Approval</p>
                     <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-1 max-w-[150px]">Signed and ready for physical pickup</p>
                 </div>
             </div>
 
             {{-- Status Guidance Alert Panel --}}
             <div class="mt-10 border border-dashed rounded-2xl p-6 text-center transition duration-300
-                @if(!$certificate)
+                @if($status === 'not_initiated')
                     bg-gray-50 dark:bg-gray-900/50 border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400
-                @elseif($certificate->status === 'pending')
+                @elseif($status === 'hours_completed')
+                    bg-blue-50/30 dark:bg-blue-950/5 border-blue-200 dark:border-blue-900/30 text-blue-800 dark:text-blue-300
+                @elseif($status === 'pending')
                     bg-amber-50/50 dark:bg-amber-950/10 border-amber-200 dark:border-amber-900/30 text-amber-800 dark:text-amber-300
-                @elseif($certificate->status === 'endorsed')
+                @elseif($status === 'endorsed')
                     bg-blue-50/50 dark:bg-blue-950/10 border-blue-200 dark:border-blue-900/30 text-blue-800 dark:text-blue-300
-                @elseif($certificate->status === 'published')
+                @elseif($status === 'published')
                     bg-green-50 dark:bg-green-950/10 border-green-200 dark:border-green-900/30 text-green-800 dark:text-green-300
                 @endif">
                 
-                @if(!$certificate)
+                @if($status === 'not_initiated')
                     <div class="flex flex-col items-center">
                         <svg class="w-12 h-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
                         </svg>
-                        <h4 class="font-bold text-base uppercase tracking-wider text-gray-800 dark:text-gray-200 mb-1">Process Not Yet Initiated</h4>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto">Your certificate preparation has not yet started. Your Office Supervisor will generate the record once your target internship hours are verified and completed.</p>
+                        <h4 class="font-bold text-base uppercase tracking-wider text-gray-800 dark:text-gray-200 mb-1">Internship In Progress</h4>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto">You have not yet completed your required hours ({{ $internDetails->hours_rendered ?? 0 }} / {{ $internDetails->required_hours ?? 0 }} hours rendered). The certificate tracker will activate once you reach the target hours.</p>
                     </div>
-                @elseif($certificate->status === 'pending')
+                @elseif($status === 'hours_completed')
+                    <div class="flex flex-col items-center">
+                        <svg class="w-12 h-12 text-[#0B5694] mb-3 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <h4 class="font-bold text-base uppercase tracking-wider text-[#0B5694] mb-1">Hours Rendered - Awaiting Draft</h4>
+                        <p class="text-sm max-w-md mx-auto">Congratulations! You have completed your required hours ({{ $internDetails->hours_rendered }} / {{ $internDetails->required_hours }}). Your Office Supervisor is now preparing your certificate draft.</p>
+                    </div>
+                @elseif($status === 'pending')
                     <div class="flex flex-col items-center">
                         <svg class="w-12 h-12 text-amber-500 mb-3 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
@@ -146,15 +173,15 @@
                         <h4 class="font-bold text-base uppercase tracking-wider text-amber-800 dark:text-amber-200 mb-1">Under Office Review</h4>
                         <p class="text-sm max-w-md mx-auto">Your details are currently being compiled and reviewed by your Office Supervisor. Once they complete verification, it will be endorsed upward.</p>
                     </div>
-                @elseif($certificate->status === 'endorsed')
+                @elseif($status === 'endorsed')
                     <div class="flex flex-col items-center">
-                        <svg class="w-12 h-12 text-blue-500 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <svg class="w-12 h-12 text-blue-500 mb-3 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         <h4 class="font-bold text-base uppercase tracking-wider text-blue-800 dark:text-blue-200 mb-1">Endorsed & Awaiting Approval</h4>
                         <p class="text-sm max-w-md mx-auto">Good news! Your supervisor has endorsed your certificate of completion. It is now queued for review and signature by the Head Supervisor, Ms. Michelle A. Mal-in.</p>
                     </div>
-                @elseif($certificate->status === 'published')
+                @elseif($status === 'published')
                     <div class="flex flex-col items-center">
                         <div class="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center text-green-600 mb-4 border border-green-200 dark:border-green-800/50 shadow-sm shadow-green-500/10">
                             <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -168,7 +195,7 @@
                         <div class="mt-4 p-4 bg-white dark:bg-gray-900 border border-green-100 dark:border-green-900/50 rounded-xl shadow-sm max-w-lg">
                             <p class="text-xs uppercase font-bold text-gray-400 dark:text-gray-500 tracking-widest mb-1">Instructions</p>
                             <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-                                Please proceed to the office of the Head Supervisor, <strong class="text-gray-900 dark:text-white font-extrabold">Ms. Michelle A. Mal-in</strong> (or Ms. Mal-in), at the Schools Division Office Quezon City to claim your official physical certificate.
+                                Please proceed to the office of the Head Supervisor, <strong class="text-gray-900 dark:text-white font-extrabold">Ms. Michelle A. Mal-in</strong>, at the Schools Division Office Quezon City to claim your official physical certificate.
                             </p>
                         </div>
                     </div>
