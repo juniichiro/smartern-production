@@ -118,7 +118,7 @@ class="relative">
 
             <div class="overflow-hidden">
                 <p class="text-[14px] font-semibold truncate text-white">{{ $displayName }}</p>
-                <p class="text-[11px] text-blue-200 dark:text-gray-400 uppercase tracking-normal leading-tight">{{ $userRole }}</p>
+                <p class="text-[11px] text-blue-200 dark:text-gray-400 uppercase tracking-normal leading-tight truncate" title="{{ $userRole }}">{{ $userRole }}</p>
                 <p class="text-[10px] text-blue-300 dark:text-gray-400 font-mono tracking-wider mt-0.5 opacity-90">ID: {{ $user->display_id }}</p>
             </div>
         </div>
