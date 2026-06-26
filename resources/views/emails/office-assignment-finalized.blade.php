@@ -122,10 +122,6 @@
                     <span class="info-label">Assigned Office:</span>
                     <span class="info-value">{{ $office->name }}</span>
                 </div>
-                <div class="info-row">
-                    <span class="info-label">Office Limit:</span>
-                    <span class="info-value">{{ $office->intern_limit }} interns max</span>
-                </div>
             </div>
 
             <p><strong>What's Next?</strong></p>
