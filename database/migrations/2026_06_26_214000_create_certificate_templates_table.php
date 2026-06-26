@@ -23,7 +23,7 @@ return new class extends Migration
             
             // Certificate Title & Body Template
             $table->string('title_text')->default('CERTIFICATE OF COMPLETION');
-            $table->text('body_text')->default('This is to certify that {name} {article} {course} student of {school}, has completed {hours} hours On-the-Job Training on {start_date} to {end_date} at the Schools Division Office-Quezon City, {unit}.');
+            $table->text('body_text')->nullable();
 
             // Bottom Section (Signatory / Initials)
             $table->string('signatory_name')->default('MICHELLE A. MAL-IN');

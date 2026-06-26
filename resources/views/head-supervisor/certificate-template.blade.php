@@ -99,7 +99,7 @@
 
                         <div>
                             <label for="body_text" class="block text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Statement Format</label>
-                            <textarea name="body_text" id="body_text" rows="5" class="w-full bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-500 transition text-gray-800 dark:text-gray-100 font-medium leading-relaxed">{{ old('body_text', $template->body_text) }}</textarea>
+                            <textarea name="body_text" id="body_text" rows="5" class="w-full bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-500 transition text-gray-800 dark:text-gray-100 font-medium leading-relaxed">{{ old('body_text', $template->body_text ?? 'This is to certify that {name} {article} {course} student of {school}, has completed {hours} hours On-the-Job Training on {start_date} to {end_date} at the Schools Division Office-Quezon City, {unit}.') }}</textarea>
                         </div>
 
                         {{-- Template Variables Guide --}}
