@@ -217,6 +217,7 @@ class="relative">
              statusMessage: '',
              statusType: 'success',
              submitting: false,
+             csrfToken: document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
              
              init() {
                  this.isMobile = window.innerWidth < 768;
@@ -256,7 +257,7 @@ class="relative">
                      method: 'POST',
                      headers: {
                          'Content-Type': 'application/json',
-                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                         'X-CSRF-TOKEN': this.csrfToken
                      },
                      body: JSON.stringify({ one_time_password: code })
                  })
@@ -284,7 +285,7 @@ class="relative">
                      method: 'POST',
                      headers: {
                          'Content-Type': 'application/json',
-                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                         'X-CSRF-TOKEN': this.csrfToken
                      }
                  })
                  .then(res => {
@@ -314,7 +315,7 @@ class="relative">
                      method: 'POST',
                      headers: {
                          'Content-Type': 'application/json',
-                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                         'X-CSRF-TOKEN': this.csrfToken
                      }
                  })
                  .then(res => res.json().then(data => ({ ok: res.ok, body: data })))
@@ -343,7 +344,7 @@ class="relative">
                      method: 'POST',
                      headers: {
                          'Content-Type': 'application/json',
-                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                         'X-CSRF-TOKEN': this.csrfToken
                      },
                      body: JSON.stringify({ one_time_password: code })
                  })
@@ -370,7 +371,7 @@ class="relative">
                      method: 'POST',
                      headers: {
                          'Content-Type': 'application/json',
-                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                         'X-CSRF-TOKEN': this.csrfToken
                      }
                  })
                  .then(res => {
