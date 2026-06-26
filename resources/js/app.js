@@ -1636,8 +1636,11 @@ Alpine.data('securityMonitorManager', (recentUserLogs = {}) => ({
         }, 800);
     },
 
-    openEvaluation(user, log, displayName) {
+    openEvaluation(user, log, displayName, userRouteKey) {
         this.evaluatingUser = user;
+        if (this.evaluatingUser) {
+            this.evaluatingUser.route_key = userRouteKey;
+        }
         this.evaluatingLog = log;
         this.evaluatingDisplayName = displayName;
         this.selectedAction = 'safe';
@@ -1654,7 +1657,8 @@ Alpine.data('securityMonitorManager', (recentUserLogs = {}) => ({
             pathPart = 'mark-suspended';
         }
         
-        return `/admin/security/${pathPart}/${this.evaluatingUser.id}/${this.evaluatingLog.log_id}`;
+        const userRouteKey = this.evaluatingUser.route_key || this.evaluatingUser.id;
+        return `/admin/security/${pathPart}/${userRouteKey}/${this.evaluatingLog.log_id}`;
     }
 }));
 

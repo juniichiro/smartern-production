@@ -272,7 +272,7 @@
                                     }
                                 @endphp
                                 @if($canEvaluate)
-                                    <button @click="openEvaluation(@js($log->user), @js($log), '{{ addslashes($displayName) }}')" type="button" class="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-indigo-100 dark:hover:bg-indigo-900/40 border border-indigo-100 dark:border-indigo-800 transition cursor-pointer">
+                                    <button @click="openEvaluation(@js($log->user), @js($log), '{{ addslashes($displayName) }}', '{{ $log->user->getRouteKey() }}')" type="button" class="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-indigo-100 dark:hover:bg-indigo-900/40 border border-indigo-100 dark:border-indigo-800 transition cursor-pointer">
                                         Evaluate
                                     </button>
                                 @endif
@@ -354,7 +354,7 @@
                                     </span>
                                 </div>
                             @endif
-                            <button @click="openEvaluation(@js($log->user), @js($log), '{{ addslashes($displayNameMobile) }}')" type="button" class="w-full min-h-[44px] bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-indigo-100 dark:hover:bg-indigo-900/40 border border-indigo-100 dark:border-indigo-800 transition text-center cursor-pointer">
+                            <button @click="openEvaluation(@js($log->user), @js($log), '{{ addslashes($displayNameMobile) }}', '{{ $log->user->getRouteKey() }}')" type="button" class="w-full min-h-[44px] bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-indigo-100 dark:hover:bg-indigo-900/40 border border-indigo-100 dark:border-indigo-800 transition text-center cursor-pointer">
                                 Evaluate Account
                             </button>
                         </div>
