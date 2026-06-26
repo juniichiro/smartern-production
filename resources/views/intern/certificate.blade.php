@@ -67,7 +67,7 @@
                 <div class="bg-white dark:bg-gray-900 p-6 rounded-[calc(24px-6px)] border border-gray-100 dark:border-gray-800/50 text-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]">
                     <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-2">Training Hours</p>
                     <p class="text-base font-extrabold text-gray-800 dark:text-gray-100 tracking-tight">
-                        {{ $certificate->completed_hours ?? ($internDetails->hours_rendered ?? 0) }} <span class="text-xs text-gray-400 font-medium lowercase">of</span> {{ $internDetails->required_hours ?? 0 }} <span class="text-xs text-gray-400 font-medium">hrs</span>
+                        {{ $internDetails->hours_rendered ?? 0 }} <span class="text-xs text-gray-400 font-medium">rendered hrs</span>
                     </p>
                 </div>
             </div>
@@ -94,7 +94,7 @@
         {{-- Progress Tracking Card (Double Bezel & Premium Spacing) --}}
         <div class="bg-gray-100/40 dark:bg-gray-800/10 p-2 md:p-3 rounded-[32px] border border-gray-200/40 dark:border-gray-800/40 shadow-[0_30px_60px_rgba(0,0,0,0.02)] dark:shadow-none max-w-4xl mx-auto mb-10 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]">
             <div class="bg-white dark:bg-gray-900 p-8 md:p-12 rounded-[calc(32px-10px)] border border-gray-100 dark:border-gray-800/50 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]">
-                <h3 class="text-sm font-bold text-gray-800 dark:text-gray-100 uppercase tracking-[0.2em] mb-12 text-center">Milestones timeline</h3>
+                <h3 class="text-sm font-bold text-gray-800 dark:text-gray-100 uppercase tracking-[0.2em] mb-12 text-center">Certificate Timeline</h3>
 
                 {{-- Stepper Progress Bar --}}
                 <div class="relative flex flex-col md:flex-row justify-between items-start md:items-center gap-10 md:gap-4 mb-14">
