@@ -30,31 +30,32 @@
                     <div class="text-center sm:text-left flex-1 min-w-0">
                         <h3 class="text-xl sm:text-2xl font-black text-gray-900 dark:text-white truncate">{{ $intern->first_name }} {{ $intern->last_name }}</h3>
                         
-                        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-x-4 gap-y-1 mt-2 max-w-full">
-                            <p class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400 font-bold flex items-center gap-1.5 min-w-0 max-w-full">
+                        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-x-4 gap-y-1.5 mt-2 max-w-full text-gray-500 dark:text-gray-400 text-[11px] sm:text-xs font-bold">
+                            <p class="flex items-center gap-1.5 min-w-0 max-w-full">
                                 <svg class="flex-shrink-0" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                                 <span class="truncate" title="{{ $intern->user->email }}">{{ $intern->user->email }}</span>
                             </p>
-                            <span class="w-1 h-1 bg-gray-300 dark:bg-gray-700 rounded-full hidden sm:block"></span>
-                            <p class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400 font-bold flex items-center gap-1.5">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                                {{ $intern->phone_number ?? 'No Phone' }}
+                            <span class="w-1 h-1 bg-gray-300 dark:bg-gray-700 rounded-full hidden sm:block flex-shrink-0"></span>
+                            <p class="flex items-center gap-1.5 flex-shrink-0">
+                                <svg class="flex-shrink-0" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                                <span>{{ $intern->phone_number ?? 'No Phone' }}</span>
                             </p>
-                        </div>
-
-                        <p class="text-[10px] sm:text-xs text-red-600 dark:text-red-400 font-black uppercase tracking-widest mt-2 flex flex-wrap items-center justify-center sm:justify-start gap-x-3 gap-y-1 max-w-full">
-                            <span class="truncate max-w-[150px] sm:max-w-xs" title="ICE: {{ $intern->emergency_contact ?? 'Not Provided' }}">ICE: {{ $intern->emergency_contact ?? 'Not Provided' }}</span>
-                            @if($intern->emergency_contact_number)
-                                <span class="w-1 h-1 bg-red-300 dark:bg-red-800 rounded-full hidden sm:block"></span>
-                                <span class="flex items-center gap-1.5 min-w-0">
-                                    <svg class="flex-shrink-0" xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                                    <span class="truncate">{{ $intern->emergency_contact_number }}</span>
-                                </span>
+                            @if($intern->emergency_contact || $intern->emergency_contact_number)
+                                <span class="w-1 h-1 bg-gray-300 dark:bg-gray-700 rounded-full hidden sm:block flex-shrink-0"></span>
+                                <p class="flex items-center gap-1.5 text-red-600 dark:text-red-400 font-bold min-w-0 max-w-full">
+                                    <svg class="flex-shrink-0 text-red-500" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                                    <span class="truncate" title="ICE: {{ $intern->emergency_contact ?? 'Not Provided' }} @if($intern->emergency_contact_number) ({{ $intern->emergency_contact_number }}) @endif">
+                                        ICE: {{ $intern->emergency_contact ?? 'Not Provided' }}
+                                        @if($intern->emergency_contact_number)
+                                            ({{ $intern->emergency_contact_number }})
+                                        @endif
+                                    </span>
+                                </p>
                             @endif
-                        </p>
+                        </div>
                         
-                        <div class="mt-4 inline-flex max-w-full bg-blue-50 dark:bg-blue-950/30 text-[#0B5694] dark:text-blue-400 text-[10px] sm:text-[11px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest border border-blue-100 dark:border-blue-900/50 shadow-sm" title="{{ $intern->office->name ?? 'Unassigned Department' }}">
-                            <span class="truncate">{{ $intern->office->name ?? 'Unassigned Department' }}</span>
+                        <div class="mt-4 inline-block max-w-full truncate bg-blue-50 dark:bg-blue-950/30 text-[#0B5694] dark:text-blue-400 text-[10px] sm:text-[11px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest border border-blue-100 dark:border-blue-900/50 shadow-sm" title="{{ $intern->office->name ?? 'Unassigned Department' }}">
+                            {{ $intern->office->name ?? 'Unassigned Department' }}
                         </div>
                     </div>
                 </div>
