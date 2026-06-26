@@ -169,7 +169,12 @@
                             </label>
                         </div>
                         <div class="flex items-center gap-4 justify-center">
-                            <button type="button" @click="step = 2" class="text-[10px] font-black text-gray-400 dark:text-gray-500 hover:text-[#0B5694] dark:hover:text-blue-400 uppercase tracking-widest transition-colors">Discard and Fill Manually</button>
+                            <button type="button" 
+                                    @click="resumeFile = null; resumeFileName = ''; resumePreviewUrl = null; step = 2" 
+                                    class="px-6 py-3.5 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-700 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m13 17 5-5-5-5"/><path d="m6 17 5-5-5-5"/></svg>
+                                <span>Skip and Fill Manually</span>
+                            </button>
                         </div>
                     </div>
                 </div>

@@ -63,7 +63,7 @@ class StoreOnboardingRequest extends FormRequest
             'emergency_contact' => ['required', 'string', 'max:100', 'regex:/^[a-zA-Z\s\-\.]+$/'],
             'emergency_contact_number' => ['nullable', 'required_with:emergency_contact', 'string', 'min:10', 'max:11', 'regex:/^[0-9]*$/'],
             'profile_picture' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
-            'resume_pdf' => ['required', 'file', 'mimetypes:application/pdf', 'max:5120'],
+            'resume_pdf' => ['nullable', 'file', 'mimetypes:application/pdf', 'max:5120'],
             'tech_skills' => ['nullable', 'array'],
             'tech_skills.*' => ['nullable', 'string', 'max:500', 'regex:/^[^<>]*$/'],
             'tech_scores' => ['nullable', 'array'],
@@ -84,7 +84,6 @@ class StoreOnboardingRequest extends FormRequest
         return [
             'email.unique' => 'An application with this email address has already been submitted. Please use a different email or wait for your evaluation results.',
             'gender_other_specify.required_if' => 'Please specify your gender.',
-            'resume_pdf.required' => 'A PDF resume is required to apply.',
             'privacy_acknowledgement.accepted' => 'You must acknowledge the Privacy Policy and Data Privacy Act to submit.',
         ];
     }
