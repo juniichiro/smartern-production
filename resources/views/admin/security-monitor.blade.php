@@ -8,7 +8,7 @@
     userName="{{ Auth::user()->email }}" 
     userRole="Admin"
 >
-    <div x-data="securityMonitorManager()" class="flex flex-col flex-1">
+    <div x-data="securityMonitorManager(@js($recentUserLogs))" class="flex flex-col flex-1">
         {{-- Header --}}
         <x-page-header 
             title="Security Monitor" 
@@ -190,6 +190,15 @@
                         @php
                             $score = $log->anomaly_score;
                             $color = $score > 0.7 ? 'rose' : ($score > 0.5 ? 'orange' : 'emerald');
+                            
+                            $displayName = '';
+                            if($log->internDetails) {
+                                $displayName = $log->internDetails->first_name . ' ' . $log->internDetails->last_name;
+                            } elseif($log->supervisorDetails) {
+                                $displayName = $log->supervisorDetails->first_name . ' ' . $log->supervisorDetails->last_name;
+                            } else {
+                                $displayName = ($log->user && $log->user->role_id === \App\Enums\UserRole::ADMIN) ? 'SmarTern Admin' : ($log->user->email ?? 'System');
+                            }
                         @endphp
                         <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors group">
                             <td class="px-6 lg:px-8 py-6">
@@ -256,51 +265,9 @@
                                                 @endif
                                             </span>
                                         @endif
-                                        <div x-data="{ open: false }" class="relative inline-block text-left">
-                                            <button @click="open = !open" @click.away="open = false" type="button" class="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-indigo-100 dark:hover:bg-indigo-900/40 border border-indigo-100 dark:border-indigo-800 transition cursor-pointer">
-                                                Evaluate
-                                                <svg class="w-3.5 h-3.5 transition-transform duration-200" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
-                                                </svg>
-                                            </button>
-                                            <div x-show="open" 
-                                                 x-transition:enter="transition ease-out duration-100" 
-                                                 x-transition:enter-start="transform opacity-0 scale-95" 
-                                                 x-transition:enter-end="transform opacity-100 scale-100" 
-                                                 x-transition:leave="transition ease-in duration-75" 
-                                                 x-transition:leave-start="transform opacity-100 scale-100" 
-                                                 x-transition:leave-end="transform opacity-0 scale-95" 
-                                                 class="absolute right-0 mt-2 w-56 rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-xl z-50 py-2 divide-y divide-gray-50 dark:divide-gray-700/50" 
-                                                 style="display: none;"
-                                            >
-                                                <div class="px-4 py-2.5 text-left">
-                                                    <p class="text-[9px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500">Security Assessment</p>
-                                                </div>
-                                                <div class="py-1">
-                                                    <form method="POST" action="{{ route('admin.security.markSafe', [$log->user, $log]) }}" class="block">
-                                                        @csrf
-                                                        <button type="submit" class="w-full text-left px-4 py-2 text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition flex items-center gap-2">
-                                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                                                            Mark Safe
-                                                        </button>
-                                                    </form>
-                                                    <form method="POST" action="{{ route('admin.security.markCompromised', [$log->user, $log]) }}" class="block">
-                                                        @csrf
-                                                        <button type="submit" class="w-full text-left px-4 py-2 text-[10px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/30 transition flex items-center gap-2">
-                                                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                                                            Mark Compromised
-                                                        </button>
-                                                    </form>
-                                                    <form method="POST" action="{{ route('admin.security.markSuspended', [$log->user, $log]) }}" class="block">
-                                                        @csrf
-                                                        <button type="submit" class="w-full text-left px-4 py-2 text-[10px] font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition flex items-center gap-2">
-                                                            <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
-                                                            Suspend Account
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <button @click="openEvaluation(@js($log->user), @js($log), '{{ addslashes($displayName) }}')" type="button" class="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-indigo-100 dark:hover:bg-indigo-900/40 border border-indigo-100 dark:border-indigo-800 transition cursor-pointer">
+                                            Evaluate
+                                        </button>
                                     </div>
                                 @endif
                             </td>
@@ -359,7 +326,16 @@
                             }
                         }
                     @endphp
-                    @if($canEvaluateMobile)
+                            @php
+                                $displayNameMobile = '';
+                                if($log->internDetails) {
+                                    $displayNameMobile = $log->internDetails->first_name . ' ' . $log->internDetails->last_name;
+                                } elseif($log->supervisorDetails) {
+                                    $displayNameMobile = $log->supervisorDetails->first_name . ' ' . $log->supervisorDetails->last_name;
+                                } else {
+                                    $displayNameMobile = ($log->user && $log->user->role_id === \App\Enums\UserRole::ADMIN) ? 'SmarTern Admin' : ($log->user->email ?? 'System');
+                                }
+                            @endphp
                         <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800/50 space-y-2">
                             @if($log->user->locked_until && now()->lessThan($log->user->locked_until))
                                 <div class="text-center mb-2">
@@ -368,22 +344,10 @@
                                     </span>
                                 </div>
                             @endif
-                            <div class="grid grid-cols-3 gap-2">
-                                <form method="POST" action="{{ route('admin.security.markSafe', [$log->user, $log]) }}" class="w-full">
-                                    @csrf
-                                    <button type="submit" class="w-full min-h-[44px] bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-lg text-[9px] font-bold uppercase tracking-wider hover:bg-emerald-100 dark:hover:bg-emerald-900/40 border border-emerald-100 dark:border-emerald-800 transition text-center cursor-pointer">Safe</button>
-                                </form>
-                                <form method="POST" action="{{ route('admin.security.markCompromised', [$log->user, $log]) }}" class="w-full">
-                                    @csrf
-                                    <button type="submit" class="w-full min-h-[44px] bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 rounded-lg text-[9px] font-bold uppercase tracking-wider hover:bg-amber-100 dark:hover:bg-amber-900/40 border border-amber-100 dark:border-amber-800 transition text-center cursor-pointer">Reset</button>
-                                </form>
-                                <form method="POST" action="{{ route('admin.security.markSuspended', [$log->user, $log]) }}" class="w-full">
-                                    @csrf
-                                    <button type="submit" class="w-full min-h-[44px] bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 rounded-lg text-[9px] font-bold uppercase tracking-wider hover:bg-rose-100 dark:hover:bg-rose-900/40 border border-rose-100 dark:border-rose-800 transition text-center cursor-pointer">Suspend</button>
-                                </form>
-                            </div>
+                            <button @click="openEvaluation(@js($log->user), @js($log), '{{ addslashes($displayNameMobile) }}')" type="button" class="w-full min-h-[44px] bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-indigo-100 dark:hover:bg-indigo-900/40 border border-indigo-100 dark:border-indigo-800 transition text-center cursor-pointer">
+                                Evaluate Account
+                            </button>
                         </div>
-                    @endif
                 </div>
             </div>
             @empty
@@ -587,6 +551,124 @@
                 @endforelse
             </div>
         </x-table-container>
+    </div>
+
+    {{-- High-End Contextual Evaluation Modal --}}
+    <div x-show="showModal" 
+         class="fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-[150] flex items-center justify-center" 
+         style="display: none;"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+    >
+        {{-- Backdrop --}}
+        <div class="fixed inset-0 transform transition-all" @click="showModal = false">
+            <div class="absolute inset-0 bg-gray-950/60 backdrop-blur-sm"></div>
+        </div>
+
+        {{-- Modal Box --}}
+        <div class="bg-white dark:bg-gray-950 rounded-[35px] border border-gray-100 dark:border-gray-800/80 shadow-2xl transform transition-all w-full max-w-4xl sm:mx-auto overflow-hidden flex flex-col max-h-[85vh] relative z-10"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 scale-95 translate-y-4"
+             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+             x-transition:leave-end="opacity-0 scale-95 translate-y-4"
+        >
+            {{-- Modal Header --}}
+            <div class="p-6 sm:p-8 border-b border-gray-50 dark:border-gray-900 flex justify-between items-start">
+                <div>
+                    <h3 class="text-lg sm:text-xl font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight">Evaluate Flagged Account</h3>
+                    <p class="text-xs text-gray-400 dark:text-gray-500 font-medium italic mt-1" x-text="`Reviewing user: ${evaluatingDisplayName} (${evaluatingUser?.email || ''})`"></p>
+                </div>
+                <button @click="showModal = false" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors p-2 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            {{-- Modal Content Split (Recent Log Trail + Action Panel) --}}
+            <div class="flex-1 overflow-y-auto p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-2 gap-8 custom-scrollbar">
+                
+                {{-- Left Column: User's Recent Log Trail --}}
+                <div class="flex flex-col space-y-4 min-h-0">
+                    <h4 class="text-xs font-black uppercase tracking-wider text-gray-400 dark:text-gray-500">Recent Login & Activity Trail</h4>
+                    
+                    <div class="flex-1 overflow-y-auto space-y-3 pr-2 max-h-[350px] lg:max-h-none custom-scrollbar">
+                        <template x-for="log in (userLogsMap[evaluatingUser?.id] || [])" :key="log.log_id">
+                            <div class="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-800/80 flex items-start justify-between gap-4">
+                                <div class="space-y-1">
+                                    <span class="text-[10px] font-black uppercase tracking-tight text-gray-800 dark:text-gray-200" x-text="log.action"></span>
+                                    <p class="text-xs text-gray-400 dark:text-gray-500 font-medium italic line-clamp-2" x-text="log.resource"></p>
+                                    <div class="flex flex-wrap gap-2 text-[9px] text-gray-300 dark:text-gray-600 font-bold uppercase tracking-wider pt-1">
+                                        <span x-text="`IP: ${log.ip_address || 'N/A'}`"></span>
+                                        <span>•</span>
+                                        <span x-text="log.device"></span>
+                                        <span>•</span>
+                                        <span x-text="log.time_ago"></span>
+                                    </div>
+                                </div>
+                                <span class="shrink-0 text-[10px] font-bold px-2 py-1 rounded-full uppercase border"
+                                      :class="log.anomaly_score > 0.7 ? 'bg-rose-50 text-rose-500 border-rose-100 dark:bg-rose-950/20' : (log.anomaly_score > 0.5 ? 'bg-orange-50 text-orange-500 border-orange-100 dark:bg-orange-950/20' : 'bg-emerald-50 text-emerald-500 border-emerald-100 dark:bg-emerald-950/20')"
+                                      x-text="parseFloat(log.anomaly_score).toFixed(2)"
+                                ></span>
+                            </div>
+                        </template>
+
+                        <div x-show="!(userLogsMap[evaluatingUser?.id] || []).length" class="text-center py-12">
+                            <p class="text-xs text-gray-400 dark:text-gray-500 italic">No recent activity logs found for this user.</p>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Right Column: Admin Action Submission Panel --}}
+                <div class="flex flex-col space-y-6">
+                    <div class="space-y-3 bg-indigo-50/50 dark:bg-indigo-950/10 p-5 rounded-2xl border border-indigo-100/30 dark:border-indigo-900/30">
+                        <h4 class="text-xs font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Target Incident details</h4>
+                        <div class="space-y-2 text-xs">
+                            <p class="text-gray-500 dark:text-gray-400 font-medium"><strong class="text-gray-700 dark:text-gray-200">Flagged Action:</strong> <span x-text="evaluatingLog?.action"></span></p>
+                            <p class="text-gray-500 dark:text-gray-400 font-medium"><strong class="text-gray-700 dark:text-gray-200">Incident Score:</strong> <span class="font-bold text-rose-500" x-text="parseFloat(evaluatingLog?.anomaly_score || 0).toFixed(3)"></span></p>
+                            <p class="text-gray-500 dark:text-gray-400 font-medium"><strong class="text-gray-700 dark:text-gray-200">Details:</strong> <span class="italic" x-text="evaluatingLog?.resource"></span></p>
+                            <p class="text-gray-500 dark:text-gray-400 font-medium"><strong class="text-gray-700 dark:text-gray-200">Time:</strong> <span x-text="evaluatingLog?.timestamp ? new Date(evaluatingLog.timestamp).toLocaleString() : ''"></span></p>
+                        </div>
+                    </div>
+
+                    <form :action="getSubmitUrl()" method="POST" class="space-y-5 flex-1 flex flex-col justify-between">
+                        @csrf
+                        <div class="space-y-3">
+                            <label for="evaluation_action" class="block text-xs font-black uppercase tracking-wider text-gray-400 dark:text-gray-500">Choose Assessment & Action</label>
+                            
+                            <select id="evaluation_action" x-model="selectedAction" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl px-5 py-3.5 text-xs font-bold text-gray-700 dark:text-gray-200 hover:border-indigo-500 focus:border-indigo-500 focus:ring-0 uppercase tracking-wider transition-all cursor-pointer">
+                                <option value="safe">Mark Safe (False Positive - Restore Account)</option>
+                                <option value="compromised">Mark Compromised (Reset Password & MFA - Force Relogin)</option>
+                                <option value="suspended">Suspend Account (Indefinite block - Malicious Activity)</option>
+                            </select>
+                            
+                            <p class="text-[10px] text-gray-400 dark:text-gray-500 leading-relaxed italic" x-show="selectedAction === 'safe'">
+                                * This will clear the temporary block, whitelist this specific login pattern (IP, device, and browser signature), and update the machine learning baseline so this behavior is trusted in the future.
+                            </p>
+                            <p class="text-[10px] text-gray-400 dark:text-gray-500 leading-relaxed italic" x-show="selectedAction === 'compromised'">
+                                * This will unblock the account but reset credentials. The user will be logged out globally, their MFA (Google 2FA) secret will be cleared, and they must complete a credentials reset flow upon their next login.
+                            </p>
+                            <p class="text-[10px] text-gray-400 dark:text-gray-500 leading-relaxed italic" x-show="selectedAction === 'suspended'">
+                                * This will indefinitely suspend the user account. The user will be logged out globally, and any future authentication attempts will be blocked until an administrator manually restores access.
+                            </p>
+                        </div>
+
+                        <div class="flex items-center gap-4 pt-6 border-t border-gray-50 dark:border-gray-900">
+                            <button type="button" @click="showModal = false" class="flex-1 bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-400 border border-gray-200 dark:border-gray-800 py-3.5 px-6 rounded-2xl text-[10px] font-bold uppercase tracking-wider hover:bg-gray-100 transition active:scale-95 text-center">
+                                Cancel
+                            </button>
+                            <button type="submit" class="flex-1 bg-indigo-600 dark:bg-indigo-500 text-white py-3.5 px-6 rounded-2xl text-[10px] font-bold uppercase tracking-wider hover:bg-indigo-700 dark:hover:bg-indigo-600 shadow-md transition active:scale-95 text-center">
+                                Submit Assessment
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
         </div>
     </div>

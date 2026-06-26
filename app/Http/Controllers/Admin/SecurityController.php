@@ -197,7 +197,6 @@ class SecurityController extends Controller
                 ->get()
                 ->keyBy('id');
         }
-
         $targetLogs = collect();
         if (!empty($targetLogIds)) {
             $targetLogs = AuditLog::whereIn('log_id', $targetLogIds)
@@ -205,9 +204,33 @@ class SecurityController extends Controller
                 ->keyBy('log_id');
         }
 
+        // Fetch recent logs for all users in the page
+        $recentUserLogs = [];
+        if ($userIds->isNotEmpty()) {
+            $recentLogsRaw = AuditLog::whereIn('user_id', $userIds)
+                ->latest('timestamp')
+                ->get()
+                ->groupBy('user_id');
+
+            foreach ($recentLogsRaw as $uid => $userLogs) {
+                $recentUserLogs[$uid] = $userLogs->take(10)->map(function ($log) {
+                    return [
+                        'log_id' => $log->log_id,
+                        'action' => $log->action,
+                        'resource' => $log->resource,
+                        'ip_address' => $log->ip_address,
+                        'device' => str_replace('|', ' • ', $log->device ?? 'System'),
+                        'anomaly_score' => (float)$log->anomaly_score,
+                        'timestamp' => $log->timestamp ? $log->timestamp->format('Y-m-d H:i:s') : 'N/A',
+                        'time_ago' => $log->timestamp ? $log->timestamp->diffForHumans() : 'N/A',
+                    ];
+                })->values()->toArray();
+            }
+        }
+
         return view('admin.security-monitor', compact(
             'normalCount', 'warningCount', 'criticalCount', 'securityLogs', 'userMetrics',
-            'unifiedLogs', 'targetUsers', 'targetLogs'
+            'unifiedLogs', 'targetUsers', 'targetLogs', 'recentUserLogs'
         ));
     }
 

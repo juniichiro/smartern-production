@@ -1620,13 +1620,41 @@ Alpine.data('adminDashboardManager', () => ({
 /**
  * Admin Security Monitor Manager
  */
-Alpine.data('securityMonitorManager', () => ({
+Alpine.data('securityMonitorManager', (recentUserLogs = {}) => ({
     loading: true,
+    showModal: false,
+    evaluatingUser: null,
+    evaluatingLog: null,
+    evaluatingDisplayName: '',
+    selectedAction: 'safe',
+    userLogsMap: recentUserLogs,
+
     init() {
         // Simulated loading for "Instagram" feel transitions
         setTimeout(() => {
             this.loading = false;
         }, 800);
+    },
+
+    openEvaluation(user, log, displayName) {
+        this.evaluatingUser = user;
+        this.evaluatingLog = log;
+        this.evaluatingDisplayName = displayName;
+        this.selectedAction = 'safe';
+        this.showModal = true;
+    },
+
+    getSubmitUrl() {
+        if (!this.evaluatingUser || !this.evaluatingLog) return '';
+        
+        let pathPart = 'mark-safe';
+        if (this.selectedAction === 'compromised') {
+            pathPart = 'mark-compromised';
+        } else if (this.selectedAction === 'suspended') {
+            pathPart = 'mark-suspended';
+        }
+        
+        return `/admin/security/${pathPart}/${this.evaluatingUser.id}/${this.evaluatingLog.log_id}`;
     }
 }));
 
