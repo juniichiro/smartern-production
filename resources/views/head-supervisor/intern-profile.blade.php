@@ -371,9 +371,9 @@
                                             </td>
                                             <td class="px-4 sm:px-6 py-5 sm:py-6 w-24 sm:w-32 text-right flex items-center justify-end">
                                                 <button @click="modalOpen = true; selectedJournal = { 
-                                                    title: {{ e(json_encode($journal->title)) }}, 
+                                                    title: {!! e(json_encode($journal->title)) !!}, 
                                                     date: '{{ \Carbon\Carbon::parse($journal->entry_date)->format('M d, Y') }}', 
-                                                    content: {{ e(json_encode($journal->content)) }} 
+                                                    content: {!! e(json_encode($journal->content)) !!} 
                                                 }" class="px-4 sm:px-5 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-[9px] sm:text-[10px] font-black text-[#0B5694] dark:text-blue-400 uppercase tracking-widest hover:bg-blue-50 dark:hover:bg-gray-700 transition shadow-sm">
                                                     View
                                                 </button>
