@@ -424,41 +424,41 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    {{-- Journal Detail Modal --}}
-    <div x-show="modalOpen" 
-         class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm" 
-         x-cloak
-         x-transition:enter="transition ease-out duration-300"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-200"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0">
-        
-        <div @click.away="modalOpen = false" 
-             class="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-[30px] sm:rounded-[40px] shadow-2xl overflow-hidden border border-gray-100 dark:border-gray-800">
+    
+        {{-- Journal Detail Modal --}}
+        <div x-show="modalOpen" 
+             class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm" 
+             x-cloak
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0">
             
-            <div class="p-6 sm:p-8 lg:p-10">
-                <div class="flex justify-between items-start mb-6 sm:mb-8">
-                    <div>
-                        <span class="text-[9px] sm:text-[10px] font-black text-[#0B5694] dark:text-blue-400 uppercase tracking-[0.2em] mb-2 block" x-text="selectedJournal.date"></span>
-                        <h3 class="text-xl sm:text-2xl font-black text-gray-900 dark:text-white tracking-tight" x-text="selectedJournal.title"></h3>
+            <div @click.away="modalOpen = false" 
+                 class="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-[30px] sm:rounded-[40px] shadow-2xl overflow-hidden border border-gray-100 dark:border-gray-800">
+                
+                <div class="p-6 sm:p-8 lg:p-10">
+                    <div class="flex justify-between items-start mb-6 sm:mb-8">
+                        <div>
+                            <span class="text-[9px] sm:text-[10px] font-black text-[#0B5694] dark:text-blue-400 uppercase tracking-[0.2em] mb-2 block" x-text="selectedJournal.date"></span>
+                            <h3 class="text-xl sm:text-2xl font-black text-gray-900 dark:text-white tracking-tight" x-text="selectedJournal.title"></h3>
+                        </div>
+                        <button @click="modalOpen = false" class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </button>
                     </div>
-                    <button @click="modalOpen = false" class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                    </button>
-                </div>
-
-                <div class="bg-gray-50 dark:bg-gray-950 rounded-[20px] sm:rounded-[30px] p-6 sm:p-8 max-h-[50vh] overflow-y-auto border border-gray-100 dark:border-gray-800 shadow-inner">
-                    <p class="text-gray-600 dark:text-gray-400 text-sm sm:text-base leading-relaxed italic whitespace-pre-wrap" x-text="selectedJournal.content"></p>
-                </div>
-
-                <div class="mt-8 sm:mt-10 flex justify-end">
-                    <button @click="modalOpen = false" class="w-full sm:w-auto px-10 py-4 bg-gray-900 dark:bg-gray-800 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gray-800 dark:hover:bg-gray-700 transition shadow-lg active:scale-95">
-                        Back to Profile
-                    </button>
+    
+                    <div class="bg-gray-50 dark:bg-gray-950 rounded-[20px] sm:rounded-[30px] p-6 sm:p-8 max-h-[50vh] overflow-y-auto border border-gray-100 dark:border-gray-800 shadow-inner">
+                        <p class="text-gray-600 dark:text-gray-400 text-sm sm:text-base leading-relaxed italic whitespace-pre-wrap" x-text="selectedJournal.content"></p>
+                    </div>
+    
+                    <div class="mt-8 sm:mt-10 flex justify-end">
+                        <button @click="modalOpen = false" class="w-full sm:w-auto px-10 py-4 bg-gray-900 dark:bg-gray-800 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gray-800 dark:hover:bg-gray-700 transition shadow-lg active:scale-95">
+                            Back to Profile
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
