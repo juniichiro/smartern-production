@@ -31,6 +31,10 @@ class CertificateController extends Controller
     {
         $this->authorize('view', $certificate);
 
+        if (Auth::user()->role_id === \App\Enums\UserRole::INTERN) {
+            abort(403, 'Interns are not permitted to download their certificate. Please coordinate with the Head Supervisor, Ms. Michelle A. Mal-in, to pick up your physical copy.');
+        }
+
         if ($certificate->status !== 'published') {
             abort(403, 'Certificate is not yet published.');
         }
