@@ -302,7 +302,12 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-gray-300 dark:text-gray-700"><path d="m6 9 6 6 6-6"/></svg>
                                 </div>
                             </div>
-                            <div x-show="openEntry === {{ $journal->id }}" x-collapse style="display: none;" class="mt-4 pl-16 pr-4">
+                            <div x-show="openEntry === {{ $journal->id }}" 
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 transform -translate-y-2"
+                                 x-transition:enter-end="opacity-100 transform translate-y-0"
+                                 class="mt-4 pl-16 pr-4"
+                                 x-cloak>
                                 <div class="p-5 bg-gray-50/50 dark:bg-gray-850/30 rounded-2xl border border-gray-100 dark:border-gray-800 text-xs text-gray-600 dark:text-gray-300 leading-relaxed font-semibold">
                                     {!! nl2br(e($journal->content)) !!}
                                 </div>
