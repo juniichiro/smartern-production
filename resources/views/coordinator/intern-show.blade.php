@@ -281,15 +281,15 @@
 
                 <div class="space-y-6">
                     @forelse($journals as $journal)
-                        <div class="p-6 bg-gray-50/50 dark:bg-gray-950/20 rounded-[20px] border border-gray-100 dark:border-gray-850">
-                            <div class="flex items-center justify-between border-b border-gray-100 dark:border-gray-800/80 pb-4 mb-4">
+                        <div x-data="{ isOpen: true }" class="p-6 bg-gray-50/50 dark:bg-gray-950/20 rounded-[20px] border border-gray-100 dark:border-gray-850">
+                            <div @click="isOpen = !isOpen" class="flex items-center justify-between cursor-pointer group">
                                 <div class="flex items-center gap-4">
                                     <div class="w-12 h-12 rounded-xl bg-white dark:bg-gray-900 flex flex-col items-center justify-center border border-gray-150 dark:border-gray-800 shadow-sm">
                                         <span class="text-[9px] font-black text-gray-400 dark:text-slate-500 uppercase leading-none mb-0.5">{{ $journal->created_at->format('M') }}</span>
                                         <span class="text-base font-black text-gray-800 dark:text-gray-100 leading-none tracking-tight">{{ $journal->created_at->format('d') }}</span>
                                     </div>
                                     <div class="text-left">
-                                        <h5 class="font-black text-gray-900 dark:text-gray-100 uppercase tracking-tight text-sm">
+                                        <h5 class="font-black text-gray-900 dark:text-gray-100 uppercase tracking-tight text-sm group-hover:text-[#0B5694] dark:group-hover:text-blue-400 transition-colors">
                                             {{ $journal->title }}
                                         </h5>
                                         <p class="text-[10px] text-gray-400 dark:text-slate-500 font-bold uppercase mt-0.5">
@@ -297,9 +297,22 @@
                                         </p>
                                     </div>
                                 </div>
+                                <div class="transition-transform duration-300" :class="isOpen ? 'rotate-180' : ''">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-gray-450 dark:text-gray-600"><path d="m6 9 6 6 6-6"/></svg>
+                                </div>
                             </div>
-                            <div class="p-5 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 text-xs text-gray-700 dark:text-gray-300 leading-relaxed font-semibold">
-                                {!! nl2br(e($journal->content)) !!}
+                            <div x-show="isOpen" 
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 transform -translate-y-2"
+                                 x-transition:enter-end="opacity-100 transform translate-y-0"
+                                 x-transition:leave="transition ease-in duration-150"
+                                 x-transition:leave-start="opacity-100 transform translate-y-0"
+                                 x-transition:leave-end="opacity-0 transform -translate-y-2"
+                                 class="mt-4"
+                                 x-cloak>
+                                <div class="p-5 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 text-xs text-gray-700 dark:text-gray-300 leading-relaxed font-semibold">
+                                    {!! nl2br(e($journal->content)) !!}
+                                </div>
                             </div>
                         </div>
                     @empty
