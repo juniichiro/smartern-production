@@ -351,7 +351,7 @@ class AccountController extends Controller
             $this->auditService->log('Account Reactivated', "User: {$email}");
             return redirect()->route('admin.account')->with('success', 'Account reactivated.');
         } else {
-            $user->update(['locked_until' => '9999-12-31 23:59:59']);
+            $user->update(['locked_until' => '2038-01-18 00:00:00']);
             $this->auditService->log('Account Deactivated', "User: {$email}");
             return redirect()->route('admin.account')->with('success', 'Account deactivated.');
         }

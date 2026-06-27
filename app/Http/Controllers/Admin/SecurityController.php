@@ -335,7 +335,7 @@ class SecurityController extends Controller
         }
 
         $user->update([
-            'locked_until' => '9999-12-31 23:59:59',
+            'locked_until' => '2038-01-18 00:00:00',
         ]);
 
         try {
