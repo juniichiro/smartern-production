@@ -263,7 +263,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/interns', [CoordinatorIntern::class, 'index'])->name('interns');
         Route::get('/interns/export', [CoordinatorIntern::class, 'exportPDF'])->name('interns.export');
         Route::get('/interns/{user}', [CoordinatorIntern::class, 'show'])->name('interns.show');
-        Route::get('/certificates', fn () => view('coordinator.certificates'))->name('certificates');
         Route::get('/schedule', [App\Http\Controllers\Coordinator\ScheduleController::class, 'index'])->name('schedule.index');
     });
 
