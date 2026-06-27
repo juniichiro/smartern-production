@@ -128,21 +128,29 @@ class OnboardingController extends Controller
             $request->emergency_contact,
             $request->emergency_contact_number,
         ];
-        $this->appendToCsv($csvData);
+        try {
+            $this->appendToCsv($csvData);
+        } catch (\Exception $e) {
+            \Log::error('Failed to update legacy onboarding CSV: '.$e->getMessage());
+        }
 
         // Notify Head Supervisors
-        $headSupervisorRole = Role::where('name', 'head_supervisor')->first();
-        if ($headSupervisorRole) {
-            $headSupervisors = User::where('role_id', $headSupervisorRole->id)->get();
-            foreach ($headSupervisors as $supervisor) {
-                NotificationController::send(
-                    $supervisor->id,
-                    'New Applicant',
-                    'system',
-                    "Intern {$fullName} has submitted a new application and resume for your review.",
-                    route('head-supervisor.onboarding.index')
-                );
+        try {
+            $headSupervisorRole = Role::where('name', 'head_supervisor')->first();
+            if ($headSupervisorRole) {
+                $headSupervisors = User::where('role_id', $headSupervisorRole->id)->get();
+                foreach ($headSupervisors as $supervisor) {
+                    NotificationController::send(
+                        $supervisor->id,
+                        'New Applicant',
+                        'system',
+                        "Intern {$fullName} has submitted a new application and resume for your review.",
+                        route('head-supervisor.onboarding.index')
+                    );
+                }
             }
+        } catch (\Exception $e) {
+            \Log::error('Failed to send notification to head supervisors: '.$e->getMessage());
         }
 
         return back()->with('success', 'Application finalized & submitted.');
