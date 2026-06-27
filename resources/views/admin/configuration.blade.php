@@ -38,11 +38,11 @@
                 <div class="flex items-center justify-end gap-1.5 shrink-0">
                     <p class="hidden sm:flex items-center gap-1.5 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider bg-gray-50 dark:bg-gray-800 px-4 py-2 rounded-full border border-gray-100 dark:border-gray-800 shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                        Next Schedule: <span class="text-[#0B5694] dark:text-blue-400">Daily 12:00 AM</span>
+                        Next Schedule: <span class="text-[#0B5694] dark:text-blue-400">Daily 05:00 PM</span>
                     </p>
                     <p class="flex sm:hidden items-center gap-1.5 text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider bg-gray-50 dark:bg-gray-800/50 px-2.5 py-1.5 rounded-full border border-gray-100/50 dark:border-gray-800/50 shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                        <span class="text-[#0B5694] dark:text-blue-400">Daily 12:00 AM</span>
+                        <span class="text-[#0B5694] dark:text-blue-400">Daily 05:00 PM</span>
                     </p>
                 </div>
             </x-slot>
