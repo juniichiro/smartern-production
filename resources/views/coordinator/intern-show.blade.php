@@ -270,50 +270,36 @@
                     </div>
                 </div>
             </div>
-
             {{-- Journal Entries Section --}}
-            <div class="bg-white dark:bg-gray-900 rounded-[25px] p-6 md:p-8 shadow-sm border border-gray-100 dark:border-gray-800" x-data="{ openEntry: null }">
+            <div class="bg-white dark:bg-gray-900 rounded-[25px] p-6 md:p-8 shadow-sm border border-gray-100 dark:border-gray-800">
                 <div class="flex justify-between items-center mb-6">
                     <p class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Student Journals</p>
                     <span class="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-full text-[10px] font-black text-gray-500 dark:text-slate-400 uppercase tracking-widest">
                         {{ $journals->count() }} Entries
                     </span>
                 </div>
-                <div class="divide-y divide-gray-100 dark:divide-gray-800">
+
+                <div class="space-y-6">
                     @forelse($journals as $journal)
-                        <div class="py-4 first:pt-0 last:pb-0">
-                            <div @click="openEntry = (openEntry === {{ $journal->id }} ? null : {{ $journal->id }})" 
-                                 class="flex items-center justify-between cursor-pointer group">
+                        <div class="p-6 bg-gray-50/50 dark:bg-gray-950/20 rounded-[20px] border border-gray-100 dark:border-gray-850">
+                            <div class="flex items-center justify-between border-b border-gray-100 dark:border-gray-800/80 pb-4 mb-4">
                                 <div class="flex items-center gap-4">
-                                    <div class="w-12 h-12 rounded-xl bg-gray-50 dark:bg-gray-800/50 flex flex-col items-center justify-center border border-gray-100 dark:border-gray-700 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/20 group-hover:border-blue-100 dark:group-hover:border-blue-800 transition-colors">
+                                    <div class="w-12 h-12 rounded-xl bg-white dark:bg-gray-900 flex flex-col items-center justify-center border border-gray-150 dark:border-gray-800 shadow-sm">
                                         <span class="text-[9px] font-black text-gray-400 dark:text-slate-500 uppercase leading-none mb-0.5">{{ $journal->created_at->format('M') }}</span>
                                         <span class="text-base font-black text-gray-800 dark:text-gray-100 leading-none tracking-tight">{{ $journal->created_at->format('d') }}</span>
                                     </div>
                                     <div class="text-left">
-                                        <p class="font-bold text-gray-800 dark:text-gray-100 uppercase tracking-tight group-hover:text-[#0B5694] dark:group-hover:text-blue-400 transition-colors">
+                                        <h5 class="font-black text-gray-900 dark:text-gray-100 uppercase tracking-tight text-sm">
                                             {{ $journal->title }}
-                                        </p>
+                                        </h5>
                                         <p class="text-[10px] text-gray-400 dark:text-slate-500 font-bold uppercase mt-0.5">
                                             Submitted {{ $journal->created_at->format('h:i A') }} • Week {{ $journal->created_at->weekOfMonth }}
                                         </p>
                                     </div>
                                 </div>
-                                <div class="transition-transform duration-300" :class="openEntry === {{ $journal->id }} ? 'rotate-180' : ''">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-gray-300 dark:text-gray-700"><path d="m6 9 6 6 6-6"/></svg>
-                                </div>
                             </div>
-                            <div x-show="openEntry === {{ $journal->id }}" 
-                                 x-transition:enter="transition ease-out duration-200"
-                                 x-transition:enter-start="opacity-0 transform -translate-y-2"
-                                 x-transition:enter-end="opacity-100 transform translate-y-0"
-                                 x-transition:leave="transition ease-in duration-150"
-                                 x-transition:leave-start="opacity-100 transform translate-y-0"
-                                 x-transition:leave-end="opacity-0 transform -translate-y-2"
-                                 class="mt-4 pl-16 pr-4"
-                                 x-cloak>
-                                <div class="p-5 bg-gray-50 dark:bg-gray-950/50 rounded-2xl border border-gray-100 dark:border-gray-800 text-xs text-gray-600 dark:text-gray-300 leading-relaxed font-semibold">
-                                    {!! nl2br(e($journal->content)) !!}
-                                </div>
+                            <div class="p-5 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 text-xs text-gray-700 dark:text-gray-300 leading-relaxed font-semibold">
+                                {!! nl2br(e($journal->content)) !!}
                             </div>
                         </div>
                     @empty
