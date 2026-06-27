@@ -116,7 +116,7 @@ class OnboardingManagementController extends Controller
 
     public function clear()
     {
-        OnboardingApplicant::truncate();
+        OnboardingApplicant::query()->delete();
 
         if (Storage::exists($this->csvPath)) {
             Storage::delete($this->csvPath);
