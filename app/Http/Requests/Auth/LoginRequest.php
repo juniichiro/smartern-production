@@ -48,6 +48,12 @@ class LoginRequest extends FormRequest
 
         // If the user isn't found, the logic below never runs.
         if (! $user) {
+            app(\App\Services\SecurityAuditService::class)->log(
+                'Failed Authentication', 
+                'Login Attempt (Unknown User): ' . $this->email, 
+                1
+            );
+
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
             ]);
@@ -75,6 +81,13 @@ class LoginRequest extends FormRequest
         }
 
         if (! \Illuminate\Support\Facades\Hash::check($this->password, $user->password)) {
+            // Log Failed Authentication for password check failure
+            app(\App\Services\SecurityAuditService::class)->log(
+                'Failed Authentication', 
+                'Login Attempt (Incorrect Password): ' . $user->email, 
+                $user->id
+            );
+
             // INCREMENT LOGIC
             $user->increment('failed_attempts');
 
