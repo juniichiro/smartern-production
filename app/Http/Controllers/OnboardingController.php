@@ -292,9 +292,16 @@ class OnboardingController extends Controller
 
     private function appendToCsv(array $data)
     {
+        $path = Storage::path($this->csvPath);
+        $dir = dirname($path);
+
+        if (! is_dir($dir)) {
+            mkdir($dir, 0775, true);
+        }
+
         $exists = Storage::exists($this->csvPath);
 
-        $handle = fopen(Storage::path($this->csvPath), 'a');
+        $handle = fopen($path, 'a');
 
         if (! $exists) {
             fputcsv($handle, [

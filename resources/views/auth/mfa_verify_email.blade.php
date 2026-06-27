@@ -22,14 +22,20 @@
              });
 
              this.emailSent = true;
-             if (this.resendCountdown > 0) {
-                 this.statusMessage = 'A verification code has been sent to your email.';
-                 this.statusType = 'success';
-                 this.startResendTimer();
-             } else {
-                 this.statusMessage = 'Please enter the verification code sent to your email.';
-                 this.statusType = 'info';
-             }
+             @if (! $errors->any())
+                 if (this.resendCountdown > 0) {
+                     this.statusMessage = 'A verification code has been sent to your email.';
+                     this.statusType = 'success';
+                     this.startResendTimer();
+                 } else {
+                     this.statusMessage = 'Please enter the verification code sent to your email.';
+                     this.statusType = 'info';
+                 }
+             @else
+                 if (this.resendCountdown > 0) {
+                     this.startResendTimer();
+                 }
+             @endif
          },
          
          startResendTimer() {
