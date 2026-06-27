@@ -85,6 +85,10 @@ class LoginRequest extends FormRequest
                 $user->update([
                     'locked_until' => now()->addMinutes(30),
                 ]);
+
+                throw ValidationException::withMessages([
+                    'email' => "Account locked due to multiple failed login attempts. Please try again later.",
+                ]);
             }
 
             throw ValidationException::withMessages([
