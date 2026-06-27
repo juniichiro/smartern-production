@@ -306,9 +306,12 @@
                                  x-transition:enter="transition ease-out duration-200"
                                  x-transition:enter-start="opacity-0 transform -translate-y-2"
                                  x-transition:enter-end="opacity-100 transform translate-y-0"
+                                 x-transition:leave="transition ease-in duration-150"
+                                 x-transition:leave-start="opacity-100 transform translate-y-0"
+                                 x-transition:leave-end="opacity-0 transform -translate-y-2"
                                  class="mt-4 pl-16 pr-4"
                                  x-cloak>
-                                <div class="p-5 bg-gray-50/50 dark:bg-gray-850/30 rounded-2xl border border-gray-100 dark:border-gray-800 text-xs text-gray-600 dark:text-gray-300 leading-relaxed font-semibold">
+                                <div class="p-5 bg-gray-50 dark:bg-gray-950/50 rounded-2xl border border-gray-100 dark:border-gray-800 text-xs text-gray-600 dark:text-gray-300 leading-relaxed font-semibold">
                                     {!! nl2br(e($journal->content)) !!}
                                 </div>
                             </div>
