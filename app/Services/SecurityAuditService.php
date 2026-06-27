@@ -62,31 +62,13 @@ class SecurityAuditService
             'timestamp' => now(),
         ]);
 
-        // 2. Throttled Background Trigger (Near Real-time)
-        $this->triggerAnomalyAnalysis();
+        // 2. Score anomaly synchronously for instant threat locking
+        try {
+            app(\App\Services\AnomalyDetectionService::class)->scoreSingleLog($log);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Failed synchronous anomaly detection scoring: " . $e->getMessage());
+        }
 
         return $log;
-    }
-
-    /**
-     * Triggers the background artisan command to recalculate anomaly scores.
-     * Throttled to run at most once every 3 seconds.
-     */
-    protected function triggerAnomalyAnalysis()
-    {
-        $lockKey = 'anomaly_analysis_throttle';
-        if (! Cache::has($lockKey)) {
-            Cache::put($lockKey, true, 3);
-
-            $artisan = base_path('artisan');
-            $command = PHP_BINARY.' "'.$artisan.'" app:recalculate-anomaly-scores';
-
-            if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-                // Use start /B with cmd /C and output redirection to NUL to ensure true backgrounding on Windows
-                pclose(popen('start /B cmd /C "'.$command.' > NUL 2>&1"', 'r'));
-            } else {
-                exec($command.' > /dev/null 2>&1 &');
-            }
-        }
     }
 }

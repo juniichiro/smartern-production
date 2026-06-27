@@ -190,6 +190,109 @@ class AnomalyDetectionService
         return 0;
     }
 
+    /**
+     * Scores a single log entry synchronously, saving the score,
+     * and taking appropriate action if it is flagged.
+     */
+    public function scoreSingleLog(AuditLog $log)
+    {
+        $this->ensureDaemonIsRunning();
+
+        // Convert the single log to a Collection so existing getScores methods work
+        $logs = collect([$log]);
+
+        $scores = $this->getScoresFromDaemon($logs);
+        if ($scores === null) {
+            $scores = $this->getScoresFromSubprocess($logs);
+        }
+
+        if (! empty($scores) && isset($scores[0])) {
+            $score = max(0, min(0.999, (float) $scores[0]));
+
+            $log->update([
+                'anomaly_score' => $score,
+            ]);
+
+            Cache::forget('security_monitor_counts');
+
+            // Handle actions based on the score
+            if ($score > 0.7) {
+                $log->load('user');
+                $userRoleVal = $log->user->role_id instanceof UserRole ? $log->user->role_id->value : (int)$log->user->role_id;
+                if ($log->user && $userRoleVal !== UserRole::SUPER_ADMIN->value && config('services.security.lockout_enabled', true)) {
+                    $log->user->update([
+                        'locked_until' => now()->addMinutes(30),
+                    ]);
+
+                    try {
+                        broadcast(new AccountLocked($log->user));
+                    } catch (\Exception $e) {
+                        // Suppress broadcast errors
+                    }
+                }
+
+                // Send notifications to all Admins and Super Admins
+                $recipients = User::withoutGlobalScopes()
+                    ->whereIn('role_id', [UserRole::ADMIN->value, UserRole::SUPER_ADMIN->value])
+                    ->get();
+
+                foreach ($recipients as $recipient) {
+                    $recipientRoleVal = $recipient->role_id instanceof UserRole ? $recipient->role_id->value : (int)$recipient->role_id;
+                    if ($userRoleVal === UserRole::ADMIN->value && $recipientRoleVal !== UserRole::SUPER_ADMIN->value) {
+                        continue;
+                    }
+
+                    $notification = Notification::create([
+                        'recipient_id' => $recipient->id,
+                        'sender_id' => $log->user_id,
+                        'type' => 'Security Alert',
+                        'category' => 'system',
+                        'message' => 'Critical anomaly detected: user '.($log->user->email ?? 'ID '.$log->user_id)." performed action '{$log->action}' (Score: ".number_format($score, 2).')',
+                        'target_url' => '/admin/security',
+                        'is_read' => false,
+                    ]);
+
+                    try {
+                        broadcast(new RealTimeNotificationSent($notification));
+                    } catch (\Exception $e) {}
+
+                    try {
+                        Mail::to($recipient->email)->send(new SecurityAlertMail($log, $recipient));
+                    } catch (\Exception $e) {
+                        Log::error("Failed to send security alert email to {$recipient->email}: ".$e->getMessage());
+                    }
+                }
+            } elseif ($score > 0.5) {
+                $log->load('user');
+                $userRoleVal = $log->user->role_id instanceof UserRole ? $log->user->role_id->value : (int)$log->user->role_id;
+                $recipients = User::withoutGlobalScopes()
+                    ->whereIn('role_id', [UserRole::ADMIN->value, UserRole::SUPER_ADMIN->value])
+                    ->get();
+
+                foreach ($recipients as $recipient) {
+                    $recipientRoleVal = $recipient->role_id instanceof UserRole ? $recipient->role_id->value : (int)$recipient->role_id;
+                    if ($userRoleVal === UserRole::ADMIN->value && $recipientRoleVal !== UserRole::SUPER_ADMIN->value) {
+                        continue;
+                    }
+
+                    $notification = Notification::create([
+                        'recipient_id' => $recipient->id,
+                        'sender_id' => $log->user_id,
+                        'type' => 'Security Warning',
+                        'category' => 'system',
+                        'message' => 'Warning anomaly detected: user '.($log->user->email ?? 'ID '.$log->user_id)." performed action '{$log->action}' (Score: ".number_format($score, 2).')',
+                        'target_url' => '/admin/security',
+                        'is_read' => false,
+                    ]);
+
+                    try {
+                        broadcast(new RealTimeNotificationSent($notification));
+                    } catch (\Exception $e) {}
+                }
+            }
+        }
+    }
+
     protected function getScoresFromDaemon($logs)
     {
         $host = '127.0.0.1';
