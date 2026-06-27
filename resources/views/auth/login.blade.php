@@ -142,6 +142,9 @@
                 if (window.showToast) {
                     window.showToast('Your session has timed out. Please sign in again.', 'info');
                 }
+                const url = new URL(window.location);
+                url.searchParams.delete('timeout');
+                window.history.replaceState({}, document.title, url.pathname + url.search);
             }, 500);
         });
     </script>
@@ -154,6 +157,9 @@
                 if (window.showToast) {
                     window.showToast('Your account was logged in on another device. This session has been terminated.', 'error');
                 }
+                const url = new URL(window.location);
+                url.searchParams.delete('taken_over');
+                window.history.replaceState({}, document.title, url.pathname + url.search);
             }, 500);
         });
     </script>
