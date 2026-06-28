@@ -199,6 +199,10 @@ class ScheduleController extends Controller
             return $disk->download($absence->attachment_path);
         }
 
-        return $disk->response($absence->attachment_path);
+        $mime = Storage::disk('public')->mimeType($absence->attachment_path);
+        return $disk->response($absence->attachment_path, null, [
+            'Content-Type' => $mime,
+            'Content-Disposition' => 'inline; filename="' . basename($absence->attachment_path) . '"',
+        ]);
     }
 }
