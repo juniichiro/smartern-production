@@ -248,10 +248,10 @@
                                               'text-emerald-600 dark:text-emerald-400': event.type === 'absence_request' && event.status === 'approved',
                                               'text-rose-600 dark:text-rose-400': event.type === 'absence_request' && event.status === 'rejected'
                                           }">
-                                        <template x-if="event.type === 'holiday'">Holiday</template>
-                                        <template x-if="event.type === 'suspension'">Suspended</template>
-                                        <template x-if="event.type === 'work_day'">Weekend Work</template>
-                                        <template x-if="event.type === 'task'">Task Due</template>
+                                        <template x-if="event.type === 'holiday'"><span>Holiday</span></template>
+                                        <template x-if="event.type === 'suspension'"><span>Suspended</span></template>
+                                        <template x-if="event.type === 'work_day'"><span>Weekend Work</span></template>
+                                        <template x-if="event.type === 'task'"><span>Task Due</span></template>
                                         <template x-if="event.type === 'absence_request'">
                                             <span x-text="(event.request_type === 'early_leave' ? 'Early Leave' : 'Absence') + ' - ' + event.status"></span>
                                         </template>
@@ -270,10 +270,10 @@
                                     <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate" x-text="('{{ $portalType }}' !== 'Intern' ? event.intern_name + ': ' : '') + event.reason"></p>
                                 </template>
                                 <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest mt-0.5 truncate">
-                                    <template x-if="event.type === 'holiday'">Non-working day</template>
-                                    <template x-if="event.type === 'suspension'">Work suspended</template>
-                                    <template x-if="event.type === 'work_day'">Make-up day</template>
-                                    <template x-if="event.type === 'task'">Task assignment</template>
+                                    <template x-if="event.type === 'holiday'"><span>Non-working day</span></template>
+                                    <template x-if="event.type === 'suspension'"><span>Work suspended</span></template>
+                                    <template x-if="event.type === 'work_day'"><span>Make-up day</span></template>
+                                    <template x-if="event.type === 'task'"><span>Task assignment</span></template>
                                     <template x-if="event.type === 'absence_request'">
                                         <span x-text="event.status === 'pending' ? 'Awaiting review' : (event.status === 'approved' ? 'Approved' : 'Rejected')"></span>
                                     </template>
