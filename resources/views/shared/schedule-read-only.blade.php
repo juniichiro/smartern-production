@@ -394,7 +394,7 @@
                                     {{-- Attachment actions inside the same container --}}
                                     <template x-if="event.has_attachment">
                                         <div class="flex gap-2 pt-1">
-                                            <button @click="openDocumentPreview(event)" 
+                                            <button type="button" @click.stop="openDocumentPreview(event)" 
                                                class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-xl text-[10px] font-black uppercase tracking-widest text-[#0B5694] dark:text-blue-400 hover:bg-blue-100 transition-all">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
                                                 Preview
@@ -518,7 +518,7 @@
                                         <div class="pt-4 flex flex-wrap gap-2">
                                             <template x-if="event.has_attachment">
                                                 <div class="flex gap-2 w-full mb-2">
-                                                    <button @click="openDocumentPreview(event)" 
+                                                    <button type="button" @click.stop="openDocumentPreview(event)" 
                                                        class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-xl text-[10px] font-black uppercase tracking-widest text-[#0B5694] dark:text-blue-400 hover:bg-blue-100 transition-all">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
                                                         Preview
@@ -687,10 +687,12 @@
             },
 
             openDocumentPreview(event) {
+                console.log('openDocumentPreview called with:', event);
                 const baseUrl = ('{{ $portalType }}' === 'Supervisor' ? '/supervisor' : ('{{ $portalType }}' === 'Head Supervisor' ? '/head-supervisor' : '/intern'));
                 this.previewUrl = `${baseUrl}/schedule/absence/${event.id}/attachment`;
                 this.previewExtension = event.attachment_extension || 'pdf';
                 this.showDocumentPreview = true;
+                console.log('showDocumentPreview is now:', this.showDocumentPreview, 'previewUrl:', this.previewUrl, 'extension:', this.previewExtension);
             },
 
             prevMonth() {
