@@ -545,17 +545,19 @@
                     </template>
                     {{-- 4. INTERN: Revoke Confirmation --}}
                     <template x-if="'{{ $portalType }}' === 'Intern' && modalMode === 'revoke_confirm'">
-                        <div class="text-center">
+                        <div class="text-center space-y-6">
                             <div class="w-20 h-20 bg-rose-50 dark:bg-rose-950/30 rounded-full flex items-center justify-center mx-auto mb-6 border border-rose-100 dark:border-rose-900/50">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="text-rose-600 dark:text-rose-400"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
                             </div>
 
-                            <h4 class="text-lg font-black text-gray-850 dark:text-white uppercase tracking-tight mb-2">Withdraw Request?</h4>
-                            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium leading-relaxed mb-8 px-4">
-                                This will permanently remove your <span class="text-rose-600 font-bold italic" x-text="absenceToRevoke?.request_type === 'early_leave' ? 'early leave' : 'absence'"></span> request from the schedule.
-                            </p>
+                            <div class="space-y-2">
+                                <h4 class="text-lg font-black text-gray-850 dark:text-white uppercase tracking-tight">Withdraw Request?</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 font-medium leading-relaxed px-4">
+                                    This will permanently remove your <span class="text-rose-600 font-bold italic" x-text="absenceToRevoke?.request_type === 'early_leave' ? 'early leave' : 'absence'"></span> request from the schedule.
+                                </p>
+                            </div>
 
-                            <div class="flex flex-col gap-3">
+                            <div class="pt-4 flex flex-col gap-3">
                                 <form :action="'{{ url('/intern/schedule/absence') }}/' + (absenceToRevoke ? absenceToRevoke.id : '')" method="POST" class="w-full">
                                     @csrf
                                     @method('DELETE')
@@ -563,8 +565,7 @@
                                         Withdraw Permanently
                                     </button>
                                 </form>
-                                <button type="button" @click="modalMode = 'view'" 
-                                        class="w-full py-4 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-2xl font-black text-xs uppercase tracking-widest active:scale-95 transition-all">
+                                <button type="button" @click="modalMode = 'view'" class="w-full py-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-xs font-black uppercase tracking-widest transition-colors">
                                     Keep Request
                                 </button>
                             </div>
