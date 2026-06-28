@@ -336,13 +336,19 @@
                             <div>
                                 <label class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3 block">Supporting Document (Optional)</label>
                                 <div class="relative group">
-                                    <input type="file" name="attachment" id="absence_attachment" class="hidden" accept=".pdf,.jpg,.jpeg,.png">
-                                    <label for="absence_attachment" class="flex items-center justify-between w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-dashed border-gray-200 dark:border-gray-800 rounded-2xl cursor-pointer group-hover:border-[#0B5694] transition-all">
+                                    <input type="file" name="attachment" id="absence_attachment" class="hidden" accept=".pdf,.jpg,.jpeg,.png"
+                                           @change="attachmentName = $event.target.files[0] ? $event.target.files[0].name : ''">
+                                    <label for="absence_attachment" class="flex items-center justify-between w-full px-6 py-4 border border-dashed rounded-2xl cursor-pointer transition-all"
+                                           :class="attachmentName ? 'border-emerald-500 bg-emerald-50/30 dark:bg-emerald-950/10' : 'bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-800 group-hover:border-[#0B5694]'">
                                         <div class="flex items-center gap-3">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-gray-400 group-hover:text-[#0B5694]"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                                            <span class="text-xs font-bold text-gray-500 dark:text-gray-400 group-hover:text-gray-800 dark:group-hover:text-white">Upload Reference (PDF/JPG)</span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" 
+                                                 :class="attachmentName ? 'text-emerald-500' : 'text-gray-400 group-hover:text-[#0B5694]'"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                            <span class="text-xs font-bold text-gray-500 dark:text-gray-400 group-hover:text-gray-800 dark:group-hover:text-white truncate max-w-[200px]"
+                                                  x-text="attachmentName ? attachmentName : 'Upload Reference (PDF/JPG)'"></span>
                                         </div>
-                                        <span class="text-[10px] font-black text-gray-300 dark:text-gray-700 uppercase tracking-widest">Max 5MB</span>
+                                        <span class="text-[10px] font-black uppercase tracking-widest"
+                                              :class="attachmentName ? 'text-emerald-500' : 'text-gray-300 dark:text-gray-700'"
+                                              x-text="attachmentName ? 'Selected' : 'Max 5MB'"></span>
                                     </label>
                                 </div>
                             </div>
@@ -656,6 +662,7 @@
             isEditingAbsence: false,
             absenceToEdit: null,
             absenceToRevoke: null,
+            attachmentName: '',
             absenceFormData: {
                 reason: ''
             },
@@ -766,6 +773,7 @@
                 this.isEditingAbsence = true;
                 this.absenceToEdit = event;
                 this.absenceFormData.reason = event.reason;
+                this.attachmentName = event.has_attachment ? 'Existing Document (Uploaded)' : '';
                 this.modalMode = 'request';
                 this.modalTitle = event.request_type === 'early_leave' ? 'Edit Early Leave Request' : 'Edit Absence Request';
                 this.showModal = true;
@@ -790,6 +798,7 @@
                 this.isEditingAbsence = false;
                 this.absenceToEdit = null;
                 this.absenceFormData.reason = '';
+                this.attachmentName = '';
 
                 if ('{{ $portalType }}' === 'Intern') {
                     if (hasAbsence || hasExceptions) {
