@@ -823,18 +823,11 @@
 
                                 {{-- Attachment actions --}}
                                 <template x-if="event.has_attachment">
-                                    <div class="flex gap-2 pt-1">
-                                        <button type="button" @click.stop="openDocumentPreview(event)" 
-                                           class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-xl text-[10px] font-black uppercase tracking-widest text-[#0B5694] dark:text-blue-400 hover:bg-blue-100 transition-all">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-                                            Preview
-                                        </button>
-                                        <a :href="`/head-supervisor/schedule/absence/${event.id}/attachment?download=1`" 
-                                           class="inline-flex items-center justify-center p-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl text-[#0B5694] dark:text-blue-400 hover:bg-gray-100 transition-all"
-                                           title="Download Attachment">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                                        </a>
-                                    </div>
+                                    <a :href="`/head-supervisor/schedule/absence/${event.id}/attachment`" target="_blank"
+                                       class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-xl text-[10px] font-black uppercase tracking-widest text-[#0B5694] dark:text-blue-400 hover:bg-blue-100 transition-all">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                                        Preview Attachment
+                                    </a>
                                 </template>
 
                                 {{-- Pending actions form --}}
@@ -1071,50 +1064,7 @@
             </div>
         </div>
 
-        {{-- ADVANCED DOCUMENT PREVIEWER --}}
-        <div x-show="showDocumentPreview" 
-             @click="showDocumentPreview = false"
-             class="fixed inset-0 flex items-center justify-center p-4 sm:p-6 bg-gray-950/90 backdrop-blur-sm"
-             style="z-index: 2000;"
-             x-cloak>
-            <div @click.stop
-                 class="bg-white dark:bg-gray-900 w-full max-w-5xl h-[90vh] rounded-[35px] shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-300 border border-gray-100 dark:border-gray-800">
-                
-                {{-- Previewer Header --}}
-                <div class="px-8 py-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-950/50">
-                    <div class="flex items-center gap-4">
-                        <div class="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-2xl text-[#0B5694] dark:text-blue-400">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
-                        </div>
-                        <div>
-                            <h4 class="text-sm font-black uppercase tracking-widest text-gray-800 dark:text-white">Absence Attachment</h4>
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">Secure Document Preview</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <a :href="previewUrl + '?download=1'" class="p-3 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl text-gray-400 hover:text-[#0B5694] dark:hover:text-blue-400 transition shadow-sm" title="Download">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                        </a>
-                        <button @click="showDocumentPreview = false" class="p-3 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl text-gray-400 hover:text-red-500 transition shadow-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                        </button>
-                    </div>
-                </div>
 
-                {{-- Previewer Content --}}
-                <div class="flex-1 bg-gray-100 dark:bg-gray-950 relative flex items-center justify-center p-4">
-                    <template x-if="previewUrl && ['png', 'jpg', 'jpeg'].includes(previewExtension)">
-                        <img :src="previewUrl" class="max-w-full max-h-full object-contain shadow-md rounded-2xl" />
-                    </template>
-                    <template x-if="previewUrl && previewExtension === 'pdf'">
-                        <iframe :src="previewUrl" class="w-full h-full border-none shadow-inner" loading="lazy"></iframe>
-                    </template>
-                    <div x-show="!previewUrl" class="absolute inset-0 flex items-center justify-center">
-                        <div class="animate-spin rounded-full h-12 w-12 border-4 border-[#0B5694] border-t-transparent"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </x-page-layout>
 
@@ -1191,17 +1141,7 @@
             
             deleteActionUrl: '',
             
-            // Document Preview State
-            showDocumentPreview: false,
-            previewUrl: '',
-            previewExtension: 'pdf',
 
-            openDocumentPreview(event) {
-                const baseUrl = '/head-supervisor';
-                this.previewUrl = `${baseUrl}/schedule/absence/${event.id}/attachment`;
-                this.previewExtension = event.attachment_extension || 'pdf';
-                this.showDocumentPreview = true;
-            },
 
             init() {
                 this.generateCalendar();
