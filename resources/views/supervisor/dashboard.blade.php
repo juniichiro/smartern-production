@@ -51,6 +51,7 @@
                         :actionLink="route('supervisor.tasks') . '#assignment-form'"
                         actionText="Assign New Task"
                         compact="true"
+                        class="py-0 h-full w-full"
                     />
                 @else
                     <div class="overflow-y-auto custom-scrollbar flex-1 flex flex-col pr-2">
