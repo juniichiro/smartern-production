@@ -592,10 +592,11 @@
 
         {{-- ADVANCED DOCUMENT PREVIEWER --}}
         <div x-show="showDocumentPreview" 
+             @click="showDocumentPreview = false"
              class="fixed inset-0 flex items-center justify-center p-4 sm:p-6 bg-gray-950/90 backdrop-blur-sm"
              style="z-index: 2000;"
              x-cloak>
-            <div @click.away="showDocumentPreview = false" 
+            <div @click.stop
                  class="bg-white dark:bg-gray-900 w-full max-w-5xl h-[90vh] rounded-[35px] shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-300 border border-gray-100 dark:border-gray-800">
                 
                 {{-- Previewer Header --}}
