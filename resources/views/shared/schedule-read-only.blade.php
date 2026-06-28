@@ -556,14 +556,15 @@
                             </p>
 
                             <div class="flex flex-col gap-3">
-                                <form :action="'{{ url('/intern/schedule/absence') }}/' + (absenceToRevoke ? absenceToRevoke.id : '')" method="POST">
+                                <form :action="'{{ url('/intern/schedule/absence') }}/' + (absenceToRevoke ? absenceToRevoke.id : '')" method="POST" class="w-full">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="w-full py-4 bg-rose-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-rose-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                                    <button type="submit" class="w-full py-4 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-rose-500/20 active:scale-95 transition-all">
                                         Withdraw Permanently
                                     </button>
                                 </form>
-                                <button type="button" @click="modalMode = 'view'" class="w-full py-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-xs font-black uppercase tracking-widest transition-colors">
+                                <button type="button" @click="modalMode = 'view'" 
+                                        class="w-full py-4 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-2xl font-black text-xs uppercase tracking-widest active:scale-95 transition-all">
                                     Keep Request
                                 </button>
                             </div>
