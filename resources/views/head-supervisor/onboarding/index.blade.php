@@ -118,7 +118,7 @@
                                             </td>
                                             <td class="px-8 py-6 text-right whitespace-nowrap">
                                                 <div class="text-[11px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-tighter truncate max-w-[180px] ml-auto" title="{{ implode(', ', $applicant['tech_list']) }}">
-                                                    {{ implode(', ', $applicant['tech_list']) }}
+                                                    {{ implode(', ', array_slice($applicant['tech_list'], 0, 2)) }}{{ count($applicant['tech_list']) > 2 ? ' + ' . (count($applicant['tech_list']) - 2) . ' more' : '' }}
                                                 </div>
                                             </td>
                                         </tr>
