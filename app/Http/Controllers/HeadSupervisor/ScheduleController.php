@@ -61,6 +61,7 @@ class ScheduleController extends Controller
                 'status' => $absence->status,
                 'remarks' => $absence->supervisor_remarks,
                 'has_attachment' => (bool) $absence->attachment_path,
+                'attachment_extension' => $absence->attachment_path ? strtolower(pathinfo($absence->attachment_path, PATHINFO_EXTENSION)) : null,
             ];
         }
 
