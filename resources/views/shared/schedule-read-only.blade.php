@@ -545,7 +545,10 @@
                     </template>
                     {{-- 4. INTERN: Revoke Confirmation --}}
                     <template x-if="'{{ $portalType }}' === 'Intern' && modalMode === 'revoke_confirm'">
-                        <div class="text-center space-y-6">
+                        <form :action="'{{ url('/intern/schedule/absence') }}/' + (absenceToRevoke ? absenceToRevoke.id : '')" method="POST" class="text-center space-y-6">
+                            @csrf
+                            @method('DELETE')
+                            
                             <div class="w-20 h-20 bg-rose-50 dark:bg-rose-950/30 rounded-full flex items-center justify-center mx-auto mb-6 border border-rose-100 dark:border-rose-900/50">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="text-rose-600 dark:text-rose-400"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
                             </div>
@@ -558,18 +561,14 @@
                             </div>
 
                             <div class="pt-4 flex flex-col gap-3">
-                                <form :action="'{{ url('/intern/schedule/absence') }}/' + (absenceToRevoke ? absenceToRevoke.id : '')" method="POST" class="w-full">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="w-full py-4 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-rose-500/20 active:scale-95 transition-all">
-                                        Withdraw Permanently
-                                    </button>
-                                </form>
+                                <button type="submit" class="w-full py-4 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-rose-500/20 active:scale-95 transition-all">
+                                    Withdraw Permanently
+                                </button>
                                 <button type="button" @click="modalMode = 'view'" class="w-full py-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-xs font-black uppercase tracking-widest transition-colors">
                                     Keep Request
                                 </button>
                             </div>
-                        </div>
+                        </form>
                     </template>
                 </div>
             </div>
