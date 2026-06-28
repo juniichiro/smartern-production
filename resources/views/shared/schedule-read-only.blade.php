@@ -295,6 +295,7 @@
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
              class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-950/80 backdrop-blur-md"
+             style="z-index: 1000;"
              x-cloak>
             
              <div @click.away="showModal = false"
@@ -598,6 +599,7 @@
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
              class="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6 bg-gray-950/90 backdrop-blur-sm"
+             style="z-index: 2000;"
              x-cloak>
             <div @click.away="showDocumentPreview = false" 
                  class="bg-white dark:bg-gray-900 w-full max-w-5xl h-[90vh] rounded-[35px] shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-300 border border-gray-100 dark:border-gray-800">
