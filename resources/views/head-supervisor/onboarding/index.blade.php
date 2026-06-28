@@ -116,14 +116,9 @@
                                             <td class="px-8 py-6 text-center whitespace-nowrap">
                                                 <p class="text-[11px] font-black text-rose-500 dark:text-rose-400 uppercase tracking-widest bg-rose-50 dark:bg-rose-900/20 px-3 py-1.5 rounded-full border border-rose-100 dark:border-rose-900/30 inline-block shadow-sm">{{ $applicant['emergency'] ?? 'N/A' }}</p>
                                             </td>
-                                            <td class="px-8 py-6 text-right">
-                                                <div class="flex flex-wrap justify-end gap-2 max-w-[200px] ml-auto">
-                                                    @foreach(array_slice($applicant['tech_list'], 0, 2) as $skill)
-                                                        <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 px-2 py-1 rounded-md uppercase tracking-tighter">{{ $skill }}</span>
-                                                    @endforeach
-                                                    @if(count($applicant['tech_list']) > 2)
-                                                        <span class="text-[9px] font-black text-[#0B5694] dark:text-blue-400">+{{ count($applicant['tech_list']) - 2 }}</span>
-                                                    @endif
+                                            <td class="px-8 py-6 text-right whitespace-nowrap">
+                                                <div class="text-[11px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-tighter truncate max-w-[180px] ml-auto" title="{{ implode(', ', $applicant['tech_list']) }}">
+                                                    {{ implode(', ', $applicant['tech_list']) }}
                                                 </div>
                                             </td>
                                         </tr>
