@@ -180,8 +180,12 @@ class ScheduleController extends Controller
             ->with('success', $message);
     }
 
-    public function update(Request $request, Schedule $schedule)
+    public function update(Request $request, $schedule)
     {
+        if (!($schedule instanceof Schedule)) {
+            $schedule = (new Schedule)->resolveRouteBinding($schedule);
+        }
+
         $isSchoolDefault = $schedule->type === 'school_default';
 
         if (! $isSchoolDefault) {
@@ -218,7 +222,9 @@ class ScheduleController extends Controller
             $rules['date'] = 'required|date|unique:schedules,date,'.$schedule->id;
         }
 
-        $validated = $request->validate($rules);
+        $validated = $request->validate($rules, [
+            'school_name.unique' => 'A default schedule has already been registered for this school.',
+        ]);
 
         if ($isSchoolDefault) {
             $validated['description'] = "Default schedule for {$request->school_name}";
