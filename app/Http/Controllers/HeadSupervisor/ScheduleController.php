@@ -204,7 +204,7 @@ class ScheduleController extends Controller
                 'string',
                 Rule::unique('schedules', 'school_name')
                     ->where(fn ($q) => $q->where('type', 'school_default'))
-                    ->ignore($schedule->id)
+                    ->ignore($schedule->id, 'id')
             ];
             $rules['start_date'] = 'nullable|date';
             $rules['target_end_date'] = 'nullable|date|after:start_date';
