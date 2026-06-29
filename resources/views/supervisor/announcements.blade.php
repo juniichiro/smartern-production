@@ -460,6 +460,31 @@
         color: #e2e8f0 !important; 
     }
 
+    /* Restore Tailwind-reset heading and list styles inside Summernote editor */
+    .note-editable h1 { font-size: 2.25rem !important; font-weight: 800 !important; margin-bottom: 0.5em !important; display: block !important; }
+    .note-editable h2 { font-size: 1.875rem !important; font-weight: 700 !important; margin-bottom: 0.5em !important; display: block !important; }
+    .note-editable h3 { font-size: 1.5rem !important; font-weight: 700 !important; margin-bottom: 0.5em !important; display: block !important; }
+    .note-editable h4 { font-size: 1.25rem !important; font-weight: 600 !important; margin-bottom: 0.5em !important; display: block !important; }
+    .note-editable h5 { font-size: 1.125rem !important; font-weight: 600 !important; margin-bottom: 0.5em !important; display: block !important; }
+    .note-editable h6 { font-size: 1rem !important; font-weight: 600 !important; margin-bottom: 0.5em !important; display: block !important; }
+    
+    .note-editable ul {
+        list-style-type: disc !important;
+        margin: 1em 0 1em 2em !important;
+        padding-left: 0 !important;
+        display: block !important;
+    }
+    .note-editable ol {
+        list-style-type: decimal !important;
+        margin: 1em 0 1em 2em !important;
+        padding-left: 0 !important;
+        display: block !important;
+    }
+    .note-editable li {
+        display: list-item !important;
+        list-style-position: outside !important;
+    }
+
     /* Adjust button appearance for premium feel without breaking layout */
     .note-btn { 
         background: transparent !important; 
