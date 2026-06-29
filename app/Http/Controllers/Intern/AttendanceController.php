@@ -36,7 +36,7 @@ class AttendanceController extends Controller
         $token = Cache::get("active_qr_token_{$user->id}");
         if (! $token) {
             $token = Hashids::encode($user->id, now()->timestamp);
-            Cache::put("active_qr_token_{$user->id}", $token, now()->addMinutes(10));
+            Cache::put("active_qr_token_{$user->id}", $token, now()->addSeconds(20));
         }
         $baseUrl = url('/');
         $qrPayload = "{$baseUrl}/attendance/verify?token={$token}";
@@ -162,7 +162,7 @@ class AttendanceController extends Controller
             $token = Cache::get("active_qr_token_{$user->id}");
             if (! $token) {
                 $token = Hashids::encode($user->id, now()->timestamp);
-                Cache::put("active_qr_token_{$user->id}", $token, now()->addMinutes(10));
+                Cache::put("active_qr_token_{$user->id}", $token, now()->addSeconds(20));
             }
             $baseUrl = url('/');
             $qrPayload = "{$baseUrl}/attendance/verify?token={$token}";
@@ -212,9 +212,9 @@ class AttendanceController extends Controller
             [$userId, $timestamp] = $decoded;
             logger()->info('Token Decoded', ['userId' => $userId, 'timestamp' => $timestamp]);
 
-            // 1. Replay Protection (60s)
+            // 1. Replay Protection (90s)
             $tokenTime = Carbon::createFromTimestamp($timestamp);
-            if ($tokenTime->diffInSeconds(now()) > 60) {
+            if ($tokenTime->diffInSeconds(now()) > 90) {
                 Cache::put($cacheKey, true, now()->addMinutes(10));
                 Cache::forget("active_qr_token_{$userId}");
                 return response()->json(['message' => 'Security token expired.'], 403);

@@ -118,8 +118,34 @@ class AttendanceService
             return $dateStatus;
         }
 
+        // 1.1. Check for school-specific date overrides (holiday, suspension)
+        if ($school) {
+            $schoolOverride = Schedule::whereDate('date', $date->toDateString())
+                ->where('school_name', $school)
+                ->first();
+
+            if ($schoolOverride && in_array($schoolOverride->type, ['holiday', 'suspension'])) {
+                return [
+                    'blocked' => true,
+                    'type' => $schoolOverride->type,
+                    'description' => $schoolOverride->description ?? ($schoolOverride->type === 'holiday' ? 'Official Holiday' : 'Work Suspended'),
+                ];
+            }
+        }
+
+        // 1.2. Check if there is a work_day override (global or school-specific) to bypass weekend block
+        $hasWorkDayOverride = Schedule::whereDate('date', $date->toDateString())
+            ->where('type', 'work_day')
+            ->where(function ($query) use ($school) {
+                $query->whereNull('school_name');
+                if ($school) {
+                    $query->orWhere('school_name', $school);
+                }
+            })
+            ->exists();
+
         // 1.5. Check if scheduled to work today
-        if (! $this->isInternScheduled($user, $date)) {
+        if (! $hasWorkDayOverride && ! $this->isInternScheduled($user, $date)) {
             return [
                 'blocked' => true,
                 'type' => 'weekend',
@@ -205,15 +231,27 @@ class AttendanceService
                 return $item->date->toDateString();
             });
 
+        $intern = $user->internDetails;
+        $school = $intern ? ($intern->school ?? null) : null;
+
         // 3. Fetch all schedule overrides (holidays, suspensions, extra workdays)
-        $schedules = Schedule::whereNotNull('date')->get()->keyBy(function ($item) {
-            return $item->date->toDateString();
-        });
+        $schedules = Schedule::whereNotNull('date')
+            ->where(function ($query) use ($school) {
+                $query->whereNull('school_name');
+                if ($school) {
+                    $query->orWhere('school_name', $school);
+                }
+            })
+            ->get()
+            ->sortBy(function ($item) {
+                return $item->school_name ? 1 : 0;
+            })
+            ->keyBy(function ($item) {
+                return $item->date->toDateString();
+            });
 
         // 4. Define the active internship period
         // Priority: 1. Official start_date in school_default schedule, 2. Account creation date, 3. 30-day fallback
-        $intern = $user->internDetails;
-        $school = $intern->school ?? null;
         $officialStart = null;
 
         if ($school) {
