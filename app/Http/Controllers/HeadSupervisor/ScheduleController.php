@@ -41,7 +41,7 @@ class ScheduleController extends Controller
             $dateStr = $item->date->toDateString();
             $eventsByDate[$dateStr] = [
                 [
-                    'id' => $item->id,
+                    'id' => $item->getRouteKey(),
                     'type' => $item->type,
                     'description' => $item->description,
                 ],
