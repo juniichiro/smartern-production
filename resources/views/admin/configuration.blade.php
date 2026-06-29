@@ -91,7 +91,7 @@
                                             <span class="font-bold text-gray-800 dark:text-gray-200 text-xs lg:text-sm uppercase tracking-wider">{{ $backup->created_at->format('M d, Y') }}</span>
                                             <span class="text-[9px] lg:text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider mt-0.5">{{ $backup->created_at->format('h:i A') }}</span>
                                             @if($backup->sha256_hash)
-                                                <span class="text-[7px] sm:text-[8px] text-gray-400 dark:text-gray-600 font-mono tracking-tighter mt-1 block select-all break-all max-w-[150px] sm:max-w-[200px]" title="SHA-256 Integrity Hash">SHA-256: {{ $backup->sha256_hash }}</span>
+                                                <span class="text-[7px] sm:text-[8px] text-gray-600 dark:text-gray-300 font-mono tracking-tighter mt-1 block select-all break-all max-w-[150px] sm:max-w-[200px]" title="SHA-256 Integrity Hash">SHA-256: {{ $backup->sha256_hash }}</span>
                                             @endif
                                         </div>
                                     </td>
@@ -171,7 +171,7 @@
 
                         @if($backup->sha256_hash)
                             <div class="mb-3 px-3 py-2 bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
-                                <span class="text-[8px] text-gray-400 dark:text-gray-600 font-mono tracking-tighter select-all break-all block" title="SHA-256 Integrity Hash">SHA-256: {{ $backup->sha256_hash }}</span>
+                                <span class="text-[8px] text-gray-600 dark:text-gray-300 font-mono tracking-tighter select-all break-all block" title="SHA-256 Integrity Hash">SHA-256: {{ $backup->sha256_hash }}</span>
                             </div>
                         @endif
 
