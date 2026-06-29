@@ -1248,6 +1248,8 @@
                 this.schoolFormAction = `/head-supervisor/schedule/${school.hashid}`;
                 this.schoolFormData = {
                     school_name: school.school_name,
+                    start_date: school.start_date ? school.start_date.substring(0, 10) : '',
+                    target_end_date: school.target_end_date ? school.target_end_date.substring(0, 10) : '',
                     start_time: school.start_time,
                     end_time: school.end_time,
                     daily_hours: school.daily_hours,
