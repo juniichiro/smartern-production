@@ -242,7 +242,7 @@ class AttendanceController extends Controller
                 Cache::put($cacheKey, true, now()->addMinutes(10));
                 Cache::forget("active_qr_token_{$userId}");
 
-                return response()->json(['message' => 'You are outside the office boundary. Please ensure you are within the designated premises and try again.'], 403);
+                return response()->json(['message' => 'You are outside the office boundary. Ensure you are within the designated premises and try again.'], 403);
             }
 
             // 3. Early Checkout Warning
