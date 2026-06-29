@@ -276,19 +276,19 @@
                                         <div class="grid grid-cols-3 gap-3">
                                             <label class="cursor-pointer group">
                                                 <input type="radio" name="rounding_mode" value="none" x-model="schoolFormData.rounding_mode" class="hidden peer">
-                                                <div class="p-3 text-center border border-gray-250 dark:border-gray-800 rounded-xl peer-checked:bg-[#0B5694] peer-checked:text-white transition-all bg-white dark:bg-gray-900">
+                                                <div class="p-3 text-center border border-gray-200 dark:border-gray-800 rounded-xl peer-checked:bg-[#0B5694] peer-checked:text-white transition-all bg-white dark:bg-gray-900">
                                                     <p class="text-[10px] font-black uppercase tracking-widest">Standard</p>
                                                 </div>
                                             </label>
                                             <label class="cursor-pointer group">
                                                 <input type="radio" name="rounding_mode" value="floor" x-model="schoolFormData.rounding_mode" class="hidden peer">
-                                                <div class="p-3 text-center border border-gray-255 dark:border-gray-800 rounded-xl peer-checked:bg-[#0B5694] peer-checked:text-white transition-all bg-white dark:bg-gray-900">
+                                                <div class="p-3 text-center border border-gray-200 dark:border-gray-800 rounded-xl peer-checked:bg-[#0B5694] peer-checked:text-white transition-all bg-white dark:bg-gray-900">
                                                     <p class="text-[10px] font-black uppercase tracking-widest">Floor</p>
                                                 </div>
                                             </label>
                                             <label class="cursor-pointer group">
                                                 <input type="radio" name="rounding_mode" value="ceil" x-model="schoolFormData.rounding_mode" class="hidden peer">
-                                                <div class="p-3 text-center border border-gray-255 dark:border-gray-800 rounded-xl peer-checked:bg-[#0B5694] peer-checked:text-white transition-all bg-white dark:bg-gray-900">
+                                                <div class="p-3 text-center border border-gray-200 dark:border-gray-800 rounded-xl peer-checked:bg-[#0B5694] peer-checked:text-white transition-all bg-white dark:bg-gray-900">
                                                     <p class="text-[10px] font-black uppercase tracking-widest">Ceil</p>
                                                 </div>
                                             </label>
@@ -299,19 +299,19 @@
                                         <div class="grid grid-cols-3 gap-3">
                                             <label class="cursor-pointer group">
                                                 <input type="radio" name="late_policy" value="actual" x-model="schoolFormData.late_policy" class="hidden peer">
-                                                <div class="p-3 text-center border border-gray-255 dark:border-gray-800 rounded-xl peer-checked:bg-[#0B5694] peer-checked:text-white transition-all bg-white dark:bg-gray-900">
+                                                <div class="p-3 text-center border border-gray-200 dark:border-gray-800 rounded-xl peer-checked:bg-[#0B5694] peer-checked:text-white transition-all bg-white dark:bg-gray-900">
                                                     <p class="text-[10px] font-black uppercase tracking-widest">Actual Mins</p>
                                                 </div>
                                             </label>
                                             <label class="cursor-pointer group">
                                                 <input type="radio" name="late_policy" value="next_half_hour" x-model="schoolFormData.late_policy" class="hidden peer">
-                                                <div class="p-3 text-center border border-gray-255 dark:border-gray-800 rounded-xl peer-checked:bg-[#0B5694] peer-checked:text-white transition-all bg-white dark:bg-gray-900">
+                                                <div class="p-3 text-center border border-gray-200 dark:border-gray-800 rounded-xl peer-checked:bg-[#0B5694] peer-checked:text-white transition-all bg-white dark:bg-gray-900">
                                                     <p class="text-[10px] font-black uppercase tracking-widest">Next 30m</p>
                                                 </div>
                                             </label>
                                             <label class="cursor-pointer group">
                                                 <input type="radio" name="late_policy" value="next_hour" x-model="schoolFormData.late_policy" class="hidden peer">
-                                                <div class="p-3 text-center border border-gray-255 dark:border-gray-800 rounded-xl peer-checked:bg-[#0B5694] peer-checked:text-white transition-all bg-white dark:bg-gray-900">
+                                                <div class="p-3 text-center border border-gray-200 dark:border-gray-800 rounded-xl peer-checked:bg-[#0B5694] peer-checked:text-white transition-all bg-white dark:bg-gray-900">
                                                     <p class="text-[10px] font-black uppercase tracking-widest">Next Hour</p>
                                                 </div>
                                             </label>
@@ -360,7 +360,7 @@
                                             </div>
                                             <div class="text-left">
                                                 <span class="text-[8px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Rounding</span>
-                                                <p class="text-[10px] font-black text-gray-800 dark:text-gray-250 tracking-widest mt-0.5 uppercase" x-text="schoolSchedules[schoolName].rounding_mode"></p>
+                                                <p class="text-[10px] font-black text-gray-800 dark:text-white tracking-widest mt-0.5 uppercase" x-text="schoolSchedules[schoolName].rounding_mode"></p>
                                             </div>
                                         </div>
 

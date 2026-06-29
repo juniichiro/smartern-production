@@ -25,8 +25,8 @@ class Schedule extends Model
     ];
 
     protected $casts = [
-        'date' => 'date',
-        'start_date' => 'date',
-        'target_end_date' => 'date',
+        'date' => 'date:Y-m-d',
+        'start_date' => 'date:Y-m-d',
+        'target_end_date' => 'date:Y-m-d',
     ];
 }
