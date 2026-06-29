@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Intern;
 
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Models\Announcement;
 use Illuminate\Support\Facades\Auth;
@@ -17,9 +18,10 @@ class AnnouncementController extends Controller
         $user = Auth::user();
         $officeId = $user->internDetails->office_id;
 
-        // Fetch announcements from supervisors in the same office
-        $announcements = Announcement::whereHas('user.supervisorDetails', function ($q) use ($officeId) {
-            $q->where('office_id', $officeId);
+        // Fetch announcements matching the intern's office or global announcements (office_id is null)
+        $announcements = Announcement::where(function ($query) use ($officeId) {
+            $query->where('office_id', $officeId)
+                  ->orWhereNull('office_id');
         })
             ->with('user.supervisorDetails')
             ->latest()

@@ -13,6 +13,7 @@ class Announcement extends Model
 
     protected $fillable = [
         'user_id',
+        'office_id',
         'title',
         'content',
         'attachment',
@@ -24,6 +25,14 @@ class Announcement extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the office this announcement is scoped to (null if global).
+     */
+    public function office(): BelongsTo
+    {
+        return $this->belongsTo(Office::class);
     }
 
     /**

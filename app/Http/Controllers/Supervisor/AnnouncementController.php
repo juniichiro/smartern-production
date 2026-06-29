@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Supervisor;
 
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\NotificationController;
 use App\Http\Requests\Supervisor\StoreAnnouncementRequest;
@@ -70,21 +71,38 @@ class AnnouncementController extends Controller
             $filePath = 'storage/' . $path;
         }
 
+        // Determine target office_id based on role and selected scope
+        $isHeadSupervisor = Auth::user()->role_id === UserRole::HEAD_SUPERVISOR;
+        $officeId = Auth::user()->supervisorDetails->office_id ?? null;
+        $targetOfficeId = $officeId;
+
+        if ($isHeadSupervisor) {
+            $scope = $request->input('scope', 'global');
+            if ($scope === 'global') {
+                $targetOfficeId = null;
+            }
+        }
+
         $announcement = Announcement::create([
             'user_id' => Auth::id(),
+            'office_id' => $targetOfficeId,
             'title' => $request->input('title'),
             'content' => $request->input('content'),
             'attachment' => $filePath,
         ]);
 
-        // Notify all interns in the same office (if applicable) or all interns if system-wide
-        // For now, let's notify all interns in the supervisor's office
-        $officeId = Auth::user()->supervisorDetails->office_id;
-        $interns = User::whereHas('role', function ($q) {
+        // Notify all interns in target office (if applicable) or all interns if global (null office_id)
+        $internsQuery = User::whereHas('role', function ($q) {
             $q->where('name', 'intern');
-        })->whereHas('internDetails', function ($q) use ($officeId) {
-            $q->where('office_id', $officeId);
-        })->get();
+        });
+
+        if ($targetOfficeId) {
+            $internsQuery->whereHas('internDetails', function ($q) use ($targetOfficeId) {
+                $q->where('office_id', $targetOfficeId);
+            });
+        }
+
+        $interns = $internsQuery->get();
 
         foreach ($interns as $intern) {
             NotificationController::send(
@@ -124,35 +142,51 @@ class AnnouncementController extends Controller
             $filePath = 'storage/' . $path;
         }
 
+        // Determine target office_id based on role and selected scope
+        $isHeadSupervisor = Auth::user()->role_id === UserRole::HEAD_SUPERVISOR;
+        $officeId = Auth::user()->supervisorDetails->office_id ?? null;
+        $targetOfficeId = $officeId;
+
+        if ($isHeadSupervisor) {
+            $scope = $request->input('scope', 'global');
+            if ($scope === 'global') {
+                $targetOfficeId = null;
+            }
+        }
+
         $announcement->update([
+            'office_id' => $targetOfficeId,
             'title' => $validated['title'],
             'content' => $validated['content'],
             'attachment' => $filePath,
         ]);
 
-        // Notify all interns in the same office about the update
-        $officeId = $announcement->user->supervisorDetails->office_id ?? null;
-        if ($officeId) {
-            $interns = User::whereHas('role', function ($q) {
-                $q->where('name', 'intern');
-            })->whereHas('internDetails', function ($q) use ($officeId) {
-                $q->where('office_id', $officeId);
-            })->get();
+        // Notify all interns in target office about the update, or all interns if global
+        $internsQuery = User::whereHas('role', function ($q) {
+            $q->where('name', 'intern');
+        });
 
-            foreach ($interns as $intern) {
-                NotificationController::send(
-                    $intern->id,
-                    'Office Announcement',
-                    'announcement',
-                    "Updated Announcement: '{$announcement->title}'",
-                    route('intern.announcements.show', $announcement)
-                );
+        if ($targetOfficeId) {
+            $internsQuery->whereHas('internDetails', function ($q) use ($targetOfficeId) {
+                $q->where('office_id', $targetOfficeId);
+            });
+        }
 
-                try {
-                    Mail::to($intern->email)->queue(new OfficeAnnouncementMail($announcement, $intern));
-                } catch (\Exception $e) {
-                    Log::error("Failed to send updated announcement email to {$intern->email}: ".$e->getMessage());
-                }
+        $interns = $internsQuery->get();
+
+        foreach ($interns as $intern) {
+            NotificationController::send(
+                $intern->id,
+                'Office Announcement',
+                'announcement',
+                "Updated Announcement: '{$announcement->title}'",
+                route('intern.announcements.show', $announcement)
+            );
+
+            try {
+                Mail::to($intern->email)->queue(new OfficeAnnouncementMail($announcement, $intern));
+            } catch (\Exception $e) {
+                Log::error("Failed to send updated announcement email to {$intern->email}: ".$e->getMessage());
             }
         }
 

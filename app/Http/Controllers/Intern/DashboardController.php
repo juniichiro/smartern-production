@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Intern;
 
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Models\Announcement;
 use App\Models\Attendance;
@@ -64,8 +65,9 @@ class DashboardController extends Controller
 
         // 4.6 Fetch Recent Announcements (last 3)
         $officeId = $intern->office_id;
-        $announcements = Announcement::whereHas('user.supervisorDetails', function ($q) use ($officeId) {
-            $q->where('office_id', $officeId);
+        $announcements = Announcement::where(function ($query) use ($officeId) {
+            $query->where('office_id', $officeId)
+                  ->orWhereNull('office_id');
         })
             ->with('user.supervisorDetails')
             ->latest()

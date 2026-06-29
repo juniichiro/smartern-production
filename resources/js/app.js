@@ -581,6 +581,7 @@ Alpine.data('announcementsManager', () => ({
     editId: null,
     fileName: 'Attach supporting media',
     title: '',
+    scope: 'global',
     contentLength: 0,
     maxTitle: 255,
     maxContent: 10000,
@@ -613,6 +614,7 @@ Alpine.data('announcementsManager', () => ({
         this.isEdit = false;
         this.editId = null;
         this.title = '';
+        this.scope = 'global';
         this.contentLength = 0;
         this.fileName = 'Attach supporting media';
         this.previewMode = false;
@@ -630,6 +632,7 @@ Alpine.data('announcementsManager', () => ({
         this.isEdit = true;
         this.editId = routeKey;
         this.title = ann.title;
+        this.scope = ann.office_id ? 'office' : 'global';
         this.contentLength = ann.content ? ann.content.length : 0;
         this.fileName = ann.attachment ? ann.attachment.split('/').pop() : 'Attach supporting media';
         this.previewMode = false;

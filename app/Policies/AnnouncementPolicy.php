@@ -26,22 +26,19 @@ class AnnouncementPolicy
             return true;
         }
 
-        // Retrieve announcement creator details
-        $creatorDetails = $announcement->user->supervisorDetails ?? null;
-
-        // If there's no creator details (system / admin posts), let anyone view
-        if (! $creatorDetails) {
+        // Global announcements (office_id is null) can be viewed by anyone
+        if (is_null($announcement->office_id)) {
             return true;
         }
 
         // Intern checks
         if ($user->role_id === UserRole::INTERN) {
-            return $user->internDetails->office_id === $creatorDetails->office_id;
+            return $user->internDetails->office_id === $announcement->office_id;
         }
 
         // Supervisor check - only in the same office
         if ($user->role_id === UserRole::SUPERVISOR) {
-            return $user->supervisorDetails->office_id === $creatorDetails->office_id;
+            return $user->supervisorDetails->office_id === $announcement->office_id;
         }
 
         // Head supervisor can view all office announcements

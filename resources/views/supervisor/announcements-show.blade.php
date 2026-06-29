@@ -13,6 +13,7 @@
         isEdit: true,
         editId: '{{ $announcement->getRouteKey() }}',
         title: '{{ addslashes($announcement->title) }}',
+        scope: '{{ $announcement->office_id ? 'office' : 'global' }}',
         contentLength: {{ strlen($announcement->content ?? '') }},
         maxTitle: 255,
         maxContent: 10000,
@@ -67,7 +68,7 @@
             {{-- Category & Date --}}
             <div class="flex flex-col sm:flex-row sm:items-center gap-4 mb-8">
                 <span class="w-fit px-4 py-1.5 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] border border-emerald-100 dark:border-emerald-800/50">
-                    Official Office Announcement
+                    {{ is_null($announcement->office_id) ? 'Official Global Announcement' : 'Official Office Announcement' }}
                 </span>
                 <span class="text-[11px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">
                     {{ $announcement->created_at->format('F d, Y') }} • {{ $announcement->created_at->diffForHumans() }}
@@ -233,6 +234,28 @@
                     <div class="flex-1 overflow-y-auto custom-scrollbar p-5 sm:p-8">
                         {{-- EDITOR MODE --}}
                         <div x-show="!previewMode" class="space-y-8 animate-in fade-in duration-300">
+                            @if(Auth::user()->role_id === \App\Enums\UserRole::HEAD_SUPERVISOR)
+                            <div class="space-y-2">
+                                <label class="text-[11px] font-black text-gray-400 dark:text-slate-400 uppercase tracking-[0.1em] ml-1">Announcement Scope</label>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <label class="flex items-center gap-3 p-4 rounded-xl border border-gray-200 dark:border-[#1E293B] bg-white dark:bg-[#0F172A] cursor-pointer hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-all">
+                                        <input type="radio" name="scope" value="global" x-model="scope" class="text-blue-500 focus:ring-blue-500">
+                                        <div>
+                                            <p class="text-xs font-black text-gray-700 dark:text-gray-200 uppercase tracking-wider">Global Broadcast</p>
+                                            <p class="text-[10px] text-gray-400 uppercase tracking-tighter">Visible to all interns in all departments</p>
+                                        </div>
+                                    </label>
+                                    <label class="flex items-center gap-3 p-4 rounded-xl border border-gray-200 dark:border-[#1E293B] bg-white dark:bg-[#0F172A] cursor-pointer hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-all">
+                                        <input type="radio" name="scope" value="office" x-model="scope" class="text-blue-500 focus:ring-blue-500">
+                                        <div>
+                                            <p class="text-xs font-black text-gray-700 dark:text-gray-200 uppercase tracking-wider">Office Specific</p>
+                                            <p class="text-[10px] text-gray-400 uppercase tracking-tighter">Visible only to {{ Auth::user()->supervisorDetails->office->name }} interns</p>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            @endif
+
                             <div class="space-y-2">
                                 <div class="flex justify-between items-center mb-1">
                                     <label class="text-[11px] font-black text-gray-400 dark:text-slate-400 uppercase tracking-[0.1em] ml-1">Announcement Subject</label>
@@ -261,8 +284,8 @@
                         <div x-show="previewMode" class="space-y-8 animate-in zoom-in-95 duration-300" x-cloak>
                             <div class="bg-white dark:bg-gray-900 rounded-[35px] p-4 sm:p-6 md:p-12 shadow-sm border border-gray-100 dark:border-gray-800 relative text-left">
                                 <div class="flex flex-col sm:flex-row sm:items-center gap-4 mb-8">
-                                    <span class="w-fit px-4 py-1.5 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border border-emerald-100 dark:border-emerald-800/50">
-                                        Official Office Announcement
+                                    <span class="w-fit px-4 py-1.5 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border border-emerald-100 dark:border-emerald-800/50"
+                                          x-text="scope === 'global' ? 'Official Global Announcement' : 'Official Office Announcement'">
                                     </span>
                                     <span class="text-[11px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-widest">
                                         Just Now • Posted {{ now()->format('F d, Y') }}
@@ -387,7 +410,7 @@
 @endsection
 
 @push('scripts')
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-lite.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-lite.min.js"></script>
 
