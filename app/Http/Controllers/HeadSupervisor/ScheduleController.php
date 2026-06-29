@@ -234,7 +234,7 @@ class ScheduleController extends Controller
 
     public function destroy(Schedule $schedule)
     {
-        if ($schedule->type !== 'school_default' && $schedule->date->lt(today())) {
+        if ($schedule->type !== 'school_default' && $schedule->date->lt(today()) && ! $schedule->date->isToday()) {
             return back()->withErrors(['date' => 'You cannot withdraw schedule exceptions for dates that have already passed.']);
         }
 
