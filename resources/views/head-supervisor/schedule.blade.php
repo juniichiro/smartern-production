@@ -44,12 +44,26 @@
         @endif
 
         @if($errors->any())
-            <div class="mb-8 p-4 bg-rose-50 border border-rose-200 dark:bg-rose-950/20 dark:border-rose-800 text-rose-600 dark:text-rose-400 rounded-2xl font-semibold">
-                <ul class="list-disc pl-5">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+            <div x-data="{ show: true }"
+                 x-show="show"
+                 x-init="setTimeout(() => show = false, 5000)"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 transform -translate-y-2"
+                 x-transition:enter-end="opacity-100 transform translate-y-0"
+                 x-transition:leave="transition ease-in duration-500"
+                 x-transition:leave-start="opacity-100 transform translate-y-0"
+                 x-transition:leave-end="opacity-0 transform -translate-y-2"
+                 class="mb-8 p-4 bg-rose-50 border border-rose-200 dark:bg-rose-950/20 dark:border-rose-800 text-rose-600 dark:text-rose-400 rounded-2xl font-semibold shadow-sm">
+                <div class="flex items-center justify-between">
+                    <ul class="list-disc pl-5">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                    <button @click="show = false" class="text-rose-400 hover:text-rose-600 transition-colors ml-4 shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                </div>
             </div>
         @endif
 
