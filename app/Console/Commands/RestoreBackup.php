@@ -142,8 +142,12 @@ class RestoreBackup extends Command
                 $extractedSql = $tempPath.'/database/database.sql';
 
                 if (file_exists($extractedSql)) {
-                    // Clean SQL file of RDS incompatible commands
+                    // Clean SQL file of RDS incompatible commands and warning comments
                     $sqlContent = file_get_contents($extractedSql);
+
+                    // Strip mysql/mysqldump password warning message lines if present
+                    $sqlContent = preg_replace('/^mysqldump: \[Warning\].*$/m', '', $sqlContent);
+                    $sqlContent = preg_replace('/^mysql: \[Warning\].*$/m', '', $sqlContent);
                     
                     // Comment out lines requiring SUPER privileges
                     $sqlContent = preg_replace('/SET @@SESSION\.SQL_LOG_BIN\s*=\s*0\s*;/i', '-- SET @@SESSION.SQL_LOG_BIN = 0;', $sqlContent);

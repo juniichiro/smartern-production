@@ -92,9 +92,9 @@ class RunBackup extends Command
                     $mysqldumpBin = '/usr/bin/mysqldump';
                 }
 
-                // Construct mysqldump command
+                // Construct mysqldump command without stderr redirection (avoiding password warnings in SQL)
                 $command = sprintf(
-                    '%s --user=%s --password=%s --host=%s --port=%s --set-gtid-purged=OFF --no-tablespaces %s > %s 2>&1',
+                    '%s --user=%s --password=%s --host=%s --port=%s --set-gtid-purged=OFF --no-tablespaces %s > %s',
                     escapeshellarg($mysqldumpBin),
                     escapeshellarg($config['username']),
                     escapeshellarg($config['password']),
