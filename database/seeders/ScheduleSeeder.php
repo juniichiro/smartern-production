@@ -5,11 +5,15 @@ namespace Database\Seeders;
 use App\Models\Schedule;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ScheduleSeeder extends Seeder
 {
     public function run(): void
     {
+        // Clear existing schedules to avoid duplicates
+        DB::table('schedules')->truncate();
+
         $schools = ['FEU-TECH', 'DLSU', 'UST', 'UP'];
 
         foreach ($schools as $school) {
