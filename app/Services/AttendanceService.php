@@ -483,7 +483,13 @@ class AttendanceService
         }
 
         $canScan = ! $completedToday;
-        if (! $todayRecord && isset($effectiveSchedule['end_time'])) {
+        if (isset($effectiveSchedule['blocked']) && $effectiveSchedule['blocked']) {
+            if (! $todayRecord) {
+                $canScan = false;
+                $statusMessage = 'Attendance is blocked: ' . $effectiveSchedule['description'];
+            }
+        }
+        if ($canScan && ! $todayRecord && isset($effectiveSchedule['end_time'])) {
             $endTime = Carbon::parse(now()->toDateString() . ' ' . $effectiveSchedule['end_time']);
             if (now()->greaterThan($endTime)) {
                 $canScan = false;

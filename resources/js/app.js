@@ -1546,11 +1546,12 @@ Alpine.data('analyticsManager', (months, applicantsTrends, completionTrends, com
 /**
  * Intern Attendance Manager
  */
-Alpine.data('attendanceManager', (checkStatusRoute, isClockedIn, isCompleted, initialToken, initialLink) => ({
+Alpine.data('attendanceManager', (checkStatusRoute, isClockedIn, isCompleted, initialToken, initialLink, canScan) => ({
     isClockedIn: isClockedIn,
     isCompleted: isCompleted,
     currentToken: initialToken,
     verificationLink: initialLink,
+    canScan: canScan,
     showLink: false,
     loading: true,
     init() {
@@ -1569,7 +1570,7 @@ Alpine.data('attendanceManager', (checkStatusRoute, isClockedIn, isCompleted, in
         fetch(fetchRoute)
             .then(response => response.json())
             .then(data => {
-                if (data.is_clocked_in !== this.isClockedIn || data.is_completed !== this.isCompleted) {
+                if (data.is_clocked_in !== this.isClockedIn || data.is_completed !== this.isCompleted || data.can_scan !== this.canScan) {
                     window.location.reload();
                 } else if (data.token && data.token !== this.currentToken && data.qr_code_html) {
                     const qrContainer = document.getElementById('qr-code-container');
