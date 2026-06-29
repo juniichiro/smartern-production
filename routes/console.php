@@ -14,8 +14,8 @@ Artisan::command('inspire', function () {
 // Runs the ML script every minute in the background
 Schedule::command('app:recalculate-anomaly-scores')->everyMinute()->withoutOverlapping();
 
-// Automated Daily System Backup at 5:20 PM (17:20) - 20 minutes after shift ends (accounting for 15-min grace period)
-Schedule::command('backup:run --type=auto')->dailyAt('17:20');
+// Automated Daily System Backup at 7:00 PM (19:00)
+Schedule::command('backup:run --type=auto')->dailyAt('19:00');
 
 // Automated Daily Audit Log Archival and Pruning (retaining 90 days)
 Schedule::command('app:archive-audit-logs --days=90')->daily()->withoutOverlapping();
