@@ -203,7 +203,13 @@ class ScheduleController extends Controller
         ];
 
         if ($isSchoolDefault) {
-            $rules['school_name'] = 'required|string|unique:schedules,school_name,' . $schedule->id . ',id,type,school_default';
+            $rules['school_name'] = [
+                'required',
+                'string',
+                Rule::unique('schedules', 'school_name')
+                    ->where('type', 'school_default')
+                    ->ignore($schedule->id)
+            ];
             $rules['start_date'] = 'nullable|date';
             $rules['target_end_date'] = 'nullable|date|after:start_date';
 
