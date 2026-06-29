@@ -78,6 +78,7 @@ class MFAController extends Controller
             if ($cachedCode && hash_equals($cachedCode, $code)) {
                 $valid = true;
                 Cache::forget('mfa_email_code_'.$user->id);
+                Cache::forget('mfa_email_code_sent_at_'.$user->id);
                 // Clear any unverified/pending TOTP secret since they chose Email
                 $user->google2fa_secret = null;
             }
@@ -147,10 +148,11 @@ class MFAController extends Controller
         }
 
         if ($method === 'email') {
+            $existingCode = Cache::get('mfa_email_code_'.$user->id);
             $lastSent = Cache::get('mfa_email_code_sent_at_'.$user->id);
             
-            // Auto-send verification code if it hasn't been sent in the last 60 seconds
-            if (!$lastSent || (time() - $lastSent) >= 60) {
+            // Auto-send verification code ONLY if no code currently exists in cache
+            if (!$existingCode) {
                 $code = sprintf('%06d', random_int(0, 999999));
                 Cache::put('mfa_email_code_'.$user->id, $code, now()->addMinutes(5));
                 Cache::put('mfa_email_code_sent_at_'.$user->id, time(), 60);
@@ -369,6 +371,7 @@ class MFAController extends Controller
         $cachedCode = Cache::get('mfa_email_code_'.$user->id);
         if ($cachedCode && hash_equals($cachedCode, $secret)) {
             Cache::forget('mfa_email_code_'.$user->id);
+            Cache::forget('mfa_email_code_sent_at_'.$user->id);
             session()->forget('pending_google2fa_secret');
 
             $user->google2fa_enabled = true;
