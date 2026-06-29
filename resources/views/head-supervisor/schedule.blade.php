@@ -219,6 +219,7 @@
                                 @csrf
                                 @method('PUT')
                                 <input type="hidden" name="type" value="school_default">
+                                <input type="hidden" name="school_name" :value="schoolFormData.school_name">
 
                                 <div class="grid grid-cols-2 gap-4">
                                     <div class="space-y-2 text-left">
