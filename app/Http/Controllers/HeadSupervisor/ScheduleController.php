@@ -39,12 +39,10 @@ class ScheduleController extends Controller
         $dateExceptions = Schedule::whereNotNull('date')->orderBy('date', 'desc')->get();
         foreach ($dateExceptions as $item) {
             $dateStr = $item->date->toDateString();
-            $eventsByDate[$dateStr] = [
-                [
-                    'id' => $item->getRouteKey(),
-                    'type' => $item->type,
-                    'description' => $item->description,
-                ],
+            $eventsByDate[$dateStr][] = [
+                'id' => $item->getRouteKey(),
+                'type' => $item->type,
+                'description' => $item->description,
             ];
         }
 
@@ -238,7 +236,13 @@ class ScheduleController extends Controller
             return back()->withErrors(['date' => 'You cannot withdraw schedule exceptions for dates that have already passed.']);
         }
 
-        $schedule->delete();
+        if ($schedule->type !== 'school_default') {
+            Schedule::whereDate('date', $schedule->date->toDateString())
+                ->where('type', '!=', 'school_default')
+                ->delete();
+        } else {
+            $schedule->delete();
+        }
 
         return redirect()->route('head-supervisor.schedule.index')
             ->with('success', 'Schedule exception withdrawn.');
