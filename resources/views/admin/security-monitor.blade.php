@@ -19,7 +19,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                     Algorithm Guide
                 </a>
-                <a href="{{ route('admin.security.export') }}" class="flex items-center gap-3 bg-white dark:bg-gray-900 px-6 py-3 border border-gray-200 dark:border-gray-800 rounded-xl text-[10px] font-bold text-gray-700 dark:text-gray-400 shadow-sm hover:bg-gray-50 transition uppercase tracking-wider active:scale-95">
+                <a href="{{ route('admin.security.export', request()->query()) }}" class="flex items-center gap-3 bg-white dark:bg-gray-900 px-6 py-3 border border-gray-200 dark:border-gray-800 rounded-xl text-[10px] font-bold text-gray-700 dark:text-gray-400 shadow-sm hover:bg-gray-50 transition uppercase tracking-wider active:scale-95">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
                     Export Log
                 </a>

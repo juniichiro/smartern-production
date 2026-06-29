@@ -230,11 +230,46 @@ class SecurityController extends Controller
         }
     }
 
-    public function export()
+    public function export(Request $request)
     {
-        $logs = AuditLog::with(['user', 'internDetails', 'supervisorDetails'])
-            ->latest('timestamp')
-            ->get();
+        // Increase memory limit for PDF rendering of large datasets
+        ini_set('memory_limit', '512M');
+        ini_set('max_execution_time', '120');
+
+        $query = AuditLog::with(['user', 'internDetails', 'supervisorDetails']);
+
+        // Filtering Logic (same as index method)
+        if ($request->filled('type')) {
+            switch ($request->type) {
+                case 'auth':
+                    $query->whereIn('action', [
+                        'Authentication', 'Failed Authentication',
+                        'Login', 'Failed Login',
+                        'MFA Enabled', 'MFA Disabled', 'MFA Setup Started',
+                    ]);
+                    break;
+                case 'onboarding':
+                    $query->whereIn('action', ['Applicant Evaluation', 'Intern Matched', 'Matching Results Cleared', 'Intern Endorsed']);
+                    break;
+                case 'tasks':
+                    $query->where(function ($q) {
+                        $q->where('action', 'like', '%Task%')
+                            ->orWhere('action', 'like', '%Submission%');
+                    });
+                    break;
+                case 'admin':
+                    $query->where(function ($q) {
+                        $q->where('action', 'like', '%User%')
+                            ->orWhere('action', 'like', '%Backup%')
+                            ->orWhere('action', 'like', '%Export%')
+                            ->orWhere('action', 'like', '%Configuration%');
+                    });
+                    break;
+            }
+        }
+
+        // Limit to the latest 500 records to prevent memory exhaustion and keep PDF generation fast
+        $logs = $query->latest('timestamp')->limit(500)->get();
 
         $data = [
             'logs' => $logs,
