@@ -69,3 +69,29 @@ Caching manages background queues, ML analysis locks, and anti-replay structures
 #### 3. GPS Geofencing Coordinate Caches
 - **Key**: `offices:{office_id}:coordinates`
 - **Purpose**: Caches physical geofence coordinates and radius thresholds to speed up great-circle distance checks during high-frequency clock-in operations.
+
+---
+
+## 4. Redis Production Integration
+
+In production environments, SmarTern can be configured to offload caching, session persistence, and background task queues onto **Redis** to improve page load latency and database throughput.
+
+### Configuration Variables (`.env`)
+To enable Redis drivers, update the following parameters:
+```env
+SESSION_DRIVER=redis
+CACHE_STORE=redis
+QUEUE_CONNECTION=redis
+
+REDIS_CLIENT=predis
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+```
+
+### Redis Key Partitioning & Serialization
+Laravel automatically prefixes keys with the `database.redis.options.prefix` parameter (configured in `config/database.php` as `smartern_database_`) to prevent key space collisions on shared Redis clusters.
+- **Session Keys**: Stored in Redis as hashes under `smartern_database_session:{session_id}`.
+- **Cache Storage**: Stored as strings or serialized objects under `smartern_database_cache:{key_name}`.
+- **Queue Buffering**: Background CSV import payloads are queued under list keys `smartern_database_queues:default` and processed asynchronously by Redis workers.
+
