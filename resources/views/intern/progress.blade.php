@@ -288,7 +288,7 @@
                                 <td class="py-8 px-10">
                                     <button type="button" 
                                         data-title="{{ $journal->title }}"
-                                        data-content="{!! nl2br(e($journal->content)) !!}"
+                                        data-content="{{ $journal->content }}"
                                         @click="
                                             viewTitle = $el.getAttribute('data-title');
                                             viewContent = $el.getAttribute('data-content');
@@ -377,7 +377,7 @@
 
             <div class="flex-1 overflow-y-auto custom-scrollbar p-8 sm:p-10 py-8 bg-white dark:bg-gray-950">
                 <div class="bg-gray-50/50 dark:bg-gray-800/20 p-8 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-inner">
-                    <div class="font-mono text-sm leading-relaxed text-gray-800 dark:text-gray-100 whitespace-pre-wrap" x-html="viewContent"></div>
+                    <div class="font-mono text-sm leading-relaxed text-gray-800 dark:text-gray-100 whitespace-pre-wrap" x-text="viewContent"></div>
                 </div>
             </div>
 
