@@ -74,3 +74,6 @@ This map outlines the structure of the SmarTern documentation site, tracking eac
 - **Cookies, Sessions & Cache** (`/reference/cookies-session-cache.md`)
   - *Purpose*: Technical directory of cookies configuration parameters, session storage layout, and cache lock keys.
   - *Sources*: `config/session.php`, `config/cache.php`, Cache driver migrations
+- **Authorization & Privacy Policies** (`/reference/authorization-privacy.md`)
+  - *Purpose*: Technical breakdowns of Laravel model policies and data protection compliance rules (GPS tracking, logs retention).
+  - *Sources*: `app/Policies/`, SDO QC personal data protocols

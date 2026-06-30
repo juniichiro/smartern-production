@@ -49,7 +49,8 @@ export default defineConfig({
           { text: 'Middlewares & Services', link: '/reference/middleware-services' },
           { text: 'Routes & Python Scripts', link: '/reference/routes-scripts' },
           { text: 'Artisan Console Commands', link: '/reference/console-commands' },
-          { text: 'Cookies, Sessions & Cache', link: '/reference/cookies-session-cache' }
+          { text: 'Cookies, Sessions & Cache', link: '/reference/cookies-session-cache' },
+          { text: 'Authorization & Privacy Policies', link: '/reference/authorization-privacy' }
         ]
       },
       {
