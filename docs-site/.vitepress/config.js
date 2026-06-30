@@ -16,22 +16,16 @@ export default defineConfig({
     ],
     sidebar: [
       {
-        text: 'Getting Started',
+        text: '1. Getting Started',
         items: [
           { text: 'Installation & Setup', link: '/getting-started/installation' },
-          { text: 'Security & MFA', link: '/getting-started/security' }
-        ]
-      },
-      {
-        text: 'Core Concepts',
-        items: [
           { text: 'System Architecture', link: '/core-concepts/architecture' },
-          { text: 'Automated Placement (Rete)', link: '/core-concepts/rete-matching' },
-          { text: 'Anomaly Detection (ML)', link: '/core-concepts/anomaly-detection' }
+          { text: 'Environment Configuration', link: '/reference/environment' },
+          { text: 'Packages & Dependencies', link: '/reference/dependencies' }
         ]
       },
       {
-        text: 'User Guides',
+        text: '2. Portal User Guides',
         items: [
           { text: 'Administrator Portal', link: '/guides/admin' },
           { text: 'Supervisors & Heads', link: '/guides/supervisors' },
@@ -39,19 +33,30 @@ export default defineConfig({
         ]
       },
       {
-        text: 'Reference & Codebase',
+        text: '3. Core Intelligent Features',
         items: [
-          { text: 'Environment Config', link: '/reference/environment' },
-          { text: 'Testing (Pest)', link: '/reference/testing' },
+          { text: 'Automated Placement (Rete)', link: '/core-concepts/rete-matching' },
+          { text: 'Anomaly Detection (ML)', link: '/core-concepts/anomaly-detection' },
+          { text: 'Security Implementations', link: '/reference/security-practices' },
+          { text: 'GPS Geofencing & MFA', link: '/getting-started/security' }
+        ]
+      },
+      {
+        text: '4. Backend Codebase Reference',
+        items: [
           { text: 'Controllers Catalog', link: '/reference/controllers' },
-          { text: 'Models & Schemas', link: '/reference/models' },
+          { text: 'Models & Database Schemas', link: '/reference/models' },
           { text: 'Middlewares & Services', link: '/reference/middleware-services' },
           { text: 'Routes & Python Scripts', link: '/reference/routes-scripts' },
-          { text: 'Console Commands', link: '/reference/console-commands' },
+          { text: 'Artisan Console Commands', link: '/reference/console-commands' }
+        ]
+      },
+      {
+        text: '5. Frontend Codebase Reference',
+        items: [
           { text: 'Blade Views & Layouts', link: '/reference/views' },
           { text: 'AlpineJS & Javascript', link: '/reference/javascript' },
-          { text: 'Packages & Dependencies', link: '/reference/dependencies' },
-          { text: 'Security Implementations', link: '/reference/security-practices' }
+          { text: 'Pest Testing Suite', link: '/reference/testing' }
         ]
       }
     ],
