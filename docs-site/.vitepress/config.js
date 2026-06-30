@@ -49,7 +49,8 @@ export default defineConfig({
           { text: 'Routes & Python Scripts', link: '/reference/routes-scripts' },
           { text: 'Console Commands', link: '/reference/console-commands' },
           { text: 'Blade Views & Layouts', link: '/reference/views' },
-          { text: 'AlpineJS & Javascript', link: '/reference/javascript' }
+          { text: 'AlpineJS & Javascript', link: '/reference/javascript' },
+          { text: 'Packages & Dependencies', link: '/reference/dependencies' }
         ]
       }
     ],

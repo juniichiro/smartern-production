@@ -65,3 +65,6 @@ This map outlines the structure of the SmarTern documentation site, tracking eac
 - **AlpineJS & Javascript** (`/reference/javascript.md`)
   - *Purpose*: Client side scripts, Alpine components catalog, Echo WebSockets setup, and session management.
   - *Sources*: `resources/js/`
+- **Packages & Dependencies** (`/reference/dependencies.md`)
+  - *Purpose*: Reference index of backend Composer libraries, frontend NPM modules, and background Python dependencies.
+  - *Sources*: `composer.json`, `package.json`, `requirements.txt`
