@@ -69,13 +69,39 @@ $process->run();
 ```
 
 ### Python Rete Node Network Example
-Within `rete_match.py`, rules are evaluated dynamically:
-1. **Filter (Alpha)**: Check if student has required skills.
-2. **Match (Beta)**: Compute intersection between student skills (`S`) and office requirements (`R`):
-   ```
-   Intersection Score = ( |S ∩ R| / |R| ) * 100
-   ```
-3. **Weight Modifier**: Apply multipliers for matching academic majors (+15%) or positive interview recommendation (+10%).
+Within `rete_match.py`, rules are evaluated dynamically using a multi-layered Fuzzy TOPSIS (Technique for Order of Preference by Similarity to Ideal Solution) algorithm:
+
+1. **Filter & Alpha Memory**: Triangulates student skills against requirements. The effective score `x_ij` for a skill is calculated by multiplying its base rating (1 to 5) by a source modifier:
+   - Self-Reported Skill: `weight = 1.0`
+   - Resume Keyword Match: `weight = 1.2`
+   - Interview Notes Match: `weight = 1.3`
+   - Verified Skill: `weight = 1.5`
+
+2. **Beta Memory (Fuzzy TOPSIS Step)**:
+   - Computes the weighted distance to the Positive Ideal Solution (PIS, ideal skill rating = `7.5`):
+     ```
+     d_plus = √[ Σ ( priority * (7.5 - x_ij) )² ]
+     ```
+   - Computes the weighted distance to the Negative Ideal Solution (NIS, worst rating = `0.0`):
+     ```
+     d_minus = √[ Σ ( priority * (x_ij - 0.0) )² ]
+     ```
+   - Computes the baseline Skill Percentage:
+     ```
+     skill_percentage = [ d_minus / (d_plus + d_minus) ] * 100
+     ```
+
+3. **Behavioral Integration & Penalty (Final Score)**:
+   - Integrates the 5-point behavioral evaluation score (20% share of final score):
+     ```
+     behavioral_percentage = (behavioral_score / 5.0) * 100
+     final_score = (skill_percentage * 0.8) + (behavioral_percentage * 0.2)
+     ```
+   - **Recommendation Penalty**: If the applicant is not recommended, a penalty is applied to halve the final matching score:
+     ```
+     final_score = final_score * 0.5
+     ```
+   - The result is bounded between `0` and `100`.
 
 ---
 

@@ -73,13 +73,18 @@ Where:
 - **`s(x) → 0`**: Path length is long. Classified as normal.
 
 ### System Hook & Daemon Lifecycle
-1. **Data Polling**: The daemon queries the database for raw logs where `processed = 0`.
-2. **Vector Scaling**: Standardizes features using a historical baseline dataset (`storage/app/audit_baseline.json`).
-3. **Prediction**:
-   - Scores the record.
-   - If the score exceeds the **`0.7`** threshold, the daemon writes a critical log level, dispatches alerts via Laravel Echo/Reverb channels, and marks the event status as `critical` in the `audit_logs` table.
-4. **Daemon Persistence**: Managed on EC2 via systemd or run as a background service:
-   ```bash
-   python scripts/if_daemon.py --interval 3600
-   ```
-   *(Checks and recalculates scores every hour).*
+1. **Data Ingestion**: The daemon pulls pending logs and extracts the numerical feature matrix `X`.
+2. **Redundancy Reduction (Feng & Zhang, 2023)**:
+   - To reduce overlapping tree bias, depth matrices are calculated across all decision trees:
+     ```python
+     corr = np.corrcoef(depths, rowvar=False)
+     ```
+   - Standard pruning removes any tree exhibiting a depth correlation coefficient > 0.90 from the forest ensemble.
+3. **Anomaly Scoring**:
+   - Calculates the negative of scikit-learn's sample scores to translate it to a standard positive range:
+     ```python
+     anomaly_score = -model.score_samples(X)
+     ```
+   - **Dynamic Baseline Correction**: Computes the average normal score from the bottom 50% (least anomalous) logs. Whitelisted entries (e.g. system loops) are automatically overridden to this normal baseline.
+4. **Trigger & Action**:
+   - If the resulting score is >= 0.7, the daemon flags the record as `critical` in the database and triggers real-time alerts.
