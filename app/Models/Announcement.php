@@ -56,6 +56,14 @@ class Announcement extends Model
                 }
 
                 $config = \HTMLPurifier_Config::createDefault();
+                
+                // Set Cache Path to a writable Laravel storage folder
+                $cachePath = storage_path('app/htmlpurifier');
+                if (!file_exists($cachePath)) {
+                    mkdir($cachePath, 0755, true);
+                }
+                $config->set('Cache.SerializerPath', $cachePath);
+
                 $config->set('HTML.Allowed', 'p[style],b[style],strong[style],i[style],em[style],u[style],a[href|target|title|rel|style],ul[style],ol[style],li[style],h1[style],h2[style],h3[style],h4[style],h5[style],h6[style],br,span[style],blockquote[style],pre[style],code[style]');
                 $config->set('CSS.AllowedProperties', 'font-weight,font-style,text-decoration,color,background-color,font-family,font-size,text-align,list-style-type');
                 $config->set('Attr.AllowedFrameTargets', ['_blank', '_self', '_parent', '_top']);
