@@ -8,36 +8,42 @@
     userName="{{ Auth::user()->supervisorDetails->first_name }}" 
     userRole="{{ Auth::user()->supervisorDetails->office->name }}"
 >
-    <div class="max-w-4xl mx-auto flex flex-col flex-1" x-data="{
-        showModal: false,
-        isEdit: true,
-        editId: '{{ $announcement->getRouteKey() }}',
-        title: '{{ addslashes($announcement->title) }}',
-        scope: '{{ $announcement->office_id ? 'office' : 'global' }}',
-        contentLength: {{ strlen($announcement->content ?? '') }},
-        maxTitle: 255,
-        maxContent: 10000,
-        fileName: '{{ $announcement->attachment ? basename($announcement->attachment) : 'Attach supporting media' }}',
-        previewMode: false,
-        previewContent: '',
-        showDeleteModal: false,
-        deleteRoute: '/supervisor/announcements/{{ $announcement->getRouteKey() }}',
-        deleteTitle: '{{ addslashes($announcement->title) }}',
-        handleFileChange(event) {
-            const file = event.target.files[0];
-            this.fileName = file ? file.name : 'Attach supporting media';
-        },
-        syncContent() {
-            const code = $('#announcement-editor').summernote('code');
-            $('#announcement-editor').val(code);
-            this.contentLength = code.length;
-        },
-        enterPreview() {
-            this.syncContent();
-            this.previewContent = $('#announcement-editor').val();
-            this.previewMode = true;
-        }
-    }">
+    <div class="max-w-4xl mx-auto flex flex-col flex-1" 
+         data-original-content="{{ $announcement->content }}"
+         x-data="{
+            showModal: false,
+            isEdit: true,
+            editId: '{{ $announcement->getRouteKey() }}',
+            title: '{{ addslashes($announcement->title) }}',
+            scope: '{{ $announcement->office_id ? 'office' : 'global' }}',
+            contentLength: {{ strlen($announcement->content ?? '') }},
+            maxTitle: 255,
+            maxContent: 10000,
+            fileName: '{{ $announcement->attachment ? basename($announcement->attachment) : 'Attach supporting media' }}',
+            previewMode: false,
+            previewContent: '',
+            showDeleteModal: false,
+            deleteRoute: '/supervisor/announcements/{{ $announcement->getRouteKey() }}',
+            deleteTitle: '{{ addslashes($announcement->title) }}',
+            originalContent: '',
+            init() {
+                this.originalContent = $el.getAttribute('data-original-content') || '';
+            },
+            handleFileChange(event) {
+                const file = event.target.files[0];
+                this.fileName = file ? file.name : 'Attach supporting media';
+            },
+            syncContent() {
+                const code = $('#announcement-editor').summernote('code');
+                $('#announcement-editor').val(code);
+                this.contentLength = code.length;
+            },
+            enterPreview() {
+                this.syncContent();
+                this.previewContent = $('#announcement-editor').val();
+                this.previewMode = true;
+            }
+        }">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <a href="{{ route('supervisor.announcements') }}" class="w-fit text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] hover:text-[#0B5694] inline-flex items-center gap-2 transition-all hover:-translate-x-1 group">
                 <svg class="group-hover:stroke-[3.5]" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m15 18-6-6 6-6"/></svg>
@@ -46,7 +52,7 @@
             
             <div class="flex items-center gap-2 self-end sm:self-auto">
                 {{-- Edit Button --}}
-                <button @click="showModal = true; setTimeout(() => { $('#announcement-editor').summernote('code', `{{ $announcement->content }}`); $('#announcement-editor').val(`{{ $announcement->content }}`); }, 200)" 
+                <button @click="showModal = true; setTimeout(() => { $('#announcement-editor').summernote('code', originalContent); $('#announcement-editor').val(originalContent); }, 200)" 
                         title="Refine announcement details"
                         class="flex items-center gap-2 px-5 py-2.5 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 rounded-xl transition-all border border-blue-100 dark:border-blue-900/30 shadow-sm active:scale-95 text-xs font-bold uppercase tracking-wider">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
