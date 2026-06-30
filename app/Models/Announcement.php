@@ -43,4 +43,26 @@ class Announcement extends Model
     {
         return $this->user->supervisorDetails();
     }
+
+    /**
+     * Dynamically sanitize content on retrieval to neutralize legacy stored XSS.
+     */
+    protected function content(): \Illuminate\Database\Eloquent\Casts\Attribute
+    {
+        return \Illuminate\Database\Eloquent\Casts\Attribute::make(
+            get: function (?string $value) {
+                if (!$value) {
+                    return $value;
+                }
+
+                $config = \HTMLPurifier_Config::createDefault();
+                $config->set('HTML.Allowed', 'p[style],b[style],strong[style],i[style],em[style],u[style],a[href|target|title|rel|style],ul[style],ol[style],li[style],h1[style],h2[style],h3[style],h4[style],h5[style],h6[style],br,span[style],blockquote[style],pre[style],code[style]');
+                $config->set('CSS.AllowedProperties', 'font-weight,font-style,text-decoration,color,background-color,font-family,font-size,text-align,list-style-type');
+                $config->set('Attr.AllowedFrameTargets', ['_blank', '_self', '_parent', '_top']);
+
+                $purifier = new \HTMLPurifier($config);
+                return $purifier->purify($value);
+            }
+        );
+    }
 }
