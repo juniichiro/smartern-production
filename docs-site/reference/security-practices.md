@@ -20,7 +20,7 @@ SmarTern incorporates standard OWASP safeguards to protect application routes an
 - **Mechanism**: Protects fields that allow user markup inputs (such as accomplishment journals and supervisor announcements).
 - **Implementation**:
   - The application uses `ezyang/htmlpurifier` to clean incoming text variables, stripping javascript tags, inline execution scripts, and CSS injections.
-  - Blade templates output variables using safe escaping tags (`{{ $variable }}`) which automatically execute HTML entity escaping, restricting unsafe tags from rendering.
+  - Blade templates output variables using safe escaping tags <code v-pre>{{ $variable }}</code> which automatically execute HTML entity escaping, restricting unsafe tags from rendering.
 
 ### Directory / Path Traversal Guard
 - **Mechanism**: Blocks file access hacks.
