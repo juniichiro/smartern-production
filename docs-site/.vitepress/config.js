@@ -43,8 +43,10 @@ export default defineConfig({
         items: [
           { text: 'Environment Config', link: '/reference/environment' },
           { text: 'Testing (Pest)', link: '/reference/testing' },
-          { text: 'Controllers & Models', link: '/reference/controllers-models' },
-          { text: 'Middleware & Services', link: '/reference/middleware-services' }
+          { text: 'Controllers Catalog', link: '/reference/controllers' },
+          { text: 'Models & Schemas', link: '/reference/models' },
+          { text: 'Middlewares & Services', link: '/reference/middleware-services' },
+          { text: 'Routes & Python Scripts', link: '/reference/routes-scripts' }
         ]
       }
     ],

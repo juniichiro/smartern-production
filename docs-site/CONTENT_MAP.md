@@ -44,9 +44,15 @@ This map outlines the structure of the SmarTern documentation site, tracking eac
 - **Testing & Pest Suite** (`/reference/testing.md`)
   - *Purpose*: Running backend tests using the Pest framework.
   - *Sources*: `tests/`, `.agents/ATTENDANCE_TEST_SUITE.md`, `composer.json`
-- **Controllers & Models** (`/reference/controllers-models.md`)
-  - *Purpose*: Detailed directory mapping of Laravel controllers and database models.
-  - *Sources*: `app/Http/Controllers/`, `app/Models/`
-- **Middleware, Services & Scripts** (`/reference/middleware-services.md`)
-  - *Purpose*: Technical breakdown of background daemons, middlewares, and services.
-  - *Sources*: `app/Http/Middleware/`, `app/Services/`, `scripts/`
+- **Controllers Catalog** (`/reference/controllers.md`)
+  - *Purpose*: Exhaustive directory mapping of all Laravel controllers and exposed methods.
+  - *Sources*: `app/Http/Controllers/`
+- **Models & Schemas** (`/reference/models.md`)
+  - *Purpose*: Detailed database fields, relationships, and constraints mappings for all Eloquent models.
+  - *Sources*: `app/Models/`
+- **Middlewares & Services** (`/reference/middleware-services.md`)
+  - *Purpose*: Technical breakdowns of middlewares, class parameters, and application service logic.
+  - *Sources*: `app/Http/Middleware/`, `app/Services/`
+- **Routes & Python Scripts** (`/reference/routes-scripts.md`)
+  - *Purpose*: Direct catalog of route groups, middlewares, and stand-alone python daemons.
+  - *Sources*: `routes/web.php`, `scripts/`
