@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
+  base: '/docs/',
   title: "SmarTern Docs",
   description: "Specialized Internship Management Platform for SDO QC",
   srcDir: '.',
