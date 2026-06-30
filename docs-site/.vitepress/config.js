@@ -46,7 +46,8 @@ export default defineConfig({
           { text: 'Controllers Catalog', link: '/reference/controllers' },
           { text: 'Models & Schemas', link: '/reference/models' },
           { text: 'Middlewares & Services', link: '/reference/middleware-services' },
-          { text: 'Routes & Python Scripts', link: '/reference/routes-scripts' }
+          { text: 'Routes & Python Scripts', link: '/reference/routes-scripts' },
+          { text: 'Console Commands', link: '/reference/console-commands' }
         ]
       }
     ],

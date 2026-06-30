@@ -56,3 +56,6 @@ This map outlines the structure of the SmarTern documentation site, tracking eac
 - **Routes & Python Scripts** (`/reference/routes-scripts.md`)
   - *Purpose*: Direct catalog of route groups, middlewares, and stand-alone python daemons.
   - *Sources*: `routes/web.php`, `scripts/`
+- **Artisan Console Commands** (`/reference/console-commands.md`)
+  - *Purpose*: Technical directory of custom command signatures, arguments, scheduler options, and cron parameters.
+  - *Sources*: `app/Console/Commands/`, `routes/console.php`
