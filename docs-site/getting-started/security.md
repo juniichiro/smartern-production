@@ -40,13 +40,15 @@ Attendance logging routes verify that the intern is physically within the office
 ### The Haversine Mathematical Model
 SmarTern calculates the orthodromic distance (great-circle distance) between the intern's device coordinates and the office coordinates using the **Haversine Formula**:
 
-$$d = 2r \arcsin\left(\sqrt{\sin^2\left(\frac{\Delta \phi}{2}\right) + \cos(\phi_1)\cos(\phi_2)\sin^2\left(\frac{\Delta \lambda}{2}\right)}\right)$$
+```
+d = 2 * r * arcsin( √[ sin²(Δφ / 2) + cos(φ1) * cos(φ2) * sin²(Δλ / 2) ] )
+```
 
 Where:
-- $\phi_1, \phi_2$ are the latitudes of point 1 and point 2 (in radians).
-- $\Delta \phi$ is the difference in latitude.
-- $\Delta \lambda$ is the difference in longitude.
-- $r$ is the Earth's radius (mean radius = $6,371,000$ meters).
+- **`φ1`, `φ2`** are the latitudes of point 1 and point 2 (in radians).
+- **`Δφ`** is the difference in latitude.
+- **`Δλ`** is the difference in longitude.
+- **`r`** is the Earth's radius (mean radius = `6,371,000` meters).
 
 ### PHP Geospatial Service Implementation (`AttendanceService.php`)
 ```php

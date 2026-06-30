@@ -57,18 +57,20 @@ clf = IsolationForest(
 
 ## 3. Scoring Mathematics & Logging Lifecycle
 
-The raw anomaly score $s(x)$ for a feature vector $x$ is defined as:
+The raw anomaly score `s(x)` for a feature vector `x` is defined as:
 
-$$s(x) = 2^{-\frac{E(h(x))}{c(n)}}$$
+```
+s(x) = 2 ^ ( - E(h(x)) / c(n) )
+```
 
 Where:
-- $h(x)$ is the path length of vector $x$ in a decision tree.
-- $E(h(x))$ is the average path length across all trees in the forest.
-- $c(n)$ is the average path length of an unsuccessful search in a Binary Search Tree built with $n$ nodes.
+- **`h(x)`** is the path length of vector `x` in a decision tree.
+- **`E(h(x))`** is the average path length of `h(x)` across all trees in the forest.
+- **`c(n)`** is the average path length of an unsuccessful search in a Binary Search Tree built with `n` nodes.
 
 ### Score Translation
-- **$s(x) \to 1$**: Path length is very short. Classified as highly anomalous.
-- **$s(x) \to 0$**: Path length is long. Classified as normal.
+- **`s(x) → 1`**: Path length is very short. Classified as highly anomalous.
+- **`s(x) → 0`**: Path length is long. Classified as normal.
 
 ### System Hook & Daemon Lifecycle
 1. **Data Polling**: The daemon queries the database for raw logs where `processed = 0`.

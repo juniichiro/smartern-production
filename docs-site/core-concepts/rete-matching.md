@@ -71,8 +71,10 @@ $process->run();
 ### Python Rete Node Network Example
 Within `rete_match.py`, rules are evaluated dynamically:
 1. **Filter (Alpha)**: Check if student has required skills.
-2. **Match (Beta)**: Compute intersection between student skills ($S$) and office requirements ($R$):
-   $$\text{Intersection Score} = \frac{|S \cap R|}{|R|} \times 100$$
+2. **Match (Beta)**: Compute intersection between student skills (`S`) and office requirements (`R`):
+   ```
+   Intersection Score = ( |S ∩ R| / |R| ) * 100
+   ```
 3. **Weight Modifier**: Apply multipliers for matching academic majors (+15%) or positive interview recommendation (+10%).
 
 ---
