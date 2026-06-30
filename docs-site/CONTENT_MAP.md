@@ -68,3 +68,6 @@ This map outlines the structure of the SmarTern documentation site, tracking eac
 - **Packages & Dependencies** (`/reference/dependencies.md`)
   - *Purpose*: Reference index of backend Composer libraries, frontend NPM modules, and background Python dependencies.
   - *Sources*: `composer.json`, `package.json`, `requirements.txt`
+- **Security Implementations** (`/reference/security-practices.md`)
+  - *Purpose*: Technical breakdowns of basic and advanced security safeguards (SQLi, CSRF, XSS, Path Traversal, Hashids, access controls).
+  - *Sources*: Laravel route configuration, kernel middlewares, validation layers

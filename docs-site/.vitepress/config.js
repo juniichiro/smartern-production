@@ -50,7 +50,8 @@ export default defineConfig({
           { text: 'Console Commands', link: '/reference/console-commands' },
           { text: 'Blade Views & Layouts', link: '/reference/views' },
           { text: 'AlpineJS & Javascript', link: '/reference/javascript' },
-          { text: 'Packages & Dependencies', link: '/reference/dependencies' }
+          { text: 'Packages & Dependencies', link: '/reference/dependencies' },
+          { text: 'Security Implementations', link: '/reference/security-practices' }
         ]
       }
     ],
