@@ -71,3 +71,6 @@ This map outlines the structure of the SmarTern documentation site, tracking eac
 - **Security Implementations** (`/reference/security-practices.md`)
   - *Purpose*: Technical breakdowns of basic and advanced security safeguards (SQLi, CSRF, XSS, Path Traversal, Hashids, access controls).
   - *Sources*: Laravel route configuration, kernel middlewares, validation layers
+- **Cookies, Sessions & Cache** (`/reference/cookies-session-cache.md`)
+  - *Purpose*: Technical directory of cookies configuration parameters, session storage layout, and cache lock keys.
+  - *Sources*: `config/session.php`, `config/cache.php`, Cache driver migrations

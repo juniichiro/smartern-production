@@ -48,7 +48,8 @@ export default defineConfig({
           { text: 'Models & Database Schemas', link: '/reference/models' },
           { text: 'Middlewares & Services', link: '/reference/middleware-services' },
           { text: 'Routes & Python Scripts', link: '/reference/routes-scripts' },
-          { text: 'Artisan Console Commands', link: '/reference/console-commands' }
+          { text: 'Artisan Console Commands', link: '/reference/console-commands' },
+          { text: 'Cookies, Sessions & Cache', link: '/reference/cookies-session-cache' }
         ]
       },
       {
