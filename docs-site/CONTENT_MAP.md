@@ -59,3 +59,9 @@ This map outlines the structure of the SmarTern documentation site, tracking eac
 - **Artisan Console Commands** (`/reference/console-commands.md`)
   - *Purpose*: Technical directory of custom command signatures, arguments, scheduler options, and cron parameters.
   - *Sources*: `app/Console/Commands/`, `routes/console.php`
+- **Blade Views & Layouts** (`/reference/views.md`)
+  - *Purpose*: Renders UI elements, reusable components, layouts, and portal files directory mapping.
+  - *Sources*: `resources/views/`
+- **AlpineJS & Javascript** (`/reference/javascript.md`)
+  - *Purpose*: Client side scripts, Alpine components catalog, Echo WebSockets setup, and session management.
+  - *Sources*: `resources/js/`

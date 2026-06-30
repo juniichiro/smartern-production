@@ -47,7 +47,9 @@ export default defineConfig({
           { text: 'Models & Schemas', link: '/reference/models' },
           { text: 'Middlewares & Services', link: '/reference/middleware-services' },
           { text: 'Routes & Python Scripts', link: '/reference/routes-scripts' },
-          { text: 'Console Commands', link: '/reference/console-commands' }
+          { text: 'Console Commands', link: '/reference/console-commands' },
+          { text: 'Blade Views & Layouts', link: '/reference/views' },
+          { text: 'AlpineJS & Javascript', link: '/reference/javascript' }
         ]
       }
     ],
