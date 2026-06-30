@@ -1,55 +1,83 @@
-# Middleware, Services & Scripts
+# Middleware & Service Layer Implementation
 
-This section details the custom middlewares, application services, and background daemon scripts that implement security checks and placement algorithms.
-
----
-
-## 1. Middleware Layer
-
-Located in `app/Http/Middleware/` and registered in your route pipeline:
-
-- **`RoleMiddleware.php`**: Evaluates `Auth::user()->role->name` against permitted routes. It features an automated bypass for the `super_admin` role, letting superadmins bypass manual checks across all modules.
-- **`MfaMiddleware`** (or verification filters): Validates that users with configured MFA cannot bypass verification, and redirects onboarding accounts without configured MFA to the configuration setup.
-- **`GeofenceCheck`**: Runs in the attendance logging route to ensure coordinates match the target office radius before letting form processing complete.
+This section details the custom middlewares, transaction services, and dependencies managing SmarTern's business logic.
 
 ---
 
-## 2. Application Services
+## 1. Middleware Architectures
 
-Located in `app/Services/` to encapsulate core domain logic:
+Laravel Middlewares filter HTTP requests before they reach the controller methods. They are registered in `app/Http/Kernel.php` (or inside `bootstrap/app.php` in Laravel 11/13 setup).
 
-### `SmartMatchingService.php`
-- Orchestrates the Rete placement engine.
-- Extracts resume texts from PDF paths.
-- Compiles intern profiles and `OfficeRule` constraints into JSON and executes `scripts/rete_match.py` via a Symfony Process.
-- Parses output matches and populates the `MatchResult` table.
+### `RoleMiddleware` (`app/Http/Middleware/RoleMiddleware.php`)
+Ensures role integrity across routing groups.
+- **Method signature**:
+  ```php
+  public function handle(Request $request, Closure $next, ...$roles)
+  ```
+- **Rules**:
+  1. Checks if a user is authenticated (`$request->user()`).
+  2. Extracts the role name string from `$request->user()->role->name`.
+  3. Bypasses checks if the role is exactly `super_admin`.
+  4. Loops through the parameters `$roles` and executes matching:
+     ```php
+     if ($userRole === strtolower($role)) { return $next($request); }
+     ```
+  5. Aborts with a `403` HTTP status if no match occurs.
 
-### `AnomalyDetectionService.php`
-- Interacts with the Python Isolation Forest daemon.
-- Reads audit logs, validates threshold triggers, and formats anomaly parameters.
-- Dispatches emergency notifications and emails to administrators when a high-risk score is returned.
-
-### `AttendanceService.php`
-- Handles the core geospatial calculations.
-- Evaluates distance equations (using the Haversine formula) to verify if an intern's coordinates fall within their office's allowed geofence radius.
+### `GeofenceCheck`
+Verifies location checks for attendance routes.
+- **Rules**:
+  1. Extracts GPS latitude, longitude, and device mock status headers from the request payload.
+  2. Fetches the assigned office geofence data via the user relationship (`$request->user()->internDetails->office`).
+  3. Invokes the `AttendanceService@calculateDistance` logic.
+  4. If the distance exceeds the office radius, returns a `422 Unprocessable Entity` JSON response and writes a warning entry to the `audit_logs` table.
 
 ---
 
-## 3. Background Python Scripts
+## 2. Service Layer Class Implementations
 
-Located in `scripts/` and run asynchronously:
+Services isolate complex procedures from controllers, promoting class reuse.
 
-### `if_daemon.py` (Isolation Forest Daemon)
-- **Role**: Active ML daemon scanning user footprint patterns.
-- **Algorithm**: `sklearn.ensemble.IsolationForest`.
-- **Flow**:
-  1. Polls the `audit_logs` table.
-  2. Builds decision trees on features: login concurrency, download size spikes, and geofence coordinate variances.
-  3. Updates log rows with a computed anomaly score between `0.0` and `1.0`.
+### `SmartMatchingService` (`app/Services/SmartMatchingService.php`)
+- **Key Method**: `runMatchingForApplicant(OnboardingApplicant $applicant)`
+  - Invokes text parser helper logic to read resumes.
+  - Groups rules from the `OfficeRule` model.
+  - Compiles facts and executes `rete_match.py` via Python processes.
+- **Key Method**: `processMatchingBatch(array $allStudentData, $rules)`
+  - Parses JSON outputs, clears old unconfirmed rows, and registers new matches into the `MatchResult` table.
 
-### `rete_match.py` (Rete Placement Script)
-- **Role**: Evaluates rules and facts to map placements.
-- **Flow**:
-  1. Accepts JSON inputs containing student credentials and office rules.
-  2. Executes pattern matching on tech skills, soft skills, major, and interview recommendations.
-  3. Outputs matching departments with a calculated confidence indicator and score percentage.
+### `AnomalyDetectionService` (`app/Services/AnomalyDetectionService.php`)
+- **Key Method**: `scanRecentActivityLogs()`
+  - Triggers log checks.
+  - Communicates with `if_daemon.py` to evaluate recent system logs.
+  - Triggers email broadcasts if high-risk anomalies ($\ge 0.7$) are detected.
+
+---
+
+## 3. Dynamic File Server (`DocsController.php`)
+
+To protect developer documentation from public search engines and unauthenticated users, `DocsController` serves compiled VitePress files dynamically.
+
+```
+Request (/admin/docs/assets/app.js)
+                 │
+                 ▼
+          RoleMiddleware
+     Is Admin or SuperAdmin?
+         ├── YES ──► DocsController@index('assets/app.js')
+         │                 │
+         │                 ├── File Exists?
+         │                 │     ├── YES ──► Map Mime Type (e.g. 'js' -> 'application/javascript')
+         │                 │     │           Return response()->file($path, $headers)
+         │                 │     └── NO  ──► Abort 404
+         │                 │
+         └── NO ───► Abort 403 (Unauthorized)
+```
+
+- **MIME mapping matrix**:
+  - CSS: `text/css`
+  - JS: `application/javascript`
+  - HTML: `text/html`
+  - PNG/JPG: `image/png` / `image/jpeg`
+  - SVG: `image/svg+xml`
+- **Security Check**: Enforces traversal safety filters by blocking `..` and `\` strings inside the `$path` wildcard argument to prevent files outside `docs-site/dist/` from being exposed.

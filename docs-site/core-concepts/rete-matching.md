@@ -1,34 +1,92 @@
 # Automated Office Placement (Rete Matching)
 
-SmarTern incorporates an automated office placement module based on the **Rete Pattern Matching Algorithm** to match student skills, interests, and academic background to office roles.
+This section covers the architecture of the Rete Pattern Matching placement engine, detailing how rules, facts, and the background Python script are structured.
 
 ---
 
-## What is the Rete Algorithm?
+## 1. Rete Algorithmic Graph & Script Integration
 
-The Rete matching algorithm is an efficient pattern-matching algorithm for production rule systems. Instead of evaluating every rule against every student sequentially (which is an $O(R \times S)$ operation), Rete constructs a directed acyclic graph (network) of rules:
-- **Alpha Network**: Filters incoming facts based on simple conditional attributes (e.g., `Course == 'BSIT'`, `Skills contains 'PHP'`).
-- **Beta Network**: Evaluates joins between different conditional nodes (e.g., matching a student's technical level with an office's developer requirement level).
-- **Conflict Resolver**: Prioritizes rules and outputs optimal matches.
+When a Head Supervisor executes placement matches, SmarTern delegates pattern matching to a Python module (`scripts/rete_match.py`). 
 
-This structure allows high-performance batch processing where hundreds of student profiles can be matched to available departments in seconds.
+```
+   Intern Profile Facts (Resume, Skills, Major, Evaluation)
+                           │
+                           ▼
+                  ┌─────────────────┐
+                  │   Alpha Nodes   │  <-- Single-attribute filters (e.g. Major == 'BSIT')
+                  └────────┬────────┘
+                           ▼
+                  ┌─────────────────┐
+                  │   Beta Joins    │  <-- Multi-condition evaluation (e.g. Major + Skill)
+                  └────────┬────────┘
+                           ▼
+                  ┌─────────────────┐
+                  │ Conflict Resolv │  <-- Sort matches by confidence & preference
+                  └────────┬────────┘
+                           ▼
+                     Match Results
+```
+
+### Fact Ingestion Structure
+The Laravel `SmartMatchingService` serializes student parameters into facts:
+```json
+{
+  "student_name": "Raniel John Britos",
+  "university": "SDO QC Academy",
+  "skills": ["PHP", "JavaScript", "SQL", "Technical Writing"],
+  "resume_text": "Experienced web developer focused on backend systems and database indexing...",
+  "interview_notes": "Demonstrates strong logic skills and interest in database administration.",
+  "verified_skills": ["PHP", "SQL"],
+  "behavioral_score": 5,
+  "is_recommended": true
+}
+```
+
+### Rules Compiler
+Office criteria are fetched from `OfficeRule` records and grouped. Rules map skills to specific office IDs:
+```json
+{
+  "office_id": 1,
+  "office_name": "ICT Office",
+  "required_skills": ["PHP", "SQL", "HTML"],
+  "preferred_majors": ["BSIT", "BSCS"],
+  "min_behavioral_score": 4
+}
+```
 
 ---
 
-## Matching Criteria & Facts
+## 2. Python Script Architecture (`scripts/rete_match.py`)
 
-Placement logic parses facts extracted from the student's profile and assessment form:
-1. **Academic Background**: Major/Specialization, GPA, and school.
-2. **Skills Profile**: Keywords extracted from resumes (e.g. Programming, Graphic Design, Customer Service, Bookkeeping).
-3. **Student Preferences**: Department rankings chosen by the intern.
-4. **Office Requirements**: Rules configured by administrators (e.g., "ICT Department requires programming skills", "HR requires communication skills").
+The script uses a rule-based matching pattern.
+
+### Process Invocation
+The PHP service invokes the Python binary asynchronously using the Symfony Process utility:
+```php
+$process = new Process([$pythonPath, base_path('scripts/rete_match.py')]);
+$process->setInput(json_encode(['students' => $studentData, 'rules' => $rules]));
+$process->run();
+```
+
+### Python Rete Node Network Example
+Within `rete_match.py`, rules are evaluated dynamically:
+1. **Filter (Alpha)**: Check if student has required skills.
+2. **Match (Beta)**: Compute intersection between student skills ($S$) and office requirements ($R$):
+   $$\text{Intersection Score} = \frac{|S \cap R|}{|R|} \times 100$$
+3. **Weight Modifier**: Apply multipliers for matching academic majors (+15%) or positive interview recommendation (+10%).
 
 ---
 
-## Scoring System
+## 3. Conflict Resolution & Score Finalization
 
-The matching service returns multiple options for each student, complete with a percentage match score:
-- **Primary Match**: Highest matching percentage based on core requirements.
-- **Alternative Match**: Secondary options that fit minor skills or secondary preferences.
+If a student qualifies for multiple departments, the Conflict Resolver sorts them:
+- **Priority 1**: Highest calculated percentage score.
+- **Priority 2**: Alignment with student's rank preferences.
+- **Priority 3**: Available office slots (quota).
 
-Heads and supervisors can review these matches and export reports in PDF or spreadsheet formats before final deployment.
+### MatchResult Generation
+Matches are written to the database with a confidence indicator:
+- **`High`**: Score $\ge 85\%$ (skills match, recommended major, strong evaluation).
+- **`Medium`**: Score $70\% - 84\%$ (meets basic skills, major differs).
+- **`Low`**: Score $< 70\%$ (partial skill matching only).
+- **`is_confirmed`**: Stays `false` until the Head Supervisor clicks "Confirm Placement" on the console. At that point, the status changes to `matched`, a new User account is created, and the assignment notification email is dispatched.

@@ -1,54 +1,86 @@
-# Controllers & Models
+# Database Schemas & Controller Catalog
 
-This section provides a detailed breakdown of the controllers and models used in the SmarTern codebase to manage the internship lifecycle.
-
----
-
-## 1. Controllers Breakdown
-
-SmarTern segments controller operations into role-specific namespaces located under `app/Http/Controllers/`.
-
-### Admin Controllers (`app/Http/Controllers/Admin/`)
-- **`AccountController.php`**: Manages CRUD operations for all user types (interns, supervisors, coordinators). Handles role-based visibility restrictions, automated password creation, and bulk CSV imports.
-- **`AdminController.php`**: Controls system configurations, registers departments/offices, manages manual backup snapshots, and handles geofencing boundary values.
-- **`SecurityController.php`**: Operates the interface for the Isolation Forest output. Displays anomalies, generates reports, and allows admins to temporarily restrict flagged accounts.
-
-### Supervisor Controllers (`app/Http/Controllers/Supervisor/`)
-- **`TaskController.php`**: Enables supervisors to assign deliverables to interns, verify completed submissions, and manage revision feedback.
-- **`AnnouncementController.php`**: Allows broadcasting department notices to interns via pushing and email notifications.
-- **`DashboardController.php`**: Computes and displays department analytics (counts, completions, attendance trends).
-- **`AttendanceController.php`**: Inspects local logs, manages student schedules, and reviews daily logs.
-- **`OfficeManagementController.php`**: Configures requirements and rules for automated matching constraints.
-
-### Head Supervisor Controllers (`app/Http/Controllers/HeadSupervisor/`)
-- **`OfficeMatchingController.php`**: Controls the Rete Matching module interface, allowing Ms. Mal-in to verify assessments, run placement evaluations, and finalize assignments.
-- **`AnalyticsController.php`**: Generates consolidated multi-department internship metrics.
-
-### Intern Controllers (`app/Http/Controllers/Intern/`)
-- **`AttendanceController.php`**: Manages GPS geofence clock-in and clock-out actions.
-- **`JournalController.php`** (or accomplishment logs): Log entry submissions describing daily work results.
+This reference lists the database structures, core model classes, and controller methods implementing SmarTern.
 
 ---
 
-## 2. Models Breakdown
+## 1. Database Table Schemas & Model Mappings
 
-Models are located under `app/Models/` and extend Eloquent to represent system entities.
+Every database table is managed via Laravel Eloquent models.
 
-### Core User Directory
-- **`User.php`**: Main credential holder. Manages TOTP authentication parameters (`google2fa_secret`), login attempts, account status, and role relationships.
-- **`InternDetail.php`**: Profiles student interns. Stores formal ID pictures, organization emails, contact numbers, deployed office ID, and Emergency Contact details.
-- **`SupervisorDetail.php`**: Profiles supervisors. Identifies office association and flags status flags like `is_hr_head`.
-- **`SchoolCoordinatorDetail.php`**: Links academic coordinators to the list of interns they oversee.
+### `users` Table
+Stores login credentials and security states.
+- **`id`**: `bigint` (Primary Key, Auto Increment)
+- **`email`**: `string` (Unique index)
+- **`password`**: `string` (Minimum 12 chars check)
+- **`role_id`**: `integer` (Foreign key to `roles.id`)
+- **`google2fa_secret`**: `text` (Encrypted base32 TOTP secret)
+- **`google2fa_enabled`**: `boolean` (Default: `false`)
+- **`status`**: `enum` (`active`, `suspended`, `onboarding`)
+- **`last_login_at`**: `timestamp` (Used for time_delta features)
 
-### Attendance & Workflow
-- **`Attendance.php`**: Records clock-in/out timestamps, latitude/longitude coords, and validates if geofencing constraints were bypassed.
-- **`Task.php`**: Holds title, description, deadlines, and supervisor ID.
-- **`Submission.php`**: Connects intern work uploads and screenshots to assigned tasks.
-- **`AbsenceRequest.php`**: Processes leave files and validation flags.
+### `intern_details` Table
+Extends the `users` profile for student interns.
+- **`id`**: `bigint` (Primary Key)
+- **`user_id`**: `bigint` (Foreign key to `users.id` with `cascadeOnDelete()`)
+- **`office_id`**: `bigint` (Foreign key to `offices.id` or `null` before matching)
+- **`first_name`**, **`middle_name`**, **`last_name`**: `string`
+- **`school`**: `string`
+- **`gender`**: `string` (Stores male, female, others)
+- **`phone_number`**: `string` (Enforced to +63 format)
+- **`avatar_path`**: `string` (Path to formal 1x1 image)
+- **`emergency_contact_name`**: `string`
+- **`emergency_contact_phone`**: `string`
 
-### Security & Automated Logic
-- **`AuditLog.php`**: Records chronological system footprints (logins, uploads, deletions) used by the Isolation Forest daemon to calculate anomaly scores.
-- **`OnboardingApplicant.php`**: Stores incoming student profiles before final deployment.
-- **`ApplicantEvaluation.php`**: Holds supervisor interview ratings and verified skill assessments.
-- **`OfficeRule.php`**: Stores requirements (languages, skills, major preferences) compiled into Rete facts.
-- **`MatchResult.php`**: Holds placement scores and confidence evaluations returned by the Rete placement script.
+### `attendance` Table
+Tracks daily login and geospatial validations.
+- **`id`**: `bigint` (Primary Key)
+- **`user_id`**: `bigint` (Foreign key to `users.id`)
+- **`office_id`**: `bigint` (Foreign key to `offices.id`)
+- **`clock_in_at`**: `timestamp`
+- **`clock_out_at`**: `timestamp` (Nullable)
+- **`clock_in_lat`**, **`clock_in_lon`**: `double` (Recorded coords)
+- **`clock_out_lat`**, **`clock_out_lon`**: `double` (Nullable)
+- **`is_geofence_bypassed`**: `boolean` (Flagged if forced bypass occurs)
+
+### `audit_logs` Table
+Scanned by the Python ML daemon.
+- **`id`**: `bigint` (Primary Key)
+- **`user_id`**: `bigint` (Foreign key to `users.id` or `null` for guests)
+- **`action`**: `string` (e.g., `login`, `download`, `clock_in`)
+- **`ip_address`**: `string`
+- **`user_agent`**: `string`
+- **`payload`**: `json` (Details of the action)
+- **`processed`**: `boolean` (Default: `false`, set to `true` by ML daemon)
+- **`anomaly_score`**: `float` (Output score, default: `0.0`)
+- **`created_at`**: `timestamp`
+
+---
+
+## 2. Controller Routing & Methods Catalog
+
+Below is the directory mapping of route controllers and their functions.
+
+```
+app/Http/Controllers/
+├── Admin/
+│   ├── AccountController.php     --> store(), update(), destroy(), importBulkCSV()
+│   ├── AdminController.php       --> configuration(), offices(), triggerManualBackup()
+│   └── SecurityController.php    --> index(), markCompromised(), markSuspended()
+├── Supervisor/
+│   ├── TaskController.php        --> store(), updateStatus(), destroy()
+│   ├── AnnouncementController.php--> store(), broadcast()
+│   └── OfficeManagementController.php --> updateRequirements(), updateRules()
+└── HeadSupervisor/
+    ├── OfficeMatchingController.php --> index(), storeEvaluation(), finalizeMatches()
+    └── AnalyticsController.php   --> getMultiOfficeMetrics()
+```
+
+### Route Parameter Restrictions
+- **`Admin\AccountController@importBulkCSV`**: Accepts a single `file` parameter under standard validation. Dispatches processing jobs onto the database queue queue listener.
+- **`HeadSupervisor\OfficeMatchingController@storeEvaluation`**: Triggers Rete Matching re-runs for the specific student instantly:
+  ```php
+  $this->matchingService->runMatchingForApplicant($applicant);
+  ```
+- **`Supervisor\TaskController@updateStatus`**: Accepts states: `completed`, `pending_revision`, `overdue`. Logs state change audit entries instantly.
+- **`Admin\AdminController@triggerManualBackup`**: Creates compressed tar archive files of the database and `storage/app` paths, placing them into `storage/app/backups/`.

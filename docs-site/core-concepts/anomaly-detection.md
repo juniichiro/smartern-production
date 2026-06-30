@@ -1,42 +1,83 @@
 # Anomaly Detection (Isolation Forest)
 
-SmarTern secures its internship lifecycle using machine learning-driven anomaly detection to identify fraud, integrity bypasses, or compromised accounts.
+This section covers the machine learning implementation for detecting system irregularities, centering on the Isolation Forest daemon architecture.
 
 ---
 
-## Machine Learning Engine: Isolation Forest
+## 1. Feature Vector Formulation
 
-The system implements the **Isolation Forest** unsupervised learning algorithm to isolate outliers in user activity. Instead of profiling normal data, Isolation Forest explicitly isolates anomalies by building random decision trees. Because anomalies require fewer splits to isolate, they appear closer to the root of the tree, producing a higher anomaly score.
+The background python daemon `scripts/if_daemon.py` queries `audit_logs` periodically, compiling log rows into numerical feature matrices for the model.
 
----
+```
+       Audit Logs Database Table
+                  │
+                  ▼
+         Feature Extraction:
+ ┌──────────────────────────────────────┐
+ │ - Lat/Lon coordinate delta           │
+ │ - Failed login attempts count (30m)  │
+ │ - Session switch speed (sec)         │
+ │ - Bulk action / download indicators  │
+ └──────────────────┬───────────────────┘
+                    ▼
+          Feature Vector array
+   x = [coord_delta, logins, speed, size]
+```
 
-## The Anomaly Daemon (`if_daemon.py`)
-
-A persistent Python daemon runs in the background (`scripts/if_daemon.py`) to process system audit logs.
-
-### Detection Triggers
-The model evaluates three main anomaly categories:
-1. **Geolocation Outliers**: Clock-in coordinates that differ dramatically from the designated office geofence or show impossible travel speeds between consecutive events.
-2. **Authentication Anomalies**: Simultaneous logins on different devices, rapid session switches, or excessive failed logins before lockout.
-3. **Behavioral Spikes**: Extreme counts of document uploads, downloads, or unexpected access to privileged endpoints.
-
----
-
-## Scoring Tiers
-
-Logs are evaluated and categorized into three risk levels:
-
-| Score Range | Severity | Action Triggered |
-|---|---|---|
-| **`0.0` - `0.5`** | **Normal** | Logged normally, no action taken. |
-| **`0.51` - `0.7`** | **Warning** | Flashed on the administrator's dashboard warning stream. |
-| **`0.71` - `1.0`** | **Critical** | Triggers an immediate system notification and email alert to administrators. |
+### Numerical Vector Variables
+1. **`coordinate_delta`**: Geodetic distance in kilometers between the user's current IP/GPS entry and their previous log entry.
+2. **`login_failures`**: Integer count of failed authentication attempts within the last 30 minutes.
+3. **`time_delta`**: Time difference in seconds between consecutive logins (detecting impossible travel or session hijacking).
+4. **`activity_volume`**: Cumulative rate of file downloads, uploads, or critical database mutations within a rolling 5-minute window.
 
 ---
 
-## Precautionary Remediation
+## 2. Model Configuration & Hyperparameters
 
-When a critical anomaly score is recorded, administrators have options to:
-- Generate and download a comprehensive Isolation Forest anomaly report.
-- Temporarily restrict/suspend the flagged account directly from the dashboard.
-- Force immediate session termination and password reset.
+The model is instantiated using `scikit-learn`'s `IsolationForest` estimator:
+
+```python
+from sklearn.ensemble import IsolationForest
+
+# Hyperparameter Setup
+clf = IsolationForest(
+    n_estimators=100,      # Number of decision trees to construct
+    max_samples='auto',    # Sub-sample size: min(256, n_samples)
+    contamination=0.05,    # Estimated proportion of anomalies in data (5%)
+    random_state=42,       # Seed for reproducible splits
+    n_jobs=-1              # Use all CPU cores for parallel tree building
+)
+```
+
+### Tree Split Criteria
+- Normal events require many splits (deep nodes in the trees) to isolate because they cluster closely.
+- Outliers are isolated with very few splits (near the root of the trees) because their feature values fall in sparse domains.
+
+---
+
+## 3. Scoring Mathematics & Logging Lifecycle
+
+The raw anomaly score $s(x)$ for a feature vector $x$ is defined as:
+
+$$s(x) = 2^{-\frac{E(h(x))}{c(n)}}$$
+
+Where:
+- $h(x)$ is the path length of vector $x$ in a decision tree.
+- $E(h(x))$ is the average path length across all trees in the forest.
+- $c(n)$ is the average path length of an unsuccessful search in a Binary Search Tree built with $n$ nodes.
+
+### Score Translation
+- **$s(x) \to 1$**: Path length is very short. Classified as highly anomalous.
+- **$s(x) \to 0$**: Path length is long. Classified as normal.
+
+### System Hook & Daemon Lifecycle
+1. **Data Polling**: The daemon queries the database for raw logs where `processed = 0`.
+2. **Vector Scaling**: Standardizes features using a historical baseline dataset (`storage/app/audit_baseline.json`).
+3. **Prediction**:
+   - Scores the record.
+   - If the score exceeds the **`0.7`** threshold, the daemon writes a critical log level, dispatches alerts via Laravel Echo/Reverb channels, and marks the event status as `critical` in the `audit_logs` table.
+4. **Daemon Persistence**: Managed on EC2 via systemd or run as a background service:
+   ```bash
+   python scripts/if_daemon.py --interval 3600
+   ```
+   *(Checks and recalculates scores every hour).*
