@@ -287,9 +287,11 @@
                                 </td>
                                 <td class="py-8 px-10">
                                     <button type="button" 
+                                        data-title="{{ $journal->title }}"
+                                        data-content="{!! nl2br(e($journal->content)) !!}"
                                         @click="
-                                            viewTitle = '{{ addslashes($journal->title) }}';
-                                            viewContent = `{!! addslashes(nl2br(e($journal->content))) !!}`;
+                                            viewTitle = $el.getAttribute('data-title');
+                                            viewContent = $el.getAttribute('data-content');
                                             showViewModal = true;
                                         "
                                         class="font-bold text-[#0B5694] dark:text-blue-400 text-sm tracking-tight hover:underline text-left">
@@ -299,14 +301,20 @@
                                 <td class="py-8 px-10 text-right">
                                     <div class="flex items-center justify-end gap-3">
                                         <button type="button" 
+                                            data-id="{{ $journal->getRouteKey() }}"
+                                            data-type="{{ $journal->journal_type }}"
+                                            data-date="{{ $journal->entry_date }}"
+                                            data-title="{{ $journal->title }}"
+                                            data-notes="{{ $journal->notes }}"
+                                            data-tasks="{{ $journal->task_ids ? json_encode($journal->task_ids) : '[]' }}"
                                             @click="
                                                 isEdit = true;
-                                                journalId = '{{ $journal->getRouteKey() }}';
-                                                journalType = '{{ $journal->journal_type }}';
-                                                entryDate = '{{ $journal->entry_date }}';
-                                                title = '{{ addslashes($journal->title) }}';
-                                                notes = '{{ addslashes($journal->notes) }}';
-                                                initialTaskIds = {{ $journal->task_ids ? json_encode($journal->task_ids) : 'null' }};
+                                                journalId = $el.getAttribute('data-id');
+                                                journalType = $el.getAttribute('data-type');
+                                                entryDate = $el.getAttribute('data-date');
+                                                title = $el.getAttribute('data-title');
+                                                notes = $el.getAttribute('data-notes');
+                                                initialTaskIds = JSON.parse($el.getAttribute('data-tasks'));
                                                 showJournalModal = true;
                                             "
                                             class="px-3.5 py-2 bg-gray-50 dark:bg-gray-800 hover:bg-[#0B5694] dark:hover:bg-blue-600 hover:text-white dark:hover:text-white border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all active:scale-95 shadow-sm">
