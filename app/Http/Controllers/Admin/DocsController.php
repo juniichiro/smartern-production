@@ -9,6 +9,6 @@ class DocsController extends Controller
 {
     public function index()
     {
-        return view('admin.docs');
+        return redirect('/docs/');
     }
 }

@@ -1,0 +1,26 @@
+# SmarTern Machine-Readable Reference
+
+SmarTern is a specialized internship management platform for the Schools Division Office of Quezon City (SDO QC).
+
+## System Stack
+- Backend: Laravel 13 (PHP ^8.3)
+- Database: MySQL / SQLite
+- Frontend: Tailwind CSS v3, Alpine.js, Blade templates
+- Realtime: Laravel Echo / Reverb (WebSockets)
+- ML/Daemon: Python 3 daemon (`scripts/if_daemon.py`) using Isolation Forest
+
+## Key Paths
+- Controllers: `app/Http/Controllers/`
+- Middleware: `app/Http/Middleware/`
+- Services: `app/Services/`
+- Views: `resources/views/`
+- Daemon script: `scripts/if_daemon.py`
+- DB Migrations & Seeders: `database/migrations/`, `database/seeders/`
+- Tests: `tests/`
+
+## Key Policies & Constraints
+- Lockout: 5 failed attempts locks account for 5 minutes.
+- Session: Timeout after 30 minutes of inactivity.
+- Password policy: At least 12 characters, mixing numbers, symbols, uppercase, and lowercase. First login forces password change.
+- Multi-role Matrix: Admins, Supervisors, Head Supervisors, School Coordinators, Interns.
+- Geofencing: Restricts attendance logs to configured department coords and radius.
