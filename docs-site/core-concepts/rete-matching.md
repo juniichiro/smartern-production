@@ -88,7 +88,7 @@ If a student qualifies for multiple departments, the Conflict Resolver sorts the
 
 ### MatchResult Generation
 Matches are written to the database with a confidence indicator:
-- **`High`**: Score $\ge 85\%$ (skills match, recommended major, strong evaluation).
-- **`Medium`**: Score $70\% - 84\%$ (meets basic skills, major differs).
-- **`Low`**: Score $< 70\%$ (partial skill matching only).
+- **`High`**: Score >= 85% (skills match, recommended major, strong evaluation).
+- **`Medium`**: Score 70% - 84% (meets basic skills, major differs).
+- **`Low`**: Score < 70% (partial skill matching only).
 - **`is_confirmed`**: Stays `false` until the Head Supervisor clicks "Confirm Placement" on the console. At that point, the status changes to `matched`, a new User account is created, and the assignment notification email is dispatched.

@@ -15,7 +15,7 @@ Each user's MFA state is stored directly in the `users` table:
 
 ### Authenticator Synchronization & Verification Loop
 When a user submits their 6-digit verification code, the system validates it against their seed:
-1. **Window Size Buffer**: Configured to `1` (via the environment parameter `OTP_WINDOW`), which permits a drift of $\pm 30$ seconds (covering the previous, current, and next time windows) to account for slight client-server clock desynchronization.
+1. **Window Size Buffer**: Configured to `1` (via the environment parameter `OTP_WINDOW`), which permits a drift of ± 30 seconds (covering the previous, current, and next time windows) to account for slight client-server clock desynchronization.
 2. **UI Synchronization Timer**: Built in Alpine.js on the frontend, it syncs with the client system clock to show a countdown progress bar:
    ```javascript
    // Alpine.js clock timer logic
