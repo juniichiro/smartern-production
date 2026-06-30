@@ -44,3 +44,9 @@ This map outlines the structure of the SmarTern documentation site, tracking eac
 - **Testing & Pest Suite** (`/reference/testing.md`)
   - *Purpose*: Running backend tests using the Pest framework.
   - *Sources*: `tests/`, `.agents/ATTENDANCE_TEST_SUITE.md`, `composer.json`
+- **Controllers & Models** (`/reference/controllers-models.md`)
+  - *Purpose*: Detailed directory mapping of Laravel controllers and database models.
+  - *Sources*: `app/Http/Controllers/`, `app/Models/`
+- **Middleware, Services & Scripts** (`/reference/middleware-services.md`)
+  - *Purpose*: Technical breakdown of background daemons, middlewares, and services.
+  - *Sources*: `app/Http/Middleware/`, `app/Services/`, `scripts/`

@@ -127,7 +127,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/configuration/backup/{backup}/restore', [AdminController::class, 'restoreSnapshot'])->name('backup.restore');
         Route::get('/configuration/backup/{backup}/download', [AdminController::class, 'downloadBackup'])->name('backup.download');
         Route::delete('/configuration/backup/{backup}', [AdminController::class, 'destroyBackup'])->name('backup.destroy');
-        Route::get('/docs', [\App\Http\Controllers\Admin\DocsController::class, 'index'])->name('docs');
+        Route::get('/docs/{path?}', [\App\Http\Controllers\Admin\DocsController::class, 'index'])->where('path', '.*')->name('docs');
     });
 
     // --- SUPERVISOR (Role Restricted) ---

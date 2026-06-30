@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
-  base: '/docs/',
+  base: '/admin/docs/',
   title: "SmarTern Docs",
   description: "Specialized Internship Management Platform for SDO QC",
   srcDir: '.',
@@ -39,10 +39,12 @@ export default defineConfig({
         ]
       },
       {
-        text: 'Reference',
+        text: 'Reference & Codebase',
         items: [
           { text: 'Environment Config', link: '/reference/environment' },
-          { text: 'Testing (Pest)', link: '/reference/testing' }
+          { text: 'Testing (Pest)', link: '/reference/testing' },
+          { text: 'Controllers & Models', link: '/reference/controllers-models' },
+          { text: 'Middleware & Services', link: '/reference/middleware-services' }
         ]
       }
     ],
