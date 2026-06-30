@@ -78,7 +78,7 @@ This reference details the custom Artisan CLI commands defined in `app/Console/C
 
 ### `app:simulate-attendance`
 - **Signature**: `php artisan app:simulate-attendance`
-- **Description**: Simulates a full week of attendance plus absence requests for the test intern `rtbritos@smartern.com`.
+- **Description**: Simulates a full week of attendance plus absence requests for the test intern `test_intern@smartern.com`.
 
 ---
 

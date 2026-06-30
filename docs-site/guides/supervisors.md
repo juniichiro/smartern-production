@@ -30,7 +30,7 @@ The Supervisor Dashboard offers localized charts:
 
 ---
 
-## Head Supervisor (Ms. Mal-in) Privileges
+## Head Supervisor Privileges
 
 The **Head Supervisor** has higher authorization level to manage placement across the entire SDO QC division:
 

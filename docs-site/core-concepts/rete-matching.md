@@ -31,7 +31,7 @@ When a Head Supervisor executes placement matches, SmarTern delegates pattern ma
 The Laravel `SmartMatchingService` serializes student parameters into facts:
 ```json
 {
-  "student_name": "Raniel John Britos",
+  "student_name": "John Doe",
   "university": "SDO QC Academy",
   "skills": ["PHP", "JavaScript", "SQL", "Technical Writing"],
   "resume_text": "Experienced web developer focused on backend systems and database indexing...",
