@@ -35,18 +35,15 @@ class UpdateAnnouncementRequest extends FormRequest
     {
         $content = $this->input('content');
 
-        // Remove script tags and their content
-        $content = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $content);
+        if ($content) {
+            $config = \HTMLPurifier_Config::createDefault();
+            $config->set('HTML.Allowed', 'p[style],b[style],strong[style],i[style],em[style],u[style],a[href|target|title|rel|style],ul[style],ol[style],li[style],h1[style],h2[style],h3[style],h4[style],h5[style],h6[style],br,span[style],blockquote[style],pre[style],code[style]');
+            $config->set('CSS.AllowedProperties', 'font-weight,font-style,text-decoration,color,background-color,font-family,font-size,text-align,list-style-type');
+            $config->set('Attr.AllowedFrameTargets', ['_blank', '_self', '_parent', '_top']);
 
-        // Remove iframe tags
-        $content = preg_replace('/<iframe\b[^>]*>(.*?)<\/iframe>/is', '', $content);
-
-        // Remove inline event handlers (like onload, onerror, onclick, etc.)
-        $content = preg_replace('/on\w+\s*=\s*["\'].*?["\']/is', '', $content);
-        $content = preg_replace('/on\w+\s*=\s*[^\s>]+/is', '', $content);
-
-        // Remove javascript: pseudo-protocol links
-        $content = preg_replace('/href\s*=\s*["\']\s*javascript:.*?["\']/is', 'href="#"', $content);
+            $purifier = new \HTMLPurifier($config);
+            $content = $purifier->purify($content);
+        }
 
         $this->merge([
             'content' => $content,
