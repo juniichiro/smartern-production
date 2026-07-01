@@ -522,6 +522,31 @@ private function verifyGeofence($userLat, $userLon, $officeLat, $officeLon, $rad
                 <p class="text-lg text-[#475569] dark:text-[#94A3B8] leading-relaxed">
                     Uses Google 2FA (TOTP authenticator app check) and email verification OTPs through custom middleware classes.
                 </p>
+
+                <div class="space-y-6">
+                    <h3 class="text-xl font-bold text-[#0F172A] dark:text-white">Single Session & Device Profiling</h3>
+                    <p class="text-sm">
+                        The application implements a unique `CheckSingleSession` middleware layer that acts as an advanced anti-hijacking guard:
+                    </p>
+                    <ul class="list-disc pl-6 space-y-2 text-sm">
+                        <li><strong>Session Hijacking Protection:</strong> Restricts active sessions to one concurrent device/browser window. Session IDs are registered inside a centralized cache.</li>
+                        <li><strong>Fingerprint Mismatch Invalidation:</strong> Compares user-agents, IP addresses, custom client IDs (`smartern_client_id`), and device IDs (`smartern_device_id`) on each state request.</li>
+                        <li><strong>Safe Client ID Initialization:</strong> Dynamically synchronizes the client ID with the session store if a user authenticates from a guest flow where the Javascript device binding had not run yet.</li>
+                    </ul>
+                </div>
+
+                <div class="space-y-6">
+                    <h3 class="text-xl font-bold text-[#0F172A] dark:text-white">Inactivity Session Timeout Manager</h3>
+                    <p class="text-sm">
+                        To prevent physical security breaches, the application executes multi-layered inactivity checks:
+                    </p>
+                    <ul class="list-disc pl-6 space-y-2 text-sm">
+                        <li><strong>Server Heartbeat Ping:</strong> Authenticated views query `/session/ping` every 10 seconds. Session expiration on the server side automatically redirects to the login screen with a timeout notification.</li>
+                        <li><strong>Client Inactivity Monitor:</strong> Alpine JS tracks active UI events (clicks, scrolling, key presses). 30 minutes of idle time invokes a warning overlay with a 10-second logout counter.</li>
+                        <li><strong>Stale Tab Interlocks:</strong> Checks `localStorage` activity timestamps before performing inactivity redirects, preventing stale background tabs from logging out active sessions from other windows.</li>
+                        <li><strong>Inactivity Timestamp Reset:</strong> Login, password resets, and updates forms clear the localStorage activity store on submit to prevent guest AFK state from triggering immediate timeout warnings.</li>
+                    </ul>
+                </div>
             </div>
 
         </main>

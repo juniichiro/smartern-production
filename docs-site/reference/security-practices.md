@@ -59,3 +59,14 @@ SmarTern incorporates standard OWASP safeguards to protect application routes an
 
 ### Geofencing Coordinates Enforcement
 - **Location Spoofing Prevention**: Coordinates validation is performed strictly on the server side using the Haversine equation rather than relying on browser-side triggers. Bypasses and abnormal distance variables are immediately flagged and logged to the `audit_logs` table for ML scan processing.
+
+### Single Session & Device Profiling (`CheckSingleSession` Middleware)
+- **Session Hijacking Guard**: Enforces that only one active session can exist per user account across all browsers. When a user logs in, their current session ID is cached (`user-session-{id}`). If the cached session ID differs from the request's session ID, the user is logged out automatically.
+- **Client & Device ID Verification**: Validates browser fingerprints (User-Agent, IP address) and binds them with unique cookies (`smartern_device_id` and `smartern_client_id`). If any parameter changes mid-session, the session is invalidated.
+- **Dynamic Client ID Synchronization**: To prevent race conditions when logging in from pages that have not yet initialized browser device binding (e.g. guest pages), the middleware dynamically synchronizes the browser client ID with the session store if it was empty.
+
+### Inactivity Session Timeout Manager
+- **Heartbeat Verification**: Authenticated pages query `/session/ping` every 10 seconds. If the server session is expired (returns `401`), the user is immediately redirected to `/login?timeout=1`.
+- **Client-Side Inactivity Tracking**: User interaction events (clicks, keypresses, scrolls) keep resetting the activity timestamp in `localStorage`. If no activity is detected for 30 minutes, a warnings modal is displayed for 10 seconds before auto-logging out the session.
+- **Stale Tab Lock Prevention**: To prevent stale background tabs from logging out active sessions (e.g. after a user logs in on a new tab), the timeout logout handler verifies the latest activity timestamp in `localStorage` right before sending the logout request.
+- **Authentication Gateway Reset**: All guest entry forms (login, reset password, change password) clear the activity store upon submission to ensure that guest AFK time never interferes with active session timers.
