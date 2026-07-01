@@ -71,9 +71,9 @@ This reference details the custom Artisan CLI commands defined in `app/Console/C
   - Resolves `SmartMatchingService` to run calculations via the Python engine.
 
 ### `app:seed-ml-baseline`
-- **Signature**: `php artisan app:seed-ml-baseline {--ip=120.28.64.99}`
+- **Signature**: `php artisan app:seed-ml-baseline {--ip=130.105.10.15}`
 - **Options**:
-  - `--ip`: The IP address to bind to generated normal events (default: `120.28.64.99`).
+  - `--ip`: The IP address to bind to generated normal events (default: `130.105.10.15`).
 - **Description**: Seeds the audit logs with a historical baseline of healthy activity to train the ML Isolation Forest model.
 
 ### `app:simulate-attendance`

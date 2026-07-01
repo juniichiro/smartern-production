@@ -13,7 +13,7 @@ class SeedMLBaseline extends Command
      *
      * @var string
      */
-    protected $signature = 'app:seed-ml-baseline {--ip=120.28.64.99 : The IP address to use for normal baseline activity}';
+    protected $signature = 'app:seed-ml-baseline {--ip=130.105.10.15 : The IP address to use for normal baseline activity}';
 
     /**
      * The console command description.
@@ -106,12 +106,27 @@ class SeedMLBaseline extends Command
         ];
 
         $primaryIp = $this->option('ip');
+        
+        // Standard Philippine carrier IP subnets (representing Smart, Globe, PLDT, Converge, Dito)
+        $phCarrierSubnets = [
+            '110.54',   // Smart Communications Mobile
+            '121.54',   // Smart Communications Mobile
+            '112.198',  // Globe Telecom Mobile
+            '122.54',   // Globe Telecom Broadband
+            '49.145',   // Globe Telecom Home Broadband
+            '120.28',   // PLDT Home Fibr
+            '112.200',  // PLDT Home Broadband
+            '130.105',  // Converge ICT Home Broadband
+            '180.191',  // Dito Telecommunity Mobile
+        ];
+
         // Standard Philippine carrier IPs to simulate normal network variance
         $secondaryIps = [
             '110.54.166.230',  // Smart Mobile
             '112.198.85.12',   // Globe Mobile
             '120.28.64.99',    // PLDT Broadband
             '49.145.15.22',    // Globe Home
+            '130.105.10.15',   // Converge Home
         ];
 
         $defaultUserAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
@@ -133,8 +148,9 @@ class SeedMLBaseline extends Command
                     } elseif ($rand <= 50) {
                         $assignedIp = $secondaryIps[array_rand($secondaryIps)];
                     } else {
-                        // Generate a completely random public IP address
-                        $assignedIp = rand(1, 223).'.'.rand(0, 255).'.'.rand(0, 255).'.'.rand(1, 254);
+                        // Generate a randomized IP within typical Philippine carrier subnets
+                        $subnet = $phCarrierSubnets[array_rand($phCarrierSubnets)];
+                        $assignedIp = $subnet . '.' . rand(0, 255) . '.' . rand(1, 254);
                     }
                 } else {
                     // Internal Staff (Admins, Head Supervisors, Supervisors): 85% primary office IP, 15% secondary carrier pools
