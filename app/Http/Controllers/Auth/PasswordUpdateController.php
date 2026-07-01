@@ -34,4 +34,16 @@ class PasswordUpdateController extends Controller
 
         return redirect($url)->with('success', 'Security details refined. Welcome to SmarTern!');
     }
+
+    // Authenticated request reset flow: log out and redirect to forgot-password prefilled
+    public function requestReset(\Illuminate\Http\Request $request)
+    {
+        $email = $request->user()->email;
+        \Illuminate\Support\Facades\Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('password.request', ['email' => $email])
+            ->with('status', 'Secure logout executed. Please trigger a new email reset link.');
+    }
 }

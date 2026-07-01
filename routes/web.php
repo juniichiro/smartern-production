@@ -81,6 +81,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('profile/change-password', [PasswordUpdateController::class, 'update'])
         ->name('profile.password.update');
 
+    Route::post('profile/request-password-reset', [PasswordUpdateController::class, 'requestReset'])
+        ->name('profile.password.request-reset');
+
     Route::prefix('notifications')->name('notifications.')->group(function () {
         Route::get('/', [NotificationController::class, 'index'])->name('index');
         Route::post('/{notification}/resolve', [NotificationController::class, 'resolve'])->name('resolve');
