@@ -35,7 +35,7 @@
         <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
             <p class="text-[10px] text-gray-400 dark:text-gray-600 font-medium">&copy; {{ date('Y') }} Schools Division Office of Quezon City. All rights reserved.</p>
             <div class="flex items-center gap-4">
-                <a href="https://www.facebook.com/DepEdTayoSDOQuezonCity" target="_blank" rel="noopener noreferrer" class="text-gray-400 dark:text-gray-600 hover:text-[#0B5694] dark:hover:text-blue-400 transition-colors">
+                <a href="https://www.facebook.com/depedqc/" target="_blank" rel="noopener noreferrer" class="text-gray-400 dark:text-gray-600 hover:text-[#0B5694] dark:hover:text-blue-400 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
                 </a>
                 <a href="https://depedqc.com" target="_blank" rel="noopener noreferrer" class="text-gray-400 dark:text-gray-600 hover:text-[#0B5694] dark:hover:text-blue-400 transition-colors">
