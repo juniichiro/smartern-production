@@ -25,7 +25,7 @@ class AnnouncementController extends Controller
         })
             ->with('user.supervisorDetails')
             ->latest()
-            ->paginate(12);
+            ->paginate(9);
 
         return view('intern.announcements', compact('announcements'));
     }

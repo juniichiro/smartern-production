@@ -36,7 +36,7 @@ class AnnouncementController extends Controller
 
         $announcements = Announcement::where('user_id', $supervisor->id)
             ->latest()
-            ->paginate(10);
+            ->paginate(9);
 
         return view('supervisor.announcements', compact('announcements'));
     }
