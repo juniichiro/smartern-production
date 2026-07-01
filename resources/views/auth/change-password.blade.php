@@ -49,61 +49,63 @@
                 @csrf
                 @method('PUT')
 
-                {{-- New Password --}}
-                <div>
-                    <label for="password" class="block text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2 ml-1">
-                        New Password
-                    </label>
-                    <div class="relative" x-data="{ show: false }">
-                        <input id="password" name="password" :type="show ? 'text' : 'password'" required 
-                            x-model="password"
-                            @input="validate()"
-                            class="appearance-none block w-full pl-5 pr-12 py-4 rounded-2xl bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 transition-all sm:text-sm font-medium border-none">
-                        <button type="button" @click="show = !show" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                            <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z"/><circle cx="12" cy="12" r="3"/></svg>
-                            <svg x-show="show" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
-                        </button>
-                    </div>
-                    
-                    {{-- Strength Checklist --}}
-                    <div class="mt-4 grid grid-cols-1 gap-2 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-800">
-                        <template x-for="(met, rule) in rules">
-                            <div class="flex items-center gap-3">
-                                <div :class="met ? 'bg-green-500 border-green-500' : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700'" 
-                                     class="w-4 h-4 rounded-full border flex items-center justify-center transition-colors duration-300">
-                                    <svg x-show="met" class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path></svg>
+                <div x-data="{ show: false }" class="space-y-6">
+                    {{-- New Password --}}
+                    <div>
+                        <label for="password" class="block text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2 ml-1">
+                            New Password
+                        </label>
+                        <div class="relative">
+                            <input id="password" name="password" :type="show ? 'text' : 'password'" required 
+                                x-model="password"
+                                @input="validate()"
+                                class="appearance-none block w-full pl-5 pr-12 py-4 rounded-2xl bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 transition-all sm:text-sm font-medium border-none">
+                            <button type="button" @click="show = !show" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                                <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z"/><circle cx="12" cy="12" r="3"/></svg>
+                                <svg x-show="show" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
+                            </button>
+                        </div>
+                        
+                        {{-- Strength Checklist --}}
+                        <div class="mt-4 grid grid-cols-1 gap-2 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-800">
+                            <template x-for="(met, rule) in rules">
+                                <div class="flex items-center gap-3">
+                                    <div :class="met ? 'bg-green-500 border-green-500' : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700'" 
+                                         class="w-4 h-4 rounded-full border flex items-center justify-center transition-colors duration-300">
+                                        <svg x-show="met" class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path></svg>
+                                    </div>
+                                    <span :class="met ? 'text-gray-800 dark:text-gray-200' : 'text-gray-400 dark:text-gray-600'" class="text-[10px] font-bold uppercase tracking-widest transition-colors" 
+                                          x-text="rule === 'length' ? 'Minimum 12 Characters' : 
+                                                 rule === 'lower' ? 'Lowercase Letter (a-z)' : 
+                                                 rule === 'upper' ? 'Uppercase Letter (A-Z)' : 
+                                                 rule === 'number' ? 'Numerical Digit (0-9)' : 'Special Character (!@#$) '">
+                                    </span>
                                 </div>
-                                <span :class="met ? 'text-gray-800 dark:text-gray-200' : 'text-gray-400 dark:text-gray-600'" class="text-[10px] font-bold uppercase tracking-widest transition-colors" 
-                                      x-text="rule === 'length' ? 'Minimum 12 Characters' : 
-                                             rule === 'lower' ? 'Lowercase Letter (a-z)' : 
-                                             rule === 'upper' ? 'Uppercase Letter (A-Z)' : 
-                                             rule === 'number' ? 'Numerical Digit (0-9)' : 'Special Character (!@#$) '">
-                                </span>
-                            </div>
-                        </template>
+                            </template>
+                        </div>
                     </div>
-                </div>
 
-                {{-- Confirm Password --}}
-                <div>
-                    <label for="password_confirmation" class="block text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2 ml-1">
-                        Confirm New Password
-                    </label>
-                    <div class="relative" x-data="{ show: false }">
-                        <input id="password_confirmation" name="password_confirmation" :type="show ? 'text' : 'password'" required 
-                            x-model="password_confirmation"
-                            class="appearance-none block w-full pl-5 pr-12 py-4 rounded-2xl bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 transition-all sm:text-sm font-medium border-none">
-                        <button type="button" @click="show = !show" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                            <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z"/><circle cx="12" cy="12" r="3"/></svg>
-                            <svg x-show="show" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
-                        </button>
-                    </div>
-                    
-                    <div class="mt-2 flex items-center gap-2" x-show="password_confirmation.length > 0">
-                        <span :class="password === password_confirmation ? 'text-green-500 dark:text-green-400' : 'text-red-400 dark:text-red-500'" 
-                              class="text-[10px] font-bold uppercase tracking-widest"
-                              x-text="password === password_confirmation ? 'Passwords Match' : 'Passwords do not match'">
-                        </span>
+                    {{-- Confirm Password --}}
+                    <div>
+                        <label for="password_confirmation" class="block text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2 ml-1">
+                            Confirm New Password
+                        </label>
+                        <div class="relative">
+                            <input id="password_confirmation" name="password_confirmation" :type="show ? 'text' : 'password'" required 
+                                x-model="password_confirmation"
+                                class="appearance-none block w-full pl-5 pr-12 py-4 rounded-2xl bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 transition-all sm:text-sm font-medium border-none">
+                            <button type="button" @click="show = !show" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                                <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z"/><circle cx="12" cy="12" r="3"/></svg>
+                                <svg x-show="show" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
+                            </button>
+                        </div>
+                        
+                        <div class="mt-2 flex items-center gap-2" x-show="password_confirmation.length > 0">
+                            <span :class="password === password_confirmation ? 'text-green-500 dark:text-green-400' : 'text-red-400 dark:text-red-500'" 
+                                  class="text-[10px] font-bold uppercase tracking-widest"
+                                  x-text="password === password_confirmation ? 'Passwords Match' : 'Passwords do not match'">
+                            </span>
+                        </div>
                     </div>
                 </div>
 
