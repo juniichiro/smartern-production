@@ -1,10 +1,9 @@
-<footer class="bg-gray-50 dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800">
+<footer x-data="{ darkMode: document.documentElement.classList.contains('dark') }" @theme-changed.window="darkMode = $event.detail" class="bg-gray-50 dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800">
     <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
             <div>
                 <div class="flex items-center gap-3 mb-4">
-                    <img src="{{ asset('images/blue-smartern.png') }}" alt="SmarTern" class="h-7 w-auto dark:hidden">
-                    <img src="{{ asset('images/white-smartern.png') }}" alt="SmarTern" class="h-7 w-auto hidden dark:block">
+                    <img :src="darkMode ? '{{ asset('images/white-smartern.png') }}' : '{{ asset('images/blue-smartern.png') }}'" alt="SmarTern" class="h-7 w-auto">
                     <span class="text-base font-extrabold text-[#0B5694] dark:text-blue-400 tracking-tight">SmarTern</span>
                 </div>
                 <p class="text-xs text-gray-500 dark:text-gray-400 font-medium leading-relaxed max-w-xs">The official internship management system of the Schools Division Office of Quezon City.</p>
