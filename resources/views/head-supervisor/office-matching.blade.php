@@ -1142,7 +1142,7 @@
                     <div class="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6 mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-gray-100 dark:border-gray-800 transition-all duration-300 ease-out">
                         <p class="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider text-center sm:text-left">Showing {{ $applicants->firstItem() }} to {{ $applicants->lastItem() }} of {{ $applicants->total() }} applicants</p>
                         <div class="w-full sm:w-auto overflow-x-auto">
-                            {{ $applicants->links() }}
+                            {{ $applicants->links('vendor.pagination.tailwind-custom') }}
                         </div>
                     </div>
                 @endif

@@ -129,7 +129,7 @@
         </div>
 
         <div class="mt-6 md:mt-8">
-            {{ $announcements->links() }}
+            {{ $announcements->links('vendor.pagination.tailwind-custom') }}
         </div>
 
         {{-- POST/EDIT MODAL --}}
