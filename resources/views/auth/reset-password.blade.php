@@ -59,7 +59,7 @@
         </div>
 
         {{-- Form Envelope Card --}}
-        <div class="relative z-10 w-full max-w-[450px] bg-white/95 dark:bg-gray-900/95 border border-gray-100/50 dark:border-gray-800 rounded-[2.5rem] shadow-2xl p-8 sm:p-12 transition-all duration-300">
+        <div x-data="changePasswordManager" class="relative z-10 w-full max-w-[450px] bg-white/95 dark:bg-gray-900/95 border border-gray-100/50 dark:border-gray-800 rounded-[2.5rem] shadow-2xl p-8 sm:p-12 transition-all duration-300">
             
             <header class="text-center mb-8">
                 <h1 class="text-3xl font-extrabold text-[#0B5694] dark:text-blue-400 tracking-tight leading-none mb-2">Reset Password</h1>
@@ -102,19 +102,50 @@
                 <div class="text-left">
                     <label for="password" class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase block mb-1.5 tracking-wider ml-1">New Password</label>
                     <input type="password" name="password" id="password" required placeholder="Choose a strong password"
+                        x-model="password"
+                        @input="validate()"
                         class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl px-5 py-3.5 text-sm focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 transition-all font-medium dark:text-gray-200">
+                    
+                    {{-- Strength Checklist --}}
+                    <div class="mt-4 grid grid-cols-1 gap-2 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-800">
+                        <template x-for="(met, rule) in rules">
+                            <div class="flex items-center gap-3">
+                                <div :class="met ? 'bg-green-500 border-green-500' : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700'" 
+                                     class="w-4 h-4 rounded-full border flex items-center justify-center transition-colors duration-300">
+                                    <svg x-show="met" class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                                <span :class="met ? 'text-gray-800 dark:text-gray-200' : 'text-gray-400 dark:text-gray-600'" class="text-[10px] font-bold uppercase tracking-widest transition-colors" 
+                                      x-text="rule === 'length' ? 'Minimum 12 Characters' : 
+                                             rule === 'lower' ? 'Lowercase Letter (a-z)' : 
+                                             rule === 'upper' ? 'Uppercase Letter (A-Z)' : 
+                                             rule === 'number' ? 'Numerical Digit (0-9)' : 'Special Character (!@#$) '">
+                                </span>
+                            </div>
+                        </template>
+                    </div>
                 </div>
 
                 {{-- Confirm Password Input --}}
                 <div class="text-left">
                     <label for="password_confirmation" class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase block mb-1.5 tracking-wider ml-1">Confirm Password</label>
                     <input type="password" name="password_confirmation" id="password_confirmation" required placeholder="Confirm your password"
+                        x-model="password_confirmation"
                         class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl px-5 py-3.5 text-sm focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 transition-all font-medium dark:text-gray-200">
+                    
+                    <div class="mt-2 flex items-center gap-2" x-show="password_confirmation.length > 0">
+                        <span :class="password === password_confirmation ? 'text-green-500 dark:text-green-400' : 'text-red-400 dark:text-red-500'" 
+                              class="text-[10px] font-bold uppercase tracking-widest"
+                              x-text="password === password_confirmation ? 'Passwords Match' : 'Passwords do not match'">
+                        </span>
+                    </div>
                 </div>
 
                 {{-- Submit CTA --}}
                 <div class="pt-2">
-                    <button type="submit" class="w-full bg-[#0b5694] dark:bg-blue-600 hover:bg-[#084577] dark:hover:bg-blue-700 text-white py-4 rounded-xl font-bold uppercase text-[11px] tracking-wider transition-all duration-300 active:scale-[0.98] shadow-lg shadow-blue-500/20">
+                    <button type="submit" 
+                        :disabled="!allMet"
+                        :class="allMet ? 'bg-[#0b5694] dark:bg-blue-600 hover:bg-[#084577] dark:hover:bg-blue-700 shadow-lg shadow-blue-500/20' : 'bg-gray-300 dark:bg-gray-800 text-gray-500 dark:text-gray-600 cursor-not-allowed'"
+                        class="w-full text-white py-4 rounded-xl font-bold uppercase text-[11px] tracking-wider transition-all duration-300 active:scale-[0.98]">
                         Reset Password
                     </button>
                 </div>
