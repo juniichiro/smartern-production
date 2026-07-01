@@ -107,13 +107,17 @@ class SeedMLBaseline extends Command
 
         $primaryIp = $this->option('ip');
         
-        // Standard Philippine carrier IP subnets (representing Smart, Globe, PLDT, Converge, Dito)
+        // Standard Philippine carrier IP subnets (Smart, Globe, PLDT, Converge, Dito, GOMO, TNT)
         $phCarrierSubnets = [
-            '110.54',   // Smart Communications Mobile
-            '121.54',   // Smart Communications Mobile
-            '112.198',  // Globe Telecom Mobile
-            '122.54',   // Globe Telecom Broadband
+            '110.54',   // Smart Communications Mobile (TNT / Sun)
+            '121.54',   // Smart Communications Mobile (TNT / Sun)
+            '49.144',   // Smart Communications Mobile (TNT)
+            '203.87',   // Smart Communications Cellular (TNT)
+            '112.198',  // Globe Telecom Mobile (GOMO)
+            '180.190',  // Globe Telecom Mobile (GOMO Data)
+            '122.54',   // Globe Telecom Broadband (GOMO)
             '49.145',   // Globe Telecom Home Broadband
+            '136.158',  // Globe / Sky Broadband
             '120.28',   // PLDT Home Fibr
             '112.200',  // PLDT Home Broadband
             '130.105',  // Converge ICT Home Broadband
