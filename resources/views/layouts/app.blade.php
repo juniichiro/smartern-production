@@ -176,6 +176,12 @@
                                 // Auto-redirect after 10 seconds of showing the modal
                                 setTimeout(() => {
                                     if (!this.showTakenOverModal) {
+                                        const latestActivity = parseInt(localStorage.getItem('smartern_last_activity') || 0);
+                                        const latestDuration = Date.now() - latestActivity;
+                                        if (latestDuration < this.timeout) {
+                                            this.showModal = false;
+                                            return;
+                                        }
                                         this.logoutAndRedirect();
                                     }
                                 }, 10000);

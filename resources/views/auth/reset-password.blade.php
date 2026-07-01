@@ -85,7 +85,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('password.store') }}" method="POST" class="space-y-6">
+            <form action="{{ route('password.store') }}" method="POST" class="space-y-6" onsubmit="localStorage.setItem('smartern_last_activity', Date.now());">
                 @csrf
 
                 <!-- Password Reset Token -->

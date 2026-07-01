@@ -45,7 +45,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('profile.password.update') }}" method="POST" class="space-y-6">
+            <form action="{{ route('profile.password.update') }}" method="POST" class="space-y-6" onsubmit="localStorage.setItem('smartern_last_activity', Date.now());">
                 @csrf
                 @method('PUT')
 

@@ -52,6 +52,12 @@ class CheckSingleSession
                 $cookieClientId = $request->cookie('smartern_client_id');
                 $sessionClientId = session('session_client_id');
 
+                // If session doesn't have the client ID yet but the cookie is now set, sync it
+                if (!$sessionClientId && $cookieClientId) {
+                    session(['session_client_id' => $cookieClientId]);
+                    $sessionClientId = $cookieClientId;
+                }
+
                 if (session('session_user_agent') !== $request->userAgent() || 
                     session('session_ip') !== $request->ip() ||
                     !$cookieDeviceId || 
