@@ -13,7 +13,7 @@ class SeedMLBaseline extends Command
      *
      * @var string
      */
-    protected $signature = 'app:seed-ml-baseline {--ip=127.0.0.1 : The IP address to use for normal baseline activity}';
+    protected $signature = 'app:seed-ml-baseline {--ip=120.28.64.99 : The IP address to use for normal baseline activity}';
 
     /**
      * The console command description.
