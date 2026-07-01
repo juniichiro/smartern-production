@@ -28,8 +28,8 @@
     <div class="w-full max-w-4xl">
         {{-- Header Section --}}
         <div class="text-center mb-10" x-show="step > 0 && step < 4">
-            <div class="inline-flex items-center justify-center p-4 bg-[#0B5694] rounded-[24px] mb-6 shadow-xl shadow-blue-500/20 border border-white/10">
-                <img src="{{ asset('images/white-smartern.png') }}" alt="SmarTern Logo" class="h-10">
+            <div class="inline-flex items-center justify-center p-4 bg-white dark:bg-gray-900 rounded-[24px] mb-6 shadow-xl border border-gray-100 dark:border-gray-800">
+                <img src="{{ asset('images/blue-smartern.png') }}" alt="SmarTern Logo" class="h-10">
             </div>
             <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight uppercase"
                 x-text="step === 1 ? 'Step 1: Attach Resource' : (step === 2 ? 'Step 2: Refine Details' : (step === 3 ? 'Step 3: Finalize & Publish' : 'Application Finalized'))">
@@ -95,8 +95,8 @@
                 <div x-show="step === 0" class="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-2xl mx-auto">
                     <div class="bg-white dark:bg-gray-900 rounded-[24px] xs:rounded-[32px] sm:rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 p-5 xs:p-8 md:p-12 text-center space-y-8">
                         <div class="space-y-6">
-                            <div class="inline-flex items-center justify-center p-4 bg-[#0B5694] rounded-[24px] mb-4 shadow-xl shadow-blue-500/20 border border-white/10">
-                                <img src="{{ asset('images/white-smartern.png') }}" alt="SmarTern Logo" class="h-10">
+                            <div class="inline-flex items-center justify-center p-4 bg-white dark:bg-gray-900 rounded-[24px] mb-4 shadow-xl border border-gray-100 dark:border-gray-800">
+                                <img src="{{ asset('images/blue-smartern.png') }}" alt="SmarTern Logo" class="h-10">
                             </div>
                             <h2 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Become a SmarTern Intern</h2>
                             <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto font-medium leading-relaxed">

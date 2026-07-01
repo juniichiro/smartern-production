@@ -5,7 +5,7 @@
     <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-[72px]">
             <a href="{{ url('/') }}" class="flex items-center gap-3 shrink-0">
-                <img :src="darkMode ? '{{ asset('images/white-smartern.png') }}' : '{{ asset('images/blue-smartern.png') }}'" alt="SmarTern" class="h-8 w-auto">
+                <img src="{{ asset('images/blue-smartern.png') }}" alt="SmarTern" class="h-8 w-auto">
                 <span class="text-lg font-extrabold text-[#0B5694] dark:text-blue-400 tracking-tight">SmarTern</span>
             </a>
 
