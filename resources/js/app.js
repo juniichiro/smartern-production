@@ -155,7 +155,7 @@ Alpine.data('tabManager', (initialTab = '', hashAnchor = false) => ({
  * Admin Accounts Manager
  */
 Alpine.data('accountsManager', (hasHrHead, hasErrors = false, initialRole = '', isUpdate = false, initialData = null) => ({
-    loading: true,
+    loading: false,
     showAddModal: hasErrors && !isUpdate,
     showDeleteModal: false,
     showEditModal: hasErrors && isUpdate,
@@ -173,11 +173,7 @@ Alpine.data('accountsManager', (hasHrHead, hasErrors = false, initialRole = '', 
         gender_other_specify: '', is_hr_head: false, profile_picture: '',
         initials: ''
     },
-    init() {
-        setTimeout(() => {
-            this.loading = false;
-        }, 800);
-    },
+    init() {},
     confirmDelete(publicId) {
         this.userToDelete = publicId;
         this.showDeleteModal = true;
@@ -200,7 +196,7 @@ Alpine.data('accountsManager', (hasHrHead, hasErrors = false, initialRole = '', 
  * Admin Configuration Manager
  */
 Alpine.data('configurationManager', () => ({
-    loading: true,
+    loading: false,
     showRollbackModal: false,
     rollbackId: null,
     showDeleteModal: false,
@@ -208,11 +204,7 @@ Alpine.data('configurationManager', () => ({
     showUploadModal: false,
     isRestoring: false,
     isUploading: false,
-    init() {
-        setTimeout(() => {
-            this.loading = false;
-        }, 800);
-    },
+    init() {},
     confirmRollback(id) {
         this.rollbackId = id;
         this.showRollbackModal = true;
@@ -270,7 +262,7 @@ Alpine.data('officeMatchingManager', () => ({
  * Geofence Overview Map Manager
  */
 Alpine.data('geofenceManager', (officesData) => ({
-    loading: true,
+    loading: false,
     geofenceOfficeOpen: false,
     geofenceData: {latitude: '', longitude: '', radius_meters: 100, address: 'Fetching address...'},
     searchQuery: '',
@@ -289,10 +281,7 @@ Alpine.data('geofenceManager', (officesData) => ({
                 });
             }
         });
-        setTimeout(() => {
-            this.loading = false;
-        }, 800);
-    },
+        },
 
     changeTargetOffice() {
         if (this.selectedOfficeId) {
@@ -500,28 +489,21 @@ Alpine.data('supervisorTaskManager', () => ({
  * Supervisor Dashboard Manager
  */
 Alpine.data('supervisorDashboardManager', () => ({
-    loading: true,
-    init() {
-        setTimeout(() => {
-            this.loading = false;
-        }, 800);
-    }
+    loading: false,
+    init() {}
 }));
 
 /**
  * Head Supervisor Dashboard Manager
  */
 Alpine.data('headSupervisorDashboardManager', (initialTab = 'division') => ({
-    loading: true,
+    loading: false,
     activeTab: initialTab,
     init() {
         if (window.location.hash) {
             this.activeTab = window.location.hash.replace('#', '');
         }
-        setTimeout(() => {
-            this.loading = false;
-        }, 800);
-    },
+        },
     setTab(tab) {
         this.activeTab = tab;
         window.location.hash = tab;
@@ -532,16 +514,12 @@ Alpine.data('headSupervisorDashboardManager', (initialTab = 'division') => ({
  * Intern Directory Manager
  */
 Alpine.data('internDirectoryManager', () => ({
-    loading: true,
+    loading: false,
     searchQuery: '',
     statusFilter: 'all',
     deptFilter: 'all',
 
-    init() {
-        setTimeout(() => {
-            this.loading = false;
-        }, 800);
-    },
+    init() {},
 
     matches(name, email, office, status) {
         const query = this.searchQuery.toLowerCase();
@@ -563,19 +541,15 @@ Alpine.data('internDirectoryManager', () => ({
  * Intern Profile Manager
  */
 Alpine.data('internProfileManager', () => ({
-    loading: true,
-    init() {
-        setTimeout(() => {
-            this.loading = false;
-        }, 800);
-    }
+    loading: false,
+    init() {}
 }));
 
 /**
  * Supervisor Announcements Manager
  */
 Alpine.data('announcementsManager', () => ({
-    loading: true,
+    loading: false,
     showModal: false, 
     isEdit: false,
     editId: null,
@@ -593,11 +567,7 @@ Alpine.data('announcementsManager', () => ({
     deleteRoute: '',
     deleteTitle: '',
     
-    init() {
-        setTimeout(() => {
-            this.loading = false;
-        }, 800);
-    },
+    init() {},
 
     syncContent() {
         const code = $('#announcement-editor').summernote('code');
@@ -980,52 +950,40 @@ Alpine.data('notificationManager', (userId, initialNotifications) => ({
  * Supervisor Intern Tasks Filter
  */
 Alpine.data('supervisorInternTasks', () => ({
-    loading: true,
+    loading: false,
     searchQuery: '',
     statusFilter: 'all',
-    init() {
-        setTimeout(() => {
-            this.loading = false;
-        }, 800);
-    }
+    init() {}
 }));
 
 /**
  * Supervisor Task Preview
  */
 Alpine.data('supervisorTaskPreview', () => ({
-    loading: true,
+    loading: false,
     showPreview: false,
     fileUrl: '',
     fileType: '',
     
-    init() {
-        setTimeout(() => {
-            this.loading = false;
-        }, 800);
-    }
+    init() {}
 }));
 
 /**
  * Task Monitoring Manager
  */
 Alpine.data('taskMonitoringManager', (initialHash) => ({
-    loading: true,
+    loading: false,
     showDrawer: initialHash === '#assignment-form',
     selectedInternId: 'all',
     
-    init() {
-        setTimeout(() => {
-            this.loading = false;
-        }, 800);
-    }
+    init() {}
 }));
 
 /**
  * Supervisor Attendance Manager
  */
 Alpine.data('supervisorAttendanceManager', () => ({
-    loading: true,
+    loading: false,
     showLogsDrawer: false,
     selectedInternId: null,
     activeTab: 'all',
@@ -1033,50 +991,34 @@ Alpine.data('supervisorAttendanceManager', () => ({
     activeView: 'timeline',
     searchQuery: '',
     
-    init() {
-        setTimeout(() => {
-            this.loading = false;
-        }, 800);
-    }
+    init() {}
 }));
 
 /**
  * Head Supervisor Reports Manager
  */
 Alpine.data('headSupervisorReportsManager', () => ({
-    loading: true,
-    init() {
-        setTimeout(() => {
-            this.loading = false;
-        }, 800);
-    }
+    loading: false,
+    init() {}
 }));
 
 /**
  * Head Supervisor Certificates Manager
  */
 Alpine.data('headSupervisorCertificatesManager', () => ({
-    loading: true,
-    init() {
-        setTimeout(() => {
-            this.loading = false;
-        }, 800);
-    }
+    loading: false,
+    init() {}
 }));
 
 /**
  * Supervisor Certificates Manager
  */
 Alpine.data('supervisorCertificatesManager', () => ({
-    loading: true,
+    loading: false,
     showFeedbackModal: false,
     selectedInternName: '',
     endorseUrl: '',
-    init() {
-        setTimeout(() => {
-            this.loading = false;
-        }, 800);
-    },
+    init() {},
     openFeedbackModal(name, url) {
         this.selectedInternName = name;
         this.endorseUrl = url;
@@ -1093,25 +1035,17 @@ Alpine.data('supervisorCertificatesManager', () => ({
  * Supervisor Certificate Preview Manager
  */
 Alpine.data('supervisorCertificatePreviewManager', () => ({
-    loading: true,
+    loading: false,
     showFeedbackModal: false,
-    init() {
-        setTimeout(() => {
-            this.loading = false;
-        }, 800);
-    }
+    init() {}
 }));
 
 /**
  * Head Supervisor Certificate Preview Manager
  */
 Alpine.data('headSupervisorCertificatePreviewManager', () => ({
-    loading: true,
-    init() {
-        setTimeout(() => {
-            this.loading = false;
-        }, 800);
-    }
+    loading: false,
+    init() {}
 }));
 
 /**
@@ -1135,14 +1069,10 @@ Alpine.data('internTaskSubmission', () => ({
  * Head Supervisor Onboarding Manager
  */
 Alpine.data('headSupervisorOnboardingManager', () => ({
-    loading: true,
+    loading: false,
     resumeUrl: '', 
     showResumePreview: false,
-    init() {
-        setTimeout(() => {
-            this.loading = false;
-        }, 800);
-    },
+    init() {},
     openResume(url) {
         this.resumeUrl = url;
         this.showResumePreview = true;
@@ -1189,24 +1119,20 @@ Alpine.data('changePasswordManager', () => ({
  * Head Supervisor Intern Profile Manager
  */
 Alpine.data('headSupervisorInternProfile', () => ({
-    loading: true,
+    loading: false,
     activeTab: 'tasks',
     modalOpen: false,
     selectedJournal: {title: '', date: '', content: ''},
     attendancePage: 1,
     attendancePerPage: 10,
-    init() {
-        setTimeout(() => {
-            this.loading = false;
-        }, 800);
-    }
+    init() {}
 }));
 
 /**
  * Head Supervisor Office Management
  */
 Alpine.data('headSupervisorOfficeManager', () => ({
-    loading: true,
+    loading: false,
     addOfficeOpen: false, 
     editOfficeOpen: false, 
     deleteOfficeOpen: false,
@@ -1218,11 +1144,7 @@ Alpine.data('headSupervisorOfficeManager', () => ({
     marker: null,
     circle: null,
     
-    init() {
-        setTimeout(() => {
-            this.loading = false;
-        }, 800);
-    },
+    init() {},
     
     async fetchAddress(lat, lng) {
         this.geofenceOffice.address = 'Fetching address...';
@@ -1328,7 +1250,7 @@ window.handleNotificationClick = function(id, csrfToken) {
         * Head Supervisor Analytics Manager
  */
 Alpine.data('analyticsManager', (months, applicantsTrends, completionTrends, completionRateTrends, schoolLabels, schoolTotals, initialTab = 'analytics') => ({
-    loading: true,
+    loading: false,
     activeTab: initialTab,
     trendFilter: 'rate',
     schoolFilter: '5',
@@ -1341,10 +1263,7 @@ Alpine.data('analyticsManager', (months, applicantsTrends, completionTrends, com
     schoolTotals: schoolTotals,
     init() {
         this.waitForChart();
-        setTimeout(() => {
-            this.loading = false;
-        }, 800);
-    },
+        },
     waitForChart(retries = 0) {
         if (window.Chart) {
             this.initCharts();
@@ -1556,12 +1475,8 @@ Alpine.data('attendanceManager', (checkStatusRoute, isClockedIn, isCompleted, in
     verificationLink: initialLink,
     canScan: canScan,
     showLink: false,
-    loading: true,
+    loading: false,
     init() {
-        // Simulated loading for "Instagram" feel transitions
-        setTimeout(() => {
-            this.loading = false;
-        }, 800);
 
         if (!this.isCompleted) {
             setInterval(() => this.checkAttendanceStatus(checkStatusRoute), 3000);
@@ -1594,12 +1509,8 @@ Alpine.data('attendanceManager', (checkStatusRoute, isClockedIn, isCompleted, in
  * Intern Dashboard Manager
  */
 Alpine.data('internDashboardManager', (userId) => ({
-    loading: true,
+    loading: false,
     init() {
-        // Simulated loading for "Instagram" feel transitions
-        setTimeout(() => {
-            this.loading = false;
-        }, 800);
 
         if (window.Echo) {
             window.Echo.private(`App.Models.User.${userId}`)
@@ -1619,20 +1530,15 @@ Alpine.data('internDashboardManager', (userId) => ({
  * Admin Dashboard Manager
  */
 Alpine.data('adminDashboardManager', () => ({
-    loading: true,
-    init() {
-        // Simulated loading for "Instagram" feel transitions
-        setTimeout(() => {
-            this.loading = false;
-        }, 800);
-    }
+    loading: false,
+    init() {}
 }));
 
 /**
  * Admin Security Monitor Manager
  */
 Alpine.data('securityMonitorManager', (recentUserLogs = {}) => ({
-    loading: true,
+    loading: false,
     showModal: false,
     evaluatingUser: null,
     evaluatingLog: null,
@@ -1640,12 +1546,7 @@ Alpine.data('securityMonitorManager', (recentUserLogs = {}) => ({
     selectedAction: 'safe',
     userLogsMap: recentUserLogs,
 
-    init() {
-        // Simulated loading for "Instagram" feel transitions
-        setTimeout(() => {
-            this.loading = false;
-        }, 800);
-    },
+    init() {},
 
     openEvaluation(user, log, displayName, userRouteKey) {
         this.evaluatingUser = user;
@@ -1677,13 +1578,8 @@ Alpine.data('securityMonitorManager', (recentUserLogs = {}) => ({
  * Admin Offices Manager
  */
 Alpine.data('officesManager', () => ({
-    loading: true,
-    init() {
-        // Simulated loading for "Instagram" feel transitions
-        setTimeout(() => {
-            this.loading = false;
-        }, 800);
-    }
+    loading: false,
+    init() {}
 }));
 
 Alpine.start();
