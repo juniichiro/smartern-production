@@ -111,8 +111,14 @@
                 {{-- Password Input --}}
                 <div class="text-left">
                     <label for="password" class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase block mb-1.5 tracking-wider ml-1">Password</label>
-                    <input type="password" name="password" id="password" placeholder="Enter your password" required 
-                        class="w-full bg-gray-50 dark:bg-gray-800 {{ $errors->has('password') ? 'bg-red-50/30 dark:bg-red-900/10 ring-1 ring-red-100 dark:ring-red-900/50 border-red-200' : 'border border-gray-100 dark:border-gray-700' }} rounded-xl px-5 py-3.5 text-sm focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 transition-all font-medium dark:text-gray-200">
+                    <div class="relative" x-data="{ show: false }">
+                        <input :type="show ? 'text' : 'password'" name="password" id="password" placeholder="Enter your password" required 
+                            class="w-full bg-gray-50 dark:bg-gray-800 {{ $errors->has('password') ? 'bg-red-50/30 dark:bg-red-900/10 ring-1 ring-red-100 dark:ring-red-900/50 border-red-200' : 'border border-gray-100 dark:border-gray-700' }} rounded-xl pl-5 pr-12 py-3.5 text-sm focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 transition-all font-medium dark:text-gray-200">
+                        <button type="button" @click="show = !show" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                            <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z"/><circle cx="12" cy="12" r="3"/></svg>
+                            <svg x-show="show" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
+                        </button>
+                    </div>
                 </div>
 
                 {{-- Sign In CTA --}}
