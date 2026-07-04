@@ -277,23 +277,23 @@
                                     </td>
                                     <td class="px-3 sm:px-6 py-4 sm:py-6 text-right">
                                         <div class="flex justify-end gap-2 sm:gap-3">
-                                            <button @click="if (expanded === '{{ $applicant->applicant_id }}') { expanded = null; } else { expanded = '{{ $applicant->applicant_id }}'; evaluating = null; }" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl text-[10px] sm:text-xs font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white dark:hover:border-gray-500 transition shadow-sm uppercase tracking-wider active:scale-95">Analysis</button>
+                                            <button @click="if (expanded === '{{ $applicant->applicant_id }}') { expanded = null; } else { expanded = '{{ $applicant->applicant_id }}'; evaluating = null; }" class="whitespace-nowrap bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl text-[10px] sm:text-xs font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white dark:hover:border-gray-500 transition shadow-sm uppercase tracking-wider active:scale-95">Analysis</button>
                                             @if($confirmedMatch)
                                                 @if(in_array($applicant->email, $existingEmails))
-                                                    <span class="inline-flex items-center bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-500 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl text-[10px] sm:text-xs font-bold uppercase tracking-wider select-none cursor-not-allowed">
+                                                    <span class="whitespace-nowrap inline-flex items-center bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-500 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl text-[10px] sm:text-xs font-bold uppercase tracking-wider select-none cursor-not-allowed">
                                                         Account Created
                                                     </span>
                                                 @else
                                                     <form action="{{ route('head-supervisor.matching.unfinalize') }}" method="POST" class="inline">
                                                         @csrf
                                                         <input type="hidden" name="applicant_name" value="{{ $applicant->full_name }}">
-                                                        <button type="submit" class="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 hover:bg-red-100 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl text-[10px] sm:text-xs font-bold transition shadow-sm uppercase tracking-wider active:scale-95">
+                                                        <button type="submit" class="whitespace-nowrap bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 hover:bg-red-100 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl text-[10px] sm:text-xs font-bold transition shadow-sm uppercase tracking-wider active:scale-95">
                                                             Undo Placement
                                                         </button>
                                                     </form>
                                                 @endif
                                             @else
-                                                <button @click="if (evaluating === '{{ $applicant->applicant_id }}') { evaluating = null; } else { evaluating = '{{ $applicant->applicant_id }}'; expanded = null; }" class="bg-[#0B5694] dark:bg-blue-600 text-white px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl text-[10px] sm:text-xs font-bold hover:bg-[#084577] transition shadow-sm uppercase tracking-wider active:scale-95">Evaluate</button>
+                                                <button @click="if (evaluating === '{{ $applicant->applicant_id }}') { evaluating = null; } else { evaluating = '{{ $applicant->applicant_id }}'; expanded = null; }" class="whitespace-nowrap bg-[#0B5694] dark:bg-blue-600 text-white px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl text-[10px] sm:text-xs font-bold hover:bg-[#084577] transition shadow-sm uppercase tracking-wider active:scale-95">Evaluate</button>
                                             @endif
                                         </div>
                                     </td>
