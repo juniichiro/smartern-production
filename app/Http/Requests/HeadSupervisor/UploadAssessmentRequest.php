@@ -21,7 +21,7 @@ class UploadAssessmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'assessment_csv' => 'required|mimes:csv,txt',
+            'assessment_csv' => 'required|file|mimes:csv,txt|max:10240',
         ];
     }
 }
