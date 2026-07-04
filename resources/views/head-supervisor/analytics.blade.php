@@ -157,7 +157,7 @@
                     <div x-show="loading" class="h-[350px] flex items-center justify-center bg-gray-50/50 dark:bg-gray-950/50 rounded-3xl">
                         <x-skeleton class="h-full w-full rounded-3xl" />
                     </div>
-                    <div x-show="!loading" x-transition.opacity.duration.500ms class="h-[350px]">
+                    <div x-show="!loading" x-transition.opacity.duration.500ms class="h-[350px] relative w-full">
                         <canvas id="completionChart"></canvas>
                     </div>
                 </x-card-container>
@@ -196,7 +196,7 @@
                     <div x-show="loading" class="h-[350px] flex items-center justify-center bg-gray-50/50 dark:bg-gray-950/50 rounded-3xl">
                         <x-skeleton class="h-64 w-64 rounded-full" />
                     </div>
-                    <div x-show="!loading" x-transition.opacity.duration.500ms class="h-[350px]">
+                    <div x-show="!loading" x-transition.opacity.duration.500ms class="h-[350px] relative w-full">
                         <canvas id="schoolChart"></canvas>
                     </div>
                 </x-card-container>

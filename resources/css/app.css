@@ -14,8 +14,8 @@ body { font-family: 'Outfit', sans-serif; }
     main { transition: all 0.3s ease-in-out; }
 }
 
-@media (min-width: 1024px) and (max-width: 1440px) {
-    /* Reflow grids and flex rows when both sidebars are expanded on medium/large desktop viewports */
+@media (min-width: 1024px) and (max-width: 1600px) {
+    /* Reflow grids and flex rows when both sidebars are expanded on standard/large desktop viewports */
     body:not(.sidebar-collapsed):not(.notif-collapsed) main {
         .grid-cols-12, .lg\:grid-cols-12, .xl\:grid-cols-12 {
             grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
@@ -53,22 +53,7 @@ body { font-family: 'Outfit', sans-serif; }
     }
 }
 
-@media (min-width: 1024px) and (max-width: 1440px) {
-    /* Make the notification sidebar act as an overlay on screens under 1440px to prevent layout squishing */
-    main {
-        margin-right: 0 !important;
-    }
-    body:not(.notif-collapsed) main {
-        margin-right: 0 !important;
-        padding-right: 2.5rem !important;
-    }
-    body.notif-collapsed main {
-        margin-right: 0 !important;
-        padding-right: 6.5rem !important;
-    }
-}
-
-@media (min-width: 1024px) and (max-width: 1200px) {
+@media (min-width: 1024px) and (max-width: 1300px) {
     /* If the left sidebar is open on smaller screen desktop width, adjust layout accordingly */
     body:not(.sidebar-collapsed) main {
         .xl\:grid-cols-4, .lg\:grid-cols-3 {
