@@ -226,7 +226,7 @@
                     </div>
 
                     {{-- Pagination Links --}}
-                    <div class="mt-8">
+                    <div class="mt-8 flex justify-end">
                         {{ $applicants->links('vendor.pagination.tailwind-custom') }}
                     </div>
                 </x-table-container>
