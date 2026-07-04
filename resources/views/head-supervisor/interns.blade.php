@@ -318,8 +318,8 @@
                 <div x-show="!loading" x-transition.opacity.duration.500ms class="{{ count($distribution) > 3 ? 'flex overflow-x-auto pb-4 gap-6 custom-scrollbar' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' }}">
                     @foreach($distribution as $dept)
                     <div class="{{ count($distribution) > 3 ? 'min-w-[320px] sm:min-w-[380px] shrink-0' : '' }} group flex items-center justify-between p-5 rounded-[24px] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 transition-all hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:shadow-sm">
-                        <div class="min-w-0">
-                            <p class="text-[13px] font-extrabold text-gray-800 dark:text-gray-100 uppercase truncate tracking-normal group-hover:text-[#0B5694] dark:group-hover:text-blue-400 transition-colors">
+                        <div class="min-w-0 flex-1 max-w-[80%]">
+                            <p class="text-[13px] font-extrabold text-gray-800 dark:text-gray-100 uppercase truncate tracking-normal group-hover:text-[#0B5694] dark:group-hover:text-blue-400 transition-colors" title="{{ $dept->name }}">
                                 {{ $dept->name }}
                             </p>
                             <p class="text-[10px] text-gray-400 dark:text-slate-500 font-bold uppercase tracking-wider mt-1">
