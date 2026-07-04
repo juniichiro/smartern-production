@@ -143,8 +143,48 @@ class AnalyticsController extends Controller
 
     public function exportPDF(Request $request)
     {
+        $search = $request->input('search');
+        $filterType = $request->input('filter_type', 'all');
+        $month = $request->input('month');
+        $year = $request->input('year', now()->year);
+
+        // Filter total applicants based on selected period
+        $applicantsQuery = InternDetail::query();
+        if ($filterType === 'annual') {
+            $applicantsQuery->whereYear('created_at', $year);
+        } elseif ($filterType === 'monthly') {
+            $applicantsQuery->whereYear('created_at', $year);
+            if ($month) {
+                $applicantsQuery->whereMonth('created_at', $month);
+            }
+        }
+        $totalApplicants = $applicantsQuery->count();
+
+        // Active interns (with office assigned) in that period
+        $activeQuery = InternDetail::whereNotNull('office_id');
+        if ($filterType === 'annual') {
+            $activeQuery->whereYear('created_at', $year);
+        } elseif ($filterType === 'monthly') {
+            $activeQuery->whereYear('created_at', $year);
+            if ($month) {
+                $activeQuery->whereMonth('created_at', $month);
+            }
+        }
+        $activeInterns = $activeQuery->count();
+
+        // Department distribution in that period
+        $departments = Office::withCount(['internDetails' => function ($q) use ($filterType, $month, $year) {
+            if ($filterType === 'annual') {
+                $q->whereYear('created_at', $year);
+            } elseif ($filterType === 'monthly') {
+                $q->whereYear('created_at', $year);
+                if ($month) {
+                    $q->whereMonth('created_at', $month);
+                }
+            }
+        }])->get();
+
         // 1. Handle the Logo encoding
-        // Adjust 'images/logo.png' to your actual logo path in the public folder
         $logoSrc = null;
         $path = public_path('images/blue-smartern.png');
 
@@ -156,12 +196,11 @@ class AnalyticsController extends Controller
 
         // 2. Prepare Data for the template
         $data = [
-            'totalApplicants' => InternDetail::count(),
-            'activeInterns' => InternDetail::whereNotNull('office_id')->count(),
-            'departments' => Office::withCount('internDetails')->get(),
+            'totalApplicants' => $totalApplicants,
+            'activeInterns' => $activeInterns,
+            'departments' => $departments,
             'date' => now()->format('F d, Y'),
             'logoSrc' => $logoSrc,
-            // These come from the hidden inputs in your Analytics view
             'completionChart' => $request->input('completion_chart_image'),
             'schoolChart' => $request->input('school_chart_image'),
         ];

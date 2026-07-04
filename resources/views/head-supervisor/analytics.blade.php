@@ -49,6 +49,10 @@
                         @csrf
                         <input type="hidden" name="completion_chart_image" id="completionChartInput">
                         <input type="hidden" name="school_chart_image" id="schoolChartInput">
+                        <input type="hidden" name="search" value="{{ request('search') }}">
+                        <input type="hidden" name="filter_type" value="{{ request('filter_type', 'all') }}">
+                        <input type="hidden" name="month" value="{{ request('month') }}">
+                        <input type="hidden" name="year" value="{{ request('year', now()->year) }}">
                         <button type="button" @click="exportThemedPDF()" class="w-full flex items-center justify-center gap-3 bg-white dark:bg-gray-900 px-8 py-3.5 border border-gray-100 dark:border-gray-800 rounded-xl text-[10px] font-bold text-gray-500 dark:text-gray-400 shadow-sm hover:shadow-md transition uppercase tracking-wider active:scale-95">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> 
                             PDF Report
