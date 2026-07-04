@@ -99,7 +99,7 @@
                     <form action="{{ route('head-supervisor.upload') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-3xl p-6 sm:p-8 text-center">
-                            <input type="file" name="assessment_csv" id="importInput" class="hidden" accept=".csv" onchange="this.form.submit()">
+                            <input type="file" name="assessment_csv" id="importInput" class="hidden" accept=".csv" onchange="if (this.files[0] && this.files[0].size > 10 * 1024 * 1024) { alert('The selected file is too large. Maximum size allowed is 10MB.'); this.value = ''; } else { this.form.submit(); }">
                             <button type="button" onclick="document.getElementById('importInput').click()" class="bg-[#0B5694] dark:bg-blue-600 text-white px-8 sm:px-10 py-3 sm:py-4 rounded-2xl text-[10px] sm:text-xs font-bold uppercase tracking-wider shadow-xl shadow-blue-500/20 active:scale-95 transition-all w-full sm:w-auto">Select CSV File</button>
                         </div>
                     </form>
