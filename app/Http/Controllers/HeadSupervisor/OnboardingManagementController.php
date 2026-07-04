@@ -36,6 +36,7 @@ class OnboardingManagementController extends Controller
                 'name' => $app->full_name,
                 'school' => $app->university,
                 'email' => $app->email,
+                'phone' => $app->phone_number,
                 'emergency' => $app->emergency_contact,
                 'tech_list' => $techList,
                 'soft_list' => $softList,

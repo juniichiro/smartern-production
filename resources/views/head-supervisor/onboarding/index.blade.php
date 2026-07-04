@@ -89,7 +89,6 @@
                                         <th class="px-8 py-5">Application ID</th>
                                         <th class="px-8 py-5">Intern Candidate</th>
                                         <th class="px-8 py-5">Institutional Affiliate</th>
-                                        <th class="px-8 py-5 text-center">Safety Contact</th>
                                         <th class="px-8 py-5 text-right">Skills Meta</th>
                                     </tr>
                                 </thead>
@@ -109,12 +108,12 @@
                                             <td class="px-8 py-6 whitespace-nowrap">
                                                 <p class="text-sm font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight group-hover:text-[#0B5694] transition-colors">{{ $applicant['name'] }}</p>
                                                 <p class="text-[11px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest mt-0.5 leading-none">{{ $applicant['email'] }}</p>
+                                                @if(!empty($applicant['phone']))
+                                                    <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold tracking-wider mt-1.5">{{ $applicant['phone'] }}</p>
+                                                @endif
                                             </td>
                                             <td class="px-8 py-6 whitespace-nowrap">
                                                 <span class="text-[12px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest italic leading-none truncate max-w-[150px] sm:max-w-[200px] inline-block" title="{{ $applicant['school'] }}">{{ $applicant['school'] }}</span>
-                                            </td>
-                                            <td class="px-8 py-6 text-center whitespace-nowrap">
-                                                <p class="text-[11px] font-black text-rose-500 dark:text-rose-400 uppercase tracking-widest bg-rose-50 dark:bg-rose-900/20 px-3 py-1.5 rounded-full border border-rose-100 dark:border-rose-900/30 inline-block shadow-sm">{{ $applicant['emergency'] ?? 'N/A' }}</p>
                                             </td>
                                             <td class="px-8 py-6 text-right whitespace-nowrap">
                                                 <div class="text-[11px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-tighter truncate max-w-[180px] ml-auto" title="{{ implode(', ', $applicant['tech_list']) }}">
@@ -124,7 +123,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="5" class="py-32"><x-empty-state title="Onboarding queue is currently clear" compact="true" /></td>
+                                            <td colspan="4" class="py-32"><x-empty-state title="Onboarding queue is currently clear" compact="true" /></td>
                                         </tr>
                                     @endforelse
                                 </tbody>
