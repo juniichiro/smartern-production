@@ -108,21 +108,40 @@ class OfficeMatchingController extends Controller
 
         $path = $file->storeAs('uploads/assessments', $fileName);
         $handle = fopen($file->getRealPath(), 'r');
-        fgetcsv($handle);
+        
+        $headers = fgetcsv($handle);
+        if (!$headers) {
+            fclose($handle);
+            return back()->withErrors(['error' => 'The uploaded CSV file is empty.']);
+        }
+        
+        $headerMap = array_flip(array_map('trim', $headers));
 
         $rules = OfficeRule::all()->groupBy('office_id');
         $activeAssessments = AssessmentItem::active()->get();
+        
+        $competencies = [];
+        foreach ($activeAssessments as $item) {
+            $competencies[trim($item->competency_text)] = $item->category;
+        }
+
         $allStudentData = [];
         $preassignments = [];
 
         while (($data = fgetcsv($handle)) !== false) {
             // Safeguard against empty or corrupt rows
-            if (empty($data) || count($data) < 2 || empty(trim($data[1]))) {
+            if (empty($data) || count($data) < 2) {
                 continue;
             }
 
-            $applicantName = trim($data[1]);
-            $preassignedOfficeId = isset($data[6]) && ! empty(trim($data[6])) ? (int) $data[6] : null;
+            // Find columns dynamically based on headers
+            $nameHeader = isset($headerMap['student_name']) ? 'student_name' : (isset($headerMap['full_name']) ? 'full_name' : null);
+            if (!$nameHeader || !isset($data[$headerMap[$nameHeader]]) || empty(trim($data[$headerMap[$nameHeader]]))) {
+                continue;
+            }
+            $applicantName = trim($data[$headerMap[$nameHeader]]);
+
+            $preassignedOfficeId = isset($headerMap['office_id']) && isset($data[$headerMap['office_id']]) && ! empty(trim($data[$headerMap['office_id']])) ? (int) $data[$headerMap['office_id']] : null;
 
             if ($preassignedOfficeId) {
                 $preassignments[$applicantName] = $preassignedOfficeId;
@@ -135,27 +154,43 @@ class OfficeMatchingController extends Controller
             // Check if we have this applicant in our DB (Smart Matching)
             $applicant = OnboardingApplicant::where('full_name', $applicantName)->first();
 
-            // Parse dynamic skills from CSV
-            $rawTech = isset($data[4]) && ! empty($data[4]) ? explode(';', $data[4]) : [];
-            $rawSoft = isset($data[5]) && ! empty($data[5]) ? explode(';', $data[5]) : [];
-
             $techSkillsFormatted = [];
-            foreach ($rawTech as $pair) {
-                if (str_contains($pair, ':')) {
-                    [$skill, $score] = explode(':', $pair);
-                    $techSkillsFormatted[trim($skill)] = (int) $score;
-                }
-            }
-
             $softSkillsFormatted = [];
-            foreach ($rawSoft as $pair) {
-                if (str_contains($pair, ':')) {
-                    [$skill, $score] = explode(':', $pair);
-                    $softSkillsFormatted[trim($skill)] = (int) $score;
+
+            // 1. Check if skills columns exist individually as columns in the CSV
+            foreach ($competencies as $text => $category) {
+                if (isset($headerMap[$text]) && isset($data[$headerMap[$text]])) {
+                    $score = is_numeric($data[$headerMap[$text]]) ? (int)$data[$headerMap[$text]] : 3;
+                    if (str_contains(strtolower($category), 'technical')) {
+                        $techSkillsFormatted[$text] = $score;
+                    } else {
+                        $softSkillsFormatted[$text] = $score;
+                    }
                 }
             }
 
-            // Fill in any active assessment items missing from the CSV, matching the onboarding requirement
+            // 2. Fallback to legacy semicolon-separated format if legacy columns are present
+            if (empty($techSkillsFormatted) && isset($headerMap['tech_skills']) && isset($data[$headerMap['tech_skills']])) {
+                $rawTech = ! empty($data[$headerMap['tech_skills']]) ? explode(';', $data[$headerMap['tech_skills']]) : [];
+                foreach ($rawTech as $pair) {
+                    if (str_contains($pair, ':')) {
+                        [$skill, $score] = explode(':', $pair);
+                        $techSkillsFormatted[trim($skill)] = (int) $score;
+                    }
+                }
+            }
+
+            if (empty($softSkillsFormatted) && isset($headerMap['soft_skills']) && isset($data[$headerMap['soft_skills']])) {
+                $rawSoft = ! empty($data[$headerMap['soft_skills']]) ? explode(';', $data[$headerMap['soft_skills']]) : [];
+                foreach ($rawSoft as $pair) {
+                    if (str_contains($pair, ':')) {
+                        [$skill, $score] = explode(':', $pair);
+                        $softSkillsFormatted[trim($skill)] = (int) $score;
+                    }
+                }
+            }
+
+            // 3. Fill in any active assessment items missing from both formats
             foreach ($activeAssessments as $item) {
                 $compText = trim($item->competency_text);
                 if (str_contains(strtolower($item->category), 'technical')) {
@@ -168,6 +203,9 @@ class OfficeMatchingController extends Controller
                     }
                 }
             }
+
+            $emailVal = isset($headerMap['email']) && isset($data[$headerMap['email']]) ? trim($data[$headerMap['email']]) : ('pending_' . strtolower(Str::random(5)) . '@smarttern.com');
+            $universityVal = isset($headerMap['university']) && isset($data[$headerMap['university']]) ? trim($data[$headerMap['university']]) : 'N/A';
 
             if (! $applicant) {
                 $applicantId = 'APP-' . strtoupper(Str::random(8));
@@ -187,19 +225,23 @@ class OfficeMatchingController extends Controller
                     $lastName = $parts[1];
                 }
 
+                $genderVal = isset($headerMap['gender']) && isset($data[$headerMap['gender']]) ? trim($data[$headerMap['gender']]) : 'male';
+                $phoneVal = isset($headerMap['phone_number']) && isset($data[$headerMap['phone_number']]) ? trim($data[$headerMap['phone_number']]) : '09000000000';
+                $emergencyVal = isset($headerMap['emergency_contact']) && isset($data[$headerMap['emergency_contact']]) ? trim($data[$headerMap['emergency_contact']]) : 'N/A';
+
                 $applicant = OnboardingApplicant::create([
                     'applicant_id' => $applicantId,
                     'full_name' => $applicantName,
                     'first_name' => $firstName,
                     'middle_name' => $middleName,
                     'last_name' => $lastName,
-                    'email' => isset($data[3]) && ! empty($data[3]) ? $data[3] : 'pending_' . strtolower(Str::random(5)) . '@smarttern.com',
-                    'university' => isset($data[2]) && ! empty($data[2]) ? $data[2] : 'N/A',
+                    'email' => $emailVal,
+                    'university' => $universityVal,
                     'tech_skills' => $techSkillsFormatted,
                     'soft_skills' => $softSkillsFormatted,
-                    'gender' => 'male',
-                    'phone_number' => '09000000000',
-                    'emergency_contact' => 'N/A',
+                    'gender' => $genderVal,
+                    'phone_number' => $phoneVal,
+                    'emergency_contact' => $emergencyVal,
                     'emergency_contact_number' => 'N/A',
                     'privacy_acknowledged_at' => now(),
                 ]);
@@ -246,7 +288,7 @@ class OfficeMatchingController extends Controller
 
             $allStudentData[] = [
                 'student_name' => $applicantName,
-                'university' => isset($data[2]) ? $data[2] : 'N/A',
+                'university' => $universityVal,
                 'skills' => $allSkills,
                 'resume_text' => $resumeText,
                 'verified_skills' => $applicant ? ($applicant->evaluation?->verified_skills ?? []) : [],
@@ -381,6 +423,7 @@ class OfficeMatchingController extends Controller
     public function exportCsv()
     {
         $applicants = OnboardingApplicant::all();
+        $activeAssessments = AssessmentItem::active()->ordered()->get();
 
         if ($applicants->isEmpty()) {
             return back()->with('error', 'No onboarding applicants found to export.');
@@ -392,50 +435,42 @@ class OfficeMatchingController extends Controller
             'Content-Disposition' => "attachment; filename=\"$filename\"",
         ];
 
-        $callback = function () use ($applicants) {
+        $callback = function () use ($applicants, $activeAssessments) {
             $file = fopen('php://output', 'w');
 
-            fputcsv($file, [
-                'student_id',
-                'student_name',
-                'university',
-                'email',
-                'tech_skills',
-                'soft_skills',
-                'office_id'
-            ]);
+            // Build headers dynamically
+            $headerRow = ['student_id', 'student_name', 'university', 'email', 'office_id'];
+            foreach ($activeAssessments as $item) {
+                $headerRow[] = $item->competency_text;
+            }
+            fputcsv($file, $headerRow);
 
             foreach ($applicants as $app) {
-                $techPairs = [];
-                if (is_array($app->tech_skills)) {
-                    foreach ($app->tech_skills as $skill => $score) {
-                        $techPairs[] = "{$skill}:{$score}";
-                    }
-                }
-                $techString = implode(';', $techPairs);
-
-                $softPairs = [];
-                if (is_array($app->soft_skills)) {
-                    foreach ($app->soft_skills as $skill => $score) {
-                        $softPairs[] = "{$skill}:{$score}";
-                    }
-                }
-                $softString = implode(';', $softPairs);
-
                 $confirmedMatch = MatchResult::where('applicant_name', $app->full_name)
                     ->where('is_confirmed', true)
                     ->first();
                 $officeId = $confirmedMatch ? $confirmedMatch->office_id : '';
 
-                fputcsv($file, [
+                $row = [
                     $app->applicant_id,
                     $app->full_name,
                     $app->university,
                     $app->email,
-                    $techString,
-                    $softString,
                     $officeId
-                ]);
+                ];
+
+                foreach ($activeAssessments as $item) {
+                    $compText = $item->competency_text;
+                    $score = 3;
+                    if (str_contains(strtolower($item->category), 'technical')) {
+                        $score = is_array($app->tech_skills) && isset($app->tech_skills[$compText]) ? $app->tech_skills[$compText] : 3;
+                    } else {
+                        $score = is_array($app->soft_skills) && isset($app->soft_skills[$compText]) ? $app->soft_skills[$compText] : 3;
+                    }
+                    $row[] = $score;
+                }
+
+                fputcsv($file, $row);
             }
             fclose($file);
         };
@@ -445,7 +480,11 @@ class OfficeMatchingController extends Controller
 
     public function downloadTemplate()
     {
-        $headers = ['student_id', 'student_name', 'university', 'email', 'tech_skills', 'soft_skills', 'office_id'];
+        $activeAssessments = AssessmentItem::active()->ordered()->get();
+        $headers = ['student_id', 'student_name', 'university', 'email', 'office_id'];
+        foreach ($activeAssessments as $item) {
+            $headers[] = $item->competency_text;
+        }
         $fileName = 'SmarTern_Dynamic_Template.csv';
 
         $callback = function () use ($headers) {

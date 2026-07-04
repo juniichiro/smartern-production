@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\HeadSupervisor;
 
 use App\Http\Controllers\Controller;
+use App\Models\AssessmentItem;
 use App\Models\Office;
 use App\Models\OfficeRule;
 use App\Models\OnboardingApplicant;
@@ -59,6 +60,7 @@ class OnboardingManagementController extends Controller
     {
         // Re-generate CSV from DB to ensure it's up to date
         $applicants = OnboardingApplicant::all();
+        $activeAssessments = AssessmentItem::active()->ordered()->get();
 
         if ($applicants->isEmpty()) {
             return back()->with('error', 'No applicants found to export.');
@@ -73,32 +75,27 @@ class OnboardingManagementController extends Controller
             'Expires' => '0',
         ];
 
-        $callback = function () use ($applicants) {
+        $callback = function () use ($applicants, $activeAssessments) {
             $file = fopen('php://output', 'w');
-            fputcsv($file, [
-                'student_id', 'full_name', 'university', 'email', 'tech_skills', 'soft_skills',
+
+            // Build headers dynamically
+            $headerRow = [
+                'student_id', 'full_name', 'university', 'email', 'office_id',
                 'first_name', 'middle_name', 'last_name', 'gender', 'gender_other_specify',
                 'phone_number', 'profile_picture', 'emergency_contact',
-            ]);
+            ];
+            foreach ($activeAssessments as $item) {
+                $headerRow[] = $item->competency_text;
+            }
+            fputcsv($file, $headerRow);
 
             foreach ($applicants as $app) {
-                $techSerialized = [];
-                foreach ($app->tech_skills as $skill => $score) {
-                    $techSerialized[] = "$skill:$score";
-                }
-
-                $softSerialized = [];
-                foreach ($app->soft_skills as $skill => $score) {
-                    $softSerialized[] = "$skill:$score";
-                }
-
-                fputcsv($file, [
+                $row = [
                     $app->applicant_id,
                     $app->full_name,
                     $app->university,
                     $app->email,
-                    implode(';', $techSerialized),
-                    implode(';', $softSerialized),
+                    '', // office_id placeholder
                     $app->first_name,
                     $app->middle_name,
                     $app->last_name,
@@ -107,7 +104,20 @@ class OnboardingManagementController extends Controller
                     $app->phone_number,
                     $app->profile_picture,
                     $app->emergency_contact,
-                ]);
+                ];
+
+                foreach ($activeAssessments as $item) {
+                    $compText = $item->competency_text;
+                    $score = 3;
+                    if (str_contains(strtolower($item->category), 'technical')) {
+                        $score = is_array($app->tech_skills) && isset($app->tech_skills[$compText]) ? $app->tech_skills[$compText] : 3;
+                    } else {
+                        $score = is_array($app->soft_skills) && isset($app->soft_skills[$compText]) ? $app->soft_skills[$compText] : 3;
+                    }
+                    $row[] = $score;
+                }
+
+                fputcsv($file, $row);
             }
             fclose($file);
         };
