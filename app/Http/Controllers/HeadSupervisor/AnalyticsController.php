@@ -90,8 +90,16 @@ class AnalyticsController extends Controller
         $year = $request->input('year', now()->year);
 
         $reportsQuery = InternDetail::with(['office', 'user', 'certificate'])
-            ->with(['journals' => function ($query) {
-                $query->latest('created_at');
+            ->with(['journals' => function ($query) use ($filterType, $month, $year) {
+                if ($filterType === 'annual') {
+                    $query->whereYear('entry_date', $year);
+                } elseif ($filterType === 'monthly') {
+                    $query->whereYear('entry_date', $year);
+                    if ($month) {
+                        $query->whereMonth('entry_date', $month);
+                    }
+                }
+                $query->latest('entry_date')->latest('created_at');
             }]);
 
         if ($search) {
@@ -102,12 +110,16 @@ class AnalyticsController extends Controller
         }
 
         if ($filterType === 'annual') {
-            $reportsQuery->whereYear('created_at', $year);
+            $reportsQuery->whereHas('journals', function ($query) use ($year) {
+                $query->whereYear('entry_date', $year);
+            });
         } elseif ($filterType === 'monthly') {
-            if ($month) {
-                $reportsQuery->whereMonth('created_at', $month);
-            }
-            $reportsQuery->whereYear('created_at', $year);
+            $reportsQuery->whereHas('journals', function ($query) use ($month, $year) {
+                $query->whereYear('entry_date', $year);
+                if ($month) {
+                    $query->whereMonth('entry_date', $month);
+                }
+            });
         }
 
         $reports = $reportsQuery->orderBy('last_name', 'asc')->paginate(10);
@@ -240,7 +252,15 @@ class AnalyticsController extends Controller
             public function collection()
             {
                 $query = InternDetail::with(['office', 'certificate', 'journals' => function ($q) {
-                    $q->latest('created_at');
+                    if ($this->filterType === 'annual') {
+                        $q->whereYear('entry_date', $this->year);
+                    } elseif ($this->filterType === 'monthly') {
+                        $q->whereYear('entry_date', $this->year);
+                        if ($this->month) {
+                            $q->whereMonth('entry_date', $this->month);
+                        }
+                    }
+                    $q->latest('entry_date')->latest('created_at');
                 }]);
 
                 if ($this->search) {
@@ -251,12 +271,16 @@ class AnalyticsController extends Controller
                 }
 
                 if ($this->filterType === 'annual') {
-                    $query->whereYear('created_at', $this->year);
+                    $query->whereHas('journals', function ($q) {
+                        $q->whereYear('entry_date', $this->year);
+                    });
                 } elseif ($this->filterType === 'monthly') {
-                    if ($this->month) {
-                        $query->whereMonth('created_at', $this->month);
-                    }
-                    $query->whereYear('created_at', $this->year);
+                    $query->whereHas('journals', function ($q) {
+                        $q->whereYear('entry_date', $this->year);
+                        if ($this->month) {
+                            $q->whereMonth('entry_date', $this->month);
+                        }
+                    });
                 }
 
                 return $query->get();
