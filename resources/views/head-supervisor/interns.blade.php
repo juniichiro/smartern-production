@@ -113,7 +113,6 @@
                                 <th class="px-8 py-5">Assigned Department</th>
                                 <th class="px-8 py-5">Training Progress</th>
                                 <th class="px-8 py-5">Status</th>
-                                <th class="px-8 py-5 text-right">Action</th>
                             </tr>
                         </thead>
                         <tbody x-show="loading" class="divide-y divide-gray-50 dark:divide-gray-800">
@@ -131,7 +130,6 @@
                                     <td class="px-8 py-6"><x-skeleton class="h-6 w-24 rounded-lg" /></td>
                                     <td class="px-8 py-6"><x-skeleton class="h-4 w-40 rounded-lg" /></td>
                                     <td class="px-8 py-6"><x-skeleton class="h-6 w-20 rounded-full" /></td>
-                                    <td class="px-8 py-6 text-right"><x-skeleton class="h-10 w-10 ml-auto rounded-xl" /></td>
                                 </tr>
                             @endfor
                         </tbody>
@@ -154,13 +152,17 @@
                                     <div class="flex items-center gap-4">
                                         <x-avatar :user="$intern" size="10" border="1" circular="true" textSize="xs" />
                                         <div>
-                                            <p class="text-sm font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight group-hover:text-[#0B5694] transition-colors">{{ $intern->first_name }} {{ $intern->last_name }}</p>
+                                            <p class="text-sm font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight">
+                                                <a href="{{ route('head-supervisor.interns.show', $intern->user) }}" class="hover:text-[#0B5694] dark:hover:text-blue-400 transition-colors">
+                                                    {{ $intern->first_name }} {{ $intern->last_name }}
+                                                </a>
+                                            </p>
                                             <p class="text-[11px] text-gray-400 dark:text-gray-500 font-bold tracking-wider uppercase mt-0.5">{{ $intern->user->email ?? 'No email' }}</p>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="px-8 py-6 whitespace-nowrap">
-                                    <span class="font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider text-[11px] bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 px-3 py-1.5 rounded-lg">{{ $officeName }}</span>
+                                    <span class="font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider text-[11px] bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 px-3 py-1.5 rounded-lg truncate max-w-[150px] inline-block" title="{{ $officeName }}">{{ $officeName }}</span>
                                 </td>
                                 <td class="px-8 py-6">
                                     <div class="flex items-center gap-4">
@@ -178,15 +180,10 @@
                                         <span class="bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 text-[10px] font-bold px-4 py-1.5 rounded-full uppercase tracking-wider border border-blue-100 dark:border-blue-900/30">active</span>
                                     @endif
                                 </td>
-                                <td class="px-8 py-6 text-right whitespace-nowrap">
-                                    <a href="{{ route('head-supervisor.interns.show', $intern->user) }}" class="p-2.5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-400 hover:text-[#0B5694] dark:hover:text-blue-400 transition-all shadow-sm rounded-xl transform hover:scale-110 active:scale-95 inline-flex items-center justify-center">
-                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-                                    </a>
-                                </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="5" class="py-20 text-center">
+                                <td colspan="4" class="py-20 text-center">
                                     <x-empty-state title="No student records registered in division." compact="true" />
                                 </td>
                             </tr>
