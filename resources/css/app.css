@@ -62,10 +62,14 @@ body { font-family: 'Outfit', sans-serif; }
                 font-size: 11px !important;
             }
 
-            /* Prevent layout breakage inside cell components */
+            /* Prevent layout breakage inside cell components and allow wrapping */
             .flex, .inline-flex {
                 flex-wrap: wrap !important;
                 gap: 0.25rem !important;
+            }
+            
+            .whitespace-nowrap {
+                white-space: normal !important;
             }
 
             /* Scale down buttons and badges inside table cells */
