@@ -74,7 +74,7 @@
                     <div class="relative w-full sm:w-40">
                         <select 
                             x-model="statusFilter"
-                            class="w-full pl-4 pr-10 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl text-[10px] font-bold uppercase tracking-wider text-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-[#0B5694]/20 focus:border-[#0B5694] transition-all appearance-none cursor-pointer"
+                            class="w-full pl-4 pr-10 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl text-[10px] font-bold uppercase tracking-wider text-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-[#0B5694]/20 focus:border-[#0B5694] transition-all appearance-none cursor-pointer bg-none"
                         >
                             <option value="all">All Status</option>
                             <option value="active">Active</option>
@@ -89,7 +89,7 @@
                     <div class="relative w-full sm:w-48">
                         <select 
                             x-model="deptFilter"
-                            class="w-full pl-4 pr-10 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl text-[10px] font-bold uppercase tracking-wider text-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-[#0B5694]/20 focus:border-[#0B5694] transition-all appearance-none cursor-pointer"
+                            class="w-full pl-4 pr-10 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl text-[10px] font-bold uppercase tracking-wider text-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-[#0B5694]/20 focus:border-[#0B5694] transition-all appearance-none cursor-pointer bg-none"
                         >
                             <option value="all">All Departments</option>
                             @foreach($offices as $office)
@@ -305,7 +305,7 @@
                 {{-- Skeletons --}}
                 <div x-show="loading" class="{{ count($distribution) > 3 ? 'flex overflow-x-auto pb-4 gap-6 custom-scrollbar' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' }}">
                     @for($i = 0; $i < 6; $i++)
-                        <div class="{{ count($distribution) > 3 ? 'min-w-[280px] sm:min-w-[320px] shrink-0' : '' }} p-5 rounded-[24px] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 flex items-center justify-between gap-4">
+                        <div class="{{ count($distribution) > 3 ? 'min-w-[320px] sm:min-w-[380px] shrink-0' : '' }} p-5 rounded-[24px] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 flex items-center justify-between gap-4">
                             <div class="space-y-2.5 flex-1 min-w-0">
                                 <x-skeleton class="h-4 w-28 rounded-lg" />
                                 <x-skeleton class="h-3 w-20 rounded-lg" />
@@ -317,7 +317,7 @@
 
                 <div x-show="!loading" x-transition.opacity.duration.500ms class="{{ count($distribution) > 3 ? 'flex overflow-x-auto pb-4 gap-6 custom-scrollbar' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' }}">
                     @foreach($distribution as $dept)
-                    <div class="{{ count($distribution) > 3 ? 'min-w-[280px] sm:min-w-[320px] shrink-0' : '' }} group flex items-center justify-between p-5 rounded-[24px] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 transition-all hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:shadow-sm">
+                    <div class="{{ count($distribution) > 3 ? 'min-w-[320px] sm:min-w-[380px] shrink-0' : '' }} group flex items-center justify-between p-5 rounded-[24px] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 transition-all hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:shadow-sm">
                         <div class="min-w-0">
                             <p class="text-[13px] font-extrabold text-gray-800 dark:text-gray-100 uppercase truncate tracking-normal group-hover:text-[#0B5694] dark:group-hover:text-blue-400 transition-colors">
                                 {{ $dept->name }}
