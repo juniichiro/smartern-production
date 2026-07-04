@@ -66,10 +66,10 @@
  
                 {{-- DETAILED REPORTS ACTIONS --}}
                 <div x-show="activeTab === 'reports'" x-cloak class="flex items-center gap-3">
-                    <a href="{{ route('head-supervisor.report.pdf-export', request()->query()) }}" class="flex items-center justify-center gap-3 bg-white dark:bg-gray-900 px-8 py-3.5 border border-gray-100 dark:border-gray-800 rounded-xl text-[10px] font-bold text-gray-500 dark:text-gray-400 shadow-sm hover:shadow-md transition-all uppercase tracking-wider active:scale-95">
+                    <button type="submit" form="filterForm" formaction="{{ route('head-supervisor.report.pdf-export') }}" class="flex items-center justify-center gap-3 bg-white dark:bg-gray-900 px-8 py-3.5 border border-gray-100 dark:border-gray-800 rounded-xl text-[10px] font-bold text-gray-500 dark:text-gray-400 shadow-sm hover:shadow-md transition-all uppercase tracking-wider active:scale-95">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                         PDF Report
-                    </a>
+                    </button>
                 </div>
             </x-slot:actions>
         </x-page-header>
@@ -257,7 +257,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" :class="showFilters ? 'rotate-180' : ''" class="transition-transform"><path d="m6 9 6 6 6-6"/></svg>
                     </button>
                 </div>
-                <form action="{{ route('head-supervisor.analytics') }}" method="GET" x-data="{ type: '{{ request('filter_type', 'all') }}' }" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 sm:gap-4 items-end" :class="showFilters || window.innerWidth >= 768 ? '' : 'hidden'">
+                <form id="filterForm" action="{{ route('head-supervisor.analytics') }}" method="GET" x-data="{ type: '{{ request('filter_type', 'all') }}' }" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 sm:gap-4 items-end" :class="showFilters || window.innerWidth >= 768 ? '' : 'hidden'">
                     {{-- Search Name --}}
                     <div class="sm:col-span-2 lg:col-span-3 relative group">
                         <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Search Intern</label>
