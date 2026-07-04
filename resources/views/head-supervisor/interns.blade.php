@@ -292,6 +292,11 @@
                 </div>
                 @endforelse
             </div>
+
+            {{-- Pagination Links --}}
+            <div class="mt-8 flex justify-end">
+                {{ $interns->links('vendor.pagination.tailwind-custom') }}
+            </div>
         </x-table-container>
 
         {{-- Bottom Sections --}}

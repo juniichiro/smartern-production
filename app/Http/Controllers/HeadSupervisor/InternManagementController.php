@@ -28,10 +28,10 @@ class InternManagementController extends Controller
         $avgProgress = InternDetail::selectRaw('AVG(hours_rendered / COALESCE(NULLIF(required_hours, 0), 480) * 100) as avg_prog')->value('avg_prog') ?? 0;
         $avgProgress = min(100, $avgProgress);
 
-        // 2. Main Intern Table (With Relationships)
+        // 2. Main Intern Table (With Relationships - Paginated)
         $interns = InternDetail::with(['user', 'office', 'certificate'])
             ->orderBy('last_name', 'asc')
-            ->get();
+            ->paginate(10);
 
         // 3. Department Distribution
         $distribution = Office::withCount('internDetails')->get();
