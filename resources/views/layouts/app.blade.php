@@ -77,7 +77,17 @@
         @endif
 
         @if(session('status'))
-            <x-toast :message="session('status')" type="info" />
+            @php
+                $statusMsg = session('status');
+                if ($statusMsg === 'mfa-enabled') {
+                    $statusMsg = 'Multi-Factor Authentication enabled successfully.';
+                } elseif ($statusMsg === 'mfa-disabled') {
+                    $statusMsg = 'Multi-Factor Authentication disabled successfully.';
+                } elseif ($statusMsg === 'verification-link-sent') {
+                    $statusMsg = 'A new verification link has been sent to your email address.';
+                }
+            @endphp
+            <x-toast :message="$statusMsg" type="info" />
         @endif
 
         {{-- Dynamic Toasts for Real-Time & System Events --}}
