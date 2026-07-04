@@ -355,4 +355,85 @@ class AnalyticsController extends Controller
             }
         }, 'SmarTern-Detailed-Report-'.now()->format('Ymd').'.xlsx');
     }
+
+    public function exportReportPDF(Request $request)
+    {
+        $search = $request->input('search');
+        $filterType = $request->input('filter_type', 'all');
+        $month = $request->input('month');
+        $year = $request->input('year', now()->year);
+
+        $reportsQuery = InternDetail::with(['office', 'user', 'certificate'])
+            ->withCount(['journals as period_journals_count' => function ($query) use ($filterType, $month, $year) {
+                if ($filterType === 'annual') {
+                    $query->whereYear('entry_date', $year);
+                } elseif ($filterType === 'monthly') {
+                    $query->whereYear('entry_date', $year);
+                    if ($month) {
+                        $query->whereMonth('entry_date', $month);
+                    }
+                }
+            }])
+            ->with(['journals' => function ($query) use ($filterType, $month, $year) {
+                if ($filterType === 'annual') {
+                    $query->whereYear('entry_date', $year);
+                } elseif ($filterType === 'monthly') {
+                    $query->whereYear('entry_date', $year);
+                    if ($month) {
+                        $query->whereMonth('entry_date', $month);
+                    }
+                }
+                $query->latest('entry_date')->latest('created_at');
+            }]);
+
+        if ($search) {
+            $reportsQuery->where(function ($query) use ($search) {
+                $query->where('first_name', 'like', "%{$search}%")
+                    ->orWhere('last_name', 'like', "%{$search}%");
+            });
+        }
+
+        if ($filterType === 'annual') {
+            $reportsQuery->whereHas('journals', function ($query) use ($year) {
+                $query->whereYear('entry_date', $year);
+            });
+        } elseif ($filterType === 'monthly') {
+            $reportsQuery->whereHas('journals', function ($query) use ($month, $year) {
+                $query->whereYear('entry_date', $year);
+                if ($month) {
+                    $query->whereMonth('entry_date', $month);
+                }
+            });
+        }
+
+        $interns = $reportsQuery->orderBy('last_name', 'asc')->get();
+
+        if ($filterType === 'annual') {
+            $periodLabel = "Annually ($year)";
+        } elseif ($filterType === 'monthly' && $month) {
+            $periodLabel = date('F', mktime(0, 0, 0, $month, 1)) . " $year";
+        } else {
+            $periodLabel = "All Time";
+        }
+
+        $logoSrc = null;
+        $path = public_path('images/blue-smartern.png');
+        if (file_exists($path)) {
+            $type = pathinfo($path, PATHINFO_EXTENSION);
+            $data = file_get_contents($path);
+            $logoSrc = 'data:image/'.$type.';base64,'.base64_encode($data);
+        }
+
+        $pdf = Pdf::loadView('exports.detailed-reports-pdf', [
+            'interns' => $interns,
+            'periodLabel' => $periodLabel,
+            'search' => $search,
+            'date' => now()->format('F d, Y'),
+            'logoSrc' => $logoSrc,
+        ]);
+
+        $pdf->setPaper('a4', 'portrait');
+
+        return $pdf->download('SmarTern-Detailed-Report-'.now()->format('Ymd').'.pdf');
+    }
 }

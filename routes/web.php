@@ -203,6 +203,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/analytics/pdf', [AnalyticsController::class, 'exportPDF'])->name('analytics.pdf');
         Route::get('/analytics/excel', [AnalyticsController::class, 'exportExcel'])->name('analytics.excel');
         Route::get('/analytics/report-excel', [AnalyticsController::class, 'exportReportExcel'])->name('report.export');
+        Route::get('/analytics/report-pdf', [AnalyticsController::class, 'exportReportPDF'])->name('report.pdf-export');
         Route::get('/reports', fn () => redirect()->route('head-supervisor.analytics', request()->query()))->name('report');
 
         // Office Matching Routes[cite: 6]
