@@ -37,6 +37,19 @@ body { font-family: 'Outfit', sans-serif; }
         .lg\:w-1\/3, .lg\:w-2\/3, .lg\:w-1\/4, .lg\:w-3\/4 {
             width: 100% !important;
         }
+        /* Auto-swap wide desktop tables to responsive mobile-style card grids */
+        .hidden.lg\:block {
+            display: none !important;
+        }
+        .lg\:hidden.md\:grid, .lg\:hidden {
+            display: grid !important;
+        }
+        .lg\:hidden.flex {
+            display: flex !important;
+        }
+        .lg\:hidden.block {
+            display: block !important;
+        }
     }
 }
 
