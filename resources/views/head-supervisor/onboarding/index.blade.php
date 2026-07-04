@@ -224,6 +224,11 @@
                         </div>
                         @endforelse
                     </div>
+
+                    {{-- Pagination Links --}}
+                    <div class="mt-8">
+                        {{ $applicants->links('vendor.pagination.tailwind-custom') }}
+                    </div>
                 </x-table-container>
             </div>
         </template>

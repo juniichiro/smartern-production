@@ -15,20 +15,20 @@ class OnboardingManagementController extends Controller
 
     public function index()
     {
-        // 1. Fetch Applicants
-        $dbApplicants = OnboardingApplicant::latest()->get();
-
-        $applicants = $dbApplicants->map(function ($app) {
+        // 1. Fetch Applicants (Paginated)
+        $applicants = OnboardingApplicant::latest()->paginate(10);
+ 
+        $mappedApplicants = $applicants->getCollection()->map(function ($app) {
             $techList = [];
             foreach ($app->tech_skills as $skill => $score) {
                 $techList[] = "$skill ($score)";
             }
-
+ 
             $softList = [];
             foreach ($app->soft_skills as $skill => $score) {
                 $softList[] = "$skill ($score)";
             }
-
+ 
             return [
                 'db_id' => $app->id,
                 'route_key' => $app->getRouteKey(),
@@ -43,6 +43,8 @@ class OnboardingManagementController extends Controller
                 'resume_path' => $app->resume_path,
             ];
         });
+
+        $applicants->setCollection($mappedApplicants);
 
         // 2. Fetch Offices
         $offices = Office::withCount(['internDetails', 'supervisorDetails'])
