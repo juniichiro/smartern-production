@@ -40,7 +40,11 @@ class OfficeMatchingController extends Controller
         $offices = Office::all();
 
         // Fetch applicants from the new OnboardingApplicant table
-        $applicants = OnboardingApplicant::with('evaluation')->paginate(10);
+        // Sorted by Finalized (Confirmed matches) first, then Pending, and both sorted newest first
+        $applicants = OnboardingApplicant::with('evaluation')
+            ->orderByRaw('(SELECT COUNT(*) FROM match_results WHERE match_results.applicant_name = onboarding_applicants.full_name AND match_results.is_confirmed = 1) DESC')
+            ->orderBy('onboarding_applicants.created_at', 'desc')
+            ->paginate(10);
 
         // Map MatchResult scores for these applicants
         $results = MatchResult::with('office')
