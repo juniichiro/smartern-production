@@ -274,21 +274,20 @@
                                         <span class="{{ $confidenceBg }} {{ $confidenceColor }} text-[10px] sm:text-[11px] font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full uppercase tracking-wider border border-current shadow-sm whitespace-nowrap">
                                             {{ $confidenceText }}
                                         </span>
-                                    </td>
                                     <td class="px-3 sm:px-6 py-4 sm:py-6 text-right">
                                         <div class="flex justify-end gap-2 sm:gap-3">
                                             <button @click="if (expanded === '{{ $applicant->applicant_id }}') { expanded = null; } else { expanded = '{{ $applicant->applicant_id }}'; evaluating = null; }" class="whitespace-nowrap bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl text-[10px] sm:text-xs font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white dark:hover:border-gray-500 transition shadow-sm uppercase tracking-wider active:scale-95">Analysis</button>
                                             @if($confirmedMatch)
                                                 @if(in_array($applicant->email, $existingEmails))
                                                     <span class="whitespace-nowrap inline-flex items-center bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-500 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl text-[10px] sm:text-xs font-bold uppercase tracking-wider select-none cursor-not-allowed">
-                                                        Account Created
+                                                        Created
                                                     </span>
                                                 @else
                                                     <form action="{{ route('head-supervisor.matching.unfinalize') }}" method="POST" class="inline">
                                                         @csrf
                                                         <input type="hidden" name="applicant_name" value="{{ $applicant->full_name }}">
                                                         <button type="submit" class="whitespace-nowrap bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 hover:bg-red-100 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl text-[10px] sm:text-xs font-bold transition shadow-sm uppercase tracking-wider active:scale-95">
-                                                            Undo Placement
+                                                            Undo
                                                         </button>
                                                     </form>
                                                 @endif
