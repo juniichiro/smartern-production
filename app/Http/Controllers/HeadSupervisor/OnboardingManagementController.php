@@ -30,6 +30,7 @@ class OnboardingManagementController extends Controller
 
             return [
                 'db_id' => $app->id,
+                'route_key' => $app->getRouteKey(),
                 'id' => $app->applicant_id,
                 'name' => $app->full_name,
                 'school' => $app->university,
