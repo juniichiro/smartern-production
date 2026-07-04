@@ -38,8 +38,9 @@ class AccountController extends Controller
 
     public function index(Request $request)
     {
+        /** @var User $authUser */
         $authUser = auth()->user();
-        $authRoleVal = $authUser->role_id instanceof UserRole ? $authUser->role_id->value : (int)$authUser->role_id;
+        $authRoleVal = $authUser->role_id->value;
 
         $query = User::with(['role', 'internDetails.office', 'supervisorDetails.office', 'schoolCoordinatorDetails']);
 
@@ -235,9 +236,10 @@ class AccountController extends Controller
 
     public function update(UpdateAccountRequest $request, User $user)
     {
+        /** @var User $authUser */
         $authUser = auth()->user();
-        $userRoleVal = $user->role_id instanceof UserRole ? $user->role_id->value : (int)$user->role_id;
-        $authRoleVal = $authUser->role_id instanceof UserRole ? $authUser->role_id->value : (int)$authUser->role_id;
+        $userRoleVal = $user->role_id->value;
+        $authRoleVal = $authUser->role_id->value;
 
         if ($userRoleVal === UserRole::SUPER_ADMIN->value) {
             return redirect()->back()->withErrors(['error' => 'Cannot modify a super administrator account.']);
@@ -329,8 +331,10 @@ class AccountController extends Controller
 
     public function destroy(User $user)
     {
-        $userRoleVal = $user->role_id instanceof UserRole ? $user->role_id->value : (int)$user->role_id;
-        $authRoleVal = auth()->user()->role_id instanceof UserRole ? auth()->user()->role_id->value : (int)auth()->user()->role_id;
+        $userRoleVal = $user->role_id->value;
+        /** @var User $authUser */
+        $authUser = auth()->user();
+        $authRoleVal = $authUser->role_id->value;
 
         if ($userRoleVal === UserRole::SUPER_ADMIN->value) {
             return redirect()->back()->withErrors(['error' => 'Cannot modify a super administrator account.']);

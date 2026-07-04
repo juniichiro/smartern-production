@@ -39,4 +39,8 @@ return [
         'lockout_enabled' => env('SECURITY_LOCKOUT_ENABLED', true),
     ],
 
+    'python' => [
+        'path' => env('PYTHON_PATH'),
+    ],
+
 ];

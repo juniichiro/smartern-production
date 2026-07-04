@@ -58,3 +58,6 @@ __pycache__/
 image.png
 skills-lock.json
 scratch/
+/phpstan.neon
+/phpstan_errors.txt
+

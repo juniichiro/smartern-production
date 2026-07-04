@@ -9,9 +9,28 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * Class User
+ *
+ * @property int $id
+ * @property \App\Enums\UserRole $role_id
+ * @property string $display_id
+ * @property string $public_id
+ * @property string $email
+ * @property string|null $google2fa_secret
+ * @property bool $google2fa_enabled
+ * @property int $failed_attempts
+ * @property \Carbon\Carbon|null $locked_until
+ * @property bool $is_first_login
+ * @property \Carbon\Carbon|null $privacy_acknowledged_at
+ * @property \App\Models\InternDetail|null $internDetails
+ * @property \App\Models\SupervisorDetail|null $supervisorDetails
+ * @property \App\Models\SchoolCoordinatorDetail|null $schoolCoordinatorDetails
+ */
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
@@ -146,17 +165,17 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class)->withoutGlobalScope('hide_super_admin_role');
     }
 
-    public function internDetails()
+    public function internDetails(): HasOne
     {
         return $this->hasOne(InternDetail::class);
     }
 
-    public function supervisorDetails()
+    public function supervisorDetails(): HasOne
     {
         return $this->hasOne(SupervisorDetail::class);
     }
 
-    public function schoolCoordinatorDetails()
+    public function schoolCoordinatorDetails(): HasOne
     {
         return $this->hasOne(SchoolCoordinatorDetail::class);
     }

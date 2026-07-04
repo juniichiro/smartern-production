@@ -292,9 +292,10 @@ class SecurityController extends Controller
 
     public function markSafe(User $user, AuditLog $log, Request $request, AnomalyDetectionService $service, SecurityAuditService $auditService): RedirectResponse
     {
+        /** @var User $authUser */
         $authUser = auth()->user();
-        $userRoleVal = $user->role_id instanceof UserRole ? $user->role_id->value : (int)$user->role_id;
-        $authRoleVal = $authUser->role_id instanceof UserRole ? $authUser->role_id->value : (int)$authUser->role_id;
+        $userRoleVal = $user->role_id->value;
+        $authRoleVal = $authUser->role_id->value;
 
         if ($userRoleVal === UserRole::SUPER_ADMIN->value) {
             return back()->with('error', 'Cannot perform action on a super administrator account.');
@@ -321,9 +322,10 @@ class SecurityController extends Controller
 
     public function markCompromised(User $user, AuditLog $log, Request $request, SecurityAuditService $auditService): RedirectResponse
     {
+        /** @var User $authUser */
         $authUser = auth()->user();
-        $userRoleVal = $user->role_id instanceof UserRole ? $user->role_id->value : (int)$user->role_id;
-        $authRoleVal = $authUser->role_id instanceof UserRole ? $authUser->role_id->value : (int)$authUser->role_id;
+        $userRoleVal = $user->role_id->value;
+        $authRoleVal = $authUser->role_id->value;
 
         if ($userRoleVal === UserRole::SUPER_ADMIN->value) {
             return back()->with('error', 'Cannot perform action on a super administrator account.');
@@ -357,9 +359,10 @@ class SecurityController extends Controller
 
     public function markSuspended(User $user, AuditLog $log, Request $request, SecurityAuditService $auditService): RedirectResponse
     {
+        /** @var User $authUser */
         $authUser = auth()->user();
-        $userRoleVal = $user->role_id instanceof UserRole ? $user->role_id->value : (int)$user->role_id;
-        $authRoleVal = $authUser->role_id instanceof UserRole ? $authUser->role_id->value : (int)$authUser->role_id;
+        $userRoleVal = $user->role_id->value;
+        $authRoleVal = $authUser->role_id->value;
 
         if ($userRoleVal === UserRole::SUPER_ADMIN->value) {
             return back()->with('error', 'Cannot perform action on a super administrator account.');
