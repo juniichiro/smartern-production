@@ -15,8 +15,8 @@ body { font-family: 'Outfit', sans-serif; }
 }
 
 @media (min-width: 1024px) and (max-width: 1600px) {
-    /* Reflow grids and flex rows when both sidebars are expanded on standard/large desktop viewports */
-    body:not(.sidebar-collapsed):not(.notif-collapsed) main {
+    /* Reflow grids, tables, and buttons whenever the notification sidebar is expanded on desktops */
+    body:not(.notif-collapsed) main {
         .grid-cols-12, .lg\:grid-cols-12, .xl\:grid-cols-12 {
             grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
         }
