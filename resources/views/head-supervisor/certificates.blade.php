@@ -14,12 +14,6 @@
             title="Credential Registry" 
             subtitle="Review, verify, and publish digital completion credentials" 
         >
-            <x-slot name="actions">
-                <a href="{{ route('head-supervisor.certificates.template.edit') }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-50 dark:hover:bg-gray-700 transition active:scale-95 shadow-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    Template Uploader
-                </a>
-            </x-slot>
         </x-page-header>
 
         {{-- Summary Stats --}}
