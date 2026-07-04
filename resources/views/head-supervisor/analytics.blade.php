@@ -257,7 +257,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" :class="showFilters ? 'rotate-180' : ''" class="transition-transform"><path d="m6 9 6 6 6-6"/></svg>
                     </button>
                 </div>
-                <form action="{{ route('head-supervisor.analytics') }}" method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 sm:gap-4 items-end" :class="showFilters || window.innerWidth >= 768 ? '' : 'hidden'">
+                <form action="{{ route('head-supervisor.analytics') }}" method="GET" x-data="{ type: '{{ request('filter_type', 'all') }}' }" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 sm:gap-4 items-end" :class="showFilters || window.innerWidth >= 768 ? '' : 'hidden'">
                     {{-- Search Name --}}
                     <div class="sm:col-span-2 lg:col-span-3 relative group">
                         <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Search Intern</label>
@@ -273,16 +273,16 @@
                     {{-- Discretionary Filter Type --}}
                     <div class="sm:col-span-1 lg:col-span-3">
                         <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Discretionary Filter</label>
-                        <select name="filter_type" 
+                        <select name="filter_type" x-model="type"
                                 class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl px-4 py-3.5 text-sm font-medium focus:ring-2 focus:ring-[#0B5694] outline-none transition-all tracking-tight text-gray-700 dark:text-gray-300">
-                            <option value="all" {{ request('filter_type') == 'all' ? 'selected' : '' }}>All Time</option>
-                            <option value="annual" {{ request('filter_type') == 'annual' ? 'selected' : '' }}>Annually</option>
-                            <option value="monthly" {{ request('filter_type') == 'monthly' ? 'selected' : '' }}>Specified Month</option>
+                            <option value="all">All Time</option>
+                            <option value="annual">Annually</option>
+                            <option value="monthly">Specified Month</option>
                         </select>
                     </div>
 
                     {{-- Month Selection --}}
-                    <div class="lg:col-span-2">
+                    <div class="lg:col-span-2" x-show="type === 'monthly'" x-cloak x-transition>
                         <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Month</label>
                         <select name="month" 
                                 class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl px-4 py-3.5 text-sm font-medium focus:ring-2 focus:ring-[#0B5694] outline-none transition-all tracking-tight text-gray-700 dark:text-gray-300">
@@ -296,7 +296,7 @@
                     </div>
 
                     {{-- Year Selection --}}
-                    <div class="lg:col-span-2">
+                    <div class="lg:col-span-2" x-show="type === 'annual' || type === 'monthly'" x-cloak x-transition>
                         <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Year</label>
                         <select name="year" 
                                 class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl px-4 py-3.5 text-sm font-medium focus:ring-2 focus:ring-[#0B5694] outline-none transition-all tracking-tight text-gray-700 dark:text-gray-300">
