@@ -319,8 +319,8 @@
 
             {{-- Reports Table Container --}}
             <x-table-container 
-                title="Activity Logs" 
-                subtitle="Review student journals and total rendered hours"
+                title="Intern Performance & Activity Registry" 
+                subtitle="Review student journal submissions and accumulated training hours"
             >
                 {{-- DESKTOP TABLE (lg+) --}}
                 <div class="hidden lg:block border border-gray-100 dark:border-gray-800 rounded-3xl overflow-hidden shadow-inner bg-white dark:bg-gray-900/50">
@@ -328,12 +328,12 @@
                         <table class="w-full text-left">
                             <thead class="bg-gray-50 dark:bg-gray-800/50 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider border-b border-gray-100 dark:border-gray-800">
                                 <tr>
-                                    <th class="px-8 py-5">Intern Information</th>
-                                    <th class="px-8 py-5">Placement</th>
-                                    <th class="px-8 py-5">Latest Update</th>
-                                    <th class="px-8 py-5 text-center">Rendering</th>
-                                    <th class="px-8 py-5">Fulfillment</th>
-                                    <th class="px-8 py-5 text-right">Registry</th>
+                                    <th class="px-8 py-5">Intern Candidate</th>
+                                    <th class="px-8 py-5">Assigned Unit</th>
+                                    <th class="px-8 py-5">Latest Journal Entry</th>
+                                    <th class="px-8 py-5 text-center">Accumulated Hours</th>
+                                    <th class="px-8 py-5">Certification Status</th>
+                                    <th class="px-8 py-5 text-right">Details Link</th>
                                 </tr>
                             </thead>
                             <tbody x-show="loading" class="divide-y divide-gray-50 dark:divide-gray-800">
@@ -385,6 +385,9 @@
                                             @if($latestJournal)
                                                 <p class="text-xs font-bold text-gray-700 dark:text-gray-300">{{ \Carbon\Carbon::parse($latestJournal->entry_date)->format('M d, Y') }}</p>
                                                 <p class="text-[10px] text-gray-400 uppercase tracking-wider mt-0.5 leading-none">{{ \Carbon\Carbon::parse($latestJournal->created_at)->diffForHumans() }}</p>
+                                                @if(isset($intern->period_journals_count) && $intern->period_journals_count > 0)
+                                                    <p class="text-[9px] text-[#0B5694] dark:text-blue-400 font-extrabold uppercase mt-1.5 bg-blue-50 dark:bg-blue-950/40 px-2 py-0.5 rounded border border-blue-100 dark:border-blue-900/30 inline-block">{{ $intern->period_journals_count }} {{ Str::plural('log', $intern->period_journals_count) }} in period</p>
+                                                @endif
                                             @else
                                                 <span class="text-xs text-gray-400 italic">No Activity</span>
                                             @endif

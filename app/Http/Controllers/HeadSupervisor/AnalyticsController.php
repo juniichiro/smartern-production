@@ -90,6 +90,16 @@ class AnalyticsController extends Controller
         $year = $request->input('year', now()->year);
 
         $reportsQuery = InternDetail::with(['office', 'user', 'certificate'])
+            ->withCount(['journals as period_journals_count' => function ($query) use ($filterType, $month, $year) {
+                if ($filterType === 'annual') {
+                    $query->whereYear('entry_date', $year);
+                } elseif ($filterType === 'monthly') {
+                    $query->whereYear('entry_date', $year);
+                    if ($month) {
+                        $query->whereMonth('entry_date', $month);
+                    }
+                }
+            }])
             ->with(['journals' => function ($query) use ($filterType, $month, $year) {
                 if ($filterType === 'annual') {
                     $query->whereYear('entry_date', $year);
