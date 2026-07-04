@@ -107,9 +107,7 @@ class OfficeMatchingController extends Controller
         $this->auditService->log('Batch Matching Upload', "Uploaded file: {$file->getClientOriginalName()}");
 
         $path = $file->storeAs('uploads/assessments', $fileName);
-        $fullPath = Storage::path($path);
-
-        $handle = fopen($fullPath, 'r');
+        $handle = fopen($file->getRealPath(), 'r');
         fgetcsv($handle);
 
         $rules = OfficeRule::all()->groupBy('office_id');
