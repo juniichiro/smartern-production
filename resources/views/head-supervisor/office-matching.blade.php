@@ -248,8 +248,9 @@
                                         <div class="flex items-center gap-2">
                                             {{ $applicant->full_name }}
                                             @if(!empty($applicant->resume_path))
-                                                <button @click="openResume('{{ route('head-supervisor.matching.resume', $applicant) }}')" class="text-blue-500 hover:text-blue-700" title="Preview Resume">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                                <button @click="openResume('{{ route('head-supervisor.matching.resume', $applicant) }}')" class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#0B5694]/10 dark:bg-blue-500/10 hover:bg-[#0B5694] hover:text-white border border-[#0B5694]/25 dark:border-blue-500/25 text-[#0B5694] dark:text-blue-400 rounded-lg text-[9px] font-extrabold uppercase tracking-wider transition active:scale-95 ml-2 shadow-sm" title="Preview Resume">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                                    <span>Resume</span>
                                                 </button>
                                             @endif
                                         </div>
@@ -875,8 +876,9 @@
                                     <div class="flex items-center gap-1.5 sm:gap-2">
                                         <p class="text-xs sm:text-sm font-extrabold text-gray-800 dark:text-gray-100 truncate uppercase tracking-tight">{{ $applicant->full_name }}</p>
                                         @if(!empty($applicant->resume_path))
-                                            <button @click="openResume('{{ route('head-supervisor.matching.resume', $applicant) }}')" class="shrink-0 text-blue-500 active:scale-90 transition-transform min-w-[44px] min-h-[44px] flex items-center justify-center -m-2 sm:-m-1.5" aria-label="Preview resume">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                            <button @click="openResume('{{ route('head-supervisor.matching.resume', $applicant) }}')" class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#0B5694]/10 dark:bg-blue-500/10 hover:bg-[#0B5694] hover:text-white border border-[#0B5694]/25 dark:border-blue-500/25 text-[#0B5694] dark:text-blue-400 rounded-lg text-[9px] font-extrabold uppercase tracking-wider transition active:scale-95 ml-2 shadow-sm" title="Preview Resume">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                                <span>Resume</span>
                                             </button>
                                         @endif
                                     </div>
