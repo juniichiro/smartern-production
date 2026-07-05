@@ -971,13 +971,25 @@ Alpine.data('supervisorTaskPreview', () => ({
 /**
  * Task Monitoring Manager
  */
-Alpine.data('taskMonitoringManager', (initialHash) => ({
-    loading: false,
-    showDrawer: initialHash === '#assignment-form',
-    selectedInternId: 'all',
-    
-    init() {}
-}));
+Alpine.data('taskMonitoringManager', (initialHash) => {
+    let show = false;
+    let selected = 'all';
+    if (initialHash) {
+        if (initialHash === '#assignment-form') {
+            show = true;
+        } else if (initialHash.startsWith('#assign-')) {
+            show = true;
+            selected = initialHash.replace('#assign-', '');
+        }
+    }
+    return {
+        loading: false,
+        showDrawer: show,
+        selectedInternId: selected,
+        
+        init() {}
+    };
+});
 
 /**
  * Supervisor Attendance Manager
