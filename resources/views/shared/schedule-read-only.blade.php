@@ -299,7 +299,7 @@
              x-cloak>
             
              <div @click.away="showModal = false"
-                  class="bg-white dark:bg-[#090D16] w-full max-w-xl min-h-[520px] rounded-[40px] shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col justify-between">
+                  class="bg-white dark:bg-[#090D16] w-full max-w-2xl min-h-[520px] rounded-[40px] shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col justify-between">
                 
                 {{-- Modal Header --}}
                 <header class="p-6 border-b border-gray-250 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-[#0D121F] shrink-0">

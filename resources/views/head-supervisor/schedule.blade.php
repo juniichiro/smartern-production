@@ -800,7 +800,7 @@
              class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-950/80 backdrop-blur-md"
              x-cloak>
             <div @click.away="showAbsenceReviewModal = false"
-                 class="bg-white dark:bg-gray-900 w-full max-w-xl min-h-[500px] rounded-[40px] shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col justify-between">
+                 class="bg-white dark:bg-gray-900 w-full max-w-2xl min-h-[500px] rounded-[40px] shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col justify-between">
                 <header class="p-8 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-950 shrink-0">
                     <div>
                         <h3 class="text-xl font-black text-gray-800 dark:text-white uppercase tracking-tight">Review Absence Request</h3>
@@ -892,7 +892,7 @@
              class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-950/80 backdrop-blur-md"
              x-cloak>
             <div @click.away="showViewModal = false"
-                 class="bg-white dark:bg-gray-900 w-full max-w-xl rounded-[40px] shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300">
+                 class="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-[40px] shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300">
                 <header class="p-8 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-950">
                     <div>
                         <h3 class="text-xl font-black text-gray-800 dark:text-white uppercase tracking-tight">Exception Details</h3>
@@ -952,7 +952,7 @@
              class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-950/80 backdrop-blur-md"
              x-cloak>
             <div @click.away="showCreateModal = false"
-                 class="bg-white dark:bg-gray-900 w-full max-w-xl rounded-[40px] shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300">
+                 class="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-[40px] shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300">
                 <header class="p-8 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-950">
                     <div>
                         <h3 class="text-xl font-black text-gray-800 dark:text-white uppercase tracking-tight">Calendar Override</h3>
@@ -1000,7 +1000,7 @@
              class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-950/80 backdrop-blur-md"
              x-cloak>
             <div @click.away="showEditModal = false"
-                 class="bg-white dark:bg-gray-900 w-full max-w-xl rounded-[40px] shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300">
+                 class="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-[40px] shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300">
                 <header class="p-8 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-950">
                     <div>
                         <h3 class="text-xl font-black text-gray-800 dark:text-white uppercase tracking-tight">Refine Exception</h3>
