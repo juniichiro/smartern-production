@@ -251,10 +251,16 @@ class AttendanceService
             });
 
         // 4. Define the active internship period
-        // Priority: 1. Official start_date in school_default schedule, 2. Account creation date, 3. 30-day fallback
+        // Priority: 1. Custom start_date/end_date on internDetails, 2. Official start_date in school_default schedule, 3. Account creation date, 4. 30-day fallback
         $officialStart = null;
+        $customEndDate = null;
 
-        if ($school) {
+        if ($user->internDetails && $user->internDetails->start_date) {
+            $officialStart = \Carbon\Carbon::parse($user->internDetails->start_date)->startOfDay();
+            if ($user->internDetails->end_date) {
+                $customEndDate = \Carbon\Carbon::parse($user->internDetails->end_date)->startOfDay();
+            }
+        } elseif ($school) {
             $schoolSchedule = Schedule::where('type', 'school_default')
                 ->where('school_name', $school)
                 ->first();
@@ -277,7 +283,7 @@ class AttendanceService
             }
             $startDate = $dates->isNotEmpty() ? $dates->min() : now()->subDays(30)->startOfDay();
         }
-        $endDate = now()->startOfDay();
+        $endDate = $customEndDate ?? now()->startOfDay();
 
         // If official start is in the future, we return an empty collection to signify work hasn't started
         if ($officialStart && $officialStart->greaterThan($endDate)) {
