@@ -282,5 +282,57 @@ class UserSeeder extends Seeder
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);
+
+        // Intern 11 (Office 1: ICT) - MFA Disabled
+        User::create([
+            'role_id' => UserRole::INTERN,
+            'display_id' => '202650011',
+            'public_id' => hash('sha256', '202650011'),
+            'email' => 'leah.diaz@smartern.com',
+            'password' => Hash::make('password'),
+            'google2fa_secret' => null,
+            'google2fa_enabled' => false,
+            'failed_attempts' => 0,
+            'is_first_login' => false,
+        ]);
+
+        // Intern 12 (Office 2: HR) - MFA Disabled
+        User::create([
+            'role_id' => UserRole::INTERN,
+            'display_id' => '202650012',
+            'public_id' => hash('sha256', '202650012'),
+            'email' => 'james.lim@smartern.com',
+            'password' => Hash::make('password'),
+            'google2fa_secret' => null,
+            'google2fa_enabled' => false,
+            'failed_attempts' => 0,
+            'is_first_login' => false,
+        ]);
+
+        // Intern 13 (Office 3: Finance) - MFA Disabled
+        User::create([
+            'role_id' => UserRole::INTERN,
+            'display_id' => '202650013',
+            'public_id' => hash('sha256', '202650013'),
+            'email' => 'carlos.reyes@smartern.com',
+            'password' => Hash::make('password'),
+            'google2fa_secret' => null,
+            'google2fa_enabled' => false,
+            'failed_attempts' => 0,
+            'is_first_login' => false,
+        ]);
+
+        // Intern 14 (Office 4: Admin) - MFA Disabled
+        User::create([
+            'role_id' => UserRole::INTERN,
+            'display_id' => '202650014',
+            'public_id' => hash('sha256', '202650014'),
+            'email' => 'maria.santos@smartern.com',
+            'password' => Hash::make('password'),
+            'google2fa_secret' => null,
+            'google2fa_enabled' => false,
+            'failed_attempts' => 0,
+            'is_first_login' => false,
+        ]);
     }
 }

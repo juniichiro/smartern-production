@@ -150,6 +150,62 @@ class InternDetailSeeder extends Seeder
                 'start_date' => '2026-06-01',
                 'end_date' => '2026-08-31',
             ],
+            [
+                'email' => 'leah.diaz@smartern.com',
+                'office_id' => 1, // ICT
+                'first_name' => 'Leah',
+                'last_name' => 'Diaz',
+                'course' => 'Computer Science',
+                'school' => 'FEU-TECH',
+                'gender' => 'Female',
+                'phone_number' => '09123456792',
+                'hours_rendered' => 60,
+                'required_hours' => 200,
+                'start_date' => '2026-06-01',
+                'end_date' => '2026-08-31',
+            ],
+            [
+                'email' => 'james.lim@smartern.com',
+                'office_id' => 2, // HR
+                'first_name' => 'James',
+                'last_name' => 'Lim',
+                'course' => 'Psychology',
+                'school' => 'DLSU',
+                'gender' => 'Male',
+                'phone_number' => '09123456793',
+                'hours_rendered' => 90,
+                'required_hours' => 200,
+                'start_date' => '2026-06-01',
+                'end_date' => '2026-08-31',
+            ],
+            [
+                'email' => 'carlos.reyes@smartern.com',
+                'office_id' => 3, // Finance
+                'first_name' => 'Carlos',
+                'last_name' => 'Reyes',
+                'course' => 'Accountancy',
+                'school' => 'UST',
+                'gender' => 'Male',
+                'phone_number' => '09123456794',
+                'hours_rendered' => 120,
+                'required_hours' => 200,
+                'start_date' => '2026-06-01',
+                'end_date' => '2026-08-31',
+            ],
+            [
+                'email' => 'maria.santos@smartern.com',
+                'office_id' => 4, // Admin
+                'first_name' => 'Maria',
+                'last_name' => 'Santos',
+                'course' => 'Public Administration',
+                'school' => 'UP',
+                'gender' => 'Female',
+                'phone_number' => '09123456795',
+                'hours_rendered' => 40,
+                'required_hours' => 200,
+                'start_date' => '2026-06-01',
+                'end_date' => '2026-08-31',
+            ],
         ];
 
         foreach ($interns as $data) {
