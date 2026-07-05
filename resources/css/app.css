@@ -121,7 +121,7 @@ body { font-family: 'Outfit', sans-serif; }
     input[type="datetime-local"],
     select, 
     textarea {
-        @apply border-gray-300 focus:border-[#0B5694] focus:ring-1 focus:ring-[#0B5694]/20 transition-all accent-[#0B5694] !important;
+        @apply border-gray-300 focus:border-[#0B5694] focus:ring-1 focus:ring-[#0B5694]/20 transition-all accent-[#0B5694];
     }
 
     /* Custom Picker Icons (Calendar/Clock) */
@@ -141,7 +141,7 @@ body { font-family: 'Outfit', sans-serif; }
     .dark input[type="datetime-local"],
     .dark select, 
     .dark textarea {
-        @apply border-gray-700 focus:border-blue-500 accent-blue-500 !important;
+        @apply border-gray-700 focus:border-blue-500 accent-blue-500;
     }
 
     .dark ::-webkit-calendar-picker-indicator {
