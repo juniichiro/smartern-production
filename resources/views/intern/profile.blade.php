@@ -371,7 +371,6 @@
                 </div>
             </div>
         </div>
-    </div>
 
     {{-- Profile Photo Upload & Cropping Modal --}}
     <div x-show="isPhotoModalOpen" 
@@ -441,6 +440,7 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
 </x-page-layout>
 
