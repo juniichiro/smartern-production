@@ -255,6 +255,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/certificate', [InternCertificate::class, 'index'])->name('certificates.index');
         Route::get('/certificate/{certificate}/download', [InternCertificate::class, 'download'])->name('certificates.download');
         Route::get('/profile', [InternProfile::class, 'index'])->name('profile');
+        Route::post('/profile/avatar', [InternProfile::class, 'updateAvatar'])->name('profile.avatar');
         Route::get('/schedule', [App\Http\Controllers\Intern\ScheduleController::class, 'index'])->name('schedule.index');
         Route::post('/schedule/absence', [App\Http\Controllers\Intern\ScheduleController::class, 'storeAbsenceRequest'])->name('schedule.absence.store');
         Route::put('/schedule/absence/{absence}', [App\Http\Controllers\Intern\ScheduleController::class, 'updateAbsenceRequest'])->name('schedule.absence.update');

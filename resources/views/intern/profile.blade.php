@@ -50,8 +50,20 @@
                     {{-- Identity Card --}}
                     <x-card-container padding="p-10">
                         <div class="flex flex-col items-center text-center">
-                            <div class="mb-6">
-                                <x-avatar :user="$intern" size="32" circular="false" border="4" textSize="4xl" />
+                            <div class="mb-6 relative group/avatar">
+                                <form action="{{ route('intern.profile.avatar') }}" method="POST" enctype="multipart/form-data" id="avatarForm">
+                                    @csrf
+                                    <x-avatar :user="$intern" size="32" circular="false" border="4" textSize="4xl" />
+                                    
+                                    <label class="absolute inset-0 bg-black/60 text-white rounded-[35px] flex flex-col items-center justify-center opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-300 cursor-pointer border-4 border-white/20 dark:border-gray-700">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mb-1"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                                        <span class="text-[9px] font-black uppercase tracking-widest">Update Photo</span>
+                                        <input type="file" name="profile_picture" class="hidden" onchange="document.getElementById('avatarForm').submit()">
+                                    </label>
+                                </form>
+                                @error('profile_picture')
+                                    <p class="text-[10px] text-rose-500 font-bold mt-2 uppercase tracking-wide">{{ $message }}</p>
+                                @enderror
                             </div>
 
                             <h3 class="text-2xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight mb-1">{{ $intern->first_name }} {{ $intern->last_name }}</h3>

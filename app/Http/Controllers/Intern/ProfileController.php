@@ -45,4 +45,26 @@ class ProfileController extends Controller
             'onTimePercentage'
         ));
     }
+
+    public function updateAvatar(\Illuminate\Http\Request $request)
+    {
+        $request->validate([
+            'profile_picture' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+        ]);
+
+        $intern = InternDetail::where('user_id', Auth::id())->firstOrFail();
+
+        // Delete old profile picture if exists
+        if ($intern->profile_picture) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($intern->profile_picture);
+        }
+
+        $path = $request->file('profile_picture')->store('profile-pictures', 'public');
+        
+        $intern->update([
+            'profile_picture' => $path,
+        ]);
+
+        return back()->with('success', 'Profile photo updated successfully.');
+    }
 }
