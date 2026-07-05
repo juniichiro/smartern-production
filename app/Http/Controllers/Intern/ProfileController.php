@@ -48,9 +48,13 @@ class ProfileController extends Controller
 
     public function updateAvatar(\Illuminate\Http\Request $request)
     {
-        $request->validate([
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
             'profile_picture' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
         ]);
+
+        if ($validator->fails()) {
+            return back()->with('error', $validator->errors()->first('profile_picture'));
+        }
 
         $intern = InternDetail::where('user_id', Auth::id())->firstOrFail();
 

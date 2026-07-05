@@ -61,9 +61,6 @@
                                         <input type="file" name="profile_picture" class="hidden" onchange="document.getElementById('avatarForm').submit()">
                                     </label>
                                 </form>
-                                @error('profile_picture')
-                                    <p class="text-[10px] text-rose-500 font-bold mt-2 uppercase tracking-wide">{{ $message }}</p>
-                                @enderror
                             </div>
 
                             <h3 class="text-2xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight mb-1">{{ $intern->first_name }} {{ $intern->last_name }}</h3>
