@@ -104,7 +104,7 @@
                 {{-- Email Input --}}
                 <div class="text-left">
                     <label for="email" class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase block mb-1.5 tracking-wider ml-1">Email</label>
-                    <input type="email" name="email" id="email" value="{{ old('email') }}" placeholder="your.email@smartern.com" required 
+                    <input type="email" name="email" id="email" value="{{ old('email') }}" placeholder="Enter your email" required 
                         class="w-full bg-gray-50 dark:bg-gray-800 {{ $errors->has('email') ? 'bg-red-50/30 dark:bg-red-900/10 ring-1 ring-red-100 dark:ring-red-900/50 border-red-200' : 'border border-gray-100 dark:border-gray-700' }} rounded-xl px-5 py-3.5 text-sm focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-500 transition-all font-medium dark:text-gray-200">
                 </div>
 
