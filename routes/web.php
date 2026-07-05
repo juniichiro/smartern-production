@@ -40,8 +40,8 @@ Route::get('/', fn () => view('welcome'));
 
 // Public Onboarding Microsite
 Route::get('/onboarding', [OnboardingController::class, 'create'])->name('onboarding.create');
-Route::post('/onboarding', [OnboardingController::class, 'store'])->name('onboarding.store');
-Route::post('/onboarding/parse-resume', [OnboardingController::class, 'parseResume'])->name('onboarding.parse');
+Route::post('/onboarding', [OnboardingController::class, 'store'])->middleware('throttle:5,1')->name('onboarding.store');
+Route::post('/onboarding/parse-resume', [OnboardingController::class, 'parseResume'])->middleware('throttle:5,1')->name('onboarding.parse');
 Route::get('/onboarding/universities', [OnboardingController::class, 'getUniversities'])->name('onboarding.universities');
 Route::get('/privacy-policy', [OnboardingController::class, 'privacyPolicy'])->name('privacy-policy');
 
