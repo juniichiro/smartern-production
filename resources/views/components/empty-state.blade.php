@@ -5,7 +5,7 @@
     'actionLink' => null, 
     'actionText' => null,
     'compact' => false,
-    'showIcon' => true
+    'showIcon' => false
 ])
 
 <div {{ $attributes->merge(['class' => "flex-1 flex flex-col items-center justify-center " . ($compact ? 'py-8' : 'py-16') . " px-6 text-center"]) }}>
