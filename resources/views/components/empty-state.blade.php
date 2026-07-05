@@ -10,11 +10,9 @@
 
 <div {{ $attributes->merge(['class' => "flex-1 flex flex-col items-center justify-center " . ($compact ? 'py-8' : 'py-16') . " px-6 text-center"]) }}>
     @if($showIcon)
-        <div class="bg-gray-50 dark:bg-gray-800/50 {{ $compact ? 'w-16 h-16' : 'w-24 h-24' }} rounded-full flex items-center justify-center mb-6 border border-gray-100 dark:border-gray-700 shrink-0">
+        <div class="text-gray-300 dark:text-gray-600 mb-6 shrink-0">
             @if($icon)
-                <div class="text-gray-300 dark:text-gray-600">
-                    {!! $icon !!}
-                </div>
+                {!! $icon !!}
             @else
                 <svg class="text-gray-300 dark:text-gray-600" width="{{ $compact ? '24' : '32' }}" height="{{ $compact ? '24' : '32' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M22 12h-6l-2 3h-4l-2-3H2"/>
