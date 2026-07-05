@@ -604,7 +604,15 @@
 @push('scripts')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-<style>[x-cloak] { display: none !important; } .no-scrollbar::-webkit-scrollbar { display: none; }</style>
+<style>
+    [x-cloak] { display: none !important; } 
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    /* Circular Cropper Style */
+    .cropper-view-box,
+    .cropper-face {
+        border-radius: 50%;
+    }
+</style>
 <script>
     function smartOnboardingManager(assessmentItems) {
         return {
