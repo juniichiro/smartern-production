@@ -59,7 +59,7 @@
     @if($profileUrl)
         <img src="{{ $profileUrl }}" 
              alt="Profile" 
-             class="{{ $sizeClass }} {{ $roundedClass }} object-cover {{ $borderClass }} border-white/20 dark:border-gray-700 shadow-sm">
+             class="{{ $sizeClass }} {{ $roundedClass }} object-cover {{ $borderClass }} border-white/20 dark:border-gray-700 shadow-sm bg-white">
     @else
         <div class="{{ $sizeClass }} {{ $roundedClass }} {{ $background }} flex items-center justify-center {{ $borderClass }} border-white/20 dark:border-gray-600 overflow-hidden text-{{ $textSize }} font-bold text-white">
             {{ $initials }}
