@@ -1,4 +1,4 @@
-<section class="py-20 sm:py-24 bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
+<section id="how-it-works" class="py-20 sm:py-24 bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
     <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-14">
             <span class="inline-block px-4 py-1.5 mb-5 text-[10px] font-bold text-[#0B5694] dark:text-blue-400 tracking-[0.18em] uppercase bg-[#0B5694]/8 dark:bg-blue-500/10 rounded-full">Application Process</span>
