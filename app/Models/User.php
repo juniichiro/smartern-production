@@ -88,11 +88,11 @@ class User extends Authenticatable
 
             if ($authId) {
                 $builder->where(function ($q) use ($authId) {
-                    $q->where('role_id', '!=', UserRole::SUPER_ADMIN->value)
-                      ->orWhere('id', '=', $authId);
+                    $q->where('users.role_id', '!=', UserRole::SUPER_ADMIN->value)
+                      ->orWhere('users.id', '=', $authId);
                 });
             } else {
-                $builder->where('role_id', '!=', UserRole::SUPER_ADMIN->value);
+                $builder->where('users.role_id', '!=', UserRole::SUPER_ADMIN->value);
             }
         });
 

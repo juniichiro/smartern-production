@@ -56,7 +56,7 @@ class AccountController extends Controller
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
-                $q->where('email', 'like', "%{$search}%")
+                $q->where('users.email', 'like', "%{$search}%")
                     ->orWhereHas('internDetails', function ($inner) use ($search) {
                         $inner->where('first_name', 'like', "%{$search}%")
                             ->orWhere('last_name', 'like', "%{$search}%");
