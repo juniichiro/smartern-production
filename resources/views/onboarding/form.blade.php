@@ -186,7 +186,7 @@
                         <div class="flex flex-col sm:flex-row items-center gap-6 sm:gap-10">
                             <div class="relative group shrink-0">
                                 <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-gray-50 dark:bg-gray-800 border-2 border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden group-hover:scale-[1.02] transition-transform duration-500 cursor-pointer flex items-center justify-center relative"
-                                     @click="!profilePreview ? $refs.profileInput.click() : null">
+                                     @click="isPhotoModalOpen = true; photoModalStep = 'guide'">
                                     <template x-if="profilePreview">
                                         <div class="w-full h-full relative">
                                             <img :src="profilePreview" class="w-full h-full object-cover">
@@ -195,7 +195,7 @@
                                                          class="p-2 bg-rose-500 text-white rounded-xl shadow-lg hover:scale-110 active:scale-95 transition-all" title="Remove Photo">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                                                 </button>
-                                                <button type="button" @click.stop="$refs.profileInput.click()" 
+                                                <button type="button" @click.stop="isPhotoModalOpen = true; photoModalStep = 'guide'" 
                                                          class="p-2 bg-blue-500 text-white rounded-xl shadow-lg hover:scale-110 active:scale-95 transition-all" title="Change Photo">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                                                 </button>
@@ -531,6 +531,82 @@
                     <button @click="isResumeModalOpen = false" class="w-full bg-[#0B5694] dark:bg-blue-600 text-white py-5 rounded-2xl font-bold text-xs uppercase tracking-wider">Close Artifact Preview</button>
                 </div>
             </div>
+    </div>
+
+    {{-- Profile Photo Upload & Cropping Modal --}}
+    <div x-show="isPhotoModalOpen" 
+         x-cloak
+         class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-gray-900/60 dark:bg-black/80 backdrop-blur-md"
+         @keydown.escape.window="closePhotoModal"
+         style="display: none;"
+    >
+        <div class="w-full max-w-md bg-white dark:bg-gray-900 rounded-[32px] border border-gray-100 dark:border-gray-800 shadow-2xl p-6 sm:p-8 relative"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 scale-95 translate-y-4"
+             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+             @click.away="closePhotoModal"
+        >
+            <!-- Close Button -->
+            <button type="button" @click="closePhotoModal" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+
+            <!-- STEP 1: GUIDE -->
+            <div x-show="photoModalStep === 'guide'" class="text-center">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 rounded-[20px] mb-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                </div>
+                <h3 class="text-xl font-extrabold text-gray-900 dark:text-white uppercase tracking-tight mb-2">Upload Profile Photo</h3>
+                <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-6">Attachment Specifications</p>
+                
+                <div class="space-y-4 text-left mb-8 bg-gray-50 dark:bg-gray-800/40 p-5 rounded-2xl border border-gray-100 dark:border-gray-800/60">
+                    <div class="flex items-start gap-3">
+                        <div class="w-5 h-5 rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center shrink-0 mt-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        </div>
+                        <p class="text-xs text-gray-600 dark:text-gray-300 font-medium"><strong>Supported Formats:</strong> JPG, JPEG, and PNG images only.</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-5 h-5 rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center shrink-0 mt-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        </div>
+                        <p class="text-xs text-gray-600 dark:text-gray-300 font-medium"><strong>File Size Limit:</strong> Under 2MB maximum size.</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-5 h-5 rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center shrink-0 mt-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        </div>
+                        <p class="text-xs text-gray-600 dark:text-gray-300 font-medium"><strong>Layout:</strong> Bright, clear, front-facing headshot. You can crop it to a circle in the next step.</p>
+                    </div>
+                </div>
+
+                <button type="button" @click="$refs.profileInput.click()" 
+                        class="w-full py-4 bg-[#0B5694] hover:bg-[#073D6B] dark:bg-blue-600 dark:hover:bg-blue-500 text-white font-bold uppercase text-[10px] tracking-wider rounded-2xl transition-all shadow-md active:scale-95 cursor-pointer">
+                    Select Image File
+                </button>
+            </div>
+
+            <!-- STEP 2: CROPPING -->
+            <div x-show="photoModalStep === 'crop'" class="flex flex-col items-center">
+                <h3 class="text-lg font-extrabold text-gray-900 dark:text-white uppercase tracking-tight mb-2">Crop Profile Picture</h3>
+                <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-6">Position and size to fit the circle preview</p>
+                
+                <!-- Cropper Workspace -->
+                <div class="w-full max-h-[300px] bg-gray-100 dark:bg-gray-800 rounded-2xl overflow-hidden mb-6 flex justify-center items-center">
+                    <img x-ref="cropperTarget" class="max-w-full max-h-[300px] block">
+                </div>
+
+                <div class="flex gap-4 w-full">
+                    <button type="button" @click="closePhotoModal"
+                            class="flex-1 py-4 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold uppercase text-[10px] tracking-wider rounded-2xl transition-all active:scale-95 cursor-pointer">
+                        Cancel
+                    </button>
+                    <button type="button" @click="cropAndSave"
+                            class="flex-1 py-4 bg-[#0B5694] hover:bg-[#073D6B] dark:bg-blue-600 dark:hover:bg-blue-500 text-white font-bold uppercase text-[10px] tracking-wider rounded-2xl transition-all shadow-md active:scale-95 cursor-pointer">
+                        Crop & Save
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -550,6 +626,9 @@
             profileFile: null,
             profilePreview: null,
             isResumeModalOpen: false,
+            isPhotoModalOpen: false,
+            photoModalStep: 'guide',
+            cropper: null,
             errors: @js($errors->getMessages()),
             universities: @js($universities ?? []),
             uniSearch: '',
@@ -591,13 +670,83 @@
             },
             handleProfileUpload(event) {
                 const file = event.target.files[0];
-                if (!file || !file.type.startsWith('image/')) return;
+                if (!file) return;
+                
+                if (!file.type.startsWith('image/')) {
+                    if (window.showToast) window.showToast('Please upload a valid image file (JPG, JPEG, or PNG).', 'error');
+                    event.target.value = '';
+                    return;
+                }
+                
+                if (file.size > 2 * 1024 * 1024) {
+                    if (window.showToast) window.showToast('The image is too large. Please upload a photo smaller than 2MB.', 'error');
+                    event.target.value = '';
+                    return;
+                }
+
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    this.profilePreview = e.target.result;
-                    this.profileFile = file;
+                    this.photoModalStep = 'crop';
+                    
+                    this.$nextTick(() => {
+                        const image = this.$refs.cropperTarget;
+                        image.src = e.target.result;
+                        
+                        if (this.cropper) {
+                            this.cropper.destroy();
+                        }
+                        
+                        this.cropper = new Cropper(image, {
+                            aspectRatio: 1,
+                            viewMode: 1,
+                            dragMode: 'move',
+                            autoCropArea: 0.8,
+                            restore: false,
+                            guides: true,
+                            center: true,
+                            highlight: false,
+                            cropBoxMovable: true,
+                            cropBoxResizable: true,
+                            toggleDragModeOnDblclick: false,
+                        });
+                    });
                 };
                 reader.readAsDataURL(file);
+            },
+            closePhotoModal() {
+                this.isPhotoModalOpen = false;
+                this.photoModalStep = 'guide';
+                if (this.cropper) {
+                    this.cropper.destroy();
+                    this.cropper = null;
+                }
+                this.$refs.profileInput.value = '';
+            },
+            cropAndSave() {
+                if (!this.cropper) return;
+                
+                this.cropper.getCroppedCanvas({
+                    width: 300,
+                    height: 300,
+                    imageSmoothingEnabled: true,
+                    imageSmoothingQuality: 'high',
+                }).toBlob((blob) => {
+                    if (!blob) return;
+                    
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        this.profilePreview = e.target.result;
+                    };
+                    reader.readAsDataURL(blob);
+                    
+                    const croppedFile = new File([blob], 'profile_picture.png', { type: 'image/png' });
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(croppedFile);
+                    this.$refs.profileInput.files = dataTransfer.files;
+                    this.profileFile = croppedFile;
+                    
+                    this.closePhotoModal();
+                }, 'image/png');
             },
             handleResumeUpload(event) {
                 const file = event.target.files[0];
