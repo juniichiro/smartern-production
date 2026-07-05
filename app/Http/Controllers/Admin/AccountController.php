@@ -68,8 +68,21 @@ class AccountController extends Controller
             });
         }
 
-        // Reverted to oldest() to show the first users created on the first page
-        $users = $query->oldest()->paginate(10)->withQueryString();
+        $query->select('users.*')
+            ->leftJoin('intern_details', 'users.id', '=', 'intern_details.user_id')
+            ->leftJoin('supervisor_details', 'users.id', '=', 'supervisor_details.user_id')
+            ->leftJoin('school_coordinator_details', 'users.id', '=', 'school_coordinator_details.user_id')
+            ->orderByRaw('CASE users.role_id 
+                WHEN 1 THEN 1 
+                WHEN 2 THEN 2 
+                WHEN 3 THEN 3 
+                WHEN 4 THEN 4 
+                WHEN 5 THEN 5 
+                ELSE 6 
+            END ASC')
+            ->orderByRaw('COALESCE(intern_details.last_name, supervisor_details.last_name, school_coordinator_details.last_name) ASC');
+
+        $users = $query->paginate(10)->withQueryString();
 
         $offices = Cache::remember('all_offices', 3600, function () {
             return Office::all();
