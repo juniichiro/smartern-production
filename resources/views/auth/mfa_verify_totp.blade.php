@@ -38,7 +38,7 @@
     </div>
 
     {{-- MFA CARD --}}
-    <div class="relative z-10 w-full max-w-[450px] bg-white dark:bg-gray-900 rounded-[28px] xs:rounded-[36px] sm:rounded-[40px] shadow-2xl p-6 xs:p-8 sm:p-10 md:p-12 mx-4 transition-all duration-300 border border-transparent dark:border-gray-800">
+    <div class="relative z-10 w-full max-w-[28rem] bg-white dark:bg-gray-900 rounded-[28px] xs:rounded-[36px] sm:rounded-[40px] shadow-2xl p-6 xs:p-8 sm:p-10 md:p-12 mx-4 transition-all duration-300 border border-transparent dark:border-gray-800">
         
         <header class="text-center mb-8 sm:mb-10">
             <h1 class="text-2xl xs:text-3xl sm:text-4xl font-extrabold text-[#0B5694] dark:text-blue-400 tracking-normal transition-colors duration-300">Identity Check</h1>

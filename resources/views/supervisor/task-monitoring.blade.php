@@ -15,7 +15,7 @@
         />
 
         {{-- SUMMARY CARDS --}}
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             <div class="bg-white dark:bg-gray-900 p-5 md:p-8 rounded-[30px] shadow-sm border border-gray-100 dark:border-gray-800 relative overflow-hidden">
                 <p class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-6">Office Hours Rendered</p>
                 <h3 class="text-2xl sm:text-3xl md:text-5xl font-black text-gray-900 dark:text-gray-100 tracking-tighter">{{ (int)$totalRendered }}</h3>
@@ -79,7 +79,7 @@
         </template>
 
         {{-- INTERNS GRID --}}
-        <div x-show="!loading" x-transition.opacity.duration.500ms class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        <div x-show="!loading" x-transition.opacity.duration.500ms class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-12">
             @forelse($interns as $intern)
                 @php
                     $targetHours = $intern->required_hours ?? 480;
@@ -97,14 +97,14 @@
                             <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider mt-0.5">{{ $intern->student_id }}</p>
                         </div>
                     </div>
-
+ 
                     {{-- Body: Progress Ring & Stats --}}
                     <div class="flex items-center justify-between my-6 bg-gray-50/50 dark:bg-gray-800/20 p-4 rounded-2xl border border-gray-50/50 dark:border-gray-800/30">
                         <div class="text-left">
                             <p class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Logged Hours</p>
                             <p class="text-base font-black text-gray-800 dark:text-gray-100 tracking-tight mt-0.5">{{ number_format($intern->hours_rendered) }} / {{ $targetHours }} hrs</p>
                         </div>
-
+ 
                         {{-- Circular Progress SVG --}}
                         <div class="relative w-14 h-14 flex items-center justify-center shrink-0">
                             <svg class="w-full h-full transform -rotate-90">
@@ -116,9 +116,9 @@
                             <span class="absolute text-[10px] font-black text-gray-800 dark:text-gray-100 tracking-tighter">{{ round($pct) }}%</span>
                         </div>
                     </div>
-
+ 
                     {{-- Footer: Actions & Badges --}}
-                    <div class="flex items-center justify-between gap-3 pt-3 border-t border-gray-50 dark:border-gray-800/60">
+                    <div class="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-gray-50 dark:border-gray-800/60">
                         <span class="px-3 py-1 bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 rounded-full text-[9px] font-black border border-blue-100 dark:border-blue-900/30 uppercase tracking-widest shrink-0">
                             {{ $intern->tasks_count }} Pending
                         </span>
