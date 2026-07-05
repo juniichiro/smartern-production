@@ -299,10 +299,10 @@
              x-cloak>
             
              <div @click.away="showModal = false"
-                  class="bg-white dark:bg-[#090D16] w-full max-w-md rounded-[40px] shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300">
+                  class="bg-white dark:bg-[#090D16] w-full max-w-xl min-h-[520px] rounded-[40px] shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col justify-between">
                 
                 {{-- Modal Header --}}
-                <header class="p-6 border-b border-gray-250 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-[#0D121F]">
+                <header class="p-6 border-b border-gray-250 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-[#0D121F] shrink-0">
                     <div>
                         <h4 class="text-sm font-black text-gray-850 dark:text-white uppercase tracking-widest" x-text="modalTitle"></h4>
                         <p class="text-xs text-[#0B5694] dark:text-blue-400 font-bold uppercase mt-1" x-text="selectedDateStrFormatted"></p>
@@ -312,7 +312,7 @@
                     </button>
                 </header>
 
-                <div class="p-8 max-h-[65vh] overflow-y-auto custom-scrollbar">
+                <div class="p-8 flex-1 max-h-[75vh] overflow-y-auto custom-scrollbar">
                     {{-- 1. INTERN: Request Absence Form --}}
                     <template x-if="'{{ $portalType }}' === 'Intern' && modalMode === 'request'">
                         <form :action="isEditingAbsence ? `/intern/schedule/absence/${absenceToEdit.id}` : '{{ route('intern.schedule.absence.store') }}'" 

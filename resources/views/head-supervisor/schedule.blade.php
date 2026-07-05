@@ -800,8 +800,8 @@
              class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-950/80 backdrop-blur-md"
              x-cloak>
             <div @click.away="showAbsenceReviewModal = false"
-                 class="bg-white dark:bg-gray-900 w-full max-w-md rounded-[40px] shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300">
-                <header class="p-8 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-950">
+                 class="bg-white dark:bg-gray-900 w-full max-w-xl min-h-[500px] rounded-[40px] shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col justify-between">
+                <header class="p-8 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-950 shrink-0">
                     <div>
                         <h3 class="text-xl font-black text-gray-800 dark:text-white uppercase tracking-tight">Review Absence Request</h3>
                         <p class="text-xs text-[#0B5694] dark:text-blue-400 font-bold uppercase mt-1 tracking-widest" x-text="selectedDateStr"></p>
@@ -810,7 +810,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                     </button>
                 </header>
-                <div class="p-10 max-h-[65vh] overflow-y-auto custom-scrollbar">
+                <div class="p-10 flex-1 max-h-[75vh] overflow-y-auto custom-scrollbar">
                     <div class="space-y-6">
                         <template x-for="event in selectedEvents.filter(e => e.type === 'absence_request')" :key="event.id">
                             <div class="rounded-3xl p-6 border text-left bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800 space-y-4 mb-4 last:mb-0 shadow-sm">
@@ -892,7 +892,7 @@
              class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-950/80 backdrop-blur-md"
              x-cloak>
             <div @click.away="showViewModal = false"
-                 class="bg-white dark:bg-gray-900 w-full max-w-md rounded-[40px] shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300">
+                 class="bg-white dark:bg-gray-900 w-full max-w-xl rounded-[40px] shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300">
                 <header class="p-8 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-950">
                     <div>
                         <h3 class="text-xl font-black text-gray-800 dark:text-white uppercase tracking-tight">Exception Details</h3>
@@ -902,7 +902,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                     </button>
                 </header>
-                <div class="p-10">
+                <div class="p-10 max-h-[75vh] overflow-y-auto custom-scrollbar">
                     <template x-if="selectedEvent">
                         <div class="space-y-6 text-left">
                             <div class="rounded-3xl p-6 border"
@@ -952,7 +952,7 @@
              class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-950/80 backdrop-blur-md"
              x-cloak>
             <div @click.away="showCreateModal = false"
-                 class="bg-white dark:bg-gray-900 w-full max-w-md rounded-[40px] shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300">
+                 class="bg-white dark:bg-gray-900 w-full max-w-xl rounded-[40px] shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300">
                 <header class="p-8 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-950">
                     <div>
                         <h3 class="text-xl font-black text-gray-800 dark:text-white uppercase tracking-tight">Calendar Override</h3>
@@ -962,7 +962,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                     </button>
                 </header>
-                <div class="p-10">
+                <div class="p-10 max-h-[75vh] overflow-y-auto custom-scrollbar">
                     <form action="{{ route('head-supervisor.schedule.store') }}" method="POST" class="space-y-6">
                         @csrf
                         <input type="hidden" name="date" :value="selectedDateStr">
@@ -1000,7 +1000,7 @@
              class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-950/80 backdrop-blur-md"
              x-cloak>
             <div @click.away="showEditModal = false"
-                 class="bg-white dark:bg-gray-900 w-full max-w-md rounded-[40px] shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300">
+                 class="bg-white dark:bg-gray-900 w-full max-w-xl rounded-[40px] shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300">
                 <header class="p-8 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-950">
                     <div>
                         <h3 class="text-xl font-black text-gray-800 dark:text-white uppercase tracking-tight">Refine Exception</h3>
@@ -1010,7 +1010,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                     </button>
                 </header>
-                <div class="p-10">
+                <div class="p-10 max-h-[75vh] overflow-y-auto custom-scrollbar">
                     <form :action="exceptionFormAction" method="POST" class="space-y-6">
                         @csrf
                         @method('PUT')
