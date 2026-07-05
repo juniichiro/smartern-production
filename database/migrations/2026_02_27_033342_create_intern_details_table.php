@@ -29,6 +29,8 @@ return new class extends Migration
             $table->string('schedule_assignment')->nullable();
             $table->decimal('hours_rendered', 5, 2)->default(0.0);
             $table->integer('required_hours')->default(480);
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
         });
     }
 

@@ -27,10 +27,14 @@ class InternDetail extends Model
         'schedule_assignment',
         'hours_rendered',
         'required_hours',
+        'start_date',
+        'end_date',
     ];
 
     protected $casts = [
         'schedule_assignment' => 'array',
+        'start_date' => 'date',
+        'end_date' => 'date',
     ];
 
     public function user(): BelongsTo
