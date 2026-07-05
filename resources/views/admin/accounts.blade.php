@@ -797,7 +797,7 @@
                         <template x-if="!editData.isOnboarding">
                             <select name="role_id" x-model="editData.role_id" required @change="editData.role = $el.options[$el.selectedIndex].text.toLowerCase().replace(' ', '_')"
                                 class="w-full bg-gray-50 dark:bg-gray-800 border rounded-2xl px-6 py-4 text-sm focus:ring-2 focus:ring-[#0B5694] outline-none transition-all font-bold text-gray-700 dark:text-gray-200 appearance-none cursor-pointer">
-                                @foreach($roles->whereNotIn('name', ['super_admin']) as $role)
+                                @foreach($roles->whereNotIn('name', ['super_admin', 'head_supervisor']) as $role)
                                     @if($role->name !== 'admin' || Auth::user()->role_id->value === \App\Enums\UserRole::SUPER_ADMIN->value)
                                         <option value="{{ $role->id }}">{{ str_replace('_', ' ', $role->label ?? $role->name) }}</option>
                                     @endif
