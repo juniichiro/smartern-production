@@ -688,25 +688,25 @@
                     
                     this.$nextTick(() => {
                         const image = this.$refs.cropperTarget;
+                        image.onload = () => {
+                            if (this.cropper) {
+                                this.cropper.destroy();
+                            }
+                            this.cropper = new Cropper(image, {
+                                aspectRatio: 1,
+                                viewMode: 1,
+                                dragMode: 'move',
+                                autoCropArea: 0.8,
+                                restore: false,
+                                guides: true,
+                                center: true,
+                                highlight: false,
+                                cropBoxMovable: true,
+                                cropBoxResizable: true,
+                                toggleDragModeOnDblclick: false,
+                            });
+                        };
                         image.src = e.target.result;
-                        
-                        if (this.cropper) {
-                            this.cropper.destroy();
-                        }
-                        
-                        this.cropper = new Cropper(image, {
-                            aspectRatio: 1,
-                            viewMode: 1,
-                            dragMode: 'move',
-                            autoCropArea: 0.8,
-                            restore: false,
-                            guides: true,
-                            center: true,
-                            highlight: false,
-                            cropBoxMovable: true,
-                            cropBoxResizable: true,
-                            toggleDragModeOnDblclick: false,
-                        });
                     });
                 };
                 reader.readAsDataURL(file);
