@@ -530,7 +530,8 @@
                 <div class="p-6 shrink-0 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800">
                     <button @click="isResumeModalOpen = false" class="w-full bg-[#0B5694] dark:bg-blue-600 text-white py-5 rounded-2xl font-bold text-xs uppercase tracking-wider">Close Artifact Preview</button>
                 </div>
-            </div>
+        </div>
+    </div>
     </div>
 
     {{-- Profile Photo Upload & Cropping Modal --}}
