@@ -833,7 +833,7 @@
                                 {{-- Reason --}}
                                 <div class="space-y-1">
                                     <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Reason / Details</span>
-                                    <p class="text-xs text-gray-700 dark:text-gray-300 leading-relaxed font-semibold italic" x-text="'&quot;' + event.reason + '&quot;'"></p>
+                                    <p class="text-base text-gray-750 dark:text-gray-205 leading-relaxed font-bold italic" x-text="'&quot;' + event.reason + '&quot;'"></p>
                                 </div>
 
                                 {{-- Attachment actions --}}
