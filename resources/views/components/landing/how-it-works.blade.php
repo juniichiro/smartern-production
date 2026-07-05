@@ -43,7 +43,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0B5694" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
                 </div>
                 <h3 class="text-sm font-extrabold text-gray-900 dark:text-white tracking-tight mb-2 relative">Earn Your Certificate</h3>
-                <p class="text-xs text-gray-500 dark:text-gray-400 font-medium leading-relaxed relative">Complete the required hours and receive your digital internship certificate upon program completion.</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 font-medium leading-relaxed relative">Complete the required hours and pick up your physical internship certificate from the head office once approved.</p>
             </div>
         </div>
     </div>

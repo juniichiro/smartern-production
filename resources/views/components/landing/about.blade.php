@@ -31,8 +31,8 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                         </div>
                         <div>
-                            <p class="text-sm font-bold text-gray-900 dark:text-white">Digital Certificates</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-0.5">Receive your internship completion certificate digitally upon program completion.</p>
+                            <p class="text-sm font-bold text-gray-900 dark:text-white">Certificate Pick-up</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-0.5">Pick up your physical internship completion certificate from the head office once you complete the program.</p>
                         </div>
                     </div>
                 </div>

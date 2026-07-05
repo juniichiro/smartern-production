@@ -71,7 +71,7 @@
                 </button>
                 <div x-show="active === 5" x-collapse x-cloak>
                     <div class="px-6 pb-5 text-sm text-gray-500 dark:text-gray-400 font-medium leading-relaxed">
-                        Once deployed, you'll use SmarTern to <strong class="text-gray-700 dark:text-gray-300">log daily attendance via QR code, submit tasks</strong> assigned by your supervisor, write progress journals, and track your accumulated hours. At the end of your program, you can download your digital certificate of completion.
+                        Once deployed, you'll use SmarTern to <strong class="text-gray-700 dark:text-gray-300">log daily attendance via QR code, submit tasks</strong> assigned by your supervisor, write progress journals, and track your accumulated hours. At the end of your program, you will receive instructions to pick up your physical certificate of completion.
                     </div>
                 </div>
             </div>

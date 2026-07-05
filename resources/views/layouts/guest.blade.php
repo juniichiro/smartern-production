@@ -13,8 +13,12 @@
 
     <script>
         (function() {
-            const isDark = localStorage.getItem('darkMode') === 'true' ||
-                          (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            @if(Request::is('/'))
+                const isDark = false;
+            @else
+                const isDark = localStorage.getItem('darkMode') === 'true' ||
+                              (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            @endif
             document.documentElement.classList.toggle('dark', isDark);
 
             const fontSize = localStorage.getItem('fontSize') || 'md';
