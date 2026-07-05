@@ -332,7 +332,7 @@ class AnomalyDetectionService
         $connection = @fsockopen($host, $port, $errno, $errstr, 0.5);
 
         if (! $connection) {
-            $pythonPath = env('PYTHON_PATH') ?: ((strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') ? 'python' : 'python3');
+            $pythonPath = config('services.python.path') ?: ((strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') ? 'python' : 'python3');
             $scriptPath = base_path('scripts/if_daemon.py');
 
             $command = "{$pythonPath} \"{$scriptPath}\"";
@@ -349,7 +349,7 @@ class AnomalyDetectionService
 
     protected function getScoresFromSubprocess($logs)
     {
-        $pythonPath = env('PYTHON_PATH') ?: ((strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') ? 'python' : 'python3');
+        $pythonPath = config('services.python.path') ?: ((strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') ? 'python' : 'python3');
         $scriptPath = base_path('scripts/isolation_forest.py');
 
         $process = new Process([$pythonPath, $scriptPath]);

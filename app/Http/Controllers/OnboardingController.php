@@ -162,7 +162,7 @@ class OnboardingController extends Controller
         $path = $file->store('temp_resumes', 'local');
         $fullPath = Storage::disk('local')->path($path);
 
-        $pythonPath = env('PYTHON_PATH') ?: ((strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') ? 'python' : 'python3');
+        $pythonPath = config('services.python.path') ?: ((strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') ? 'python' : 'python3');
         $process = new Process([$pythonPath, base_path('scripts/pdf_parser.py'), $fullPath]);
         $process->run();
 
