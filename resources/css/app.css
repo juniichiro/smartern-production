@@ -232,6 +232,23 @@ body { font-family: 'Outfit', sans-serif; }
     }
 }
 
+/* Accessibility & Readability Enhancements */
+@layer utilities {
+    /* Map tiny/unreadable font utilities to 12px relative to root (0.75rem under standard 16px) */
+    .text-\[9px\], 
+    .text-\[10px\], 
+    .text-\[11px\],
+    .text-xs {
+        font-size: 0.75rem !important;
+    }
+    
+    /* Map body/item font utilities to 15px relative to root (0.9375rem under standard 16px) */
+    .text-\[13px\], 
+    .text-\[14px\],
+    .text-sm {
+        font-size: 0.9375rem !important;
+    }
+}
 
 /* Global Font Size Preference System */
 html.font-size-sm { font-size: 14px !important; }
