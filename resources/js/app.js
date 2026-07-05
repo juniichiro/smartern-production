@@ -274,14 +274,29 @@ Alpine.data('geofenceManager', (officesData) => ({
     selectedOfficeId: '',
 
     init() {
+        // Run immediately if loading is already false, otherwise watch for changes
+        const tryInit = () => {
+            if (typeof L !== 'undefined') {
+                this.initMainMap();
+            } else {
+                setTimeout(tryInit, 50);
+            }
+        };
+        
+        if (!this.loading) {
+            this.$nextTick(() => {
+                tryInit();
+            });
+        }
+
         this.$watch('loading', (value) => {
             if (!value) {
                 this.$nextTick(() => {
-                    this.initMainMap();
+                    tryInit();
                 });
             }
         });
-        },
+    },
 
     changeTargetOffice() {
         if (this.selectedOfficeId) {
