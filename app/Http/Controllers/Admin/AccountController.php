@@ -253,11 +253,34 @@ class AccountController extends Controller
             return DB::transaction(function () use ($request, $user) {
                 $user->update(['email' => $request->email]);
 
-                // Handle Role ID Swap for Supervisor <-> Head Supervisor
-                $currentRoleName = $user->role->name;
-                $newRoleName = $currentRoleName;
+                // Handle Role Transition & old details clean up
+                $oldRoleId = $user->role_id->value;
+                $newRoleId = $request->has('role_id') ? (int) $request->input('role_id') : $oldRoleId;
+                
+                if ($newRoleId !== $oldRoleId) {
+                    $newRole = \App\Models\Role::findOrFail($newRoleId);
+                    if ($newRole->name === 'admin' && auth()->user()->role_id->value !== UserRole::SUPER_ADMIN->value) {
+                        throw new \Exception('Unauthorized role assignment.');
+                    }
+                    
+                    // Clean up old details tables
+                    if ($oldRoleId === UserRole::INTERN->value) {
+                        \App\Models\InternDetail::where('user_id', $user->id)->delete();
+                    } elseif ($oldRoleId === UserRole::SUPERVISOR->value || $oldRoleId === UserRole::HEAD_SUPERVISOR->value) {
+                        \App\Models\SupervisorDetail::where('user_id', $user->id)->delete();
+                    } elseif ($oldRoleId === UserRole::SCHOOL_COORDINATOR->value) {
+                        \App\Models\SchoolCoordinatorDetail::where('user_id', $user->id)->delete();
+                    }
+                    
+                    $user->role_id = $newRoleId;
+                    $user->save();
+                    $newRoleName = $newRole->name;
+                } else {
+                    $newRoleName = $user->role->name;
+                }
 
-                if ($currentRoleName === 'supervisor' || $currentRoleName === 'head_supervisor') {
+                // Handle HR Head Designation for Supervisor/Head Supervisor
+                if ($newRoleName === 'supervisor' || $newRoleName === 'head_supervisor') {
                     $isHrHeadRequested = $request->boolean('is_hr_head');
 
                     if ($isHrHeadRequested) {

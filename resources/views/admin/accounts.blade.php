@@ -257,6 +257,7 @@
                                         id: '{{ $user->getRouteKey() }}', 
                                         email: '{{ $user->email }}',
                                         role: '{{ $user->role->name }}',
+                                        role_id: '{{ $user->role_id->value }}',
                                         first_name: '{{ $details->first_name ?? '' }}',
                                         middle_name: '{{ $details->middle_name ?? '' }}',
                                         last_name: '{{ $details->last_name ?? '' }}',
@@ -338,6 +339,7 @@
                             id: '{{ $user->getRouteKey() }}', 
                             email: '{{ $user->email }}',
                             role: '{{ $user->role->name }}',
+                            role_id: '{{ $user->role_id->value }}',
                             first_name: '{{ $details->first_name ?? '' }}',
                             middle_name: '{{ $details->middle_name ?? '' }}',
                             last_name: '{{ $details->last_name ?? '' }}',
@@ -786,8 +788,22 @@
                     </div>
                     <div>
                         <label class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase block mb-3 tracking-[0.2em]">System Role</label>
-                        <div class="w-full bg-gray-100 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl px-6 py-4 text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest" x-text="editData.role.replace('_', ' ')"></div>
-                        <input type="hidden" name="role" x-model="editData.role">
+                        <template x-if="editData.isOnboarding">
+                            <div>
+                                <div class="w-full bg-gray-100 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl px-6 py-4 text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest" x-text="editData.role.replace('_', ' ')"></div>
+                                <input type="hidden" name="role_id" value="5">
+                            </div>
+                        </template>
+                        <template x-if="!editData.isOnboarding">
+                            <select name="role_id" x-model="editData.role_id" required @change="editData.role = $el.options[$el.selectedIndex].text.toLowerCase().replace(' ', '_')"
+                                class="w-full bg-gray-50 dark:bg-gray-800 border rounded-2xl px-6 py-4 text-sm focus:ring-2 focus:ring-[#0B5694] outline-none transition-all font-bold text-gray-700 dark:text-gray-200 appearance-none cursor-pointer">
+                                @foreach($roles->whereNotIn('name', ['super_admin']) as $role)
+                                    @if($role->name !== 'admin' || Auth::user()->role_id->value === \App\Enums\UserRole::SUPER_ADMIN->value)
+                                        <option value="{{ $role->id }}">{{ str_replace('_', ' ', $role->label ?? $role->name) }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </template>
                     </div>
                 </div>
 
