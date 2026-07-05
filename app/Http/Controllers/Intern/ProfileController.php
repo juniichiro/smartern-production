@@ -48,9 +48,18 @@ class ProfileController extends Controller
 
     public function updateAvatar(\Illuminate\Http\Request $request)
     {
-        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+        $rules = [
             'profile_picture' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
-        ]);
+        ];
+
+        $messages = [
+            'profile_picture.required' => 'Please select an image file to upload.',
+            'profile_picture.image' => 'Please upload a valid image file.',
+            'profile_picture.mimes' => 'Only JPG, JPEG, and PNG image formats are supported.',
+            'profile_picture.max' => 'The image is too large. Please upload a photo smaller than 2MB.',
+        ];
+
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
             return back()->with('error', $validator->errors()->first('profile_picture'));
@@ -69,6 +78,6 @@ class ProfileController extends Controller
             'profile_picture' => $path,
         ]);
 
-        return back()->with('success', 'Profile photo updated successfully.');
+        return back()->with('success', 'Your profile photo has been updated.');
     }
 }
