@@ -552,39 +552,29 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
 
-            <!-- STEP 1: GUIDE -->
-            <div x-show="photoModalStep === 'guide'" class="text-center">
-                <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 rounded-[20px] mb-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-                </div>
-                <h3 class="text-xl font-extrabold text-gray-900 dark:text-white uppercase tracking-tight mb-2">Upload Profile Photo</h3>
-                <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-6">Attachment Specifications</p>
-                
-                <div class="space-y-4 text-left mb-8 bg-gray-50 dark:bg-gray-800/40 p-5 rounded-2xl border border-gray-100 dark:border-gray-800/60">
-                    <div class="flex items-start gap-3">
-                        <div class="w-5 h-5 rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center shrink-0 mt-0.5">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                        </div>
-                        <p class="text-xs text-gray-600 dark:text-gray-300 font-medium"><strong>Supported Formats:</strong> JPG, JPEG, and PNG images only.</p>
+            <!-- STEP 1: UPLOAD ZONE -->
+            <div x-show="photoModalStep === 'guide'" class="text-center animate-in fade-in duration-200">
+                <h3 class="text-lg font-extrabold text-gray-900 dark:text-white uppercase tracking-tight mb-1">Select Profile Photo</h3>
+                <p class="text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-6">Attach a formal or semi-formal photo</p>
+
+                <!-- Dropzone Area -->
+                <div @click="$refs.profileInput.click()" 
+                     @dragover.prevent=""
+                     @drop.prevent="handleProfileDrop($event)"
+                     class="border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-3xl p-8 hover:border-[#0B5694] dark:hover:border-blue-500 hover:bg-gray-50/50 dark:hover:bg-gray-800/10 transition-all cursor-pointer group flex flex-col items-center justify-center min-h-[200px] mb-6"
+                >
+                    <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 text-[#0B5694] dark:text-blue-400 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                     </div>
-                    <div class="flex items-start gap-3">
-                        <div class="w-5 h-5 rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center shrink-0 mt-0.5">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                        </div>
-                        <p class="text-xs text-gray-600 dark:text-gray-300 font-medium"><strong>File Size Limit:</strong> Under 2MB maximum size.</p>
-                    </div>
-                    <div class="flex items-start gap-3">
-                        <div class="w-5 h-5 rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center shrink-0 mt-0.5">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                        </div>
-                        <p class="text-xs text-gray-600 dark:text-gray-300 font-medium"><strong>Layout:</strong> Bright, clear, front-facing headshot. You can crop it to a circle in the next step.</p>
-                    </div>
+                    <span class="text-xs font-bold text-gray-700 dark:text-gray-200 tracking-tight mb-1">Drag and drop your image here</span>
+                    <span class="text-[10px] text-gray-400 dark:text-gray-500 font-medium">or click to browse files</span>
                 </div>
 
-                <button type="button" @click="$refs.profileInput.click()" 
-                        class="w-full py-4 bg-[#0B5694] hover:bg-[#073D6B] dark:bg-blue-600 dark:hover:bg-blue-500 text-white font-bold uppercase text-[10px] tracking-wider rounded-2xl transition-all shadow-md active:scale-95 cursor-pointer">
-                    Select Image File
-                </button>
+                <!-- Specifications Footer -->
+                <div class="flex justify-between items-center text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">
+                    <span>Formats: JPG, JPEG, PNG</span>
+                    <span>Max Size: 2MB</span>
+                </div>
             </div>
 
             <!-- STEP 2: CROPPING -->
@@ -671,17 +661,24 @@
             },
             handleProfileUpload(event) {
                 const file = event.target.files[0];
+                this.processProfileFile(file);
+            },
+            handleProfileDrop(event) {
+                const file = event.dataTransfer.files[0];
+                this.processProfileFile(file);
+            },
+            processProfileFile(file) {
                 if (!file) return;
                 
                 if (!file.type.startsWith('image/')) {
                     if (window.showToast) window.showToast('Please upload a valid image file (JPG, JPEG, or PNG).', 'error');
-                    event.target.value = '';
+                    this.$refs.profileInput.value = '';
                     return;
                 }
                 
                 if (file.size > 2 * 1024 * 1024) {
                     if (window.showToast) window.showToast('The image is too large. Please upload a photo smaller than 2MB.', 'error');
-                    event.target.value = '';
+                    this.$refs.profileInput.value = '';
                     return;
                 }
 
