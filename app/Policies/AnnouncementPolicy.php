@@ -33,7 +33,7 @@ class AnnouncementPolicy
 
         // Intern checks
         if ($user->role_id === UserRole::INTERN) {
-            return $user->internDetails->office_id === $announcement->office_id;
+            return $user->internDetails && $user->internDetails->office_id === $announcement->office_id;
         }
 
         // Supervisor check - only in the same office

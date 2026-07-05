@@ -5,8 +5,8 @@
 @section('content')
 <x-page-layout 
     portalType="Intern" 
-    userName="{{ Auth::user()->internDetails->first_name }}" 
-    userRole="{{ Auth::user()->internDetails->office->name }}"
+    userName="{{ Auth::user()->internDetails->first_name ?? Auth::user()->name ?? 'Intern' }}" 
+    userRole="{{ Auth::user()->internDetails->office->name ?? 'Unassigned Office' }}"
 >
     <div x-data="{ loading: true }" x-init="setTimeout(() => loading = false, 800)" class="flex flex-col flex-1">
         {{-- Header Section --}}

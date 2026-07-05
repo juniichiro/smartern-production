@@ -5,8 +5,8 @@
 @section('content')
 <x-page-layout 
     portalType="Intern" 
-    userName="{{ Auth::user()->internDetails->first_name }}" 
-    userRole="{{ Auth::user()->internDetails->office->name }}"
+    userName="{{ Auth::user()->internDetails->first_name ?? Auth::user()->name ?? 'Intern' }}" 
+    userRole="{{ Auth::user()->internDetails->office->name ?? 'Unassigned Office' }}"
 >
     <div class="max-w-4xl mx-auto flex flex-col flex-1">
         <a href="{{ route('intern.announcements') }}" class="w-fit text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] hover:text-[#0B5694] mb-8 inline-flex items-center gap-2 transition-all hover:-translate-x-1 group">

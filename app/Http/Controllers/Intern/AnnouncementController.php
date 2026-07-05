@@ -16,7 +16,18 @@ class AnnouncementController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $officeId = $user->internDetails->office_id;
+        $intern = $user->internDetails;
+
+        if (! $intern || ! $intern->office_id) {
+            $announcements = Announcement::whereNull('office_id')
+                ->with('user.supervisorDetails')
+                ->latest()
+                ->paginate(9);
+
+            return view('intern.announcements', compact('announcements'));
+        }
+
+        $officeId = $intern->office_id;
 
         // Fetch announcements matching the intern's office or global announcements (office_id is null)
         $announcements = Announcement::where(function ($query) use ($officeId) {
