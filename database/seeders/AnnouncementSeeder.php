@@ -18,12 +18,14 @@ class AnnouncementSeeder extends Seeder
             // Post two announcements per supervisor (thus per office)
             Announcement::create([
                 'user_id' => $supervisor->user_id,
+                'office_id' => $supervisor->office_id,
                 'title' => "Welcome to {$officeName} Department!",
                 'content' => "Hello interns! We are excited to have you in the {$officeName} department. Please make sure to read the guidelines and complete your daily tasks on time. Reach out if you have any questions.",
             ]);
 
             Announcement::create([
                 'user_id' => $supervisor->user_id,
+                'office_id' => $supervisor->office_id,
                 'title' => "Weekly Progress Report Reminder",
                 'content' => "This is a reminder to submit your weekly progress journal and task completion updates every Friday by 5:00 PM. Late submissions may affect your evaluation.",
             ]);
