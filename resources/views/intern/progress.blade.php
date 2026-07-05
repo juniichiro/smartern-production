@@ -343,7 +343,7 @@
 
     {{-- JOURNAL READ-ONLY VIEWER MODAL --}}
     <div x-show="showViewModal" 
-         class="fixed lg:left-64 lg:right-80 inset-y-0 left-0 right-0 z-[60] flex items-center justify-center p-4" 
+         class="fixed inset-0 z-[150] flex items-center justify-center p-4" 
          x-cloak>
         
         <div x-show="showViewModal"
@@ -353,7 +353,7 @@
              x-transition:leave="transition ease-in duration-200"
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
-             class="absolute inset-0 bg-black/60 backdrop-blur-sm" 
+             class="fixed inset-0 bg-black/60 backdrop-blur-sm" 
              @click="showViewModal = false"></div>
         
         <div x-show="showViewModal"
@@ -391,7 +391,7 @@
 
     {{-- JOURNAL ENTRY MODAL --}}
     <div x-show="showJournalModal" 
-         class="fixed lg:left-64 lg:right-80 inset-y-0 left-0 right-0 z-50 flex items-center justify-center p-4" 
+         class="fixed inset-0 z-[150] flex items-center justify-center p-4" 
          x-cloak>
         
         {{-- Backdrop: Smooth Fade Only --}}
@@ -402,7 +402,7 @@
              x-transition:leave="transition ease-in duration-200"
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
-             class="absolute inset-0 bg-black/60 backdrop-blur-sm" 
+             class="fixed inset-0 bg-black/60 backdrop-blur-sm" 
              @click="showJournalModal = false"></div>
         
         <div x-show="showJournalModal"
