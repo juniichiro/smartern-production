@@ -38,6 +38,7 @@
         {{-- Student Journals Shortcut --}}
         <a href="#internTableContainer" 
            onclick="document.getElementById('internTableContainer').scrollIntoView({ behavior: 'smooth' }); event.preventDefault();"
+           title="Select any student in the table below to review their daily journal logs."
            class="group p-8 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[35px] hover:border-emerald-200 dark:hover:border-emerald-500/30 transition-all shadow-sm flex items-center gap-6">
             <div class="w-16 h-16 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform border border-emerald-100/50 dark:border-emerald-900/30">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 2v20"/></svg>
