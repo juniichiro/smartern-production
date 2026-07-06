@@ -23,17 +23,19 @@
         }
     }">
         {{-- Triage Risk --}}
-        <a href="{{ route('coordinator.interns', ['risk' => 1]) }}" 
-           @click.preventDefault="fetchTable($el.href)"
-           class="group p-8 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[35px] hover:border-rose-200 dark:hover:border-rose-500/30 transition-all shadow-sm flex items-center gap-6">
-            <div class="w-16 h-16 bg-rose-50 dark:bg-rose-900/20 text-rose-500 dark:text-rose-400 rounded-2xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform border border-rose-100/50 dark:border-rose-900/30">
+        <button type="button"
+                @click="toggleRisk()"
+                class="group p-8 border rounded-[35px] transition-all shadow-sm flex items-center gap-6 text-left outline-none"
+                :class="riskActive ? 'border-rose-300 dark:border-rose-500/30 bg-rose-50/20 dark:bg-rose-950/10' : 'bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800 hover:border-rose-200 dark:hover:border-rose-500/30'">
+            <div class="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform border"
+                 :class="riskActive ? 'bg-rose-500 text-white border-rose-400' : 'bg-rose-50 dark:bg-rose-900/20 text-rose-500 dark:text-rose-400 border-rose-100/50 dark:border-rose-900/30'">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             </div>
             <div>
                 <h4 class="text-[15px] font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight group-hover:text-rose-500 transition-colors">Show At-Risk</h4>
-                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">View attendance issues</p>
+                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1" x-text="riskActive ? 'Click to clear filter' : 'View attendance issues'"></p>
             </div>
-        </a>
+        </button>
 
         {{-- Student Journals Shortcut --}}
         <a href="#internTableContainer" 
@@ -68,6 +70,18 @@
                 officeOpen: false, 
                 statusOpen: false,
                 loading: false,
+                riskActive: {{ request('risk') == 1 ? 'true' : 'false' }},
+                toggleRisk() {
+                    const input = document.getElementById('riskInput');
+                    if (input.value === '1') {
+                        input.value = '';
+                        this.riskActive = false;
+                    } else {
+                        input.value = '1';
+                        this.riskActive = true;
+                    }
+                    this.fetchTable();
+                },
                 fetchTable(url = null) {
                     this.loading = true;
                     const form = document.getElementById('filterForm');
@@ -91,12 +105,14 @@
 
                         // Sync risk input if URL has it
                         if (url) {
-                            const urlParams = new URL(url).searchParams;
+                            const urlParams = new URL(url, window.location.origin).searchParams;
                             if (urlParams.has('risk')) {
                                 document.getElementById('riskInput').value = urlParams.get('risk');
+                                this.riskActive = urlParams.get('risk') == '1';
                             } else if (!urlParams.has('page')) {
                                 // Only clear risk if we are not just paginating
                                 document.getElementById('riskInput').value = '';
+                                this.riskActive = false;
                             }
                         }
                     })
