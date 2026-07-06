@@ -469,7 +469,11 @@ class AnomalyDetectionService
             $baseline = array_slice($baseline, -4000);
         }
 
-        file_put_contents($path, json_encode($baseline, JSON_PRETTY_PRINT));
-        Cache::forever($cacheKey, true);
+        try {
+            file_put_contents($path, json_encode($baseline, JSON_PRETTY_PRINT));
+            Cache::forever($cacheKey, true);
+        } catch (\Exception $e) {
+            Log::error("Failed to write to ML baseline file: " . $e->getMessage());
+        }
     }
 }
