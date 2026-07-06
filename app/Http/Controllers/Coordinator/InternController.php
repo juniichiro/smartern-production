@@ -24,15 +24,32 @@ class InternController extends Controller
 
         $query = $this->applyFilters($request, $school);
 
-        $interns = $query->paginate(10);
+        // Fetch all matching records to compute true dynamic counts first
+        $allInterns = $query->get();
 
-        // Inject the true dynamic merged logs count for consistency across views
-        foreach ($interns as $intern) {
+        foreach ($allInterns as $intern) {
             $allLogs = $attendanceService->getMergedLogs($intern->user);
             $intern->absent_count = $allLogs->where('status', 'absent')->count();
             $intern->late_count = $allLogs->where('status', 'late')->count();
             $intern->excused_count = $allLogs->where('status', 'excused')->count();
         }
+
+        // Apply risk filter in memory based on true dynamic counts
+        if ($request->boolean('risk')) {
+            $allInterns = $allInterns->filter(fn ($intern) => $intern->absent_count > 2);
+        }
+
+        // Manually paginate the collection so pagination links continue to work
+        $page = (int) $request->get('page', 1);
+        $perPage = 10;
+        $paginatedItems = $allInterns->slice(($page - 1) * $perPage, $perPage)->values();
+        $interns = new \Illuminate\Pagination\LengthAwarePaginator(
+            $paginatedItems,
+            $allInterns->count(),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
 
         $offices = Cache::remember('all_offices', 3600, function () {
             return Office::all();
@@ -51,15 +68,22 @@ class InternController extends Controller
         $school = $coordinator->school;
 
         $query = $this->applyFilters($request, $school);
-        $interns = $query->get();
+        $allInterns = $query->get();
 
         // Inject the true dynamic merged logs count for PDF export consistency
-        foreach ($interns as $intern) {
+        foreach ($allInterns as $intern) {
             $allLogs = $attendanceService->getMergedLogs($intern->user);
             $intern->absent_count = $allLogs->where('status', 'absent')->count();
             $intern->late_count = $allLogs->where('status', 'late')->count();
             $intern->excused_count = $allLogs->where('status', 'excused')->count();
         }
+
+        // Apply risk filter in memory based on true dynamic counts
+        if ($request->boolean('risk')) {
+            $allInterns = $allInterns->filter(fn ($intern) => $intern->absent_count > 2);
+        }
+
+        $interns = $allInterns;
 
         // Logo Base64 encoding
         $logoSrc = null;
@@ -121,10 +145,6 @@ class InternController extends Controller
                 $query->whereColumn('hours_rendered', '<', 'required_hours')
                     ->whereDoesntHave('certificate', fn ($q) => $q->where('status', 'published'));
             }
-        }
-
-        if ($request->boolean('risk')) {
-            $query->whereHas('attendances', fn ($q) => $q->where('status', 'absent'), '>', 2);
         }
 
         return $query;
