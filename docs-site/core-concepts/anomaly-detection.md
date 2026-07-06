@@ -14,21 +14,27 @@ The background python daemon `scripts/if_daemon.py` queries `audit_logs` periodi
                   ▼
          Feature Extraction:
  ┌──────────────────────────────────────┐
- │ - Lat/Lon coordinate delta           │
- │ - Failed login attempts count (30m)  │
- │ - Session switch speed (sec)         │
- │ - Bulk action / download indicators  │
+ │ - Global & Role Action Frequency     │
+ │ - User Action Baseline Frequency     │
+ │ - Subnet /24 & Subnet /16 Density    │
+ │ - UA Global & User-Device Pairing    │
+ │ - Working Hours Binary Flag          │
  └──────────────────┬───────────────────┘
                     ▼
-          Feature Vector array
-   x = [coord_delta, logins, speed, size]
+           Feature Vector array
+    x = [global, role, user, subnet_c, 
+         subnet_b, ua, device, hours]
 ```
 
 ### Numerical Vector Variables
-1. **`coordinate_delta`**: Geodetic distance in kilometers between the user's current IP/GPS entry and their previous log entry.
-2. **`login_failures`**: Integer count of failed authentication attempts within the last 30 minutes.
-3. **`time_delta`**: Time difference in seconds between consecutive logins (detecting impossible travel or session hijacking).
-4. **`activity_volume`**: Cumulative rate of file downloads, uploads, or critical database mutations within a rolling 5-minute window.
+1. **Global Action**: The relative frequency of the action across the entire system.
+2. **Role-Action**: The frequency of this action within the user's role (detects privilege escalations).
+3. **User-Action**: The frequency of this action relative to the user's personal baseline history.
+4. **Subnet /24**: The density frequency of the user's /24 IP subnet globally (provides network location tolerance).
+5. **Subnet /16**: The density frequency of the user's /16 IP subnet globally (detects broad geographic jumps).
+6. **User-Agent**: The frequency of the specific cleaned browser/OS signature globally.
+7. **User-Device**: The consistency frequency of the specific user-device pairing signature.
+8. **Working Hours**: Binary indicator of whether the action occurred inside standard office hours (08:00-18:00): `1.0` if true, `0.0` otherwise.
 
 ---
 
@@ -43,9 +49,9 @@ from sklearn.ensemble import IsolationForest
 clf = IsolationForest(
     n_estimators=100,      # Number of decision trees to construct
     max_samples='auto',    # Sub-sample size: min(256, n_samples)
-    contamination=0.05,    # Estimated proportion of anomalies in data (5%)
+    contamination='auto',  # Automatically determines optimal splits
     random_state=42,       # Seed for reproducible splits
-    n_jobs=-1              # Use all CPU cores for parallel tree building
+    n_jobs=1               # Single-threaded loop execution in daemon
 )
 ```
 
@@ -88,3 +94,22 @@ Where:
    - **Dynamic Baseline Correction**: Computes the average normal score from the bottom 50% (least anomalous) logs. Whitelisted entries (e.g. system loops) are automatically overridden to this normal baseline.
 4. **Trigger & Action**:
    - If the resulting score is >= 0.7, the daemon flags the record as `critical` in the database and triggers real-time alerts.
+
+---
+
+## 4. Cold-Start Mitigation & Baseline Warming
+
+To prevent new user accounts from triggering false-positive anomaly warnings (due to having empty activity frequencies), SmarTern utilizes a baseline warming mechanism.
+
+### Automated Warming on Login
+When a user logs in for the first time or initiates a new session, the `CheckSingleSession` middleware automatically triggers baseline seeding:
+- It checks if the user has baseline entries in `storage/app/audit_baseline.json`.
+- If missing, it generates a mock sequence of 5 to 10 typical, safe actions for their specific role (e.g., Interns get `Clock In`, `Clock Out`, `Task Submitted`, etc.).
+- The logs are attributed directly to the user's actual live IP address and browser User-Agent.
+
+### Manual Overwrite Command
+In scenarios where an Administrator needs to manually override or reset a user's baseline (e.g., after restoring access via the Reactivation Letter protocol), they can run:
+```bash
+php artisan app:warm-user-baseline {user_id} --ip={ip_address} --user-agent="{user_agent_string}"
+```
+This command bypasses the standard checks, clears out any outdated baseline records for the target user ID, and injects fresh, matching logs to ensure immediate compatibility with the user's new network or browser profile.
