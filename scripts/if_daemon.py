@@ -116,7 +116,7 @@ def process_logs(incoming_logs):
             b_device = b.get('device') or clean_user_agent(b.get('user_agent', 'Unknown'))
             b_subnet = get_subnet(b.get('ip_address'))
 
-            if (b.get('user_id') == log_user_id and
+            if (str(b.get('user_id')) == str(log_user_id) and
                 b.get('action') == log_action and
                 b_device == log_device and
                 b_subnet == log_subnet):
