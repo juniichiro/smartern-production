@@ -666,9 +666,9 @@
              x-cloak>
             
             <div @click.away="showSchoolModal = false"
-                 class="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-[40px] shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden animate-in zoom-in-95 duration-300">
+                 class="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-[40px] shadow-2xl border border-gray-100 dark:border-gray-800 flex flex-col max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-300">
                 
-                <header class="p-8 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-950">
+                <header class="p-8 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-950 shrink-0">
                     <div>
                         <h3 class="text-xl font-black text-gray-800 dark:text-white uppercase tracking-tight" x-text="isEditingSchool ? 'Refine School Schedule' : 'Register School Schedule'"></h3>
                         <p class="text-xs text-[#0B5694] dark:text-blue-400 font-bold uppercase mt-1 tracking-widest" x-text="isEditingSchool ? 'Modify existing institutional hours.' : 'Assign specific hours to a university.'"></p>
@@ -678,7 +678,7 @@
                     </button>
                 </header>
 
-                <div class="p-10">
+                <div class="p-10 overflow-y-auto flex-1">
                     <form :action="schoolFormAction" method="POST" class="space-y-6">
                         @csrf
                         <input type="hidden" name="_method" value="PUT" :disabled="!isEditingSchool">
