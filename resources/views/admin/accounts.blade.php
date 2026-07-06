@@ -702,9 +702,40 @@
 
         {{-- Import Batch Modal --}}
         <div x-show="showImportModal" class="relative bg-white dark:bg-gray-900 rounded-[30px] sm:rounded-[35px] max-w-xl w-full p-5 sm:p-8 lg:p-12 shadow-2xl border border-gray-100 dark:border-gray-800">
-            <header class="mb-6 sm:mb-8">
+            <header class="mb-6 sm:mb-8 text-left">
                 <h3 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100 tracking-tight uppercase">Import Intern Accounts</h3>
-                <p class="text-gray-400 dark:text-gray-500 text-xs sm:text-sm mt-2 font-medium italic">Upload a CSV file containing multiple intern details</p>
+                <p class="text-gray-400 dark:text-gray-500 text-xs sm:text-sm mt-2 font-medium italic">Upload a CSV file containing multiple user details</p>
+                
+                <div class="mt-4 flex flex-col gap-2">
+                    <a href="data:text/csv;charset=utf-8,first_name,middle_name,last_name,email,school,office_id,role_id,gender,gender_other_specify,phone_number,profile_picture,emergency_contact%0AJohn,Adam,Doe,john.doe@example.com,State University,1,5,male,,09123456789,,Jane Doe (Mother)" 
+                       download="smartern_batch_users_template.csv" 
+                       class="text-xs text-emerald-500 hover:text-emerald-600 dark:text-emerald-400 dark:hover:text-emerald-300 font-bold underline flex items-center gap-1 transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="inline"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Download Starter CSV Template
+                    </a>
+
+                    <details class="bg-gray-50 dark:bg-gray-950 p-4 rounded-2xl border border-gray-100 dark:border-gray-850 text-left mt-2">
+                        <summary class="text-xs font-bold text-gray-500 dark:text-gray-400 cursor-pointer select-none uppercase tracking-wider outline-none">CSV Column Reference Guide</summary>
+                        <div class="mt-3 text-[11px] text-gray-500 dark:text-gray-400 space-y-2">
+                            <p>The system maps columns sequentially. Ensure your CSV follows this exact sequence (including a header row):</p>
+                            <ol class="list-decimal list-inside space-y-1 font-mono text-[10px] text-gray-600 dark:text-gray-300">
+                                <li><strong>first_name</strong>: (Text) e.g., John</li>
+                                <li><strong>middle_name</strong>: (Text, Optional) e.g., Adam</li>
+                                <li><strong>last_name</strong>: (Text) e.g., Doe</li>
+                                <li><strong>email</strong>: (Unique Email) e.g., john@example.com</li>
+                                <li><strong>school</strong>: (Text) e.g., State University (use "N/A" for staff)</li>
+                                <li><strong>office_id</strong>: Database ID of target Office (e.g. 1)</li>
+                                <li><strong>role_id</strong>: 2 (Head Supervisor), 3 (Supervisor), 4 (Coordinator), 5 (Intern)</li>
+                                <li><strong>gender</strong>: male, female, other (or empty)</li>
+                                <li><strong>gender_other_specify</strong>: (Required only if gender is 'other')</li>
+                                <li><strong>phone_number</strong>: e.g., 09123456789</li>
+                                <li><strong>profile_picture</strong>: (Optional, leave blank)</li>
+                                <li><strong>emergency_contact</strong>: e.g., Jane Doe (Mother) - 09111222333</li>
+                            </ol>
+                            <p class="text-[9px] text-[#0B5694] dark:text-blue-400 font-bold uppercase tracking-wide mt-2">Note: To prevent security escalation, importing Admin accounts (role ID 1 or 6) is blocked.</p>
+                        </div>
+                    </details>
+                </div>
             </header>
 
             <form action="{{ route('admin.accounts.import') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
