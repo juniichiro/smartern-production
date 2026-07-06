@@ -162,7 +162,7 @@
                                             </div>
                                         </td>
                                         <td class="py-5 px-4 text-center">
-                                            <span class="inline-block px-3 py-1 bg-gray-50 dark:bg-gray-800/50 text-gray-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider border border-gray-100 dark:border-gray-700 rounded-full">
+                                            <span class="text-gray-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider truncate max-w-[150px] inline-block" title="{{ $intern->office->name ?? 'Unassigned' }}">
                                                 {{ $intern->office->name ?? 'Unassigned' }}
                                             </span>
                                         </td>
