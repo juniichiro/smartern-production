@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Cache;
 
 class InternController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, AttendanceService $attendanceService)
     {
         $coordinator = Auth::user()->schoolCoordinatorDetails;
         $school = $coordinator->school;
@@ -25,6 +25,14 @@ class InternController extends Controller
         $query = $this->applyFilters($request, $school);
 
         $interns = $query->paginate(10);
+
+        // Inject the true dynamic merged logs count for consistency across views
+        foreach ($interns as $intern) {
+            $allLogs = $attendanceService->getMergedLogs($intern->user);
+            $intern->absent_count = $allLogs->where('status', 'absent')->count();
+            $intern->late_count = $allLogs->where('status', 'late')->count();
+            $intern->excused_count = $allLogs->where('status', 'excused')->count();
+        }
 
         $offices = Cache::remember('all_offices', 3600, function () {
             return Office::all();
@@ -37,13 +45,21 @@ class InternController extends Controller
         return view('coordinator.interns', compact('interns', 'offices'));
     }
 
-    public function exportPDF(Request $request)
+    public function exportPDF(Request $request, AttendanceService $attendanceService)
     {
         $coordinator = Auth::user()->schoolCoordinatorDetails;
         $school = $coordinator->school;
 
         $query = $this->applyFilters($request, $school);
         $interns = $query->get();
+
+        // Inject the true dynamic merged logs count for PDF export consistency
+        foreach ($interns as $intern) {
+            $allLogs = $attendanceService->getMergedLogs($intern->user);
+            $intern->absent_count = $allLogs->where('status', 'absent')->count();
+            $intern->late_count = $allLogs->where('status', 'late')->count();
+            $intern->excused_count = $allLogs->where('status', 'excused')->count();
+        }
 
         // Logo Base64 encoding
         $logoSrc = null;
