@@ -242,6 +242,7 @@ class AccountController extends Controller
                         'gender' => (! empty($data[7]) && in_array(ucfirst($data[7]), ['Male', 'Female', 'Other'])) ? ucfirst($data[7]) : 'Male',
                         'gender_other_specify' => $data[8] ?? '',
                         'emergency_contact' => $data[11] ?? '',
+                        'emergency_contact_number' => $data[12] ?? '',
                         'course' => 'N/A',
                         'hours_rendered' => 0,
                     ]));
