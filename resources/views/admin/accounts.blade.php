@@ -713,28 +713,6 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="inline"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                         Download Starter CSV Template
                     </a>
-
-                    <details class="bg-gray-50 dark:bg-gray-950 p-4 rounded-2xl border border-gray-100 dark:border-gray-850 text-left mt-2">
-                        <summary class="text-xs font-bold text-gray-500 dark:text-gray-400 cursor-pointer select-none uppercase tracking-wider outline-none">CSV Column Reference Guide</summary>
-                        <div class="mt-3 text-[11px] text-gray-500 dark:text-gray-400 space-y-2">
-                            <p>The system maps columns sequentially. Ensure your CSV follows this exact sequence (including a header row):</p>
-                            <ol class="list-decimal list-inside space-y-1 font-mono text-[10px] text-gray-600 dark:text-gray-300">
-                                <li><strong>first_name</strong>: (Text) e.g., John</li>
-                                <li><strong>middle_name</strong>: (Text, Optional) e.g., Adam</li>
-                                <li><strong>last_name</strong>: (Text) e.g., Doe</li>
-                                <li><strong>email</strong>: (Unique Email) e.g., john@example.com</li>
-                                <li><strong>school</strong>: (Text) e.g., State University (use "N/A" for staff)</li>
-                                <li><strong>office_name_or_id</strong>: Name of target Office (e.g. `Main Office`) or its database numeric ID (e.g. `1`)</li>
-                                <li><strong>role_name_or_id</strong>: Name of role (e.g. `intern`, `supervisor`, `head supervisor`, `coordinator`) or its database numeric ID (e.g. `5`)</li>
-                                <li><strong>gender</strong>: male, female, other (or empty)</li>
-                                <li><strong>gender_other_specify</strong>: (Required only if gender is 'other')</li>
-                                <li><strong>phone_number</strong>: e.g., 09123456789</li>
-                                <li><strong>profile_picture</strong>: (Optional, leave blank)</li>
-                                <li><strong>emergency_contact</strong>: e.g., Jane Doe (Mother) - 09111222333</li>
-                            </ol>
-                            <p class="text-[9px] text-[#0B5694] dark:text-blue-400 font-bold uppercase tracking-wide mt-2">Note: To prevent security escalation, importing Admin accounts (role ID 1 or 6) is blocked.</p>
-                        </div>
-                    </details>
                 </div>
             </header>
 
