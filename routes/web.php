@@ -108,6 +108,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
         Route::get('/accounts', [AccountController::class, 'index'])->name('account');
+        Route::get('/accounts/template', [AccountController::class, 'downloadTemplate'])->name('accounts.template');
         Route::post('/accounts/import', [AccountController::class, 'importCsv'])->name('accounts.import');
         Route::post('/accounts/onboarding-approve/{id}', [AccountController::class, 'approveOnboardingAccount'])->name('accounts.onboarding-approve');
         Route::put('/accounts/onboarding-update/{id}', [AccountController::class, 'updateOnboardingAccount'])->name('accounts.onboarding-update');

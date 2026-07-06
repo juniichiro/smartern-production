@@ -26,6 +26,9 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\OnboardingApplicant;
 use App\Models\MatchResult;
 use Illuminate\Support\Str;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
 
 class AccountController extends Controller
 {
@@ -550,5 +553,112 @@ class AccountController extends Controller
         $this->auditService->log('Onboarding Request Updated', "Updated onboarding application for: {$request->email}");
 
         return redirect()->back()->with('success', 'Onboarding request updated successfully.');
+    }
+
+    /**
+     * Dynamically compiles and downloads an Excel batch import template
+     * pre-loaded with drop-down data validation lists for roles, offices, and genders.
+     */
+    public function downloadTemplate()
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Template');
+
+        // Define Headers
+        $headers = [
+            'first_name',
+            'middle_name',
+            'last_name',
+            'email',
+            'school',
+            'office_name_or_id',
+            'role_name_or_id',
+            'gender',
+            'gender_other_specify',
+            'phone_number',
+            'profile_picture',
+            'emergency_contact',
+            'emergency_contact_number'
+        ];
+        $sheet->fromArray($headers, null, 'A1');
+
+        // Add one sample row
+        $sampleRow = [
+            'John',
+            'Adam',
+            'Doe',
+            'john.doe@example.com',
+            'State University',
+            'Main Office',
+            'intern',
+            'male',
+            '',
+            '09123456789',
+            '',
+            'Jane Doe (Mother)',
+            '09112223333'
+        ];
+        $sheet->fromArray($sampleRow, null, 'A2');
+
+        // Fetch offices to populate data validation
+        $offices = \App\Models\Office::pluck('name')->toArray();
+        $officeListString = '"' . implode(',', $offices) . '"';
+
+        // Role List
+        $roleListString = '"intern,supervisor,head supervisor,coordinator"';
+
+        // Gender List
+        $genderListString = '"male,female,other"';
+
+        // Apply Data Validation to 100 rows below the headers (from row 2 to 101)
+        for ($row = 2; $row <= 101; $row++) {
+            // Role Dropdown (Column G - 7th column)
+            $validationG = $sheet->getCell("G{$row}")->getDataValidation();
+            $validationG->setType(DataValidation::TYPE_LIST);
+            $validationG->setErrorStyle(DataValidation::STYLE_INFORMATION);
+            $validationG->setAllowBlank(true);
+            $validationG->setShowInputMessage(true);
+            $validationG->setShowErrorMessage(true);
+            $validationG->setShowDropDown(true);
+            $validationG->setFormula1($roleListString);
+
+            // Office Dropdown (Column F - 6th column)
+            if (!empty($offices)) {
+                $validationF = $sheet->getCell("F{$row}")->getDataValidation();
+                $validationF->setType(DataValidation::TYPE_LIST);
+                $validationF->setErrorStyle(DataValidation::STYLE_INFORMATION);
+                $validationF->setAllowBlank(true);
+                $validationF->setShowInputMessage(true);
+                $validationF->setShowErrorMessage(true);
+                $validationF->setShowDropDown(true);
+                $validationF->setFormula1($officeListString);
+            }
+
+            // Gender Dropdown (Column H - 8th column)
+            $validationH = $sheet->getCell("H{$row}")->getDataValidation();
+            $validationH->setType(DataValidation::TYPE_LIST);
+            $validationH->setErrorStyle(DataValidation::STYLE_INFORMATION);
+            $validationH->setAllowBlank(true);
+            $validationH->setShowInputMessage(true);
+            $validationH->setShowErrorMessage(true);
+            $validationH->setShowDropDown(true);
+            $validationH->setFormula1($genderListString);
+        }
+
+        // Set column auto width for neat formatting
+        foreach (range('A', 'M') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        // Export as XLSX file
+        $writer = new Xlsx($spreadsheet);
+        
+        return response()->streamDownload(function() use ($writer) {
+            $writer->save('php://output');
+        }, 'smartern_batch_users_template.xlsx', [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Cache-Control' => 'max-age=0',
+        ]);
     }
 }
