@@ -189,7 +189,6 @@ class AccountController extends Controller
                     $roleMap = [
                         'intern' => UserRole::INTERN->value,
                         'supervisor' => UserRole::SUPERVISOR->value,
-                        'head supervisor' => UserRole::HEAD_SUPERVISOR->value,
                         'school coordinator' => UserRole::SCHOOL_COORDINATOR->value,
                         'coordinator' => UserRole::SCHOOL_COORDINATOR->value,
                     ];
@@ -198,7 +197,7 @@ class AccountController extends Controller
                     }
                 }
 
-                if (! $role || $role->name === 'admin' || $role->name === 'super_admin') {
+                if (! $role || $role->name === 'admin' || $role->name === 'super_admin' || $role->name === 'head_supervisor') {
                     continue;
                 }
                 $roleId = $role->id;
@@ -606,7 +605,7 @@ class AccountController extends Controller
         $officeListString = '"' . implode(',', $offices) . '"';
 
         // Role List
-        $roleListString = '"intern,supervisor,head supervisor,coordinator"';
+        $roleListString = '"intern,supervisor,coordinator"';
 
         // Gender List
         $genderListString = '"male,female,other"';
