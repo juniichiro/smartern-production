@@ -42,7 +42,7 @@ class WarmUserBaseline extends Command
         $roleName = $user->role ? $user->role->name : 'Unknown';
         $this->info("Warming baseline for user {$user->email} (Role: {$roleName})...");
 
-        app(AnomalyDetectionService::class)->seedUserBaseline($user, $ip, $userAgent);
+        app(AnomalyDetectionService::class)->seedUserBaseline($user, $ip, $userAgent, true);
 
         $this->info("Successfully seeded baseline logs for user ID {$userId}!");
         return 0;

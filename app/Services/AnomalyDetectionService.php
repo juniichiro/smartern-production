@@ -401,13 +401,13 @@ class AnomalyDetectionService
      * Seeds the baseline for a specific user based on their role and current login credentials.
      * This avoids the cold-start problem and prevents false-positive warnings.
      */
-    public function seedUserBaseline(User $user, string $ip, string $userAgent)
+    public function seedUserBaseline(User $user, string $ip, string $userAgent, bool $force = false)
     {
         $userId = $user->id;
         $roleId = (int) $user->role_id->value;
 
         $cacheKey = "user_baseline_seeded_{$userId}";
-        if (Cache::has($cacheKey)) {
+        if (!$force && Cache::has($cacheKey)) {
             return;
         }
 
@@ -418,18 +418,23 @@ class AnomalyDetectionService
             $baseline = json_decode(file_get_contents($path), true) ?? [];
         }
 
-        // Check if logs already exist for this user in the baseline file
-        $hasLogs = false;
-        foreach ($baseline as $log) {
-            if (isset($log['user_id']) && (int)$log['user_id'] === $userId) {
-                $hasLogs = true;
-                break;
+        if ($force) {
+            // Remove existing baseline logs for this user to allow clean overwrite
+            $baseline = array_values(array_filter($baseline, fn($log) => !isset($log['user_id']) || (int)$log['user_id'] !== $userId));
+        } else {
+            // Check if logs already exist for this user in the baseline file
+            $hasLogs = false;
+            foreach ($baseline as $log) {
+                if (isset($log['user_id']) && (int)$log['user_id'] === $userId) {
+                    $hasLogs = true;
+                    break;
+                }
             }
-        }
 
-        if ($hasLogs) {
-            Cache::forever($cacheKey, true);
-            return;
+            if ($hasLogs) {
+                Cache::forever($cacheKey, true);
+                return;
+            }
         }
 
         // Templates of normal actions per role to seed
