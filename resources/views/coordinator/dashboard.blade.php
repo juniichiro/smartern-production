@@ -221,8 +221,8 @@
                     @forelse($placements as $office)
                         <div class="group flex items-center justify-between p-5 rounded-[24px] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 transition-all hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:shadow-sm">
                             <div class="min-w-0">
-                                <p class="text-[13px] font-extrabold text-gray-800 dark:text-gray-100 uppercase truncate tracking-normal group-hover:text-[#0B5694] dark:group-hover:text-blue-400 transition-colors inline-block max-w-[200px]" title="{{ $office->name }}">
-                                    {{ $office->name }}
+                                <p class="text-[13px] font-extrabold text-gray-800 dark:text-gray-100 uppercase tracking-normal group-hover:text-[#0B5694] dark:group-hover:text-blue-400 transition-colors" title="{{ $office->name }}">
+                                    {{ \Illuminate\Support\Str::limit($office->name, 28) }}
                                 </p>
                                 <p class="text-[10px] text-gray-400 dark:text-slate-500 font-bold uppercase tracking-wider mt-1">
                                     Assigned Students
