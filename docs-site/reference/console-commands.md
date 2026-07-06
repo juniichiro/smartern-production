@@ -76,6 +76,15 @@ This reference details the custom Artisan CLI commands defined in `app/Console/C
   - `--ip`: The IP address to bind to generated normal events (default: `130.105.10.15`).
 - **Description**: Seeds the audit logs with a historical baseline of healthy activity to train the ML Isolation Forest model.
 
+### `app:warm-user-baseline`
+- **Signature**: `php artisan app:warm-user-baseline {user_id} {--ip=} {--user-agent=}`
+- **Arguments**:
+  - `user_id` (Required): The target User ID to generate the baseline entries for.
+- **Options**:
+  - `--ip`: Custom IP address to use for baseline entries (defaults to `127.0.0.1` or fallback).
+  - `--user-agent`: Custom User-Agent signature to write to the baseline entries (defaults to standard Chrome UA).
+- **Description**: Seeds a personal baseline profile of healthy role-specific actions for a single user account to bypass the "cold-start" ML phase and prevent false-positive warnings.
+
 ### `app:simulate-attendance`
 - **Signature**: `php artisan app:simulate-attendance`
 - **Description**: Simulates a full week of attendance plus absence requests for the test intern `test_intern@smartern.com`.
