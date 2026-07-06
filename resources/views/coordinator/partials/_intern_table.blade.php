@@ -42,7 +42,7 @@
                         </td>
 
                         <td class="px-6 py-6 text-center">
-                            <span class="inline-block px-3 py-1.5 rounded-full bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-[10px] font-black uppercase tracking-widest border border-gray-100 dark:border-gray-700">
+                            <span class="text-gray-500 dark:text-gray-400 text-[10px] font-black uppercase tracking-widest truncate max-w-[150px] inline-block" title="{{ $intern->office->name ?? 'Unassigned' }}">
                                 {{ $intern->office->name ?? 'Unassigned' }}
                             </span>
                         </td>
