@@ -89,6 +89,17 @@ This reference details the custom Artisan CLI commands defined in `app/Console/C
 - **Signature**: `php artisan app:simulate-attendance`
 - **Description**: Simulates a full week of attendance plus absence requests for the test intern `test_intern@smartern.com`.
 
+### `app:simulate-anomaly`
+- **Signature**: `php artisan app:simulate-anomaly {user_id} {--score=0.85} {--action=Authentication} {--ip=203.87.154.22} {--lockout}`
+- **Arguments**:
+  - `user_id` (Required): The target User ID to attribute the anomaly log to.
+- **Options**:
+  - `--score`: The anomaly score to set (default: `0.85`).
+  - `--action`: The action name to log (default: `Authentication`).
+  - `--ip`: The IP address to associate with the log (default: `203.87.154.22`).
+  - `--lockout`: Optional flag. If provided, triggers the automatic 30-minute lockout on the user account and sends emails/realtime dashboard notifications to all administrators.
+- **Description**: Simulates a critical security anomaly event for testing, evaluation, or presentation purposes.
+
 ---
 
 ## 4. Scheduling & Attendance Commands
