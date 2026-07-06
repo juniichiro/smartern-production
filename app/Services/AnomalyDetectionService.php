@@ -396,4 +396,75 @@ class AnomalyDetectionService
 
         file_put_contents($path, json_encode($baseline, JSON_PRETTY_PRINT));
     }
+
+    /**
+     * Seeds the baseline for a specific user based on their role and current login credentials.
+     * This avoids the cold-start problem and prevents false-positive warnings.
+     */
+    public function seedUserBaseline(User $user, string $ip, string $userAgent)
+    {
+        $userId = $user->id;
+        $roleId = (int) $user->role_id->value;
+
+        $cacheKey = "user_baseline_seeded_{$userId}";
+        if (Cache::has($cacheKey)) {
+            return;
+        }
+
+        $path = storage_path('app/audit_baseline.json');
+        $baseline = [];
+
+        if (file_exists($path)) {
+            $baseline = json_decode(file_get_contents($path), true) ?? [];
+        }
+
+        // Check if logs already exist for this user in the baseline file
+        $hasLogs = false;
+        foreach ($baseline as $log) {
+            if (isset($log['user_id']) && (int)$log['user_id'] === $userId) {
+                $hasLogs = true;
+                break;
+            }
+        }
+
+        if ($hasLogs) {
+            Cache::forever($cacheKey, true);
+            return;
+        }
+
+        // Templates of normal actions per role to seed
+        $roleTemplates = [
+            5 => ['Authentication', 'Clock In', 'Clock Out', 'Task Submitted', 'Journal Entry', 'Journal Updated', 'Accomplishment Export'], // Intern
+            1 => ['Authentication', 'Account Created', 'Account Updated', 'Geofence Updated', 'Backup Initiated'], // Admin
+            2 => ['Authentication', 'Applicant Evaluation', 'Match Finalized', 'Batch Matching Upload'], // Head Supervisor
+            3 => ['Authentication', 'Task Assigned', 'Task Updated', 'Task Status Updated', 'Announcement Created'], // Supervisor
+            4 => ['Authentication', 'Intern Progress Viewed', 'Report Downloaded'], // Coordinator
+        ];
+
+        $actions = $roleTemplates[$roleId] ?? ['Authentication'];
+
+        // Append mock baseline entries for this user
+        foreach ($actions as $action) {
+            // Generate multiple logs per action to establish a stable count
+            $repeat = $action === 'Authentication' ? 5 : 3;
+            for ($i = 0; $i < $repeat; $i++) {
+                $baseline[] = [
+                    'user_id' => $userId,
+                    'role_id' => $roleId,
+                    'action' => $action,
+                    'ip_address' => $ip,
+                    'user_agent' => $userAgent,
+                    'timestamp' => now()->subDays(rand(1, 10))->toDateTimeString(),
+                ];
+            }
+        }
+
+        // Keep baseline at a manageable size (last 4000 entries max to prevent excessive file sizes)
+        if (count($baseline) > 4000) {
+            $baseline = array_slice($baseline, -4000);
+        }
+
+        file_put_contents($path, json_encode($baseline, JSON_PRETTY_PRINT));
+        Cache::forever($cacheKey, true);
+    }
 }

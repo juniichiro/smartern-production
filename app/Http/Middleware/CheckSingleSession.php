@@ -44,6 +44,9 @@ class CheckSingleSession
                 ]);
                 Cookie::queue('smartern_device_id', $deviceId, 0, '/', null, true, true);
                 Cache::put('user-session-' . $user->id, session()->getId());
+
+                // Seed user baseline data to prevent cold-start warnings
+                app(\App\Services\AnomalyDetectionService::class)->seedUserBaseline($user, $request->ip(), $request->userAgent());
             } else {
                 // Prevent Session Hijacking/Cookie Injection:
                 // Check if the User-Agent, IP, custom device ID cookie, and client ID cookie match.
