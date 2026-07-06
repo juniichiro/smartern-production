@@ -707,7 +707,7 @@
                 <p class="text-gray-400 dark:text-gray-500 text-xs sm:text-sm mt-2 font-medium italic">Upload a CSV file containing multiple user details</p>
                 
                 <div class="mt-4 flex flex-col gap-2">
-                    <a href="data:text/csv;charset=utf-8,first_name,middle_name,last_name,email,school,office_id,role_id,gender,gender_other_specify,phone_number,profile_picture,emergency_contact%0AJohn,Adam,Doe,john.doe@example.com,State University,1,5,male,,09123456789,,Jane Doe (Mother)" 
+                    <a href="data:text/csv;charset=utf-8,first_name,middle_name,last_name,email,school,office_name_or_id,role_name_or_id,gender,gender_other_specify,phone_number,profile_picture,emergency_contact%0AJohn,Adam,Doe,john.doe@example.com,State University,Main Office,intern,male,,09123456789,,Jane Doe (Mother)" 
                        download="smartern_batch_users_template.csv" 
                        class="text-xs text-emerald-500 hover:text-emerald-600 dark:text-emerald-400 dark:hover:text-emerald-300 font-bold underline flex items-center gap-1 transition-all">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="inline"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -724,8 +724,8 @@
                                 <li><strong>last_name</strong>: (Text) e.g., Doe</li>
                                 <li><strong>email</strong>: (Unique Email) e.g., john@example.com</li>
                                 <li><strong>school</strong>: (Text) e.g., State University (use "N/A" for staff)</li>
-                                <li><strong>office_id</strong>: Database ID of target Office (e.g. 1)</li>
-                                <li><strong>role_id</strong>: 2 (Head Supervisor), 3 (Supervisor), 4 (Coordinator), 5 (Intern)</li>
+                                <li><strong>office_name_or_id</strong>: Name of target Office (e.g. `Main Office`) or its database numeric ID (e.g. `1`)</li>
+                                <li><strong>role_name_or_id</strong>: Name of role (e.g. `intern`, `supervisor`, `head supervisor`, `coordinator`) or its database numeric ID (e.g. `5`)</li>
                                 <li><strong>gender</strong>: male, female, other (or empty)</li>
                                 <li><strong>gender_other_specify</strong>: (Required only if gender is 'other')</li>
                                 <li><strong>phone_number</strong>: e.g., 09123456789</li>

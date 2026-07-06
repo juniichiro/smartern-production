@@ -176,10 +176,44 @@ class AccountController extends Controller
                     continue;
                 }
 
-                $roleId = $data[6];
-                $role = Role::find($roleId);
-                if (! $role || $role->name === 'admin') {
+                // Resolve Role ID from text or number
+                $roleInput = trim($data[6]);
+                $role = null;
+                if (is_numeric($roleInput)) {
+                    $role = Role::find($roleInput);
+                } else {
+                    $cleanRole = strtolower(str_replace(['_', '-'], ' ', $roleInput));
+                    $roleMap = [
+                        'intern' => UserRole::INTERN->value,
+                        'supervisor' => UserRole::SUPERVISOR->value,
+                        'head supervisor' => UserRole::HEAD_SUPERVISOR->value,
+                        'school coordinator' => UserRole::SCHOOL_COORDINATOR->value,
+                        'coordinator' => UserRole::SCHOOL_COORDINATOR->value,
+                    ];
+                    if (isset($roleMap[$cleanRole])) {
+                        $role = Role::find($roleMap[$cleanRole]);
+                    }
+                }
+
+                if (! $role || $role->name === 'admin' || $role->name === 'super_admin') {
                     continue;
+                }
+                $roleId = $role->id;
+
+                // Resolve Office ID from text or name
+                $officeInput = trim($data[5]);
+                $officeId = null;
+                if (is_numeric($officeInput)) {
+                    $officeId = (int)$officeInput;
+                } else {
+                    $office = \App\Models\Office::whereRaw('LOWER(name) = ?', [strtolower($officeInput)])->first();
+                    if ($office) {
+                        $officeId = $office->id;
+                    }
+                }
+
+                if ($role->name !== 'school_coordinator' && !$officeId) {
+                    continue; // Skip if office is required but not resolved
                 }
 
                 $plainPassword = Str::password(12, symbols: true);
@@ -204,7 +238,7 @@ class AccountController extends Controller
                 if ($role->name === 'intern') {
                     InternDetail::create(array_merge($profileData, [
                         'school' => ! empty($data[4]) ? $data[4] : 'N/A',
-                        'office_id' => $data[5],
+                        'office_id' => $officeId,
                         'gender' => (! empty($data[7]) && in_array(ucfirst($data[7]), ['Male', 'Female', 'Other'])) ? ucfirst($data[7]) : 'Male',
                         'gender_other_specify' => $data[8] ?? '',
                         'emergency_contact' => $data[11] ?? '',
@@ -213,7 +247,7 @@ class AccountController extends Controller
                     ]));
                 } elseif ($role->name === 'supervisor' || $roleId == UserRole::HEAD_SUPERVISOR->value) {
                     SupervisorDetail::create(array_merge($profileData, [
-                        'office_id' => $data[5],
+                        'office_id' => $officeId,
                         'is_hr_head' => ($roleId == UserRole::HEAD_SUPERVISOR->value),
                     ]));
                 } elseif ($role->name === 'school_coordinator') {
