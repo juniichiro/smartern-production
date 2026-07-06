@@ -39,7 +39,9 @@ class DashboardController extends Controller
             ];
 
             // 2. SDO Division deployments with count of interns from THIS SCHOOL currently assigned
-            $placements = Office::withCount(['internDetails' => function ($query) use ($school) {
+            $placements = Office::whereHas('internDetails', function ($query) use ($school) {
+                $query->where('school', $school);
+            })->withCount(['internDetails' => function ($query) use ($school) {
                 $query->where('school', $school);
             }])->get();
 
