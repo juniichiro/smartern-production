@@ -8,7 +8,7 @@
     <style>
         body {
             font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: # fthreeffourfsix;
+            background-color: #f3f4f6;
             margin: 0;
             padding: 0;
             -webkit-font-smoothing: antialiased;
@@ -16,26 +16,26 @@
         .container {
             max-width: 600px;
             margin: 40px auto;
-            background-color: # ffffff;
+            background-color: #ffffff;
             border-radius: 16px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             overflow: hidden;
-            border: 1px solid # efiveeseveneb;
+            border: 1px solid #e5e7eb;
         }
         .header {
-            background: linear-gradient(135deg, # Bfivesixninefour zero percent, #oneethreeaeighta one hundred percent);
+            background: linear-gradient(135deg, #0B5694 0%, #1e3a8a 100%);
             padding: 32px;
             text-align: center;
         }
         .header h1 {
-            color: # ffffff;
+            color: #ffffff;
             font-size: 28px;
             font-weight: 800;
             margin: 0;
             letter-spacing: -0.025em;
         }
         .header p {
-            color: # dbeafe;
+            color: #dbeafe;
             font-size: 14px;
             margin-top: 8px;
             margin-bottom: 0;
@@ -43,7 +43,7 @@
         }
         .content {
             padding: 40px 32px;
-            color: # ftwoninethreeseven;
+            color: #1f2937;
             text-align: center;
         }
         .content h2 {
@@ -51,21 +51,21 @@
             font-weight: 700;
             margin-top: 0;
             margin-bottom: 16px;
-            color: # Bfivesixninefour;
+            color: #0B5694;
         }
         .content p {
             font-size: 16px;
             line-height: 1.6;
             margin-bottom: 24px;
-            color: # bfivefivesixthree;
+            color: #4b5563;
         }
         .footer {
-            background-color: # fninefafb;
+            background-color: #f9fafb;
             padding: 24px 32px;
-            border-top: 1px solid # efiveeseveneb;
+            border-top: 1px solid #e5e7eb;
             text-align: center;
             font-size: 12px;
-            color: # cathreeaf;
+            color: #9ca3af;
         }
     </style>
 </head>

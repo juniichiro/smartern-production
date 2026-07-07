@@ -8,7 +8,7 @@
     <style>
         body {
             font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: # fthreeffourfsix;
+            background-color: #f3f4f6;
             margin: 0;
             padding: 0;
             -webkit-font-smoothing: antialiased;
@@ -16,26 +16,26 @@
         .container {
             max-width: 600px;
             margin: 40px auto;
-            background-color: # ffffff;
+            background-color: #ffffff;
             border-radius: 16px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             overflow: hidden;
-            border: 1px solid # efiveeseveneb;
+            border: 1px solid #e5e7eb;
         }
         .header {
-            background: linear-gradient(135deg, # ethreeaeighta zero percent, #threebeighttwofsix one hundred percent);
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
             padding: 32px;
             text-align: center;
         }
         .header h1 {
-            color: # ffffff;
+            color: #ffffff;
             font-size: 28px;
             font-weight: 800;
             margin: 0;
             letter-spacing: -0.025em;
         }
         .header p {
-            color: # dbeafe;
+            color: #dbeafe;
             font-size: 14px;
             margin-top: 8px;
             margin-bottom: 0;
@@ -43,24 +43,24 @@
         }
         .content {
             padding: 40px 32px;
-            color: # ftwoninethreeseven;
+            color: #1f2937;
         }
         .content h2 {
             font-size: 20px;
             font-weight: 700;
             margin-top: 0;
             margin-bottom: 16px;
-            color: # ethreeaeighta;
+            color: #1e3a8a;
         }
         .content p {
             font-size: 16px;
             line-height: 1.6;
             margin-bottom: 24px;
-            color: # bfivefivesixthree;
+            color: #4b5563;
         }
         .credentials-card {
-            background-color: # feightfafc;
-            border: 1px solid # etwoeeightfzero;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 32px;
@@ -76,12 +76,12 @@
         .credential-label {
             width: 120px;
             font-weight: 600;
-            color: # b;
+            color: #64748b;
         }
         .credential-value {
             font-family: monospace;
             font-weight: 700;
-            color: # foneseventwoa;
+            color: #0f172a;
             word-break: break-all;
         }
         .btn-container {
@@ -89,8 +89,8 @@
             margin-top: 32px;
         }
         .btn {
-            background: linear-gradient(135deg, # beighttwofsix zero percent, #onedfouredeight one hundred percent);
-            color: # ffffff !important;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: #ffffff !important;
             text-decoration: none;
             padding: 14px 28px;
             border-radius: 8px;
@@ -101,17 +101,17 @@
             transition: transform 0.2s, box-shadow 0.2s;
         }
         .footer {
-            background-color: # fninefafb;
+            background-color: #f9fafb;
             padding: 24px 32px;
             text-align: center;
-            border-top: 1px solid # fthreeffourfsix;
+            border-top: 1px solid #f3f4f6;
             font-size: 13px;
-            color: # cathreeaf;
+            color: #9ca3af;
         }
         .warning {
-            color: # bfourfivethreezeronine;
-            background-color: # fffbeb;
-            border: 1px solid # fefthreecseven;
+            color: #b45309;
+            background-color: #fffbeb;
+            border: 1px solid #fef3c7;
             padding: 16px;
             border-radius: 8px;
             font-size: 14px;

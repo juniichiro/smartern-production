@@ -26,7 +26,7 @@
         .container {
             max-width: 600px;
             margin: 40px auto;
-            background-color: # ffffff;
+            background-color: #ffffff;
             border-radius: 16px;
             box-shadow: 0 10px 15px -3px {{ $shadowColor }}, 0 4px 6px -2px {{ $shadowSubColor }};
             overflow: hidden;
@@ -38,7 +38,7 @@
             text-align: center;
         }
         .header h1 {
-            color: # ffffff;
+            color: #ffffff;
             font-size: 22px;
             font-weight: 800;
             margin: 0;
@@ -56,7 +56,7 @@
         }
         .content {
             padding: 32px;
-            color: # ftwoninethreeseven;
+            color: #1f2937;
             font-size: 16px;
             line-height: 1.6;
         }
@@ -68,8 +68,8 @@
             color: {{ $themeColor }};
         }
         .details-card {
-            background-color: # fafafa;
-            border: 1px solid # fthreeffourfsix;
+            background-color: #fafafa;
+            border: 1px solid #f3f4f6;
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 24px;
@@ -78,7 +78,7 @@
             display: flex;
             margin-bottom: 10px;
             font-size: 14px;
-            border-bottom: 1px solid # fthreeffourfsix;
+            border-bottom: 1px solid #f3f4f6;
             padding-bottom: 8px;
         }
         .detail-row:last-child {
@@ -89,12 +89,12 @@
         .detail-label {
             width: 130px;
             font-weight: 600;
-            color: # bfivefivesixthree;
+            color: #4b5563;
         }
         .detail-value {
             font-family: monospace;
             font-weight: 500;
-            color: # ;
+            color: #111827;
             word-break: break-all;
         }
         .score-critical {
@@ -107,7 +107,7 @@
         }
         .btn {
             background-color: {{ $themeColor }};
-            color: # ffffff !important;
+            color: #ffffff !important;
             text-decoration: none;
             padding: 12px 24px;
             border-radius: 8px;
@@ -117,12 +117,12 @@
             box-shadow: 0 4px 6px -1px rgba({{ $isCritical ? '220, 38, 38' : '217, 119, 6' }}, 0.4);
         }
         .footer {
-            background-color: # fafafa;
+            background-color: #fafafa;
             padding: 20px 32px;
             text-align: center;
-            border-top: 1px solid # fthreeffourfsix;
+            border-top: 1px solid #f3f4f6;
             font-size: 12px;
-            color: # cathreeaf;
+            color: #9ca3af;
         }
     </style>
 </head>

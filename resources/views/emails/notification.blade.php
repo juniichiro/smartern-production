@@ -8,7 +8,7 @@
     <style>
         body {
             font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: # ffffff;
+            background-color: #ffffff;
             margin: 0;
             padding: 0;
             -webkit-font-smoothing: antialiased;
@@ -22,25 +22,25 @@
         .content-body {
             font-size: 16px;
             line-height: 1.6;
-            color: # ;
+            color: #334155;
             margin-bottom: 40px;
         }
         .logo-footer {
             font-size: 20px;
             font-weight: 800;
-            color: # etwoninethreeb;
+            color: #1e293b;
             margin-top: 40px;
             margin-bottom: 16px;
         }
         .footer-links {
             font-size: 13px;
-            color: # athreebeight;
+            color: #94a3b8;
             margin-top: 32px;
-            border-top: 1px solid # etwoeeightfzero;
+            border-top: 1px solid #e2e8f0;
             padding-top: 16px;
         }
         .footer-links a {
-            color: # bfivesixninefour;
+            color: #0b5694;
             text-decoration: none;
             font-weight: 600;
         }
@@ -50,13 +50,13 @@
         .remarks-box {
             margin: 20px auto;
             max-width: 500px;
-            background-color: # feightfafc;
-            border: 1px dashed # cbdfiveeone;
+            background-color: #f8fafc;
+            border: 1px dashed #cbd5e1;
             border-radius: 12px;
             padding: 16px;
             text-align: left;
             font-size: 15px;
-            color: # ;
+            color: #475569;
         }
     </style>
 </head>

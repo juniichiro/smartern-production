@@ -8,7 +8,7 @@
     <style>
         body {
             font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: # ffffff;
+            background-color: #ffffff;
             margin: 0;
             padding: 0;
             -webkit-font-smoothing: antialiased;
@@ -22,22 +22,22 @@
         .content-body {
             font-size: 16px;
             line-height: 1.6;
-            color: # ;
+            color: #334155;
             margin-bottom: 40px;
         }
         .logo-footer {
             font-size: 20px;
             font-weight: 800;
-            color: # etwoninethreeb;
+            color: #1e293b;
             margin-top: 40px;
             margin-bottom: 16px;
         }
         .footer-links {
             font-size: 13px;
-            color: # athreebeight;
+            color: #94a3b8;
         }
         .footer-links a {
-            color: # bfivesixninefour;
+            color: #0b5694;
             text-decoration: none;
             font-weight: 600;
         }
