@@ -329,7 +329,7 @@
                     </div>
 
                     {{-- Dynamic Competency Assessment Form --}}
-                    <div class="space-y-12" id="competency-assessment-section">
+                    <div class="space-y-12" id="skills-assessment-section">
                         <!-- Simplified Progress & Assessment Title -->
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-4 mb-8 text-left gap-2 px-1">
                             <h3 class="text-xs font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest">
@@ -820,7 +820,7 @@
                 // Window Scroll listener to trigger validation when moving on to assessment form
                 window.addEventListener('scroll', () => {
                     if (this.step !== 2) return;
-                    const section = document.getElementById('competency-assessment-section');
+                    const section = document.getElementById('skills-assessment-section');
                     if (!section) return;
                     const rect = section.getBoundingClientRect();
                     
