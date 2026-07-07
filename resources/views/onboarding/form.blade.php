@@ -638,11 +638,20 @@
 </style>
 <script>
     function smartOnboardingManager(assessmentItems) {
+        let savedState = null;
+        try {
+            const saved = localStorage.getItem('smartOnboardingState');
+            if (saved) savedState = JSON.parse(saved);
+        } catch (e) {}
+
+        const serverErrors = @js($errors->getMessages());
+        const hasServerErrors = Object.keys(serverErrors).length > 0;
+
         return {
-            step: {{ session('success') ? 4 : ($errors->any() ? 2 : 0) }},
+            step: {{ session('success') ? 4 : 0 }} === 4 ? 4 : (hasServerErrors ? 2 : (savedState && savedState.step !== undefined && savedState.step < 4 ? savedState.step : 0)),
             isParsing: false,
             resumeFile: null,
-            resumeFileName: '',
+            resumeFileName: savedState && savedState.resumeFileName ? savedState.resumeFileName : '',
             resumePreviewUrl: null,
             profileFile: null,
             profilePreview: null,
@@ -650,24 +659,24 @@
             isPhotoModalOpen: false,
             photoModalStep: 'guide',
             cropper: null,
-            errors: @js($errors->getMessages()),
+            errors: serverErrors,
             universities: @js($universities ?? []),
-            uniSearch: '',
+            uniSearch: savedState && savedState.formData && savedState.formData.school ? savedState.formData.school : '',
             isUniDropdownOpen: false,
-            gender: @js(old('gender', null)),
+            gender: savedState && savedState.gender ? savedState.gender : @js(old('gender', null)),
             techSkills: [],
             softSkills: [],
             hasScrolledToAssessment: false,
             formData: {
-                first_name: @js(old('first_name', '')),
-                middle_name: @js(old('middle_name', '')),
-                last_name: @js(old('last_name', '')),
-                email: @js(old('email', '')),
-                phone_number: @js(old('phone_number', '')),
-                school: @js(old('school', '')),
-                gender_other_specify: @js(old('gender_other_specify', '')),
-                emergency_contact: @js(old('emergency_contact', '')),
-                emergency_contact_number: @js(old('emergency_contact_number', ''))
+                first_name: savedState && savedState.formData && savedState.formData.first_name !== undefined ? savedState.formData.first_name : @js(old('first_name', '')),
+                middle_name: savedState && savedState.formData && savedState.formData.middle_name !== undefined ? savedState.formData.middle_name : @js(old('middle_name', '')),
+                last_name: savedState && savedState.formData && savedState.formData.last_name !== undefined ? savedState.formData.last_name : @js(old('last_name', '')),
+                email: savedState && savedState.formData && savedState.formData.email !== undefined ? savedState.formData.email : @js(old('email', '')),
+                phone_number: savedState && savedState.formData && savedState.formData.phone_number !== undefined ? savedState.formData.phone_number : @js(old('phone_number', '')),
+                school: savedState && savedState.formData && savedState.formData.school !== undefined ? savedState.formData.school : @js(old('school', '')),
+                gender_other_specify: savedState && savedState.formData && savedState.formData.gender_other_specify !== undefined ? savedState.formData.gender_other_specify : @js(old('gender_other_specify', '')),
+                emergency_contact: savedState && savedState.formData && savedState.formData.emergency_contact !== undefined ? savedState.formData.emergency_contact : @js(old('emergency_contact', '')),
+                emergency_contact_number: savedState && savedState.formData && savedState.formData.emergency_contact_number !== undefined ? savedState.formData.emergency_contact_number : @js(old('emergency_contact_number', ''))
             },
             init() {
                 // Flatten server-side errors if they are arrays (Laravel's default)
@@ -679,50 +688,21 @@
 
                 Object.keys(assessmentItems).forEach(cat => {
                     assessmentItems[cat].forEach(item => {
-                        const obj = { name: item.competency_text, score: null };
+                        let score = null;
+                        if (savedState) {
+                            const savedList = cat.includes('I.') ? savedState.techSkills : savedState.softSkills;
+                            if (savedList) {
+                                const matched = savedList.find(s => s.name === item.competency_text);
+                                if (matched && matched.score !== null) {
+                                    score = matched.score;
+                                }
+                            }
+                        }
+                        const obj = { name: item.competency_text, score: score };
                         if (cat.includes('I.')) this.techSkills.push(obj);
                         else this.softSkills.push(obj);
                     });
                 });
-
-                // Load saved state from localStorage
-                try {
-                    const saved = localStorage.getItem('smartOnboardingState');
-                    if (saved) {
-                        const state = JSON.parse(saved);
-                        // Only load step if there are no server-side validation errors
-                        if (Object.keys(this.errors).length === 0) {
-                            if (state.step !== undefined && state.step < 4) {
-                                this.step = state.step;
-                            }
-                        }
-                        if (state.formData) {
-                            Object.keys(state.formData).forEach(k => {
-                                if (state.formData[k] !== undefined) {
-                                    this.formData[k] = state.formData[k];
-                                }
-                            });
-                        }
-                        if (state.gender !== undefined) this.gender = state.gender;
-                        if (state.resumeFileName !== undefined) this.resumeFileName = state.resumeFileName;
-                        
-                        // Load techSkills and softSkills scores
-                        if (state.techSkills) {
-                            state.techSkills.forEach(savedSkill => {
-                                const skill = this.techSkills.find(s => s.name === savedSkill.name);
-                                if (skill) skill.score = savedSkill.score;
-                            });
-                        }
-                        if (state.softSkills) {
-                            state.softSkills.forEach(savedSkill => {
-                                const skill = this.softSkills.find(s => s.name === savedSkill.name);
-                                if (skill) skill.score = savedSkill.score;
-                            });
-                        }
-                    }
-                } catch (e) {
-                    console.error('Error loading onboarding state:', e);
-                }
 
                 // If registration succeeded (step 4), clear the persisted state
                 if (this.step === 4) {
