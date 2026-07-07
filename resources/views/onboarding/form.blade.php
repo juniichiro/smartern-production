@@ -329,7 +329,7 @@
                     </div>
 
                     {{-- Dynamic Competency Assessment Form --}}
-                    <div class="space-y-12">
+                    <div class="space-y-12" id="competency-assessment-section">
                         @foreach($assessmentItems as $category => $categoryItems)
                             <div class="bg-white dark:bg-gray-900 rounded-[24px] xs:rounded-[32px] sm:rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 text-left">
                                 <div class="bg-gray-50 dark:bg-gray-950 px-5 xs:px-8 sm:px-10 py-5 sm:py-6 border-b border-gray-100 dark:border-gray-800 rounded-t-[24px] xs:rounded-t-[32px] sm:rounded-t-[40px]">
@@ -647,6 +647,7 @@
             gender: @js(old('gender', null)),
             techSkills: [],
             softSkills: [],
+            hasScrolledToAssessment: false,
             formData: {
                 first_name: @js(old('first_name', '')),
                 middle_name: @js(old('middle_name', '')),
@@ -672,6 +673,23 @@
                         if (cat.includes('I.')) this.techSkills.push(obj);
                         else this.softSkills.push(obj);
                     });
+                });
+
+                // Window Scroll listener to trigger validation when moving on to assessment form
+                window.addEventListener('scroll', () => {
+                    if (this.step !== 2) return;
+                    const section = document.getElementById('competency-assessment-section');
+                    if (!section) return;
+                    const rect = section.getBoundingClientRect();
+                    
+                    if (rect.top < window.innerHeight - 150) {
+                        if (!this.hasScrolledToAssessment) {
+                            this.hasScrolledToAssessment = true;
+                            this.validatePersonalDetailsOnly();
+                        }
+                    } else if (rect.top > window.innerHeight + 100) {
+                        this.hasScrolledToAssessment = false;
+                    }
                 });
             },
             updateSkillInSummary(name, score, isTech) {
@@ -883,6 +901,20 @@
                     this.errors[f] = `This field contains invalid special characters.`;
                 } else {
                     this.errors[f] = false;
+                }
+            },
+            validatePersonalDetailsOnly() {
+                const fields = [
+                    'first_name', 'last_name', 'email', 'school', 
+                    'phone_number', 'emergency_contact', 'emergency_contact_number'
+                ];
+                fields.forEach(f => this.validateField(f));
+                
+                if (!this.gender) {
+                    this.errors['gender'] = 'Please select a gender option.';
+                }
+                if (this.gender === 'other' && (!this.formData.gender_other_specify || !this.formData.gender_other_specify.trim())) {
+                    this.errors['gender_other_specify'] = 'Please specify your identity details.';
                 }
             },
             validateStep(s) { 
