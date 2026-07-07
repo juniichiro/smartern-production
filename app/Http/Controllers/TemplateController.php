@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class TemplateController extends Controller
 {
     /**
-     * Display all request templates.
+     * Display all request templates
      */
     public function index()
     {

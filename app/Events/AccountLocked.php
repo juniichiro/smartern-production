@@ -15,12 +15,12 @@ class AccountLocked implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
-     * Create a new event instance.
+     * Create a new event instance
      */
     public function __construct(public User $user) {}
 
     /**
-     * Get the channels the event should broadcast on.
+     * Get the channels the event should broadcast on
      *
      * @return array<int, Channel>
      */
@@ -32,7 +32,7 @@ class AccountLocked implements ShouldBroadcast
     }
 
     /**
-     * Customize the broadcast name.
+     * Customize the broadcast name
      */
     public function broadcastAs(): string
     {

@@ -13,7 +13,7 @@ class InternManagementController extends Controller
 {
     public function index()
     {
-        // 1. Statistics
+        // Statistics
         // Active: Not yet published certificate
         $activeCount = InternDetail::whereDoesntHave('certificate', function ($q) {
             $q->where('status', 'published');
@@ -28,12 +28,12 @@ class InternManagementController extends Controller
         $avgProgress = InternDetail::selectRaw('AVG(hours_rendered / COALESCE(NULLIF(required_hours, 0), 480) * 100) as avg_prog')->value('avg_prog') ?? 0;
         $avgProgress = min(100, $avgProgress);
 
-        // 2. Main Intern Table (With Relationships - Paginated)
+        // Main Intern Table (With Relationships - Paginated)
         $interns = InternDetail::with(['user', 'office', 'certificate'])
             ->orderBy('last_name', 'asc')
             ->paginate(10);
 
-        // 3. Department Distribution
+        // Department Distribution
         $distribution = Office::withCount('internDetails')->get();
 
         $offices = Office::orderBy('name', 'asc')->get();
@@ -49,7 +49,7 @@ class InternManagementController extends Controller
     }
 
     /**
-     * Display the specified intern's profile and progress.
+     * Display the specified intern's profile and progress
      */
     public function show(User $user, AttendanceService $attendanceService)
     {
@@ -109,7 +109,7 @@ class InternManagementController extends Controller
     }
 
     /**
-     * Update the reporting schedule for the specified intern.
+     * Update the reporting schedule for the specified intern
      */
     public function updateSchedule(\Illuminate\Http\Request $request, User $user)
     {

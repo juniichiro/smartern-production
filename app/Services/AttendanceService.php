@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Http;
 class AttendanceService
 {
     /**
-     * Fetch Philippine holidays for a specific year, cached for 7 days to preserve performance.
+     * Fetch Philippine holidays for a specific year, cached for seven days to preserve performance
      */
     public function getPhilippineHolidays($year)
     {
@@ -42,14 +42,14 @@ class AttendanceService
     }
 
     /**
-     * Check if a specific date is a holiday, has a work suspension, or is a weekend without a work_day override.
+     * Check if a specific date is a holiday, has a work suspension, or is a weekend without a work_day override
      * Returns an array with ['blocked' => true, 'type' => '...', 'description' => '...'] or ['blocked' => false]
      */
     public function checkDateStatus(Carbon $date)
     {
         $dateStr = $date->toDateString();
 
-        // 1. Check database overrides first (they take priority)
+        // Check database overrides first (they take priority)
         // We only care about date-specific overrides here (where school_name is null or applies to everyone)
         $schedule = Schedule::whereDate('date', $dateStr)
             ->whereNull('school_name')
@@ -78,7 +78,7 @@ class AttendanceService
             }
         }
 
-        // 2. Check API holidays
+        // Check API holidays
         $apiHolidays = $this->getPhilippineHolidays($date->year);
         if (isset($apiHolidays[$dateStr])) {
             $holidayDetails = $apiHolidays[$dateStr];
@@ -90,7 +90,7 @@ class AttendanceService
             ];
         }
 
-        // 3. Check weekend rule
+        // Check weekend rule
         if ($date->isWeekend()) {
             return [
                 'blocked' => true,
@@ -105,20 +105,20 @@ class AttendanceService
     }
 
     /**
-     * Get the effective schedule for a specific intern on a specific date.
+     * Get the effective schedule for a specific intern on a specific date
      */
     public function getEffectiveSchedule(User $user, Carbon $date)
     {
         $intern = $user->internDetails;
         $school = $intern->school ?? null;
 
-        // 1. Check for date-specific global overrides (holiday, suspension)
+        // Check for date-specific global overrides (holiday, suspension)
         $dateStatus = $this->checkDateStatus($date);
         if ($dateStatus['blocked']) {
             return $dateStatus;
         }
 
-        // 1.1. Check for school-specific date overrides (holiday, suspension)
+        // Check for school-specific date overrides (holiday, suspension)
         if ($school) {
             $schoolOverride = Schedule::whereDate('date', $date->toDateString())
                 ->where('school_name', $school)
@@ -133,7 +133,7 @@ class AttendanceService
             }
         }
 
-        // 1.2. Check if there is a work_day override (global or school-specific) to bypass weekend block
+        // Check if there is a work_day override (global or school-specific) to bypass weekend block
         $hasWorkDayOverride = Schedule::whereDate('date', $date->toDateString())
             ->where('type', 'work_day')
             ->where(function ($query) use ($school) {
@@ -144,7 +144,7 @@ class AttendanceService
             })
             ->exists();
 
-        // 1.5. Check if scheduled to work today
+        // Check if scheduled to work today
         if (! $hasWorkDayOverride && ! $this->isInternScheduled($user, $date)) {
             return [
                 'blocked' => true,
@@ -153,7 +153,7 @@ class AttendanceService
             ];
         }
 
-        // 2. Check for approved FULL-DAY absence for this user
+        // Check for approved FULL-DAY absence for this user
         $absence = AbsenceRequest::where('intern_id', $user->id)
             ->whereDate('date', $date->toDateString())
             ->where('status', 'approved')
@@ -168,7 +168,7 @@ class AttendanceService
             ];
         }
 
-        // 3. Check for school-specific default schedule (recurring)
+        // Check for school-specific default schedule (recurring)
         if ($school) {
             $schoolSchedule = Schedule::where('type', 'school_default')
                 ->where('school_name', $school)
@@ -197,7 +197,7 @@ class AttendanceService
             }
         }
 
-        // 3. System Default
+        // System Default
         return [
             'blocked' => false,
             'type' => 'system_default',
@@ -211,11 +211,11 @@ class AttendanceService
     }
 
     /**
-     * Get a merged, sorted list of check-ins, holidays, suspensions, and absences for an intern.
+     * Get a merged, sorted list of check-ins, holidays, suspensions, and absences for an intern
      */
     public function getMergedLogs(User $user, $limit = null)
     {
-        // 1. Fetch actual attendance logs
+        // Fetch actual attendance logs
         $actualAttendances = Attendance::where('intern_id', $user->id)
             ->with(['internDetails.user', 'office'])
             ->get()
@@ -223,7 +223,7 @@ class AttendanceService
                 return $item->clock_in->toDateString();
             });
 
-        // 2. Fetch approved absence requests
+        // Fetch approved absence requests
         $absenceRequests = AbsenceRequest::where('intern_id', $user->id)
             ->where('status', 'approved')
             ->get()
@@ -234,7 +234,7 @@ class AttendanceService
         $intern = $user->internDetails;
         $school = $intern ? ($intern->school ?? null) : null;
 
-        // 3. Fetch all schedule overrides (holidays, suspensions, extra workdays)
+        // Fetch all schedule overrides (holidays, suspensions, extra workdays)
         $schedules = Schedule::whereNotNull('date')
             ->where(function ($query) use ($school) {
                 $query->whereNull('school_name');
@@ -250,8 +250,8 @@ class AttendanceService
                 return $item->date->toDateString();
             });
 
-        // 4. Define the active internship period
-        // Priority: 1. Custom start_date/end_date on internDetails, 2. Official start_date in school_default schedule, 3. Account creation date, 4. 30-day fallback
+        // Define the active internship period
+        // Priority: one. Custom start_date/end_date on internDetails, two. Official start_date in school_default schedule, three. Account creation date, four. thirty-day fallback
         $officialStart = null;
         $customEndDate = null;
 
@@ -291,12 +291,12 @@ class AttendanceService
         }
 
         // Simulation/Testing Fix: If calculated start is in the "future" relative to now (and not using official start),
-        // we fallback to showing the last 30 days so logs are visible.
+        // we fallback to showing the last thirty days so logs are visible
         if (! $officialStart && $startDate->greaterThan($endDate)) {
             $startDate = $endDate->copy()->subDays(30);
         }
 
-        // 5. Fetch Philippine holidays for the years in range
+        // Fetch Philippine holidays for the years in range
         $startYear = $startDate->year;
         $endYear = $endDate->year;
 
@@ -305,7 +305,7 @@ class AttendanceService
             $apiHolidays = $apiHolidays->merge($this->getPhilippineHolidays($y));
         }
 
-        // 6. Generate the date calendar period
+        // Generate the date calendar period
         $period = CarbonPeriod::create($startDate, $endDate);
         $mergedLogs = collect();
 
@@ -315,14 +315,14 @@ class AttendanceService
             // Case A: Actual check-in exists in database
             if (isset($actualAttendances[$dateStr])) {
                 $log = $actualAttendances[$dateStr];
-                // ... (rest of actual attendance logic)
+                // (rest of actual attendance logic)
 
                 // Fetch effective schedule to get rounding mode
                 $effectiveSchedule = $this->getEffectiveSchedule($user, $date);
                 $roundingMode = $effectiveSchedule['rounding_mode'] ?? 'none';
 
                 $duration = null;
-                // If the status is excused, duration is ALWAYS 0.00
+                // If the status is excused, duration is ALWAYS zero.zero
                 if ($log->status === 'excused') {
                     $duration = 0.00;
                 } elseif ($log->clock_out) {
@@ -334,7 +334,7 @@ class AttendanceService
                     }
                     $hours = $minutes / 60;
 
-                    // Deduct lunch break if > 5 hours (standard practice in SmarTern)
+                    // Deduct lunch break if > five hours (standard practice in SmarTern)
                     if ($hours > 5.0) {
                         $hours = max(0.0, $hours - 1.0);
                     }
@@ -466,7 +466,7 @@ class AttendanceService
                     if ($date->isToday()) {
                         $effectiveSchedule = $this->getEffectiveSchedule($user, $date);
                         $endTimeStr = $effectiveSchedule['end_time'] ?? '17:00:00';
-                        // Shift end time plus a 15-minute grace period for scanning issues
+                        // Shift end time plus a fifteen-minute grace period for scanning issues
                         $endTime = Carbon::parse($date->toDateString() . ' ' . $endTimeStr)->addMinutes(15);
                         if (now()->greaterThan($endTime)) {
                             $isPastShift = true;
@@ -502,7 +502,7 @@ class AttendanceService
     }
 
     /**
-     * Get the consolidated attendance status for an intern today.
+     * Get the consolidated attendance status for an intern today
      */
     public function getInternStatus($userId)
     {
@@ -522,7 +522,7 @@ class AttendanceService
             $statusMessage = 'You have already completed your shift today.';
         } elseif ($todayRecord) {
             $statusMessage = 'You have already clocked in today at '.$todayRecord->clock_in->format('h:i A').'.';
-            // Throttling: Must wait 5 minutes before clocking out
+            // Throttling: Must wait five minutes before clocking out
             $nextAvailableScan = $todayRecord->clock_in->addMinutes(5);
         }
 
@@ -552,7 +552,7 @@ class AttendanceService
     }
 
     /**
-     * Record a clock-in or clock-out event.
+     * Record a clock-in or clock-out event
      */
     public function recordAttendance($userId, $latitude = null, $longitude = null, $earlyCheckoutReason = null)
     {
@@ -563,7 +563,7 @@ class AttendanceService
             ->whereDate('clock_in', now()->toDateString())
             ->first();
 
-        // 1. Clock Out Logic
+        // Clock Out Logic
         if ($todayRecord) {
             if ($todayRecord->clock_out) {
                 return ['success' => false, 'message' => 'Attendance already completed for today.'];
@@ -593,7 +593,7 @@ class AttendanceService
             $hours = $minutes / 60;
 
             if ($hours > 5.0) {
-                $hours = max(0.0, $hours - 1.0); // deduct 1 hour lunch break
+                $hours = max(0.0, $hours - 1.0); // deduct one hour lunch break
             }
 
             if ($roundingMode === 'floor') {
@@ -721,7 +721,7 @@ class AttendanceService
             ];
         }
 
-        // 2. Clock In Logic
+        // Clock In Logic
         $effectiveSchedule = $this->getEffectiveSchedule($user, now());
 
         if (isset($effectiveSchedule['blocked']) && $effectiveSchedule['blocked']) {
@@ -742,7 +742,7 @@ class AttendanceService
         $status = 'on_time';
         if (isset($effectiveSchedule['start_time'])) {
             $startTime = Carbon::createFromFormat('H:i:s', $effectiveSchedule['start_time']);
-            // Late if after 15-minute grace period
+            // Late if after fifteen-minute grace period
             if (now()->greaterThan($startTime->addMinutes(15))) {
                 $status = 'late';
             }
@@ -766,7 +766,7 @@ class AttendanceService
     }
 
     /**
-     * Get the effective clock-in time based on the late policy.
+     * Get the effective clock-in time based on the late policy
      */
     private function getEffectiveClockIn(Carbon $clockIn, array $effectiveSchedule)
     {
@@ -801,7 +801,7 @@ class AttendanceService
     }
 
     /**
-     * Check if the intern is scheduled to work on a specific date.
+     * Check if the intern is scheduled to work on a specific date
      */
     public function isInternScheduled(User $user, Carbon $date): bool
     {

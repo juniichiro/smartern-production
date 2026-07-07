@@ -10,7 +10,7 @@ class SupervisorDetailSeeder extends Seeder
 {
     public function run(): void
     {
-        // Role 2: Head Supervisor (Malin) -> Assigned to Human Resources
+        // Head Supervisor role: Head Supervisor (Malin) -> Assigned to Human Resources
         $malin = User::where('email', 'malin@smartern.com')->first();
         if ($malin) {
             SupervisorDetail::create([
@@ -23,7 +23,7 @@ class SupervisorDetailSeeder extends Seeder
             ]);
         }
 
-        // Role 3: Standard Supervisor -> Assigned to ICT Department
+        // Supervisor role: Standard Supervisor -> Assigned to ICT Department
         $supervisor = User::where('email', 'supervisor@smartern.com')->first();
         if ($supervisor) {
             SupervisorDetail::create([

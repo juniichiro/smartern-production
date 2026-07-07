@@ -11,7 +11,7 @@ use Symfony\Component\Process\Process;
 class SmartMatchingService
 {
     /**
-     * Run matching for a single applicant against all offices.
+     * Run matching for a single applicant against all offices
      */
     public function runMatchingForApplicant(OnboardingApplicant $applicant)
     {
@@ -37,7 +37,7 @@ class SmartMatchingService
     }
 
     /**
-     * Internal batch processor for Rete script execution.
+     * Internal batch processor for Rete script execution
      */
     public function processMatchingBatch(array $allStudentData, $rules)
     {

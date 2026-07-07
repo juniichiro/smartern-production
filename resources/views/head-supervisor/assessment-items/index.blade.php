@@ -38,7 +38,7 @@
                             <div class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 p-6 flex flex-col justify-between hover:shadow-md transition-all group">
                                 <div class="space-y-4">
                                     <div class="flex justify-between items-start">
-                                        <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Item #{{ $item->order_index + 1 }}</span>
+                                        <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Item # {{ $item->order_index + one }}</span>
                                         <div class="flex gap-1">
                                             <button @click="editItemOpen = true; editItem = {{ $item->toJson() }}; editItem.id = '{{ $item->getRouteKey() }}'" 
                                                     class="p-2 text-gray-300 dark:text-gray-600 hover:text-[#0B5694] dark:hover:text-blue-400 transition-colors">

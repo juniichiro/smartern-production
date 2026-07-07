@@ -170,7 +170,7 @@
             ruleScores: {},
             
             init() {
-                // Initialize all items with 1 (Not Required)
+                // Initialize all items with one (Not Required)
                 Object.values(this.groupedItems).forEach(categoryItems => {
                     categoryItems.forEach(item => {
                         this.ruleScores[item.id] = 1;

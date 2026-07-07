@@ -30,7 +30,7 @@ class TaskController extends Controller
     }
 
     /**
-     * Display the main monitoring dashboard.
+     * Display the main monitoring dashboard
      */
     public function index()
     {
@@ -86,7 +86,7 @@ class TaskController extends Controller
     }
 
     /**
-     * Dispatch new tasks to interns with restriction for completed internships.
+     * Dispatch new tasks to interns with restriction for completed internships
      */
     public function store(StoreTaskRequest $request)
     {
@@ -156,7 +156,7 @@ class TaskController extends Controller
     }
 
     /**
-     * View all tasks for a specific intern.
+     * View all tasks for a specific intern
      */
     public function internTasks(User $user)
     {
@@ -174,7 +174,7 @@ class TaskController extends Controller
     }
 
     /**
-     * Show task details for review.
+     * Show task details for review
      */
     public function show($taskKey)
     {
@@ -200,7 +200,7 @@ class TaskController extends Controller
     }
 
     /**
-     * Update task details.
+     * Update task details
      */
     public function update(UpdateTaskRequest $request, Task $task)
     {
@@ -219,7 +219,7 @@ class TaskController extends Controller
     }
 
     /**
-     * Approve or Request Revision.
+     * Approve or Request Revision
      */
     public function updateStatus(UpdateTaskStatusRequest $request, Task $task)
     {
@@ -312,7 +312,7 @@ class TaskController extends Controller
     }
 
     /**
-     * Delete a task.
+     * Delete a task
      */
     public function destroy(Task $task)
     {

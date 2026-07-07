@@ -17,7 +17,7 @@ class OfficeAnnouncementMail extends Mailable implements ShouldQueue
     use Queueable, SerializesModels;
 
     /**
-     * Create a new message instance.
+     * Create a new message instance
      */
     public function __construct(
         public Announcement $announcement,
@@ -39,7 +39,7 @@ class OfficeAnnouncementMail extends Mailable implements ShouldQueue
     }
 
     /**
-     * Get the message content definition.
+     * Get the message content definition
      */
     public function content(): Content
     {
@@ -49,7 +49,7 @@ class OfficeAnnouncementMail extends Mailable implements ShouldQueue
     }
 
     /**
-     * Get the attachments for the message.
+     * Get the attachments for the message
      *
      * @return array<int, Attachment>
      */

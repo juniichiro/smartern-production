@@ -43,7 +43,7 @@ class ReportController extends Controller
         $completionPercentage = $totalTasksCount > 0 ? round(($completedTasksCount / $totalTasksCount) * 100) : 0;
         $internPerformance = $this->getInternPerformance($user);
 
-        // Generate dynamic labels for the last 6 months
+        // Generate dynamic labels for the last six months
         $months = collect(range(5, 0))->map(function ($i) {
             return now()->subMonths($i)->format('M');
         })->values()->toArray();
@@ -95,7 +95,7 @@ class ReportController extends Controller
         $pendingTasksCount = (clone $taskQuery)->where('status', 'pending')->count();
         $internPerformance = $this->getInternPerformance($user);
 
-        // Logo Base64 encoding
+        // Logo base sixty-four encoding
         $logoSrc = null;
         $logoPath = public_path('images/blue-smartern.png'); // Ensure this matches your actual file name
         if (file_exists($logoPath)) {

@@ -679,8 +679,8 @@
 
             getCellLabel(day) {
                 if (day.events && day.events.length > 0) {
-                    // Only show status override if APPROVED or REJECTED. 
-                    // Pending requests still show as "Workday" or "Weekend" at the top level.
+                    // Only show status override if APPROVED or REJECTED
+                    // Pending requests still show as "Workday" or "Weekend" at the top level
                     const absence = day.events.find(e => e.type === 'absence_request' && e.status !== 'pending');
                     if (absence) {
                         const prefix = absence.request_type === 'early_leave' ? 'Leave ' : 'Absence ';

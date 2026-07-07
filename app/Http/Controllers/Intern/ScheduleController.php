@@ -32,7 +32,7 @@ class ScheduleController extends Controller
 
         $eventsByDate = [];
 
-        // 1. Add API holidays
+        // Add API holidays
         foreach ($apiHolidays as $dateStr => $holiday) {
             $eventsByDate[$dateStr][] = [
                 'type' => 'holiday',
@@ -40,7 +40,7 @@ class ScheduleController extends Controller
             ];
         }
 
-        // 2. Add database overrides (takes precedence/clears API holiday for the date)
+        // Add database overrides (takes precedence/clears API holiday for the date)
         $schedules = Schedule::whereNotNull('date')->orderBy('date', 'desc')->get();
         foreach ($schedules as $item) {
             $dateStr = $item->date->toDateString();
@@ -53,7 +53,7 @@ class ScheduleController extends Controller
             ];
         }
 
-        // 3. Add Intern's tasks
+        // Add Intern's tasks
         $tasks = Task::where('intern_id', $user->id)->get();
         foreach ($tasks as $task) {
             $dateStr = $task->due_date->toDateString();
@@ -73,7 +73,7 @@ class ScheduleController extends Controller
             ];
         }
 
-        // 4. Add Absence Requests
+        // Add Absence Requests
         $absences = AbsenceRequest::where('intern_id', $user->id)->get();
         foreach ($absences as $absence) {
             $dateStr = $absence->date->toDateString();
@@ -99,7 +99,7 @@ class ScheduleController extends Controller
         $validated = $request->validate([
             'date' => 'required|date|after_or_equal:today',
             'reason' => 'required|string|max:1000',
-            'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120', // 5MB Limit
+            'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120', // MB Limit
         ]);
 
         $user = Auth::user();

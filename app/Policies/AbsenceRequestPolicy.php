@@ -11,7 +11,7 @@ class AbsenceRequestPolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view the absence request.
+     * Determine whether the user can view the absence request
      */
     public function view(User $user, AbsenceRequest $absenceRequest): bool
     {
@@ -20,7 +20,7 @@ class AbsenceRequestPolicy
     }
 
     /**
-     * Determine whether the user can create absence requests.
+     * Determine whether the user can create absence requests
      */
     public function create(User $user): bool
     {
@@ -28,7 +28,7 @@ class AbsenceRequestPolicy
     }
 
     /**
-     * Determine whether the user can update the absence request.
+     * Determine whether the user can update the absence request
      */
     public function update(User $user, AbsenceRequest $absenceRequest): bool
     {
@@ -36,7 +36,7 @@ class AbsenceRequestPolicy
     }
 
     /**
-     * Determine whether the user can delete the absence request.
+     * Determine whether the user can delete the absence request
      */
     public function delete(User $user, AbsenceRequest $absenceRequest): bool
     {

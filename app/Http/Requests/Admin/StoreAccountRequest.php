@@ -9,7 +9,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class StoreAccountRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * Determine if the user is authorized to make this request
      */
     public function authorize(): bool
     {
@@ -17,7 +17,7 @@ class StoreAccountRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Get the validation rules that apply to the request
      */
     public function rules(): array
     {

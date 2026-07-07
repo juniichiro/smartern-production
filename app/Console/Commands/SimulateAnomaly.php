@@ -15,21 +15,21 @@ use Illuminate\Support\Facades\Mail;
 class SimulateAnomaly extends Command
 {
     /**
-     * The name and signature of the console command.
+     * The name and signature of the console command
      *
      * @var string
      */
     protected $signature = 'app:simulate-anomaly {user_id : The ID of the user to log the anomaly for} {--score=0.85 : The anomaly score to assign} {--action=Authentication : The simulated action name} {--ip=203.87.154.22 : The IP address to log} {--lockout : Whether to also trigger the automatic lockout and admin alerts}';
 
     /**
-     * The console command description.
+     * The console command description
      *
      * @var string
      */
     protected $description = 'Simulate a critical security anomaly for testing and presentation purposes.';
 
     /**
-     * Execute the console command.
+     * Execute the console command
      */
     public function handle()
     {

@@ -21,7 +21,7 @@ def extract_smart_data(pdf_path):
                                 spans.append({
                                     "text": text,
                                     "size": span["size"],
-                                    "flags": span["flags"], # bit 4 is bold
+                                    "flags": span["flags"], # bit four is bold
                                     "y": span["origin"][1],
                                     "x": span["origin"][0],
                                     "bbox": span["bbox"]
@@ -30,7 +30,7 @@ def extract_smart_data(pdf_path):
 
         raw_text = " ".join(full_text_list)
         
-        # 1. VISUAL-FIRST NAME EXTRACTION
+        # VISUAL-FIRST NAME EXTRACTION
         forbidden_keywords = {
             'resume', 'cv', 'curriculum', 'vitae', 'profile', 'contact', 'experience', 
             'education', 'skills', 'summary', 'about', 'objective', 'certification',
@@ -93,7 +93,7 @@ def extract_smart_data(pdf_path):
         name_candidates.sort(key=lambda x: x[1], reverse=True)
         final_name = name_candidates[0][0] if name_candidates else ""
 
-        # 2. UNIVERSITY EXTRACTION
+        # UNIVERSITY EXTRACTION
         candidate_uni = ""
         uni_keywords = {'university', 'college', 'school', 'academy', 'institute', 'polytechnic', 'foundation'}
         for span in spans[:50]:
@@ -104,7 +104,7 @@ def extract_smart_data(pdf_path):
                     candidate_uni = txt
                     break
 
-        # 3. CONTACT EXTRACTION
+        # CONTACT EXTRACTION
         email = ""
         # Stricter Email: Must not be followed by a DOI or look like a citation
         email_match = re.search(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}', raw_text)
@@ -115,13 +115,13 @@ def extract_smart_data(pdf_path):
                 email = cand_email
 
         phone = ""
-        # Strict Phone (PH Optimized): Must look like 09... or +639... or landline with area code
-        # Prevents matching strings like "2024.2448885"
+        # Strict Phone (PH Optimized): Must look like nine... or +six hundred and thirty-nine... or landline with area code
+        # Prevents matching strings like "two thousand and twenty-four.twofourfoureighteighteightfive"
         ph_patterns = [
-            r'(?:\+63|0)9\d{9}',                # Mobile: 09171234567 or +639171234567
-            r'(?:\+63|0)2\d{8}',                # Manila Landline: 0281234567
+            r'(?:\+63|0)9\d{9}',                # Mobile: nineonesevenonetwothreefourfivesixseven or +sixthreenineonesevenonetwothreefourfivesixseven
+            r'(?:\+63|0)2\d{8}',                # Manila Landline: twoeightonetwothreefourfivesixseven
             r'(?:\+63|0)[3-9]\d\d{7}',          # Provincial Landline
-            r'\d{3}-\d{3}-\d{4}'                # General formatted: 091-712-3456 (less common in PH but valid)
+            r'\d{3}-\d{3}-\d{4}'                # General formatted: ninety-one-seven hundred and twelve-three thousand and four hundred and fifty-six (less common in PH but valid)
         ]
         
         for pattern in ph_patterns:

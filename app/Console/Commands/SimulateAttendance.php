@@ -21,7 +21,7 @@ class SimulateAttendance extends Command
         $email = 'rtbritos@smartern.com';
         $this->info("🚀 Starting Advanced Attendance Simulation for {$email}...");
 
-        // 1. Find existing User
+        // Find existing User
         $user = User::where('email', $email)->first();
         if (! $user) {
             $this->error("User {$email} not found. Please run 'php artisan db:seed' first.");
@@ -29,12 +29,12 @@ class SimulateAttendance extends Command
             return;
         }
 
-        // 2. Retroactive fix for created_at
+        // Retroactive fix for created_at
         $accountCreationDate = Carbon::parse('2026-06-01');
         $user->created_at = $accountCreationDate;
         $user->save();
 
-        // 3. Reset existing data for clean simulation
+        // Reset existing data for clean simulation
         Attendance::where('intern_id', $user->id)->delete();
         AbsenceRequest::where('intern_id', $user->id)->delete();
         $user->internDetails->update(['hours_rendered' => 0]);
@@ -57,7 +57,7 @@ class SimulateAttendance extends Command
         $userId = $user->id;
         $officeId = $user->internDetails->office_id;
 
-        // Reference Week (June 8 to June 12, 2026)
+        // Reference Week (June eight to June twelve,
         $monday = Carbon::parse('2026-06-08');
 
         $scenarios = [
@@ -108,7 +108,7 @@ class SimulateAttendance extends Command
 
         foreach ($scenarios as $s) {
             if ($s['type'] === 'excused') {
-                // 1. Create the Approved Absence Request in Schedule
+                // Create the Approved Absence Request in Schedule
                 AbsenceRequest::create([
                     'intern_id' => $userId,
                     'date' => $s['date'],
@@ -120,7 +120,7 @@ class SimulateAttendance extends Command
                     'reviewed_at' => now(),
                 ]);
 
-                // 2. Create the Attendance Log entry with 'excused' status
+                // Create the Attendance Log entry with 'excused' status
                 Attendance::create([
                     'intern_id' => $userId,
                     'office_id' => $officeId,
@@ -173,7 +173,7 @@ class SimulateAttendance extends Command
             $this->info("CREATED: {$s['label']} on {$s['date']->toDateString()} (+{$hours} hrs)");
         }
 
-        // 4. Create a Pending Future Request (Next Monday) with Attachment
+        // Create a Pending Future Request (Next Monday) with Attachment
         $futureDate = Carbon::parse('2026-06-15');
         AbsenceRequest::create([
             'intern_id' => $userId,

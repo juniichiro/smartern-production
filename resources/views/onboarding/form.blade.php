@@ -805,11 +805,11 @@
                 // Strip all non-digit characters to check pure numeric length
                 let digits = val.replace(/\D/g, '');
                 
-                // If it's exactly 10 digits and doesn't start with 0, prepend 0
+                // If it's exactly ten digits and doesn't start with zero, prepend zero
                 if (digits.length === 10 && !digits.startsWith('0')) {
                     this.formData[f] = '0' + digits;
                 } else {
-                    // Otherwise, just use the cleaned digits (or original if symbols are preferred, 
+                    // Otherwise, just use the cleaned digits (or original if symbols are preferred,
                     // but usually for system consistency we want the clean format)
                     this.formData[f] = digits;
                 }

@@ -138,7 +138,7 @@ class CertificateController extends Controller
     }
 
     /**
-     * Show the page to edit the certificate template.
+     * Show the page to edit the certificate template
      */
     public function editTemplate()
     {
@@ -147,7 +147,7 @@ class CertificateController extends Controller
     }
 
     /**
-     * Update/upload the certificate template.
+     * Update/upload the certificate template
      */
     public function updateTemplate(\Illuminate\Http\Request $request)
     {
@@ -198,7 +198,7 @@ class CertificateController extends Controller
     }
 
     /**
-     * Update the certificate metadata snapshot details directly (e.g. in case of system glitches).
+     * Update the certificate metadata snapshot details directly (e.g. in case of system glitches)
      */
     public function updateDetails(\Illuminate\Http\Request $request, Certificate $certificate)
     {

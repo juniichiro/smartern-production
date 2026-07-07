@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class StoreAnnouncementRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * Determine if the user is authorized to make this request
      */
     public function authorize(): bool
     {
@@ -16,7 +16,7 @@ class StoreAnnouncementRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Get the validation rules that apply to the request
      */
     public function rules(): array
     {
@@ -29,7 +29,7 @@ class StoreAnnouncementRequest extends FormRequest
     }
 
     /**
-     * Sanitize input content to block stored XSS vectors.
+     * Sanitize input content to block stored XSS vectors
      */
     protected function passedValidation()
     {

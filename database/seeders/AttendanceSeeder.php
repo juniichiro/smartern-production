@@ -16,11 +16,11 @@ class AttendanceSeeder extends Seeder
         foreach ($interns as $intern) {
             $hours = $intern->hours_rendered ?: 0;
             if ($hours === 0) {
-                // If 0, let's add a few days for testing
+                // If zero, let's add a few days for testing
                 $hours = 40; 
             }
 
-            // 8 hours per day
+            // hours per day
             $daysToSeed = ceil($hours / 8);
             $startDate = Carbon::now()->subDays($daysToSeed + 5);
 
@@ -38,7 +38,7 @@ class AttendanceSeeder extends Seeder
                     continue;
                 }
 
-                // Randomize clock in/out slightly around 8:00 AM and 5:00 PM
+                // Randomize clock in/out slightly around zero AM and zero PM
                 $clockIn = $currentDate->copy()->hour(8)->minute(rand(0, 15))->second(rand(0, 59));
                 $clockOut = $currentDate->copy()->hour(17)->minute(rand(0, 10))->second(rand(0, 59));
 

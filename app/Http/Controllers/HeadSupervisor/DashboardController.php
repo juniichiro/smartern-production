@@ -16,7 +16,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // 1. Division-wide Stats Calculation
+        // Division-wide Stats Calculation
         $totalApplicants = InternDetail::count();
 
         $matchedCount = MatchResult::distinct('applicant_name')->count();
@@ -24,7 +24,7 @@ class DashboardController extends Controller
         /**
          * UPDATED: Active Interns
          * Interns are active if they are assigned to an office AND
-         * do not have a PUBLISHED certificate yet.
+         * do not have a PUBLISHED certificate yet
          */
         $activeInterns = InternDetail::whereNotNull('office_id')
             ->whereDoesntHave('certificate', function ($query) {
@@ -35,7 +35,7 @@ class DashboardController extends Controller
         // Pending Certificates
         $pendingCertificates = Certificate::where('status', 'pending')->count();
 
-        // 1.1 Department-specific Stats & Data (If acting as Supervisor)
+        // Department-specific Stats & Data (If acting as Supervisor)
         $supervisorDetail = Auth::user()->supervisorDetails;
         $deptStats = null;
         $deptInterns = collect();
@@ -46,7 +46,7 @@ class DashboardController extends Controller
         if ($supervisorDetail && $supervisorDetail->office_id) {
             $officeId = $supervisorDetail->office_id;
 
-            // 1.1.1 Fetch active dept interns
+            // Fetch active dept interns
             $deptInterns = InternDetail::where('office_id', $officeId)
                 ->whereDoesntHave('certificate', function ($query) {
                     $query->where('status', 'published');
@@ -56,7 +56,7 @@ class DashboardController extends Controller
 
             $deptInternIds = $deptInterns->pluck('user_id');
 
-            // 1.1.2 Stats
+            // Stats
             $deptStats = [
                 'office_name' => $supervisorDetail->office->name ?? 'Assigned Department',
                 'active_interns' => $deptInterns->count(),
@@ -67,7 +67,7 @@ class DashboardController extends Controller
                     ->count(),
             ];
 
-            // 1.1.3 Upcoming Deadlines
+            // Upcoming Deadlines
             $upcomingDeadlines = Task::whereIn('intern_id', $deptInternIds)
                 ->with('internDetails')
                 ->where('status', 'pending')
@@ -76,14 +76,14 @@ class DashboardController extends Controller
                 ->take(3)
                 ->get();
 
-            // 1.1.4 Active Attendance (Clocked in but not out today)
+            // Active Attendance (Clocked in but not out today)
             $activeAttendance = Attendance::whereIn('intern_id', $deptInternIds)
                 ->whereDate('clock_in', now()->today())
                 ->whereNull('clock_out')
                 ->with('internDetails')
                 ->get();
 
-            // 1.1.5 Submissions Needing Review
+            // Submissions Needing Review
             $submissionsNeedingReview = Task::whereIn('intern_id', $deptInternIds)
                 ->where('status', 'pending')
                 ->has('submissions')
@@ -95,7 +95,7 @@ class DashboardController extends Controller
                 ->get();
         }
 
-        // 2. Recent Applications with Match Scores (Matched but not finalized/assigned yet)
+        // Recent Applications with Match Scores (Matched but not finalized/assigned yet)
         $recentApplications = OnboardingApplicant::whereIn('full_name', function ($query) {
             $query->select('applicant_name')
                 ->from('match_results');
@@ -118,19 +118,19 @@ class DashboardController extends Controller
                 $intern->matched_office = $bestMatch && $bestMatch->office ? $bestMatch->office->name : 'Unassigned';
             });
 
-        // 3. Department Load Overview
+        // Department Load Overview
         $officeLoad = Office::withCount('internDetails')
             ->orderBy('intern_details_count', 'desc')
             ->get();
 
-        // 4. Pending Certificates Details
+        // Pending Certificates Details
         $pendingCertificateDetails = Certificate::where('status', 'pending')
             ->with('intern')
             ->latest()
             ->take(5)
             ->get();
 
-        // 5. Endorsement Queue: Interns endorsed by Supervisor (status 'pending') but not yet finalized
+        // Endorsement Queue: Interns endorsed by Supervisor (status 'pending') but not yet finalized
         $endorsementQueue = InternDetail::whereHas('certificate', function ($query) {
             $query->where('status', 'pending');
         })

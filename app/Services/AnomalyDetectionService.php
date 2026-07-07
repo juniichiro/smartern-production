@@ -19,10 +19,10 @@ class AnomalyDetectionService
 {
     public function recalculateScores()
     {
-        // 1. Proactively ensure the daemon is running for maximum performance
+        // Proactively ensure the daemon is running for maximum performance
         $this->ensureDaemonIsRunning();
 
-        // 2. Fetch logs that need scoring (select anomaly_score as well).
+        // Fetch logs that need scoring (select anomaly_score as well)
         $logs = AuditLog::with('user:id,role_id')->latest('timestamp')
             ->select('log_id', 'user_id', 'action', 'ip_address', 'user_agent', 'device', 'anomaly_score', 'timestamp')
             ->limit(500)
@@ -81,13 +81,13 @@ class AnomalyDetectionService
 
                 Cache::forget('security_monitor_counts');
 
-                // Fetch newly updated logs that have critical anomaly scores (> 0.7)
+                // Fetch newly updated logs that have critical anomaly scores (> zero
                 $criticalLogs = AuditLog::whereIn('log_id', $ids)
                     ->where('anomaly_score', '>', 0.7)
                     ->with('user')
                     ->get();
 
-                // Fetch newly updated logs that have warning anomaly scores (0.51 - 0.7)
+                // Fetch newly updated logs that have warning anomaly scores (zero.fifty-one - zero
                 $warningLogs = AuditLog::whereIn('log_id', $ids)
                     ->whereBetween('anomaly_score', [0.51, 0.7])
                     ->with('user')
@@ -109,7 +109,7 @@ class AnomalyDetectionService
                                 }
                             }
 
-                            // 2. Send notifications to all Admins and Super Admins (bypassing global scopes)
+                            // Send notifications to all Admins and Super Admins (bypassing global scopes)
                             $recipients = User::withoutGlobalScopes()
                                 ->whereIn('role_id', [UserRole::ADMIN->value, UserRole::SUPER_ADMIN->value])
                                 ->get();
@@ -192,7 +192,7 @@ class AnomalyDetectionService
 
     /**
      * Scores a single log entry synchronously, saving the score,
-     * and taking appropriate action if it is flagged.
+     * and taking appropriate action if it is flagged
      */
     public function scoreSingleLog(AuditLog $log)
     {
@@ -323,7 +323,7 @@ class AnomalyDetectionService
     }
 
     /**
-     * Attempts to start the daemon if it's not responding.
+     * Attempts to start the daemon if it's not responding
      */
     protected function ensureDaemonIsRunning()
     {
@@ -367,8 +367,8 @@ class AnomalyDetectionService
     }
 
     /**
-     * Appends a trusted log entry to the local baseline file to prevent future false positives.
-     * This is typically called after a successful MFA verification.
+     * Appends a trusted log entry to the local baseline file to prevent future false positives
+     * This is typically called after a successful MFA verification
      */
     public function warmBaseline(AuditLog $log)
     {
@@ -389,7 +389,7 @@ class AnomalyDetectionService
             'timestamp' => $log->timestamp?->toDateTimeString(),
         ];
 
-        // Keep baseline at a manageable size (last 2000 patterns)
+        // Keep baseline at a manageable size (last two thousand patterns)
         if (count($baseline) > 2000) {
             array_shift($baseline);
         }
@@ -398,8 +398,8 @@ class AnomalyDetectionService
     }
 
     /**
-     * Seeds the baseline for a specific user based on their role and current login credentials.
-     * This avoids the cold-start problem and prevents false-positive warnings.
+     * Seeds the baseline for a specific user based on their role and current login credentials
+     * This avoids the cold-start problem and prevents false-positive warnings
      */
     public function seedUserBaseline(User $user, string $ip, string $userAgent, bool $force = false)
     {
@@ -464,7 +464,7 @@ class AnomalyDetectionService
             }
         }
 
-        // Keep baseline at a manageable size (last 4000 entries max to prevent excessive file sizes)
+        // Keep baseline at a manageable size (last four thousand entries max to prevent excessive file sizes)
         if (count($baseline) > 4000) {
             $baseline = array_slice($baseline, -4000);
         }

@@ -84,8 +84,8 @@
         })
         .then(response => response.json())
         .then(data => {
-            // Once finished, reload the current page. 
-            // The Middleware will now let it through because the session flag is set.
+            // Once finished, reload the current page
+            // The Middleware will now let it through because the session flag is set
             window.location.reload();
         })
         .catch(error => {

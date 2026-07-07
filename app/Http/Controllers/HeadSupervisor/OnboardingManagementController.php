@@ -15,7 +15,7 @@ class OnboardingManagementController extends Controller
 
     public function index()
     {
-        // 1. Fetch Applicants (Paginated)
+        // Fetch Applicants (Paginated)
         $applicants = OnboardingApplicant::latest()->paginate(10);
  
         $mappedApplicants = $applicants->getCollection()->map(function ($app) {
@@ -46,7 +46,7 @@ class OnboardingManagementController extends Controller
 
         $applicants->setCollection($mappedApplicants);
 
-        // 2. Fetch Offices
+        // Fetch Offices
         $offices = Office::withCount(['internDetails', 'supervisorDetails'])
             ->with(['supervisorDetails.user'])
             ->get()

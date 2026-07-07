@@ -19,7 +19,7 @@ class TaskSeeder extends Seeder
             $supervisorDetail = SupervisorDetail::where('office_id', $intern->office_id)->first();
             $supervisorId = $supervisorDetail ? $supervisorDetail->user_id : 4; // User ID fallback
 
-            // 1. Completed Task 1
+            // Completed Task one
             Task::create([
                 'supervisor_id' => $supervisorId,
                 'intern_id' => $intern->user_id,
@@ -32,7 +32,7 @@ class TaskSeeder extends Seeder
                 'is_file_required' => false,
             ]);
 
-            // 2. Completed Task 2
+            // Completed Task two
             Task::create([
                 'supervisor_id' => $supervisorId,
                 'intern_id' => $intern->user_id,
@@ -45,7 +45,7 @@ class TaskSeeder extends Seeder
                 'is_file_required' => false,
             ]);
 
-            // 3. Pending Task (Awaiting Action)
+            // Pending Task (Awaiting Action)
             Task::create([
                 'supervisor_id' => $supervisorId,
                 'intern_id' => $intern->user_id,
@@ -58,7 +58,7 @@ class TaskSeeder extends Seeder
                 'file_path' => 'reports/sample_report.pdf',
             ]);
 
-            // 4. Pending / Revision Task
+            // Pending / Revision Task
             $statusOptions = ['pending', 'revision'];
             $selectedStatus = $statusOptions[rand(0, 1)];
             Task::create([

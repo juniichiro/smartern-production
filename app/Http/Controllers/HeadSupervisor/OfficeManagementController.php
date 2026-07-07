@@ -39,7 +39,7 @@ class OfficeManagementController extends Controller
             // Insert new rules
             if ($request->has('rules')) {
                 foreach ($request->rules as $ruleData) {
-                    // Only save rules that are actually required (priority > 1)
+                    // Only save rules that are actually required (priority >
                     if ($ruleData['priority'] > 1) {
                         OfficeRule::create([
                             'office_id' => $office->id,

@@ -12,7 +12,7 @@ use Illuminate\Console\Command;
 class ArchiveAuditLogs extends Command
 {
     /**
-     * Execute the console command.
+     * Execute the console command
      */
     public function handle()
     {
@@ -79,7 +79,7 @@ class ArchiveAuditLogs extends Command
 
         // Compress the JSON file to Gzip
         $this->info("Compressing {$totalArchived} logs into Gzip archive...");
-        $gzFile = gzopen($gzPath, 'w9'); // w9 is maximum compression
+        $gzFile = gzopen($gzPath, 'w9'); // maximum compression is maximum compression
         if (! $gzFile) {
             $this->error('Failed to open Gzip file for compression.');
             if (file_exists($tempJsonPath)) {

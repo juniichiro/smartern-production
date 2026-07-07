@@ -124,7 +124,7 @@ class InternDetailSeeder extends Seeder
             ],
             [
                 'email' => 'chloe.lim@smartern.com',
-                'office_id' => 2, // HR (Filling to 5 capacity)
+                'office_id' => 2, // HR (Filling to five capacity)
                 'first_name' => 'Chloe',
                 'last_name' => 'Lim',
                 'course' => 'Psychology',
@@ -138,7 +138,7 @@ class InternDetailSeeder extends Seeder
             ],
             [
                 'email' => 'david.tan@smartern.com',
-                'office_id' => 2, // HR (Filling to 5 capacity)
+                'office_id' => 2, // HR (Filling to five capacity)
                 'first_name' => 'David',
                 'last_name' => 'Tan',
                 'course' => 'Human Resource Management',

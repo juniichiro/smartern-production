@@ -14,21 +14,21 @@ use ZipArchive;
 class RunBackup extends Command
 {
     /**
-     * The name and signature of the console command.
+     * The name and signature of the console command
      *
      * @var string
      */
     protected $signature = 'backup:run {--type=manual} {--admin_id=}';
 
     /**
-     * The console command description.
+     * The console command description
      *
      * @var string
      */
     protected $description = 'Run a system backup (Database and storage files)';
 
     /**
-     * Execute the console command.
+     * Execute the console command
      */
     public function handle()
     {
@@ -53,7 +53,7 @@ class RunBackup extends Command
             Storage::disk('local')->makeDirectory('backups');
         }
 
-        // 1. Create Initial Record (so it's in the DB backup)
+        // Create Initial Record (so it's in the DB backup)
         $backupRecord = SystemBackup::create([
             'admin_id' => $adminId,
             'backup_type' => $type === 'auto' ? 'auto' : 'manual',
@@ -66,7 +66,7 @@ class RunBackup extends Command
 
         if ($zip->open($fullPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
 
-            // 2. Backup Database
+            // Backup Database
             $driver = config('database.default');
             if ($driver === 'sqlite') {
                 $dbName = config('database.connections.sqlite.database');
@@ -123,11 +123,11 @@ class RunBackup extends Command
                     return 1;
                 }
 
-                // Note: We don't delete tempSqlPath here yet because zip->close() needs it.
-                // We'll clean it up after closing.
+                // Note: We don't delete tempSqlPath here yet because zip->close needs it
+                // We'll clean it up after closing
             }
 
-            // 3. Backup Storage
+            // Backup Storage
             $this->info('Backing up storage files...');
             $disk = Storage::disk('public');
             $files = $disk->allFiles();
@@ -146,7 +146,7 @@ class RunBackup extends Command
 
             $zip->close();
 
-            // Cleanup S3 temp files
+            // Cleanup cloud storage temp files
             if (!empty($tempFilesToClean)) {
                 foreach ($tempFilesToClean as $tempFile) {
                     if (file_exists($tempFile)) {
@@ -160,7 +160,7 @@ class RunBackup extends Command
                 @unlink($tempSqlPath);
             }
 
-            // 4. Calculate SHA-256 integrity hash
+            // Calculate SHA hash integrity hash
             $hash = hash_file('sha256', $fullPath);
             $this->info("Backup SHA-256 hash: {$hash}");
             Log::info("Backup SHA-256 integrity hash: {$hash}");
@@ -189,7 +189,7 @@ class RunBackup extends Command
     }
 
     /**
-     * Format bytes to readable string.
+     * Format bytes to readable string
      */
     private function formatBytes($bytes, $precision = 2)
     {

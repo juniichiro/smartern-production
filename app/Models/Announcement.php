@@ -20,7 +20,7 @@ class Announcement extends Model
     ];
 
     /**
-     * Get the user (Supervisor) who created the announcement.
+     * Get the user (Supervisor) who created the announcement
      */
     public function user(): BelongsTo
     {
@@ -28,7 +28,7 @@ class Announcement extends Model
     }
 
     /**
-     * Get the office this announcement is scoped to (null if global).
+     * Get the office this announcement is scoped to (null if global)
      */
     public function office(): BelongsTo
     {
@@ -36,8 +36,8 @@ class Announcement extends Model
     }
 
     /**
-     * Helper to get the specific supervisor details through the user.
-     * This assumes your User model has a supervisorDetails relationship.
+     * Helper to get the specific supervisor details through the user
+     * This assumes your User model has a supervisorDetails relationship
      */
     public function supervisor()
     {
@@ -45,7 +45,7 @@ class Announcement extends Model
     }
 
     /**
-     * Dynamically sanitize content on retrieval to neutralize legacy stored XSS.
+     * Dynamically sanitize content on retrieval to neutralize legacy stored XSS
      */
     protected function content(): \Illuminate\Database\Eloquent\Casts\Attribute
     {

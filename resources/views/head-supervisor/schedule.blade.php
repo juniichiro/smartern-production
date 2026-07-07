@@ -1177,7 +1177,7 @@
                 const today = new Date();
                 today.setHours(0, 0, 0, 0);
                 
-                // Use T00:00:00 to ensure local midnight parsing
+                // Use Tzerozero:zero to ensure local midnight parsing
                 const date = new Date(dateStr + 'T00:00:00');
                 date.setHours(0, 0, 0, 0);
                 
@@ -1301,7 +1301,7 @@
                 let h = parseInt(hours);
                 const ampm = h >= 12 ? 'PM' : 'AM';
                 h = h % 12;
-                h = h ? h : 12; // the hour '0' should be '12'
+                h = h ? h : 12; // the hour 'zero' should be 'twelve'
                 return `${h}:${minutes} ${ampm}`;
             },
 

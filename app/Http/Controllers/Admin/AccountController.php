@@ -41,7 +41,7 @@ class AccountController extends Controller
 
     public function index(Request $request)
     {
-        /** @var User $authUser */
+        /** @var User $authUser*/
         $authUser = auth()->user();
         $authRoleVal = $authUser->role_id->value;
 
@@ -167,9 +167,9 @@ class AccountController extends Controller
         DB::beginTransaction();
         try {
             while (($data = fgetcsv($handle)) !== false) {
-                // CSV Mapping:
-                // 0:first, 1:middle, 2:last, 3:email, 4:school, 5:office_id, 6:role_id
-                // 7:gender, 8:gender_other, 9:phone, 10:picture, 11:emergency
+                // CSV Mapping
+                // first, middle, last, email, school, office_id, role_id
+                // gender, gender_other, phone, picture, emergency
                 if (count($data) < 7) {
                     continue;
                 }
@@ -286,7 +286,7 @@ class AccountController extends Controller
 
     public function update(UpdateAccountRequest $request, User $user)
     {
-        /** @var User $authUser */
+        /** @var User $authUser*/
         $authUser = auth()->user();
         $userRoleVal = $user->role_id->value;
         $authRoleVal = $authUser->role_id->value;
@@ -405,7 +405,7 @@ class AccountController extends Controller
     public function destroy(User $user)
     {
         $userRoleVal = $user->role_id->value;
-        /** @var User $authUser */
+        /** @var User $authUser*/
         $authUser = auth()->user();
         $authRoleVal = $authUser->role_id->value;
 
@@ -556,7 +556,7 @@ class AccountController extends Controller
 
     /**
      * Dynamically compiles and downloads an Excel batch import template
-     * pre-loaded with drop-down data validation lists for roles, offices, and genders.
+     * pre-loaded with drop-down data validation lists for roles, offices, and genders
      */
     public function downloadTemplate()
     {
@@ -610,9 +610,9 @@ class AccountController extends Controller
         // Gender List
         $genderListString = '"male,female,other"';
 
-        // Apply Data Validation to 100 rows below the headers (from row 2 to 101)
+        // Apply Data Validation to one hundred rows below the headers (from row two to
         for ($row = 2; $row <= 101; $row++) {
-            // Role Dropdown (Column G - 7th column)
+            // Role Dropdown (Column G - seventh column)
             $validationG = $sheet->getCell("G{$row}")->getDataValidation();
             $validationG->setType(DataValidation::TYPE_LIST);
             $validationG->setErrorStyle(DataValidation::STYLE_INFORMATION);
@@ -622,7 +622,7 @@ class AccountController extends Controller
             $validationG->setShowDropDown(true);
             $validationG->setFormula1($roleListString);
 
-            // Office Dropdown (Column F - 6th column)
+            // Office Dropdown (Column F - sixth column)
             if (!empty($offices)) {
                 $validationF = $sheet->getCell("F{$row}")->getDataValidation();
                 $validationF->setType(DataValidation::TYPE_LIST);
@@ -634,7 +634,7 @@ class AccountController extends Controller
                 $validationF->setFormula1($officeListString);
             }
 
-            // Gender Dropdown (Column H - 8th column)
+            // Gender Dropdown (Column H - eightth column)
             $validationH = $sheet->getCell("H{$row}")->getDataValidation();
             $validationH->setType(DataValidation::TYPE_LIST);
             $validationH->setErrorStyle(DataValidation::STYLE_INFORMATION);

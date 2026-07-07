@@ -9,21 +9,21 @@ use Illuminate\Support\Facades\DB;
 class SeedMLBaseline extends Command
 {
     /**
-     * The name and signature of the console command.
+     * The name and signature of the console command
      *
      * @var string
      */
     protected $signature = 'app:seed-ml-baseline {--ip=130.105.10.15 : The IP address to use for normal baseline activity}';
 
     /**
-     * The console command description.
+     * The console command description
      *
      * @var string
      */
     protected $description = 'Seed the audit logs with a historical baseline of healthy activity to train the ML model.';
 
     /**
-     * Execute the console command.
+     * Execute the console command
      */
     public function handle()
     {
@@ -38,7 +38,7 @@ class SeedMLBaseline extends Command
         }
 
         $baselineData = [
-            // Intern Activity (Role 5)
+            // Intern Activity (Intern role)
             ['action' => 'Authentication', 'count' => 400, 'role' => 5],
             ['action' => 'Clock In', 'count' => 120, 'role' => 5],
             ['action' => 'Clock Out', 'count' => 120, 'role' => 5],
@@ -51,7 +51,7 @@ class SeedMLBaseline extends Command
             ['action' => 'MFA Disabled', 'count' => 10, 'role' => 5],
             ['action' => 'Geofence Violation', 'count' => 20, 'role' => 5],
 
-            // Admin Activity (Role 1)
+            // Admin Activity (Admin role)
             ['action' => 'Authentication', 'count' => 200, 'role' => 1],
             ['action' => 'Account Created', 'count' => 60, 'role' => 1],
             ['action' => 'Account Updated', 'count' => 40, 'role' => 1],
@@ -70,7 +70,7 @@ class SeedMLBaseline extends Command
             ['action' => 'Resolved Anomaly: Marked Compromised', 'count' => 10, 'role' => 1],
             ['action' => 'Resolved Anomaly: Marked Suspended', 'count' => 10, 'role' => 1],
 
-            // Head Supervisor Activity (Role 2)
+            // Head Supervisor Activity (Head Supervisor role)
             ['action' => 'Authentication', 'count' => 100, 'role' => 2],
             ['action' => 'Applicant Evaluation', 'count' => 120, 'role' => 2],
             ['action' => 'Match Finalized', 'count' => 60, 'role' => 2],
@@ -81,7 +81,7 @@ class SeedMLBaseline extends Command
             ['action' => 'Batch Matching Upload', 'count' => 10, 'role' => 2],
             ['action' => 'Match Unfinalized', 'count' => 10, 'role' => 2],
 
-            // Supervisor Activity (Role 3)
+            // Supervisor Activity (Supervisor role)
             ['action' => 'Authentication', 'count' => 100, 'role' => 3],
             ['action' => 'Task Assigned', 'count' => 80, 'role' => 3],
             ['action' => 'Task Updated', 'count' => 40, 'role' => 3],
@@ -94,7 +94,7 @@ class SeedMLBaseline extends Command
             ['action' => 'MFA Enabled', 'count' => 40, 'role' => 3],
             ['action' => 'MFA Disabled', 'count' => 10, 'role' => 3],
 
-            // Coordinator Activity (Role 4)
+            // Coordinator Activity (Coordinator role)
             ['action' => 'Authentication', 'count' => 100, 'role' => 4],
             ['action' => 'Intern Progress Viewed', 'count' => 80, 'role' => 4],
             ['action' => 'Report Downloaded', 'count' => 40, 'role' => 4],
@@ -146,7 +146,7 @@ class SeedMLBaseline extends Command
                 $selectedUser = $roleUsers[array_rand($roleUsers)];
 
                 if ($roleId === 4 || $roleId === 5) {
-                    // Externals (Coordinators & Interns): 20% primary office IP, 80% distributed/randomized carrier IPs (reflects remote & mobile data usage)
+                    // Externals (Coordinators & Interns): twenty percent primary office IP, eighty percent distributed/randomized carrier IPs (reflects remote & mobile data usage)
                     if ($rand <= 20) {
                         $assignedIp = $primaryIp;
                     } elseif ($rand <= 50) {
@@ -157,7 +157,7 @@ class SeedMLBaseline extends Command
                         $assignedIp = $subnet . '.' . rand(0, 255) . '.' . rand(1, 254);
                     }
                 } else {
-                    // Internal Staff (Admins, Head Supervisors, Supervisors): 85% primary office IP, 15% secondary carrier pools
+                    // Internal Staff (Admins, Head Supervisors, Supervisors): eighty-five percent primary office IP, fifteen percent secondary carrier pools
                     if ($rand <= 85) {
                         $assignedIp = $primaryIp;
                     } else {

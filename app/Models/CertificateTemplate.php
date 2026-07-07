@@ -27,7 +27,7 @@ class CertificateTemplate extends Model
     ];
 
     /**
-     * Get the latest active template, or returns a new instance with default values.
+     * Get the latest active template, or returns a new instance with default values
      */
     public static function getActive()
     {
@@ -35,7 +35,7 @@ class CertificateTemplate extends Model
     }
 
     /**
-     * Replaces placeholders in the custom uploaded HTML template.
+     * Replaces placeholders in the custom uploaded HTML template
      */
     public function parse($intern, $certificate, $verificationCode, $date)
     {

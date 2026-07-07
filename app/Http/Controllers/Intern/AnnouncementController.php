@@ -11,7 +11,7 @@ use Vinkla\Hashids\Facades\Hashids;
 class AnnouncementController extends Controller
 {
     /**
-     * Display a listing of office announcements for the intern.
+     * Display a listing of office announcements for the intern
      */
     public function index()
     {
@@ -42,7 +42,7 @@ class AnnouncementController extends Controller
     }
 
     /**
-     * Display the specified announcement.
+     * Display the specified announcement
      */
     public function show($announcementKey)
     {

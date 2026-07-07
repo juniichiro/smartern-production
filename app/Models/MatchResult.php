@@ -19,7 +19,7 @@ class MatchResult extends Model
     ];
 
     /**
-     * Get the office associated with this match result.
+     * Get the office associated with this match result
      */
     public function office(): BelongsTo
     {

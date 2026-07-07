@@ -16,7 +16,7 @@ class RealTimeTaskAssigned implements ShouldBroadcast
     public $task;
 
     /**
-     * Create a new event instance.
+     * Create a new event instance
      */
     public function __construct($task)
     {
@@ -24,7 +24,7 @@ class RealTimeTaskAssigned implements ShouldBroadcast
     }
 
     /**
-     * Get the channels the event should broadcast on.
+     * Get the channels the event should broadcast on
      *
      * @return array<int, Channel>
      */
@@ -36,7 +36,7 @@ class RealTimeTaskAssigned implements ShouldBroadcast
     }
 
     /**
-     * Customize the broadcast name.
+     * Customize the broadcast name
      */
     public function broadcastAs(): string
     {

@@ -18,7 +18,7 @@ class OfficeRule extends Model
     ];
 
     /**
-     * Get the office that owns the rule.
+     * Get the office that owns the rule
      */
     public function office(): BelongsTo
     {

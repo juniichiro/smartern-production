@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>{{ $templateData['title'] }}</title>
     <style>
-        /* 1. Aggressive Font Mapping for Local TTF Files */
+        /* Aggressive Font Mapping for Local TTF Files*/
         @font-face {
             font-family: 'OldEnglishText';
             src: url('{{ public_path("fonts/oldenglish.TTF") }}') format('truetype');
@@ -30,22 +30,22 @@
             font-style: normal;
         }
 
-        /* 2. Page and Body Setup */
+        /* Page and Body Setup*/
         @page {
             margin: 15mm 20mm 20mm 20mm; 
             size: 8.5in 11in; 
         }
         body {
             font-family: 'Bookman', Georgia, serif;
-            color: #000;
-            background-color: #fff;
+            color: # ;
+            background-color: # fff;
             margin: 0;
             padding: 0;
             font-size: 11.5px;
             line-height: 1.35;
         }
 
-        /* 3. Header Styling - Matched to Certificate */
+        /* Header Styling - Matched to Certificate*/
         .header {
             text-align: center;
         }
@@ -79,19 +79,19 @@
             margin-top: 2px; 
         }
         .header-line {
-            border-top: 1.5px solid #000;
+            border-top: 1.5px solid # ;
             width: 100%;
             margin-top: 8px;
         }
 
-        /* 4. Footer Banner - Matched to Certificate */
+        /* Footer Banner - Matched to Certificate*/
         .footer {
             position: fixed;
             bottom: -12mm; 
             left: 0; 
             right: 0;  
             text-align: center;
-            border-top: 1px solid #000;
+            border-top: 1px solid # ;
             padding-top: 5px; 
         }
         .footer img {
@@ -100,12 +100,12 @@
             height: auto;
         }
 
-        /* 5. Document Content Styling */
+        /* Document Content Styling*/
         .form-code {
             text-align: right;
             font-family: monospace;
             font-size: 8.5px;
-            color: #777;
+            color: # ;
             margin-bottom: 3px;
         }
         .title {
@@ -121,7 +121,7 @@
             font-weight: bold;
             text-transform: uppercase;
             font-size: 10.5px;
-            border-bottom: 1px solid #000;
+            border-bottom: 1px solid # ;
             padding-bottom: 2px;
             margin-top: 14px;
             margin-bottom: 8px;
@@ -140,7 +140,7 @@
             vertical-align: top;
         }
         
-        /* Stacked Block layout for multi-line fields/long labels */
+        /* Stacked Block layout for multi-line fields/long labels*/
         .field-group-block .field-label {
             display: block;
             width: 100%;
@@ -155,13 +155,13 @@
             margin-top: 15px;
             font-size: 9.5px;
             font-style: italic;
-            color: #444;
+            color: # ;
             line-height: 1.25;
-            border-left: 2px solid #000;
+            border-left: 2px solid # ;
             padding-left: 8px;
         }
 
-        /* 6. Signature Section - Layout aligned with Document footer */
+        /* Signature Section - Layout aligned with Document footer*/
         .signature-section {
             margin-top: 25px;
             width: 100%;
@@ -173,7 +173,7 @@
         }
         .signature-line {
             width: 180px;
-            border-bottom: 1px solid #000;
+            border-bottom: 1px solid # ;
             margin: 25px auto 4px auto;
         }
         .signature-label {

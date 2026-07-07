@@ -10,11 +10,11 @@ use Illuminate\Support\Facades\Hash;
 class UserSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Run the database seeds
      */
     public function run(): void
     {
-        // 0. SUPER ADMIN (Hidden Root - MFA Enabled)
+        // SUPER ADMIN (Hidden Root - MFA Enabled)
         User::create([
             'role_id' => UserRole::SUPER_ADMIN,
             'display_id' => 'sa-' . \Illuminate\Support\Str::random(10),
@@ -27,7 +27,7 @@ class UserSeeder extends Seeder
             'is_first_login' => false,
         ]);
 
-        // 1. ADMINS (Original - Email MFA Enabled)
+        // ADMINS (Original - Email MFA Enabled)
         User::create([
             'role_id' => UserRole::ADMIN,
             'display_id' => '2026101',
@@ -52,7 +52,7 @@ class UserSeeder extends Seeder
             'is_first_login' => false,
         ]);
 
-        // 2. HEAD SUPERVISOR (Original - Email MFA Enabled)
+        // HEAD SUPERVISOR (Original - Email MFA Enabled)
         User::create([
             'role_id' => UserRole::HEAD_SUPERVISOR,
             'display_id' => '2026201',
@@ -65,7 +65,7 @@ class UserSeeder extends Seeder
             'is_first_login' => false,
         ]);
 
-        // 3. SUPERVISORS (All Email MFA Enabled)
+        // SUPERVISORS (All Email MFA Enabled)
         User::create([
             'role_id' => UserRole::SUPERVISOR,
             'display_id' => '20263001',
@@ -102,7 +102,7 @@ class UserSeeder extends Seeder
             'is_first_login' => false,
         ]);
 
-        // 4. SCHOOL COORDINATORS (All Email MFA Enabled)
+        // SCHOOL COORDINATORS (All Email MFA Enabled)
         User::create([
             'role_id' => UserRole::SCHOOL_COORDINATOR,
             'display_id' => '20264001',
@@ -151,9 +151,9 @@ class UserSeeder extends Seeder
             'is_first_login' => false,
         ]);
 
-        // 5. INTERNS (1 MFA-Enabled User Per Office)
+        // INTERNS (one MFA-Enabled User Per Office)
         
-        // Intern 1 (Office 1: ICT) - Email MFA Enabled
+        // Intern one (Office ICT) - Email MFA Enabled
         User::create([
             'role_id' => UserRole::INTERN,
             'display_id' => '202650001',
@@ -166,7 +166,7 @@ class UserSeeder extends Seeder
             'is_first_login' => false,
         ]);
 
-        // Intern 2 (Office 2: HR) - Email MFA Enabled
+        // Intern two (Office HR) - Email MFA Enabled
         User::create([
             'role_id' => UserRole::INTERN,
             'display_id' => '202650002',
@@ -179,7 +179,7 @@ class UserSeeder extends Seeder
             'is_first_login' => false,
         ]);
 
-        // Intern 3 (Office 2: HR) - MFA Disabled
+        // Intern three (Office HR) - MFA Disabled
         User::create([
             'role_id' => UserRole::INTERN,
             'display_id' => '202650003',
@@ -192,7 +192,7 @@ class UserSeeder extends Seeder
             'is_first_login' => false,
         ]);
 
-        // Intern 4 (Office 2: HR) - MFA Disabled
+        // Intern four (Office HR) - MFA Disabled
         User::create([
             'role_id' => UserRole::INTERN,
             'display_id' => '202650004',
@@ -205,7 +205,7 @@ class UserSeeder extends Seeder
             'is_first_login' => false,
         ]);
 
-        // Intern 5 (Office 3: Finance) - Email MFA Enabled
+        // Intern five (Office Finance) - Email MFA Enabled
         User::create([
             'role_id' => UserRole::INTERN,
             'display_id' => '202650005',
@@ -218,7 +218,7 @@ class UserSeeder extends Seeder
             'is_first_login' => false,
         ]);
 
-        // Intern 6 (Office 3: Finance) - MFA Disabled
+        // Intern six (Office Finance) - MFA Disabled
         User::create([
             'role_id' => UserRole::INTERN,
             'display_id' => '202650006',
@@ -231,7 +231,7 @@ class UserSeeder extends Seeder
             'is_first_login' => false,
         ]);
 
-        // Intern 7 (Office 4: Admin) - Email MFA Enabled
+        // Intern seven (Office Admin) - Email MFA Enabled
         User::create([
             'role_id' => UserRole::INTERN,
             'display_id' => '202650007',
@@ -244,7 +244,7 @@ class UserSeeder extends Seeder
             'is_first_login' => false,
         ]);
 
-        // Intern 8 (Office 1: ICT) - MFA Disabled
+        // Intern eight (Office ICT) - MFA Disabled
         User::create([
             'role_id' => UserRole::INTERN,
             'display_id' => '202650008',
@@ -257,7 +257,7 @@ class UserSeeder extends Seeder
             'is_first_login' => false,
         ]);
 
-        // Intern 9 (Office 2: HR) - MFA Disabled
+        // Intern nine (Office HR) - MFA Disabled
         User::create([
             'role_id' => UserRole::INTERN,
             'display_id' => '202650009',
@@ -270,7 +270,7 @@ class UserSeeder extends Seeder
             'is_first_login' => false,
         ]);
 
-        // Intern 10 (Office 2: HR) - MFA Disabled
+        // Intern ten (Office HR) - MFA Disabled
         User::create([
             'role_id' => UserRole::INTERN,
             'display_id' => '202650010',
@@ -283,7 +283,7 @@ class UserSeeder extends Seeder
             'is_first_login' => false,
         ]);
 
-        // Intern 11 (Office 1: ICT) - MFA Disabled
+        // Intern eleven (Office ICT) - MFA Disabled
         User::create([
             'role_id' => UserRole::INTERN,
             'display_id' => '202650011',
@@ -296,7 +296,7 @@ class UserSeeder extends Seeder
             'is_first_login' => false,
         ]);
 
-        // Intern 12 (Office 2: HR) - MFA Disabled
+        // Intern twelve (Office HR) - MFA Disabled
         User::create([
             'role_id' => UserRole::INTERN,
             'display_id' => '202650012',
@@ -309,7 +309,7 @@ class UserSeeder extends Seeder
             'is_first_login' => false,
         ]);
 
-        // Intern 13 (Office 3: Finance) - MFA Disabled
+        // Intern thirteen (Office Finance) - MFA Disabled
         User::create([
             'role_id' => UserRole::INTERN,
             'display_id' => '202650013',
@@ -322,7 +322,7 @@ class UserSeeder extends Seeder
             'is_first_login' => false,
         ]);
 
-        // Intern 14 (Office 4: Admin) - MFA Disabled
+        // Intern fourteen (Office Admin) - MFA Disabled
         User::create([
             'role_id' => UserRole::INTERN,
             'display_id' => '202650014',

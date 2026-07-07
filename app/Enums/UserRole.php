@@ -12,7 +12,7 @@ enum UserRole: int
     case SUPER_ADMIN = 6;
 
     /**
-     * Get the human-readable name of the role.
+     * Get the human-readable name of the role
      */
     public function label(): string
     {

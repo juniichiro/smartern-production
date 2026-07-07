@@ -857,7 +857,7 @@
                         @endphp
 
                         <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden transition-all flex flex-col"
-                             :class="isSelected(@js($applicant->full_name)) ? 'ring-2 ring-[#0B5694] dark:ring-blue-500 bg-blue-50/20 dark:bg-blue-950/20' : ''">
+                             :class="isSelected(@js($applicant->full_name)) ? 'ring-2 ring-[# Bfivesixninefour] dark:ring-blue-five hundred bg-blue-fifty/twenty dark:bg-blue-nine hundred and fifty/twenty' : ''">
                             
                             {{-- Card Header: Select + Name + Score --}}
                             <div class="p-3 sm:p-4 flex items-start gap-2 sm:gap-3">
@@ -1251,25 +1251,25 @@
     background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #d1d5db;
+    background: # donedfivedb;
     border-radius: 99px;
 }
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #4b5563;
+    background: # bfivefivesixthree;
 }
 .markdown-content h3 {
     font-size: 13px;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: #0B5694;
+    color: # Bfivesixninefour;
     margin-top: 1.5rem;
     margin-bottom: 0.75rem;
     border-bottom: 1px solid rgba(229, 231, 235, 0.5);
     padding-bottom: 0.25rem;
 }
 .dark .markdown-content h3 {
-    color: #60a5fa;
+    color: # afivefa;
     border-color: rgba(75, 85, 99, 0.5);
 }
 .markdown-content p {
@@ -1288,22 +1288,22 @@
 }
 .markdown-content strong {
     font-weight: 800;
-    color: #1f2937;
+    color: # ftwoninethreeseven;
 }
 .dark .markdown-content strong {
-    color: #f3f4f6;
+    color: # fthreeffourfsix;
 }
 .markdown-content code {
-    background-color: #f3f4f6;
-    color: #ef4444;
+    background-color: # fthreeffourfsix;
+    color: # effourfourfourfour;
     padding: 0.125rem 0.25rem;
     border-radius: 0.25rem;
     font-family: monospace;
     font-size: 0.9em;
 }
 .dark .markdown-content code {
-    background-color: #1f2937;
-    color: #f87171;
+    background-color: # ftwoninethreeseven;
+    color: # feightsevenonesevenone;
 }
 </style>
 

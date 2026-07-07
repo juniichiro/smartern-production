@@ -2,10 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Global Utilities */
+/* Global Utilities*/
 [x-cloak] { display: none !important; }
 
-/* Layout & Typography */
+/* Layout & Typography*/
 body { font-family: 'Outfit', sans-serif; }
 
 @media (min-width: 1024px) {
@@ -14,26 +14,26 @@ body { font-family: 'Outfit', sans-serif; }
     main { transition: all 0.3s ease-in-out; }
 }
 
-/* --- Custom Scrollbar System --- */
+/* Custom Scrollbar System*/
 @layer base {
     :root {
         --scrollbar-width: 6px;
-        --scrollbar-thumb: #d1d5db; /* Gray-300 for better visibility in light mode */
-        --scrollbar-thumb-hover: #0B5694; /* SmarTern Primary Blue */
+        --scrollbar-thumb: #d1d5db; /* Gray-three hundred for better visibility in light mode*/
+        --scrollbar-thumb-hover: #0B5694; /* SmarTern Primary Blue*/
     }
 
     .dark {
-        --scrollbar-thumb: #1f2937; /* Gray-800 for dark mode */
-        --scrollbar-thumb-hover: #3b82f6; /* Blue-500 for dark mode */
+        --scrollbar-thumb: #1f2937; /* Gray-eight hundred for dark mode*/
+        --scrollbar-thumb-hover: #3b82f6; /* Blue-five hundred for dark mode*/
     }
 
-    /* Apply to whole system */
+    /* Apply to whole system*/
     * {
         scrollbar-width: thin;
         scrollbar-color: var(--scrollbar-thumb) transparent;
     }
 
-    /* Webkit (Chrome, Safari, Edge) */
+    /* Webkit (Chrome, Safari, Edge)*/
     ::-webkit-scrollbar {
         width: var(--scrollbar-width);
         height: var(--scrollbar-width);
@@ -57,7 +57,7 @@ body { font-family: 'Outfit', sans-serif; }
     }
 }
 
-/* Legacy Utility for explicit control if needed */
+/* Legacy Utility for explicit control if needed*/
 .custom-scrollbar {
     @apply scroll-smooth;
 }
@@ -70,7 +70,7 @@ body { font-family: 'Outfit', sans-serif; }
     scrollbar-width: none;
 }
 
-/* Animations */
+/* Animations*/
 @keyframes shimmer {
     0% { background-position: -200% 0; }
     100% { background-position: 200% 0; }
@@ -107,9 +107,9 @@ body { font-family: 'Outfit', sans-serif; }
     animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
 }
 
-/* Global Light Mode UI Enhancements */
+/* Global Light Mode UI Enhancements*/
 @layer base {
-    /* Make inputs, selects, and textareas more visible in light mode */
+    /* Make inputs, selects, and textareas more visible in light mode*/
     input[type="text"], 
     input[type="email"], 
     input[type="password"], 
@@ -124,12 +124,12 @@ body { font-family: 'Outfit', sans-serif; }
         @apply border-gray-300 focus:border-[#0B5694] focus:ring-1 focus:ring-[#0B5694]/20 transition-all accent-[#0B5694];
     }
 
-    /* Custom Picker Icons (Calendar/Clock) */
+    /* Custom Picker Icons (Calendar/Clock)*/
     ::-webkit-calendar-picker-indicator {
         @apply cursor-pointer opacity-50 hover:opacity-100 transition-opacity;
     }
 
-    /* Dark mode overrides for inputs to maintain original style */
+    /* Dark mode overrides for inputs to maintain original style*/
     .dark input[type="text"], 
     .dark input[type="email"], 
     .dark input[type="password"], 
@@ -148,7 +148,7 @@ body { font-family: 'Outfit', sans-serif; }
         filter: invert(1);
     }
 
-    /* Hide Number Spinners */
+    /* Hide Number Spinners*/
     input[type="number"]::-webkit-outer-spin-button,
     input[type="number"]::-webkit-inner-spin-button {
         -webkit-appearance: none;
@@ -160,10 +160,10 @@ body { font-family: 'Outfit', sans-serif; }
 }
 
 @layer utilities {
-    /* Slightly darken the faint gray-50 and gray-100 borders/dividers for containers in light mode to make them fully visible and pleasing */
+    /* Slightly darken the faint gray-fifty and gray-one hundred borders/dividers for containers in light mode to make them fully visible and pleasing*/
     .border-gray-50,
     .border-gray-100 {
-        border-color: #e2e8f0 !important; /* Tailwind slate-200 / gray-200 outline */
+        border-color: #e2e8f0 !important; /* Tailwind slate-two hundred / gray-two hundred outline*/
     }
 
     .divide-gray-50 > :not([hidden]) ~ :not([hidden]),
@@ -171,10 +171,10 @@ body { font-family: 'Outfit', sans-serif; }
         border-color: #e2e8f0 !important;
     }
 
-    /* Keep appropriate dark borders for dark mode if explicitly used */
+    /* Keep appropriate dark borders for dark mode if explicitly used*/
     .dark .border-gray-50,
     .dark .border-gray-100 {
-        border-color: #1f2937 !important; /* Tailwind gray-800 */
+        border-color: #1f2937 !important; /* Tailwind gray-eight hundred*/
     }
 
     .dark .divide-gray-50 > :not([hidden]) ~ :not([hidden]),
@@ -182,7 +182,7 @@ body { font-family: 'Outfit', sans-serif; }
         border-color: #1f2937 !important;
     }
 
-    /* Force a flat, 2D aesthetic in light mode by overriding heavy shadows */
+    /* Force a flat, twoD aesthetic in light mode by overriding heavy shadows*/
     :root:not(.dark) .shadow-md,
     :root:not(.dark) .shadow-lg,
     :root:not(.dark) .shadow-xl,
@@ -197,9 +197,9 @@ body { font-family: 'Outfit', sans-serif; }
     }
 }
 
-/* Accessibility & Readability Enhancements */
+/* Accessibility & Readability Enhancements*/
 @layer utilities {
-    /* Map tiny/unreadable font utilities to 12px relative to root (0.75rem under standard 16px) */
+    /* Map tiny/unreadable font utilities to onetwopx relative to root (zero.sevenfiverem under standard onesixpx)*/
     .text-\[9px\], 
     .text-\[10px\], 
     .text-\[11px\],
@@ -207,7 +207,7 @@ body { font-family: 'Outfit', sans-serif; }
         font-size: 0.75rem !important;
     }
     
-    /* Map body/item font utilities to 15px relative to root (0.9375rem under standard 16px) */
+    /* Map body/item font utilities to onefivepx relative to root (zero.ninethreesevenfiverem under standard onesixpx)*/
     .text-\[13px\], 
     .text-\[14px\],
     .text-sm {
@@ -215,32 +215,32 @@ body { font-family: 'Outfit', sans-serif; }
     }
 }
 
-/* Global Font Size Preference System */
+/* Global Font Size Preference System*/
 html.font-size-sm { font-size: 14px !important; }
 html.font-size-md { font-size: 16px !important; }
 html.font-size-lg { font-size: 18px !important; }
 html.font-size-xl { font-size: 20px !important; }
 
-/* Mobile Responsive Admin Overrides */
+/* Mobile Responsive Admin Overrides*/
 @media (max-width: 639px) {
-    /* Ensure modals span full width on very small screens */
+    /* Ensure modals span full width on very small screens*/
     .modal-content {
         max-width: calc(100vw - 2rem) !important;
     }
     
-    /* Stack table-header action buttons vertically on mobile */
+    /* Stack table-header action buttons vertically on mobile*/
     .table-header-actions {
         flex-direction: column !important;
         width: 100% !important;
     }
     
-    /* Improve grid gap for mobile */
+    /* Improve grid gap for mobile*/
     .admin-grid-mobile {
         gap: 1rem !important;
     }
 }
 
-/* Tablet responsive improvements */
+/* Tablet responsive improvements*/
 @media (min-width: 640px) and (max-width: 1023px) {
     .stat-card-tablet-horizontal {
         flex-direction: row !important;
@@ -248,13 +248,13 @@ html.font-size-xl { font-size: 20px !important; }
     }
 }
 
-/* Ensure horizontal scroll never happens on mobile */
+/* Ensure horizontal scroll never happens on mobile*/
 img, video, canvas, svg {
     max-width: 100%;
     height: auto;
 }
 
-/* Better tap highlighting for mobile */
+/* Better tap highlighting for mobile*/
 @media (hover: none) and (pointer: coarse) {
     button, a, [role="button"], input[type="submit"], input[type="button"] {
         -webkit-tap-highlight-color: rgba(11, 86, 148, 0.15);

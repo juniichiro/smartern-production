@@ -59,7 +59,7 @@ class MFAController extends Controller
 
         $valid = false;
 
-        // Check Google2FA TOTP (check user's saved secret or pending session secret)
+        // Check GoogletwoFA TOTP (check user's saved secret or pending session secret)
         $totpSecret = $user->google2fa_secret ?: session('pending_google2fa_secret');
         if ($totpSecret && strlen($totpSecret) >= 16) {
             try {
@@ -189,7 +189,7 @@ class MFAController extends Controller
 
             [$userId, $timestamp] = $decoded;
 
-            // Integrity Check: Prevent Replay Attacks (5 minutes expiry for the QR)
+            // Integrity Check: Prevent Replay Attacks (five minutes expiry for the QR)
             $tokenTime = Carbon::createFromTimestamp($timestamp);
             if ($tokenTime->diffInMinutes(now()) > 5) {
                 return abort(403, 'QR Code Expired. Please refresh the login page.');
@@ -250,7 +250,7 @@ class MFAController extends Controller
 
         $valid = false;
 
-        // Check Google2FA TOTP
+        // Check GoogletwoFA TOTP
         if ($user->google2fa_secret && strlen($user->google2fa_secret) >= 16) {
             try {
                 $valid = Google2FA::verifyKey($user->google2fa_secret, $secret);

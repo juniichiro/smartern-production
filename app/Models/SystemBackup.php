@@ -23,7 +23,7 @@ class SystemBackup extends Model
     ];
 
     /**
-     * Get the user (admin) who triggered the backup.
+     * Get the user (admin) who triggered the backup
      */
     public function admin(): BelongsTo
     {

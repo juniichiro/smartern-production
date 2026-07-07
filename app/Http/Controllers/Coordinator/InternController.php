@@ -85,7 +85,7 @@ class InternController extends Controller
 
         $interns = $allInterns;
 
-        // Logo Base64 encoding
+        // Logo base sixty-four encoding
         $logoSrc = null;
         $logoPath = public_path('images/blue-smartern.png');
         if (file_exists($logoPath)) {
@@ -156,17 +156,17 @@ class InternController extends Controller
         $cacheKey = "coordinator_intern_show_{$id}";
 
         $data = Cache::remember($cacheKey, 120, function () use ($user, $attendanceService) {
-            // 1. Fetch the specific intern record with all required relations
+            // Fetch the specific intern record with all required relations
             $intern = InternDetail::where('user_id', $user->id)
                 ->with(['user', 'office', 'certificate', 'tasks', 'journals'])
                 ->firstOrFail();
 
-            // 2. Separately fetch the supervisor
+            // Separately fetch the supervisor
             $supervisor = SupervisorDetail::where('office_id', $intern->office_id)
                 ->with('user')
                 ->first();
 
-            // 3. Metric calculations (Calculated from the comprehensive Merged Logs)
+            // Metric calculations (Calculated from the comprehensive Merged Logs)
             $allLogs = $attendanceService->getMergedLogs($intern->user);
 
             $totalTasks = $intern->tasks->count();
@@ -176,11 +176,11 @@ class InternController extends Controller
             $lates = $allLogs->where('status', 'late')->count();
             $excused = $allLogs->where('status', 'excused')->count();
 
-            // 4. Training constants
+            // Training constants
             $requiredHours = $intern->required_hours ?? 480;
             $renderedHours = $intern->hours_rendered ?? 0;
 
-            // 5. Training Log (Timeline)
+            // Training Log (Timeline)
             $timeline = collect();
 
             $intern->journals->each(fn ($j) => $timeline->push([
@@ -225,7 +225,7 @@ class InternController extends Controller
 
             $timeline = $timeline->sortByDesc('date')->values();
 
-            // 6. Advanced Insights
+            // Advanced Insights
             $totalDays = $allLogs->where('type', 'actual')->count();
             $punctuality = $totalDays > 0 ? round((($totalDays - $lates) / $totalDays) * 100) : 100;
 
@@ -237,7 +237,7 @@ class InternController extends Controller
                     ->first();
             }
 
-            // Est. Completion (Assume 8h per day average)
+            // Est. Completion (Assume eight hours per day average)
             $remainingHours = max(0, $requiredHours - $renderedHours);
             $estDaysRemaining = ceil($remainingHours / 8);
 

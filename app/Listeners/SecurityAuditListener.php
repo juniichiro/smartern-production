@@ -17,9 +17,9 @@ class SecurityAuditListener
 
     public function handleLogin(Login $event)
     {
-        // Only log immediate authentication if MFA is NOT enabled.
+        // Only log immediate authentication if MFA is NOT enabled
         // If MFA is enabled, the actual 'Authentication' log is created
-        // upon successful MFA verification in MFAController.
+        // upon successful MFA verification in MFAController
         if (! $event->user->google2fa_enabled) {
             $this->auditService->log('Authentication', 'System Authentication', $event->user->id);
         }
@@ -28,7 +28,7 @@ class SecurityAuditListener
     public function handleFailed(Failed $event)
     {
         $resource = 'Login Attempt: '.($event->credentials['email'] ?? 'Unknown');
-        $userId = $event->user ? $event->user->id : 1; // Default to ID 1 (Admin) for failed attempts if user not found
+        $userId = $event->user ? $event->user->id : 1; // Default to ID one (Admin) for failed attempts if user not found
 
         $this->auditService->log('Failed Authentication', $resource, $userId);
     }

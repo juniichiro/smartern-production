@@ -33,6 +33,7 @@ Thumbs.db
 
 # Project-specific ignores
 AGENTS.md
+MATCHING_NOTES.md
 GEMINI.md
 GEOFENCING_TESTING.md
 SmarTern_Requirements.md

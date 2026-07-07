@@ -9,7 +9,7 @@ use App\Models\User;
 class SubmissionPolicy
 {
     /**
-     * Determine whether the user can view the model.
+     * Determine whether the user can view the model
      */
     public function view(User $user, Submission $submission): bool
     {
@@ -29,7 +29,7 @@ class SubmissionPolicy
     }
 
     /**
-     * Determine whether the user can create models.
+     * Determine whether the user can create models
      */
     public function create(User $user): bool
     {

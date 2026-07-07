@@ -16,8 +16,8 @@ class DashboardController extends Controller
         $user = Auth::user();
         $intern = $user->internDetails;
 
-        // If intern details are missing or no office is assigned, we should handle this gracefully.
-        // For now, we'll provide defaults to avoid crashing.
+        // If intern details are missing or no office is assigned, we should handle this gracefully
+        // For now, we'll provide defaults to avoid crashing
         if (! $intern || ! $intern->office_id) {
             return view('intern.dashboard', [
                 'rendered' => 0,
@@ -35,35 +35,35 @@ class DashboardController extends Controller
             ]);
         }
 
-        // 1. Calculate Hours
+        // Calculate Hours
         $totalRequired = $intern->required_hours ?? $intern->office->total_hours_required ?? 480;
         $rendered = $intern->hours_rendered ?? 0;
         $percentage = $totalRequired > 0 ? round(($rendered / $totalRequired) * 100) : 0;
 
-        // 2. Count Pending Tasks (Tasks not yet completed)
+        // Count Pending Tasks (Tasks not yet completed)
         $pendingTasksCount = Task::where('intern_id', $user->id)
             ->whereIn('status', ['pending', 'revision'])
             ->count();
 
-        // 3. Fetch Recent Logs (Attendance)
+        // Fetch Recent Logs (Attendance)
         $logs = Attendance::where('intern_id', $user->id)
             ->latest()
             ->take(5)
             ->get();
 
-        // 4. Fetch Tasks for the Tabbed Queue
+        // Fetch Tasks for the Tabbed Queue
         $deadlines = Task::where('intern_id', $user->id)
             ->with(['supervisor.supervisorDetails', 'submissions'])
             ->orderBy('due_date', 'asc')
             ->get();
 
-        // 4.5 Fetch Most Urgent Active Task
+        // Fetch Most Urgent Active Task
         $activeTask = Task::where('intern_id', $user->id)
             ->whereIn('status', ['pending', 'revision'])
             ->orderBy('due_date', 'asc')
             ->first();
 
-        // 4.6 Fetch Recent Announcements (last 3)
+        // Fetch Recent Announcements (last
         $officeId = $intern->office_id;
         $announcements = Announcement::where(function ($query) use ($officeId) {
             $query->where('office_id', $officeId)
@@ -74,7 +74,7 @@ class DashboardController extends Controller
             ->take(3)
             ->get();
 
-        // 5. Attendance Status
+        // Attendance Status
         $todayRecord = Attendance::where('intern_id', $user->id)
             ->whereDate('clock_in', now()->toDateString())
             ->whereNull('clock_out')
@@ -99,7 +99,7 @@ class DashboardController extends Controller
             $attendanceColor = 'text-emerald-500 dark:text-emerald-400';
         }
 
-        // 6. Notifications (assuming you have a system or empty collection)
+        // Notifications (assuming you have a system or empty collection)
         $notifications = collect([]);
 
         return view('intern.dashboard', compact(

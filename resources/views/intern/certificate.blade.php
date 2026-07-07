@@ -32,15 +32,15 @@
                 $status = 'hours_completed';
             }
 
-            // Step 1: Preparation (Active if hours met but draft not created yet; Completed if draft is created)
+            // Step Preparation (Active if hours met but draft not created yet; Completed if draft is created)
             $step1Active = ($status === 'hours_completed');
             $step1Completed = in_array($status, ['pending', 'endorsed', 'published']);
 
-            // Step 2: Supervisor Endorsement (Active if draft is created but not yet endorsed; Completed if endorsed or published)
+            // Step Supervisor Endorsement (Active if draft is created but not yet endorsed; Completed if endorsed or published)
             $step2Active = ($status === 'pending');
             $step2Completed = in_array($status, ['endorsed', 'published']);
 
-            // Step 3: Head Supervisor Approval (Active if endorsed; Completed if published)
+            // Step Head Supervisor Approval (Active if endorsed; Completed if published)
             $step3Active = ($status === 'endorsed');
             $step3Completed = ($status === 'published');
 

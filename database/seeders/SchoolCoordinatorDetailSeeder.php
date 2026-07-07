@@ -10,7 +10,7 @@ class SchoolCoordinatorDetailSeeder extends Seeder
 {
     public function run(): void
     {
-        // Role 4: Coordinator (Sagsagat)
+        // Coordinator role: Coordinator (Sagsagat)
         $coordinator = User::where('email', 'sagsagat@smartern.com')->first();
         if ($coordinator) {
             SchoolCoordinatorDetail::create([

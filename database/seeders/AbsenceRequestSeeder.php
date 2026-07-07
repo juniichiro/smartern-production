@@ -23,7 +23,7 @@ class AbsenceRequestSeeder extends Seeder
         foreach ($interns as $intern) {
             $userId = $intern->user_id;
 
-            // 1. Approved Absence (Date in the past)
+            // Approved Absence (Date in the past)
             $pastDate1Obj = $this->getPastWeekday(10);
             $pastDate1 = $pastDate1Obj->format('Y-m-d');
             // Delete any existing attendance on this day to simulate real absence
@@ -40,11 +40,11 @@ class AbsenceRequestSeeder extends Seeder
                 'reviewed_at' => $pastDate1Obj,
             ]);
 
-            // 2. Approved Early Leave (Date in the past)
+            // Approved Early Leave (Date in the past)
             $pastDate2Obj = $this->getPastWeekday(6);
             $pastDate2 = $pastDate2Obj->format('Y-m-d');
             
-            // Adjust attendance for early leave (clock out at 12:00 PM instead of 5:00 PM)
+            // Adjust attendance for early leave (clock out at zero PM instead of zero PM)
             $attendance = Attendance::where('intern_id', $userId)->whereDate('clock_in', $pastDate2)->first();
             if ($attendance) {
                 $attendance->update([
@@ -73,7 +73,7 @@ class AbsenceRequestSeeder extends Seeder
                 'reviewed_at' => $pastDate2Obj,
             ]);
 
-            // 3. Pending Request (Date in the future)
+            // Pending Request (Date in the future)
             $futureDateObj = $this->getFutureWeekday(3);
             $futureDate = $futureDateObj->format('Y-m-d');
             

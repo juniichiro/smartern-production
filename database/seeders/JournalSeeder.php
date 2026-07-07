@@ -19,7 +19,7 @@ class JournalSeeder extends Seeder
             $tasks = Task::where('intern_id', $intern->user_id)->where('status', 'completed')->get();
             $taskIds = $tasks->pluck('id')->toArray();
 
-            // 1. Daily Journal Entry 1 (from 5 days ago)
+            // Daily Journal Entry one (from five days ago)
             Journal::create([
                 'intern_id' => $intern->user_id,
                 'journal_type' => 'daily',
@@ -31,7 +31,7 @@ class JournalSeeder extends Seeder
                 'created_at' => Carbon::now()->subDays(5),
             ]);
 
-            // 2. Daily Journal Entry 2 (from 3 days ago)
+            // Daily Journal Entry two (from three days ago)
             Journal::create([
                 'intern_id' => $intern->user_id,
                 'journal_type' => 'daily',
@@ -43,7 +43,7 @@ class JournalSeeder extends Seeder
                 'created_at' => Carbon::now()->subDays(3),
             ]);
 
-            // 3. Weekly Journal Entry (from last week)
+            // Weekly Journal Entry (from last week)
             Journal::create([
                 'intern_id' => $intern->user_id,
                 'journal_type' => 'weekly',

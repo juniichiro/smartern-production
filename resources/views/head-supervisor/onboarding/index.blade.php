@@ -97,7 +97,7 @@
                                         <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition group">
                                             <td class="px-8 py-6 whitespace-nowrap">
                                                 <div class="flex items-center gap-4">
-                                                    <span class="text-[11px] font-black text-[#0B5694] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-lg border border-blue-100 dark:border-blue-900/30 uppercase tracking-tighter shadow-sm">#{{ $applicant['id'] }}</span>
+                                                    <span class="text-[11px] font-black text-[#0B5694] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-lg border border-blue-100 dark:border-blue-900/30 uppercase tracking-tighter shadow-sm"># {{ $applicant['id'] }}</span>
                                                     @if(!empty($applicant['resume_path']))
                                                         <button @click="openResume('{{ route('head-supervisor.matching.resume', $applicant['route_key']) }}')" class="inline-flex items-center justify-center p-2.5 bg-[#0B5694]/10 dark:bg-blue-500/10 hover:bg-[#0B5694] hover:text-white border border-[#0B5694]/25 dark:border-blue-500/25 text-[#0B5694] dark:text-blue-400 rounded-xl transition shadow-sm active:scale-95 shrink-0" title="Preview Resume">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
@@ -138,7 +138,7 @@
                             <div class="h-1.5 bg-gradient-to-r from-[#0B5694] to-blue-400 dark:from-blue-600 dark:to-blue-400"></div>
                             <div class="p-5 flex-1 flex flex-col">
                                 <div class="flex items-start gap-3 mb-4">
-                                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#0B5694] to-blue-400 dark:from-blue-600 dark:to-blue-400 flex items-center justify-center text-white text-[11px] font-black shadow-lg shrink-0">#{{ $applicant['id'] }}</div>
+                                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#0B5694] to-blue-400 dark:from-blue-600 dark:to-blue-400 flex items-center justify-center text-white text-[11px] font-black shadow-lg shrink-0"># {{ $applicant['id'] }}</div>
                                     <div class="flex-1 min-w-0">
                                         <p class="text-sm font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight truncate leading-tight">{{ $applicant['name'] }}</p>
                                         <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider truncate mt-0.5">{{ $applicant['email'] }}</p>
@@ -188,7 +188,7 @@
                         @forelse($applicants as $applicant)
                         <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden active:bg-gray-50 dark:active:bg-gray-800 transition-colors">
                             <div class="flex items-center gap-3 p-4">
-                                <span class="shrink-0 text-[10px] font-black text-[#0B5694] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2.5 py-1.5 rounded-lg border border-blue-100 dark:border-blue-900/30 uppercase tracking-tighter shadow-sm">#{{ $applicant['id'] }}</span>
+                                <span class="shrink-0 text-[10px] font-black text-[#0B5694] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2.5 py-1.5 rounded-lg border border-blue-100 dark:border-blue-900/30 uppercase tracking-tighter shadow-sm"># {{ $applicant['id'] }}</span>
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight truncate leading-tight">{{ $applicant['name'] }}</p>
                                     <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider truncate mt-0.5">{{ $applicant['email'] }}</p>
@@ -495,7 +495,7 @@ document.addEventListener('alpine:init', () => {
 
         async reverseGeocode(lat, lng) {
             try {
-                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
+                const response = await fetch(`https:// nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
                 const data = await response.json();
                 this.geofenceOffice.address = data.display_name || 'Address not found';
             } catch (error) {

@@ -9,21 +9,21 @@ use Illuminate\Console\Command;
 class WarmUserBaseline extends Command
 {
     /**
-     * The name and signature of the console command.
+     * The name and signature of the console command
      *
      * @var string
      */
     protected $signature = 'app:warm-user-baseline {user_id : The ID of the user to warm baseline for} {--ip= : Custom IP address to seed} {--user-agent= : Custom User-Agent string to seed}';
 
     /**
-     * The console command description.
+     * The console command description
      *
      * @var string
      */
     protected $description = 'Seed/warm the ML anomaly baseline for a specific user to prevent false positive warning triggers.';
 
     /**
-     * Execute the console command.
+     * Execute the console command
      */
     public function handle()
     {

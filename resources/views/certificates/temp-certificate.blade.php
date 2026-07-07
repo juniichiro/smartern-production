@@ -4,9 +4,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Certificate of Completion</title>
     <style>
-        /* 1. Aggressive Font Mapping for Local TTF Files */
+        /* Aggressive Font Mapping for Local TTF Files*/
         
-        /* Old English Mapping - Used for Government and Department Text */
+        /* Old English Mapping - Used for Government and Department Text*/
         @font-face {
             font-family: 'OldEnglishText';
             src: url('{{ public_path("fonts/oldenglish.TTF") }}') format('truetype');
@@ -20,7 +20,7 @@
             font-style: normal;
         }
 
-        /* Bookman Family Mapping - Used for Body Text */
+        /* Bookman Family Mapping - Used for Body Text*/
         @font-face {
             font-family: 'Bookman';
             src: url('{{ public_path("fonts/bookman.TTF") }}') format('truetype');
@@ -46,20 +46,20 @@
             font-style: italic;
         }
 
-        /* 2. Page and Body Setup */
+        /* Page and Body Setup*/
         @page {
             margin: 20mm 30mm 25mm 30mm; 
             size: 8.5in 11in; 
         }
         body {
             font-family: 'Bookman', Georgia, serif;
-            color: #000;
-            background-color: #fff;
+            color: # ;
+            background-color: # fff;
             margin: 0;
             padding: 0;
         }
 
-        /* 3. Header Styling - Matched to Sample Spacing */
+        /* Header Styling - Matched to Sample Spacing*/
         .header {
             text-align: center;
         }
@@ -87,18 +87,18 @@
             text-transform: uppercase;
             margin: 0;
             padding: 0;
-            line-height: 0.95; /* Removes the gap between these two lines */
+            line-height: 0.95; /* Removes the gap between these two lines*/
         }
         .region-text {
             margin-top: 2px; 
         }
         .header-line {
-            border-top: 1.5px solid #000;
+            border-top: 1.5px solid # ;
             width: 100%;
             margin-top: 10px;
         }
 
-        /* 4. Title and Content Spacing */
+        /* Title and Content Spacing*/
         .title {
             text-align: center;
             font-size: 22px;
@@ -109,7 +109,7 @@
         }
         .content {
             font-size: 15px;
-            line-height: 1.2; /* Single spacing as requested */
+            line-height: 1.2; /* Single spacing as requested*/
             text-align: justify;
         }
         .content p {
@@ -122,14 +122,14 @@
             text-transform: uppercase;
         }
 
-        /* 5. Footer and Signature Section */
+        /* Footer and Signature Section*/
         .footer {
             position: fixed;
             bottom: -15mm; 
             left: 0; 
             right: 0;  
             text-align: center;
-            border-top: 1px solid #000; /* Horizontal line on footer */
+            border-top: 1px solid # ; /* Horizontal line on footer */
             padding-top: 8px; 
         }
         .footer img {
@@ -145,7 +145,7 @@
             width: 100%;
             text-align: center;
             font-size: 11px;
-            color: #777;
+            color: # ;
             font-family: monospace;
         }
 
@@ -154,7 +154,7 @@
             margin-top: 60px;
         }
 
-        /* Watermark style for PDF */
+        /* Watermark style for PDF*/
         .watermark {
             position: fixed;
             top: 35%;

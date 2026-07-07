@@ -10,9 +10,9 @@ use Symfony\Component\HttpFoundation\Response;
 class MFACheck
 {
     /**
-     * Handle an incoming request.
+     * Handle an incoming request
      *
-     * @param  Closure(Request): (Response)  $next
+     * @param Closure(Request): (Response) $next
      */
     public function handle(Request $request, Closure $next): Response
     {
@@ -53,12 +53,12 @@ class MFACheck
 
         // If MFA is not verified in session
         if (! session('mfa_verified')) {
-            // 1. If they haven't finished the initial setup, force setup
+            // If they haven't finished the initial setup, force setup
             if (! $user->google2fa_enabled) {
                 return redirect()->route('mfa.setup');
             }
 
-            // 2. If MFA is enabled and verified in DB, force verification for this session
+            // If MFA is enabled and verified in DB, force verification for this session
             if ($user->google2fa_enabled) {
                 return redirect()->route('mfa.verify');
             }

@@ -12,7 +12,7 @@ use Illuminate\Support\ServiceProvider;
 class AppServiceProvider extends ServiceProvider
 {
     /**
-     * Register any application services.
+     * Register any application services
      */
     public function register(): void
     {
@@ -20,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
     }
 
     /**
-     * Bootstrap any application services.
+     * Bootstrap any application services
      */
     public function boot(): void
     {
@@ -36,8 +36,8 @@ class AppServiceProvider extends ServiceProvider
         }
 
         /*
-           REMOVED: Event::listen blocks.
-           Laravel 11+ automatically discovers listeners in the app/Listeners folder.
+           REMOVED: Event::listen blocks
+           Laravel eleven+ automatically discovers listeners in the app/Listeners folder
         */
         // Optimized View Composer for Notifications
         // Reverted to '*' to ensure compatibility with all views containing the sidebar

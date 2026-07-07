@@ -14,7 +14,7 @@ use Illuminate\View\View;
 class ProfileController extends Controller
 {
     /**
-     * Display the user's profile form.
+     * Display the user's profile form
      */
     public function edit(Request $request): View
     {
@@ -24,7 +24,7 @@ class ProfileController extends Controller
     }
 
     /**
-     * Update the user's profile information.
+     * Update the user's profile information
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
@@ -45,7 +45,7 @@ class ProfileController extends Controller
     }
 
     /**
-     * Delete the user's account.
+     * Delete the user's account
      */
     public function destroy(Request $request): RedirectResponse
     {
@@ -66,7 +66,7 @@ class ProfileController extends Controller
     }
 
     /**
-     * Acknowledge the privacy policy.
+     * Acknowledge the privacy policy
      */
     public function acknowledgePrivacy(Request $request): JsonResponse
     {

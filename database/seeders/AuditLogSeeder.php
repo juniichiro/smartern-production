@@ -16,6 +16,6 @@ class AuditLogSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         // Baseline logs are now stored in storage/app/audit_baseline.json
-        // to ensure the Admin only sees real system-generated logs.
+        // to ensure the Admin only sees real system-generated logs
     }
 }

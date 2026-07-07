@@ -18,7 +18,7 @@ class Submission extends Model
     ];
 
     /**
-     * Get the task that this submission belongs to.
+     * Get the task that this submission belongs to
      */
     public function task()
     {
@@ -26,7 +26,7 @@ class Submission extends Model
     }
 
     /**
-     * Get the intern (User) who made the submission.
+     * Get the intern (User) who made the submission
      */
     public function intern()
     {

@@ -142,11 +142,11 @@ def main():
             r_id = role_ids[i]
             r_total = role_totals[r_id] if role_totals[r_id] > 0 else 1
             
-            # Determine if the user is in cold-start phase (fewer than 5 baseline entries)
+            # Determine if the user is in cold-start phase (fewer than five baseline entries)
             is_cold_start = user_baseline_counts[u_id] < 5
             
             if is_cold_start:
-                # Fallback to role averages to prevent 100% single-action outlier spikes
+                # Fallback to role averages to prevent one hundred percent single-action outlier spikes
                 user_action_feat = role_action_counts[(r_id, log['action'])] / r_total
                 device_id_feat = role_ua_counts[(r_id, user_agents[i])] / r_total
             else:
@@ -167,7 +167,7 @@ def main():
 
         X = np.array(features)
 
-        # 3. Configure Isolation Forest
+        # Configure Isolation Forest
         model = IsolationForest(
             n_estimators=100, 
             contamination='auto', 
@@ -177,7 +177,7 @@ def main():
         )
         model.fit(X)
         
-        # Redundancy Reduction (Feng & Zhang, 2023): Prune highly correlated trees
+        # Redundancy Reduction (Feng & Zhang, : Prune highly correlated trees
         try:
             n_trees = len(model.estimators_)
             depths = np.zeros((X.shape[0], n_trees))
@@ -213,13 +213,13 @@ def main():
         except Exception as e:
             pass
         
-        # 4. Use score_samples for the PURE anomaly score s in [0, 1]
+        # Use score_samples for the PURE anomaly score s in [zero, one]
         raw_scores = model.score_samples(X)
         all_scores = (-raw_scores).tolist()
         
         incoming_scores = all_scores[len(baseline_logs):]
 
-        # Calculate dynamic average normal score from the bottom 50% (least anomalous logs)
+        # Calculate dynamic average normal score from the bottom fifty percent (least anomalous logs)
         sorted_scores = sorted(all_scores)
         avg_normal_score = sum(sorted_scores[:len(sorted_scores)//2]) / (len(sorted_scores)//2) if sorted_scores else 0.20
 
@@ -228,7 +228,7 @@ def main():
             if is_whitelisted(log):
                 incoming_scores[idx] = avg_normal_score
 
-        # 5. Return ONLY the scores for incoming logs
+        # Return ONLY the scores for incoming logs
         print(json.dumps({"scores": incoming_scores}))
 
     except Exception as e:

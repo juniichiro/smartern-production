@@ -19,7 +19,7 @@ class SecurityController extends Controller
 {
     public function index(Request $request)
     {
-        // Consolidate counts into a single query and cache for 2 minutes
+        // Consolidate counts into a single query and cache for two minutes
         $stats = Cache::remember('security_monitor_counts', 120, function () {
             return AuditLog::selectRaw('
                 COUNT(CASE WHEN anomaly_score <= 0.5 THEN 1 END) as normal,
@@ -66,7 +66,7 @@ class SecurityController extends Controller
 
         $securityLogs = $query->latest('timestamp')->paginate(10);
 
-        // Calculate anomaly counts and 24h persistence for these users (Feng & Zhang, 2023)
+        // Calculate anomaly counts and twenty-four hour persistence for these users (Feng & Zhang,
         $userIds = $securityLogs->pluck('user_id')->filter()->unique();
         $userMetrics = [];
         if ($userIds->isNotEmpty()) {
@@ -89,15 +89,15 @@ class SecurityController extends Controller
             }
         }
 
-        // --- Fetch Admin Evaluation Log Trail ---
-        // 1. Fetch DB logs
+        // Fetch Admin Evaluation Log Trail
+        // Fetch DB logs
         $evalLogsDb = AuditLog::with('user')
             ->where('action', 'like', 'Evaluated Anomaly:%')
             ->latest('timestamp')
             ->limit(30)
             ->get();
 
-        // 3. Unify, extract targets and sort
+        // Unify, extract targets and sort
         $unifiedLogs = [];
         $targetUserIds = [];
         $targetLogIds = [];
@@ -139,7 +139,7 @@ class SecurityController extends Controller
             return $b->timestamp->timestamp <=> $a->timestamp->timestamp;
         });
 
-        // Limit to latest 30
+        // Limit to latest thirty
         $unifiedLogs = array_slice($unifiedLogs, 0, 30);
 
         // Batch query targets
@@ -196,7 +196,7 @@ class SecurityController extends Controller
         try {
             $lockKey = 'recalculate_anomaly_scores_lock';
             $lock = Cache::lock($lockKey, 60);
-            $maxWait = 15; // Max wait 15 seconds
+            $maxWait = 15; // Max wait fifteen seconds
             $waited = 0;
 
             // Try to acquire the lock, waiting if necessary
@@ -268,7 +268,7 @@ class SecurityController extends Controller
             }
         }
 
-        // Limit to the latest 500 records to prevent memory exhaustion and keep PDF generation fast
+        // Limit to the latest five hundred records to prevent memory exhaustion and keep PDF generation fast
         $logs = $query->latest('timestamp')->limit(500)->get();
 
         $data = [
@@ -292,7 +292,7 @@ class SecurityController extends Controller
 
     public function markSafe(User $user, AuditLog $log, Request $request, AnomalyDetectionService $service, SecurityAuditService $auditService): RedirectResponse
     {
-        /** @var User $authUser */
+        /** @var User $authUser*/
         $authUser = auth()->user();
         $userRoleVal = $user->role_id->value;
         $authRoleVal = $authUser->role_id->value;
@@ -322,7 +322,7 @@ class SecurityController extends Controller
 
     public function markCompromised(User $user, AuditLog $log, Request $request, SecurityAuditService $auditService): RedirectResponse
     {
-        /** @var User $authUser */
+        /** @var User $authUser*/
         $authUser = auth()->user();
         $userRoleVal = $user->role_id->value;
         $authRoleVal = $authUser->role_id->value;
@@ -359,7 +359,7 @@ class SecurityController extends Controller
 
     public function markSuspended(User $user, AuditLog $log, Request $request, SecurityAuditService $auditService): RedirectResponse
     {
-        /** @var User $authUser */
+        /** @var User $authUser*/
         $authUser = auth()->user();
         $userRoleVal = $user->role_id->value;
         $authRoleVal = $authUser->role_id->value;

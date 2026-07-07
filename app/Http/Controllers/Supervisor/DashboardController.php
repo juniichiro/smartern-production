@@ -35,7 +35,7 @@ class DashboardController extends Controller
         $officeId = $supervisor->office_id;
         $query->where('office_id', $officeId);
 
-        // 1. Fetch active interns (those without a 'published' certificate)
+        // Fetch active interns (those without a 'published' certificate)
         $interns = $query->whereDoesntHave('certificate', function ($query) {
             $query->where('status', 'published');
         })
@@ -45,7 +45,7 @@ class DashboardController extends Controller
         $activeInternsCount = $interns->count();
         $internIds = $interns->pluck('user_id');
 
-        // 2. Overview Stats based on the filtered Active Intern list
+        // Overview Stats based on the filtered Active Intern list
         $pendingTasksCount = Task::whereIn('intern_id', $internIds)
             ->where('status', 'pending')
             ->count();
@@ -61,7 +61,7 @@ class DashboardController extends Controller
             ->whereDate('created_at', now()->today())
             ->count();
 
-        // 3. Upcoming Deadlines for active interns only
+        // Upcoming Deadlines for active interns only
         $upcomingDeadlines = Task::whereIn('intern_id', $internIds)
             ->with('internDetails')
             ->where('status', 'pending')
@@ -70,14 +70,14 @@ class DashboardController extends Controller
             ->take(3)
             ->get();
 
-        // 3.5 Fetch Today's Active Attendance (Clocked in but not out)
+        // Fetch Today's Active Attendance (Clocked in but not out)
         $activeAttendance = Attendance::whereIn('intern_id', $internIds)
             ->whereDate('clock_in', now()->today())
             ->whereNull('clock_out')
             ->with('internDetails')
             ->get();
 
-        // 3.6 Fetch Submissions Needing Review
+        // Fetch Submissions Needing Review
         // A task needs review if it is 'pending' and HAS a submission
         $submissionsNeedingReview = Task::whereIn('intern_id', $internIds)
             ->where('status', 'pending')

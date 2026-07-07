@@ -9,7 +9,7 @@ use App\Models\User;
 class AttendancePolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Determine whether the user can view any models
      */
     public function viewAny(User $user): bool
     {
@@ -17,7 +17,7 @@ class AttendancePolicy
     }
 
     /**
-     * Determine whether the user can view the model.
+     * Determine whether the user can view the model
      */
     public function view(User $user, Attendance $attendance): bool
     {
@@ -42,7 +42,7 @@ class AttendancePolicy
     }
 
     /**
-     * Determine whether the user can create models.
+     * Determine whether the user can create models
      */
     public function create(User $user): bool
     {

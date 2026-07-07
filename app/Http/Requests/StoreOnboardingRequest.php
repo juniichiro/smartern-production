@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class StoreOnboardingRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * Determine if the user is authorized to make this request
      */
     public function authorize(): bool
     {
@@ -16,7 +16,7 @@ class StoreOnboardingRequest extends FormRequest
     }
 
     /**
-     * Prepare the data for validation.
+     * Prepare the data for validation
      */
     protected function prepareForValidation(): void
     {
@@ -27,7 +27,7 @@ class StoreOnboardingRequest extends FormRequest
     }
 
     /**
-     * Normalize phone number: strip non-digits and prepend '0' if length is 10.
+     * Normalize phone number: strip non-digits and prepend 'zero' if length is ten
      */
     private function normalizePhone(?string $value): ?string
     {
@@ -45,7 +45,7 @@ class StoreOnboardingRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Get the validation rules that apply to the request
      *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
@@ -77,7 +77,7 @@ class StoreOnboardingRequest extends FormRequest
     }
 
     /**
-     * Custom messages for validation errors.
+     * Custom messages for validation errors
      */
     public function messages(): array
     {

@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 class CertificateController extends Controller
 {
     /**
-     * Display the list of interns for endorsement.
+     * Display the list of interns for endorsement
      */
     public function index()
     {
@@ -38,7 +38,7 @@ class CertificateController extends Controller
     }
 
     /**
-     * Preview the certificate before submission.
+     * Preview the certificate before submission
      */
     public function preview($certificate)
     {
@@ -57,7 +57,7 @@ class CertificateController extends Controller
     }
 
     /**
-     * Download a draft certificate PDF.
+     * Download a draft certificate PDF
      */
     public function download($certificate)
     {
@@ -109,23 +109,23 @@ class CertificateController extends Controller
     }
 
     /**
-     * Endorse an intern to the Head Supervisor.
-     * Note: $certificate here is the intern's user_id from the route.
+     * Endorse an intern to the Head Supervisor
+     * Note: $certificate here is the intern's user_id from the route
      */
     public function endorse(Request $request, $certificate)
     {
         $this->authorize('create', Certificate::class);
 
-        // 1. Find the intern using the ID passed through the {certificate} parameter
+        // Find the intern using the ID passed through the {certificate} parameter
         $intern = InternDetail::byPublicOrId($certificate)->firstOrFail();
 
-        // 2. Eligibility Check: Ensure they have reached their required hours
+        // Eligibility Check: Ensure they have reached their required hours
         $reqHours = $intern->required_hours ?? 480;
         if (($intern->hours_rendered ?? 0) < $reqHours) {
             return redirect()->back()->with('error', 'Intern has not yet completed the required ' . $reqHours . ' hours.');
         }
 
-        // 3. Validate request
+        // Validate request
         $request->validate([
             'supervisor_feedback' => 'nullable|string|max:5000',
             'technical_proficiency' => 'required|string|in:Excellent,Very Good,Good,Fair,Poor',
@@ -134,7 +134,7 @@ class CertificateController extends Controller
             'team_collaboration' => 'required|string|in:Excellent,Very Good,Good,Fair,Poor',
         ]);
 
-        // 4. Create or Update the Certificate record
+        // Create or Update the Certificate record
         $cert = Certificate::updateOrCreate(
             ['intern_id' => $intern->user_id],
             [
@@ -150,7 +150,7 @@ class CertificateController extends Controller
             ]
         );
 
-        // 5. Save the specific evaluations
+        // Save the specific evaluations
         $cert->evaluation()->updateOrCreate(
             ['certificate_id' => $cert->certificate_id],
             [
@@ -165,7 +165,7 @@ class CertificateController extends Controller
     }
 
     /**
-     * Helper verify method (same logic as endorse).
+     * Helper verify method (same logic as endorse)
      */
     public function verify(Request $request, $certificate)
     {

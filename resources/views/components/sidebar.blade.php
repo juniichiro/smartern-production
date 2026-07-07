@@ -438,7 +438,7 @@ class="relative">
                 <nav class="flex flex-col gap-0 md:bg-transparent">
                     <button type="button" 
                             @click="activeTab = 'general'"
-                            :class="activeTab === 'general' ? 'bg-gray-100/60 dark:bg-gray-900/30 border-l-4 border-[#0B5694] dark:border-blue-500 font-bold text-[#0B5694] dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'"
+                            :class="activeTab === 'general' ? 'bg-gray-100/60 dark:bg-gray-900/30 border-l-4 border-[# Bfivesixninefour] dark:border-blue-five hundred font-bold text-[#zeroBfivesixninefour] dark:text-blue-four hundred' : 'border-transparent text-gray-five hundred dark:text-gray-four hundred hover:text-gray-eight hundred dark:hover:text-gray-two hundred'"
                             class="flex items-center justify-start gap-2.5 px-4 py-3 text-xs uppercase tracking-wider transition-all text-left whitespace-nowrap w-full border-t border-b border-transparent focus:outline-none shrink-0 rounded-r-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="3"/>

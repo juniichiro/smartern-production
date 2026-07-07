@@ -12,7 +12,7 @@ use Illuminate\View\View;
 class PasswordResetLinkController extends Controller
 {
     /**
-     * Display the password reset link request view.
+     * Display the password reset link request view
      */
     public function create(): View
     {
@@ -20,7 +20,7 @@ class PasswordResetLinkController extends Controller
     }
 
     /**
-     * Handle an incoming password reset link request.
+     * Handle an incoming password reset link request
      *
      * @throws ValidationException
      */
@@ -34,7 +34,7 @@ class PasswordResetLinkController extends Controller
         $userExists = \App\Models\User::where('email', $request->email)->exists();
 
         if ($userExists) {
-            // Send the password reset link to this user.
+            // Send the password reset link to this user
             Password::sendResetLink(
                 $request->only('email')
             );

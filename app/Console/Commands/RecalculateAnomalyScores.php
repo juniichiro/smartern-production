@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\Cache;
 class RecalculateAnomalyScores extends Command
 {
     /**
-     * Execute the console command.
+     * Execute the console command
      */
-    // Inside the handle() method
+    // Inside the handle method
     public function handle(AnomalyDetectionService $service)
     {
         $lock = Cache::lock('recalculate_anomaly_scores_lock', 60);

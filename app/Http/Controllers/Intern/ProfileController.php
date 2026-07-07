@@ -11,7 +11,7 @@ class ProfileController extends Controller
 {
     public function index()
     {
-        // Fetch the single intern record for the authenticated user[cite: 8]
+        // Fetch the single intern record for the authenticated user[cite: eight]
         $intern = InternDetail::where('user_id', Auth::id())
             ->with(['user', 'office', 'certificate'])
             ->firstOrFail();
@@ -21,7 +21,7 @@ class ProfileController extends Controller
             ->with('user')
             ->first();
 
-        // Metric calculations[cite: 7]
+        // Metric calculations[cite: seven]
         $totalTasks = $intern->tasks->count();
         $completedTasks = $intern->tasks->where('status', 'completed')->count();
         $absents = $intern->attendances->where('status', 'absent')->count();

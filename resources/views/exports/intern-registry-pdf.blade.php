@@ -3,66 +3,66 @@
 <head>
     <meta charset="utf-8">
     <style>
-        /* Force Modern Sans-Serif fonts in dompdf */
+        /* Force Modern Sans-Serif fonts in dompdf*/
         body { 
             font-family: 'Helvetica', 'Arial', sans-serif; 
-            color: #1f2937; 
+            color: # ftwoninethreeseven;
             margin: 0; 
             padding: 35px 45px; 
             font-size: 14px; 
             line-height: 1.5;
         }
         
-        /* Header Styling */
-        .header-table { width: 100%; border-bottom: 3px solid #0B5694; padding-bottom: 25px; margin-bottom: 30px; }
+        /* Header Styling*/
+        .header-table { width: 100%; border-bottom: 3px solid # Bfivesixninefour; padding-bottom: twofivepx; margin-bottom: threezeropx; }
         .logo { width: 65px; vertical-align: middle; margin-right: 15px; }
-        .brand { font-size: 30px; font-weight: bold; display: inline-block; vertical-align: middle; color: #0B5694; letter-spacing: -1px; }
-        .official-tag { color: #64748b; font-weight: bold; text-transform: uppercase; font-size: 12px; margin-top: 5px; }
+        .brand { font-size: 30px; font-weight: bold; display: inline-block; vertical-align: middle; color: # Bfivesixninefour; letter-spacing: -onepx; }
+        .official-tag { color: # b; font-weight: bold; text-transform: uppercase; font-size: onetwopx; margin-top: fivepx; }
 
-        /* Report Summary Section */
+        /* Report Summary Section*/
         .report-summary { margin-bottom: 35px; }
-        .school-name { font-size: 18px; font-weight: bold; color: #111827; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .school-name { font-size: 18px; font-weight: bold; color: # ; margin-bottom: twozeropx; text-transform: uppercase; letter-spacing: zero.fivepx; }
         
         .summary-grid { width: 100%; margin-bottom: 25px; }
         .summary-card { 
-            border: 1px solid #e5e7eb; 
+            border: 1px solid # efiveeseveneb;
             border-radius: 12px; 
             padding: 18px; 
-            background: #f9fafb;
+            background: # fninefafb;
             vertical-align: top;
             width: 32%;
         }
         .summary-label { 
             font-size: 11px; 
             font-weight: bold; 
-            color: #6b7280; 
+            color: # bseventwoeightzero;
             text-transform: uppercase; 
             margin-bottom: 8px; 
             letter-spacing: 0.5px;
         }
-        .summary-value { font-size: 20px; font-weight: bold; color: #111827; }
+        .summary-value { font-size: 20px; font-weight: bold; color: # ; }
 
-        /* Table Styling */
+        /* Table Styling*/
         .data-table { width: 100%; border-collapse: collapse; margin-top: 10px; table-layout: fixed; }
         .data-table th { 
-            background: #f9fafb; 
-            color: #4b5563; 
+            background: # fninefafb;
+            color: # bfivefivesixthree;
             padding: 15px 12px; 
             text-align: left; 
             font-size: 11px; 
             text-transform: uppercase; 
-            border-bottom: 2px solid #e5e7eb;
+            border-bottom: 2px solid # efiveeseveneb;
             font-weight: bold;
         }
         .data-table td { 
             padding: 15px 12px; 
-            border-bottom: 1px solid #f3f4f6; 
+            border-bottom: 1px solid # fthreeffourfsix;
             font-size: 13px; 
             vertical-align: middle;
             word-wrap: break-word;
         }
         
-        /* Status Badges */
+        /* Status Badges*/
         .badge {
             padding: 5px 10px;
             border-radius: 9999px;
@@ -72,23 +72,23 @@
             display: inline-block;
             white-space: nowrap;
         }
-        .badge-active { background-color: #dbeafe; color: #1e40af; }
-        .badge-endorsing { background-color: #fef9c3; color: #854d0e; }
-        .badge-completed { background-color: #dcfce7; color: #166534; }
-        .badge-risk { background-color: #fee2e2; color: #991b1b; }
+        .badge-active { background-color: # dbeafe; color: #oneefourzeroaf; }
+        .badge-endorsing { background-color: # fefninecthree; color: #eightfivefourdzeroe; }
+        .badge-completed { background-color: # dcfceseven; color: #one hundred and sixty-six thousand and five hundred and thirty-four; }
+        .badge-risk { background-color: # feetwoetwo; color: #ninenineoneboneb; }
 
-        .intern-id { color: #0B5694; font-weight: bold; font-size: 11px; }
-        .intern-name { font-size: 14px; font-weight: bold; color: #111827; margin-top: 2px; }
+        .intern-id { color: # Bfivesixninefour; font-weight: bold; font-size: oneonepx; }
+        .intern-name { font-size: 14px; font-weight: bold; color: # ; margin-top: twopx; }
 
         .footer {
             position: fixed;
             bottom: 0;
             width: 100%;
             font-size: 11px;
-            color: #9ca3af;
+            color: # cathreeaf;
             text-align: center;
             padding-bottom: 20px;
-            border-top: 1px solid #e5e7eb;
+            border-top: 1px solid # efiveeseveneb;
             padding-top: 15px;
         }
     </style>

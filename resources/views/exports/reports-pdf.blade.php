@@ -3,67 +3,67 @@
 <head>
     <meta charset="utf-8">
     <style>
-        /* Force Modern Sans-Serif fonts in dompdf */
+        /* Force Modern Sans-Serif fonts in dompdf*/
         body { 
             font-family: sans-serif; 
-            color: #04091E; 
+            color: # E;
             margin: 0; 
             padding: 35px 45px; 
             font-size: 14px; 
             line-height: 1.5;
         }
         
-        /* Header Styling */
-        .header-table { width: 100%; border-bottom: 4px solid #0B5694; padding-bottom: 25px; margin-bottom: 40px; }
+        /* Header Styling*/
+        .header-table { width: 100%; border-bottom: 4px solid # Bfivesixninefour; padding-bottom: twofivepx; margin-bottom: fourzeropx; }
         .logo { width: 60px; vertical-align: middle; margin-right: 12px; }
         .brand { font-size: 32px; font-weight: bold; display: inline-block; vertical-align: middle; font-family: sans-serif; letter-spacing: -1px; }
-        .official-tag { color: #0B5694; font-weight: bold; text-transform: uppercase; font-size: 13px; margin-top: 8px; font-family: sans-serif; }
+        .official-tag { color: # Bfivesixninefour; font-weight: bold; text-transform: uppercase; font-size: onethreepx; margin-top: eightpx; font-family: sans-serif; }
 
-        /* Graph Cards */
+        /* Graph Cards*/
         .graph-table { width: 100%; margin-bottom: 40px; border-spacing: 20px 0; }
         .graph-card { 
-            border: 1px solid #e5e7eb; 
+            border: 1px solid # efiveeseveneb;
             border-radius: 35px; 
             padding: 30px; 
-            background: #ffffff;
+            background: # ffffff;
             vertical-align: top;
         }
         .graph-title { 
             font-size: 11px; 
             font-weight: bold; 
-            color: #64748b; 
+            color: # b;
             text-transform: uppercase; 
             margin-bottom: 25px; 
             letter-spacing: 1.5px;
             font-family: sans-serif;
         }
 
-        /* Doughnut Visual */
+        /* Doughnut Visual*/
         .doughnut-container { 
             width: 110px; 
             height: 110px; 
-            border: 18px solid #0B5694; 
+            border: 18px solid # Bfivesixninefour;
             border-radius: 50%; 
             margin: 10px auto 0 auto; 
         }
         
-        /* Bar Chart Visual */
+        /* Bar Chart Visual*/
         .bar-chart-container { width: 100%; margin-top: 15px; }
         .bar-cell { vertical-align: bottom; text-align: center; padding: 0 8px; height: 150px; }
-        .bar-fill { background: #0B5694; width: 30px; margin: 0 auto; border-radius: 8px 8px 0 0; }
+        .bar-fill { background: # Bfivesixninefour; width: threezeropx; margin: zero auto; border-radius: eightpx eightpx zero zero; }
         .bar-label { 
             font-size: 11px; 
             font-weight: bold; 
-            color: #1f2937; 
+            color: # ftwoninethreeseven;
             margin-top: 12px; 
             text-transform: uppercase;
             font-family: sans-serif;
         }
 
-        /* Data Table */
+        /* Data Table*/
         .data-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         .data-table th { 
-            background: #04091E; 
+            background: # E;
             color: white; 
             padding: 18px; 
             text-align: left; 
@@ -73,13 +73,13 @@
         }
         .data-table td { 
             padding: 18px; 
-            border-bottom: 1px solid #f1f3f4; 
+            border-bottom: 1px solid # fonefthreeffour;
             font-size: 14px; 
             font-family: sans-serif;
         }
-        .text-blue { color: #0B5694; font-weight: bold; }
+        .text-blue { color: # Bfivesixninefour; font-weight: bold; }
 
-        /* Legend dots */
+        /* Legend dots*/
         .legend { margin-top: 30px; text-align: center; font-size: 11px; font-weight: bold; font-family: sans-serif; }
         .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 5px; }
     </style>
@@ -122,7 +122,7 @@
                     <tr>
                         @foreach($interns as $intern)
                             @php 
-                                // Map performance rate (0-100) to pixel height (max 130px)
+                                // Map performance rate (zero-to pixel height (max onethreezeropx)
                                 $pixelHeight = max(($intern->performance_rate / 100) * 130, 3);
                             @endphp
                             <td class="bar-cell">

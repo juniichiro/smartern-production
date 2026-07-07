@@ -126,7 +126,7 @@ class Journal extends Model
     ];
 
     /**
-     * Relationship to the Intern: Link journals.intern_id to intern_details.user_id[cite: 10, 12, 13]
+     * Relationship to the Intern: Link journals.intern_id to intern_details.user_id[cite: ten, twelve, thirteen]
      */
     public function intern(): BelongsTo
     {

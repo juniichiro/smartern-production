@@ -193,7 +193,7 @@ class AttendanceController extends Controller
         try {
             logger()->info('Attendance Scan Started', ['token' => $request->token]);
 
-            // 0. Token Validation
+            // Token Validation
             $token = $request->token;
             if (! $token) {
                 return response()->json(['message' => 'Security token missing.'], 400);
@@ -212,7 +212,7 @@ class AttendanceController extends Controller
             [$userId, $timestamp] = $decoded;
             logger()->info('Token Decoded', ['userId' => $userId, 'timestamp' => $timestamp]);
 
-            // 1. Replay Protection (90s)
+            // Replay Protection (ninety seconds)
             $tokenTime = Carbon::createFromTimestamp($timestamp);
             if ($tokenTime->diffInSeconds(now()) > 90) {
                 Cache::put($cacheKey, true, now()->addMinutes(10));
@@ -223,7 +223,7 @@ class AttendanceController extends Controller
             $user = User::with('internDetails.office')->findOrFail($userId);
             $office = $user->internDetails->office;
 
-            // 2. Geofence Check
+            // Geofence Check
             if (! $request->latitude || ! $request->longitude) {
                 Cache::put($cacheKey, true, now()->addMinutes(10));
                 Cache::forget("active_qr_token_{$userId}");
@@ -245,7 +245,7 @@ class AttendanceController extends Controller
                 return response()->json(['message' => 'You are outside the office boundary. Ensure you are within the designated premises and try again.'], 403);
             }
 
-            // 3. Early Checkout Warning
+            // Early Checkout Warning
             $todayRecord = Attendance::where('intern_id', $userId)
                 ->whereDate('clock_in', now()->toDateString())
                 ->first();
@@ -286,7 +286,7 @@ class AttendanceController extends Controller
                             : 'You are clocking out before your scheduled end time ('.$endTime->format('h:i A').'). Proceed?';
 
                         // Note: We do NOT burn the token or clear the active token yet,
-                        // because the user needs to submit the confirmation using the same token.
+                        // because the user needs to submit the confirmation using the same token
                         return response()->json([
                             'requires_confirmation' => true,
                             'requires_reason' => ! $hasApprovedEarlyLeave,
@@ -297,14 +297,14 @@ class AttendanceController extends Controller
             }
 
             // Burn the token immediately to ensure that any scan attempt (whether successful or blocked)
-            // invalidates this token/QR code instantly.
+            // invalidates this token/QR code instantly
             Cache::put($cacheKey, true, now()->addMinutes(10));
 
             // Clear the active QR token cache for this user immediately so that the polling
-            // endpoint checkStatus() will generate a new token on the next poll.
+            // endpoint checkStatus will generate a new token on the next poll
             Cache::forget("active_qr_token_{$userId}");
 
-            // 4. Final Processing
+            // Final Processing
             $result = $this->attendanceService->recordAttendance(
                 $userId,
                 $request->latitude,
@@ -399,7 +399,7 @@ class AttendanceController extends Controller
     }
 
     /**
-     * Calculate the distance between two points in meters using the Haversine formula.
+     * Calculate the distance between two points in meters using the Haversine formula
      */
     private function calculateDistance($lat1, $lon1, $lat2, $lon2): float
     {

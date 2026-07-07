@@ -49,7 +49,7 @@ class AdminController extends Controller
         $totalDepartments = Office::count();
         $totalBackups = SystemBackup::count();
 
-        // Cache system health for 5 minutes to avoid redundant checks
+        // Cache system health for five minutes to avoid redundant checks
         $services = Cache::remember('system_health_stats', 300, function () {
             return $this->getSystemHealth();
         });
@@ -59,7 +59,7 @@ class AdminController extends Controller
             ->limit(3)
             ->get();
 
-        // 4. High Risk Anomalies (Score > 0.7)
+        // High Risk Anomalies (Score > zero
         $highRiskAnomalies = AuditLog::with(['user', 'internDetails', 'supervisorDetails'])
             ->where('anomaly_score', '>', 0.7)
             ->latest('timestamp')
@@ -72,7 +72,7 @@ class AdminController extends Controller
             })
             ->take(5);
 
-        // 5. Recently Created Users
+        // Recently Created Users
         $newUsers = User::with('role')
             ->latest()
             ->limit(5)
@@ -95,7 +95,7 @@ class AdminController extends Controller
     {
         $health = [];
 
-        // 1. Database Health
+        // Database Health
         try {
             DB::connection()->getPdo();
             $health[] = ['name' => 'Primary Database', 'status' => 'Operational', 'color' => 'green'];
@@ -103,7 +103,7 @@ class AdminController extends Controller
             $health[] = ['name' => 'Primary Database', 'status' => 'Down', 'color' => 'rose'];
         }
 
-        // 2. Storage Health
+        // Storage Health
         try {
             $writable = Storage::disk('local')->put('health-check.txt', 'ok');
             if ($writable) {
@@ -116,7 +116,7 @@ class AdminController extends Controller
             $health[] = ['name' => 'File Storage', 'status' => 'Error', 'color' => 'rose'];
         }
 
-        // 3. ML Engine Health
+        // ML Engine Health
         $pythonScript = base_path('scripts/isolation_forest.py');
         if (file_exists($pythonScript)) {
             $health[] = ['name' => 'ML Anomaly Engine', 'status' => 'Operational', 'color' => 'green'];
@@ -124,14 +124,14 @@ class AdminController extends Controller
             $health[] = ['name' => 'ML Anomaly Engine', 'status' => 'Missing Script', 'color' => 'rose'];
         }
 
-        // 4. MFA Service
+        // MFA Service
         if (class_exists(Google2FA::class)) {
             $health[] = ['name' => 'MFA Service', 'status' => 'Operational', 'color' => 'green'];
         } else {
             $health[] = ['name' => 'MFA Service', 'status' => 'Not Found', 'color' => 'orange'];
         }
 
-        // 5. Geofencing Service
+        // Geofencing Service
         $officesWithGeofence = Office::whereNotNull('latitude')->whereNotNull('longitude')->count();
         if ($officesWithGeofence > 0) {
             $health[] = ['name' => 'Geofencing System', 'status' => 'Active', 'color' => 'green'];
@@ -208,7 +208,7 @@ class AdminController extends Controller
             $filename = 'manual_upload_'.now()->format('Y-m-d_H-i-s').'.zip';
             $backupPath = 'backups/'.$filename;
 
-            // 1. Temporary save to validate contents
+            // Temporary save to validate contents
             $tempPath = $file->getPathname();
             $zip = new ZipArchive;
 
@@ -216,7 +216,7 @@ class AdminController extends Controller
                 return back()->with('error', 'We couldn\'t open that ZIP file. Please check if it\'s a valid archive.');
             }
 
-            // 2. Validate structure (Must have database/ folder)
+            // Validate structure (Must have database/ folder)
             $hasDatabase = false;
             for ($i = 0; $i < $zip->numFiles; $i++) {
                 if (strpos($zip->getNameIndex($i), 'database/') === 0) {
@@ -230,10 +230,10 @@ class AdminController extends Controller
                 return back()->with('error', 'That backup file is missing the required internal structure.');
             }
 
-            // 3. Save to storage
+            // Save to storage
             $file->storeAs('backups', $filename, 'local');
 
-            // 4. Create record
+            // Create record
             $bytes = $file->getSize();
             $units = ['B', 'KB', 'MB', 'GB', 'TB'];
             $pow = floor(($bytes ? log($bytes) : 0) / log(1024));

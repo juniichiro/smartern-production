@@ -8,14 +8,14 @@
             font-family: Helvetica, Arial, sans-serif !important;
         }
         body {
-            color: #333;
+            color: # ;
             line-height: 1.8;
             margin: 40px;
             font-size: 16px;
         }
         .header {
             text-align: center;
-            border-bottom: 2px solid #0B5694;
+            border-bottom: 2px solid # Bfivesixninefour;
             padding-bottom: 20px;
             margin-bottom: 40px;
         }
@@ -23,22 +23,22 @@
             font-family: Helvetica, Arial, sans-serif !important;
             font-size: 28px;
             font-weight: bold !important;
-            color: #0B5694;
+            color: # Bfivesixninefour;
             text-transform: uppercase;
             letter-spacing: 2px;
         }
         .title {
             font-size: 18px;
-            color: #666;
+            color: # ;
             margin-top: 5px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
         h2 {
             font-size: 18px;
-            color: #0B5694;
+            color: # Bfivesixninefour;
             text-transform: uppercase;
-            border-left: 4px solid #0B5694;
+            border-left: 4px solid # Bfivesixninefour;
             padding-left: 15px;
             margin-top: 40px;
             margin-bottom: 20px;
@@ -52,17 +52,17 @@
             page-break-inside: avoid;
         }
         .highlight {
-            background: #f0f7ff;
+            background: # fzerofsevenff;
             padding: 20px;
             border-radius: 10px;
-            border: 1px solid #d1e9ff;
+            border: 1px solid # doneenineff;
             margin-bottom: 20px;
         }
         .highlight p {
             text-align: center;
             margin-bottom: 0;
             font-weight: bold;
-            color: #0B5694;
+            color: # Bfivesixninefour;
         }
         table {
             width: 100%;
@@ -71,40 +71,40 @@
             page-break-inside: avoid;
         }
         th, td {
-            border: 1px solid #eee;
+            border: 1px solid # eee;
             padding: 12px;
             text-align: left;
         }
         th {
-            background-color: #f8fafc;
-            color: #0B5694;
+            background-color: # feightfafc;
+            color: # Bfivesixninefour;
             font-size: 12px;
             text-transform: uppercase;
         }
         .reference-box {
-            background: #fafafa;
-            border: 1px solid #eee;
+            background: # fafafa;
+            border: 1px solid # eee;
             padding: 25px;
             border-radius: 10px;
             margin-top: 30px;
         }
         .reference-box h4 {
-            color: #555;
+            color: # ;
             margin-top: 0;
             margin-bottom: 15px;
             text-transform: uppercase;
             font-size: 11px;
             letter-spacing: 1px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid # eee;
             padding-bottom: 10px;
         }
         .ref-item {
             margin-bottom: 18px;
             font-size: 12px;
-            color: #666;
+            color: # ;
         }
         .ref-link {
-            color: #0B5694;
+            color: # Bfivesixninefour;
             text-decoration: underline;
             display: block;
             margin-top: 4px;
@@ -114,15 +114,15 @@
             margin-top: 60px;
             text-align: center;
             font-size: 10px;
-            color: #999;
-            border-top: 1px solid #eee;
+            color: # ;
+            border-top: 1px solid # eee;
             padding-top: 20px;
         }
         .weight-box {
             display: inline-block;
             width: 80px;
             font-weight: bold;
-            color: #0B5694;
+            color: # Bfivesixninefour;
         }
     </style>
 </head>

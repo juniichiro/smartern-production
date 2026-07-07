@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class AssessmentItemController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the resource
      */
     public function index()
     {
@@ -19,7 +19,7 @@ class AssessmentItemController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created resource in storage
      */
     public function store(Request $request)
     {
@@ -36,7 +36,7 @@ class AssessmentItemController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified resource in storage
      */
     public function update(Request $request, AssessmentItem $assessmentItem)
     {
@@ -54,7 +54,7 @@ class AssessmentItemController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified resource from storage
      */
     public function destroy(AssessmentItem $assessmentItem)
     {

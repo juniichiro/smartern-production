@@ -424,43 +424,43 @@
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-lite.min.js"></script>
 
 <style>
-    /* Premium Theming for Summernote Lite */
+    /* Premium Theming for Summernote Lite*/
     .note-editor.note-frame { 
-        border: 1px solid #e2e8f0 !important; 
+        border: 1px solid # etwoeeightfzero !important;
         border-radius: 16px !important; 
         overflow: hidden !important; 
-        background: #fff !important;
+        background: # fff !important;
     }
     
     .dark .note-editor.note-frame { 
-        border-color: #1e293b !important; 
-        background: #0f172a !important; 
+        border-color: # etwoninethreeb !important;
+        background: # foneseventwoa !important;
     }
 
     .note-toolbar { 
-        background: #f8fafc !important; 
-        border-bottom: 1px solid #e2e8f0 !important; 
+        background: # feightfafc !important;
+        border-bottom: 1px solid # etwoeeightfzero !important;
         padding: 10px 14px !important; 
     }
     
     .dark .note-toolbar { 
-        background: #0d121f !important; 
-        border-color: #1e293b !important; 
+        background: # donetwoonef !important;
+        border-color: # etwoninethreeb !important;
     }
 
     .note-editable { 
         background: transparent !important; 
-        color: #1e293b !important; 
+        color: # etwoninethreeb !important;
         padding: 24px !important; 
         font-family: 'Outfit', sans-serif !important; 
         line-height: 1.8 !important; 
     }
     
     .dark .note-editable { 
-        color: #e2e8f0 !important; 
+        color: # etwoeeightfzero !important;
     }
 
-    /* Restore Tailwind-reset heading and list styles inside Summernote editor */
+    /* Restore Tailwind-reset heading and list styles inside Summernote editor*/
     .note-editable h1 { font-size: 2.25rem !important; font-weight: 800 !important; margin-bottom: 0.5em !important; display: block !important; }
     .note-editable h2 { font-size: 1.875rem !important; font-weight: 700 !important; margin-bottom: 0.5em !important; display: block !important; }
     .note-editable h3 { font-size: 1.5rem !important; font-weight: 700 !important; margin-bottom: 0.5em !important; display: block !important; }
@@ -485,47 +485,47 @@
         list-style-position: outside !important;
     }
 
-    /* Adjust button appearance for premium feel without breaking layout */
+    /* Adjust button appearance for premium feel without breaking layout*/
     .note-btn { 
         background: transparent !important; 
         border: 1px solid transparent !important; 
-        color: #475569 !important; 
+        color: # !important;
         transition: all 0.2s !important; 
     }
 
     .dark .note-btn { 
-        color: #94a3b8 !important; 
+        color: # athreebeight !important;
     }
 
     .note-btn:hover { 
-        background: #f1f5f9 !important; 
-        color: #0f172a !important; 
+        background: # foneffivefnine !important;
+        color: # foneseventwoa !important;
     }
 
     .dark .note-btn:hover { 
-        background: #1e293b !important; 
-        color: #fff !important; 
+        background: # etwoninethreeb !important;
+        color: # fff !important;
     }
 
-    /* Dropdown Theming */
+    /* Dropdown Theming*/
     .note-dropdown-menu { 
-        background: #fff !important; 
-        border: 1px solid #e5e7eb !important; 
+        background: # fff !important;
+        border: 1px solid # efiveeseveneb !important;
         border-radius: 12px !important; 
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important; 
     }
     
     .dark .note-dropdown-menu { 
-        background: #0d121f !important; 
-        border-color: #1e293b !important; 
+        background: # donetwoonef !important;
+        border-color: # etwoninethreeb !important;
     }
 
     .note-dropdown-item:hover { 
-        background: #f1f5f9 !important; 
+        background: # foneffivefnine !important;
     }
 
     .dark .note-dropdown-item:hover { 
-        background: #1e293b !important; 
+        background: # etwoninethreeb !important;
     }
 </style>
 @endpush

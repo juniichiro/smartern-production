@@ -6,7 +6,7 @@
     <style>
         body { 
             font-family: 'Helvetica', 'Arial', sans-serif; 
-            color: #1f2937; 
+            color: # ftwoninethreeseven;
             margin: 0; 
             padding: 30px 40px; 
             font-size: 13px; 
@@ -15,7 +15,7 @@
         
         .header-table { 
             width: 100%; 
-            border-bottom: 3px solid #0B5694; 
+            border-bottom: 3px solid # Bfivesixninefour;
             padding-bottom: 20px; 
             margin-bottom: 25px; 
         }
@@ -29,11 +29,11 @@
             font-weight: bold; 
             display: inline-block; 
             vertical-align: middle; 
-            color: #0B5694; 
+            color: # Bfivesixninefour;
             letter-spacing: -1px; 
         }
         .official-tag { 
-            color: #64748b; 
+            color: # b;
             font-weight: bold; 
             text-transform: uppercase; 
             font-size: 11px; 
@@ -43,12 +43,12 @@
         .report-meta {
             margin-bottom: 25px;
             font-size: 12px;
-            color: #4b5563;
+            color: # bfivefivesixthree;
         }
         .meta-title {
             font-size: 18px;
             font-weight: bold;
-            color: #111827;
+            color: # ;
             text-transform: uppercase;
             margin-bottom: 5px;
         }
@@ -60,18 +60,18 @@
             table-layout: fixed; 
         }
         .data-table th { 
-            background: #f9fafb; 
-            color: #4b5563; 
+            background: # fninefafb;
+            color: # bfivefivesixthree;
             padding: 12px 10px; 
             text-align: left; 
             font-size: 10px; 
             text-transform: uppercase; 
-            border-bottom: 2px solid #e5e7eb;
+            border-bottom: 2px solid # efiveeseveneb;
             font-weight: bold;
         }
         .data-table td { 
             padding: 12px 10px; 
-            border-bottom: 1px solid #f3f4f6; 
+            border-bottom: 1px solid # fthreeffourfsix;
             font-size: 12px; 
             vertical-align: top;
             word-wrap: break-word;
@@ -85,17 +85,17 @@
             text-transform: uppercase;
             display: inline-block;
         }
-        .badge-completed { background-color: #dcfce7; color: #166534; }
-        .badge-pending { background-color: #f3f4f6; color: #4b5563; }
+        .badge-completed { background-color: # dcfceseven; color: #one hundred and sixty-six thousand and five hundred and thirty-four; }
+        .badge-pending { background-color: # fthreeffourfsix; color: #fourbfivefivesixthree; }
         
-        .intern-name { font-size: 13px; font-weight: bold; color: #111827; }
-        .intern-email { font-size: 11px; color: #6b7280; margin-top: 2px; }
+        .intern-name { font-size: 13px; font-weight: bold; color: # ; }
+        .intern-email { font-size: 11px; color: # bseventwoeightzero; margin-top: twopx; }
         
         .period-badge {
             margin-top: 5px;
             font-size: 9px;
             font-weight: bold;
-            color: #0b5694;
+            color: # bfivesixninefour;
             text-transform: uppercase;
         }
 
@@ -104,10 +104,10 @@
             bottom: 0;
             width: 100%;
             font-size: 10px;
-            color: #9ca3af;
+            color: # cathreeaf;
             text-align: center;
             padding-bottom: 15px;
-            border-top: 1px solid #e5e7eb;
+            border-top: 1px solid # efiveeseveneb;
             padding-top: 10px;
         }
     </style>

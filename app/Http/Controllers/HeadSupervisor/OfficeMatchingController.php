@@ -161,7 +161,7 @@ class OfficeMatchingController extends Controller
             $techSkillsFormatted = [];
             $softSkillsFormatted = [];
 
-            // 1. Check if skills columns exist individually as columns in the CSV
+            // Check if skills columns exist individually as columns in the CSV
             foreach ($competencies as $text => $category) {
                 if (isset($headerMap[$text]) && isset($data[$headerMap[$text]])) {
                     $score = is_numeric($data[$headerMap[$text]]) ? (int)$data[$headerMap[$text]] : 3;
@@ -173,7 +173,7 @@ class OfficeMatchingController extends Controller
                 }
             }
 
-            // 2. Fallback to legacy semicolon-separated format if legacy columns are present
+            // Fallback to legacy semicolon-separated format if legacy columns are present
             if (empty($techSkillsFormatted) && isset($headerMap['tech_skills']) && isset($data[$headerMap['tech_skills']])) {
                 $rawTech = ! empty($data[$headerMap['tech_skills']]) ? explode(';', $data[$headerMap['tech_skills']]) : [];
                 foreach ($rawTech as $pair) {
@@ -194,7 +194,7 @@ class OfficeMatchingController extends Controller
                 }
             }
 
-            // 3. Fill in any active assessment items missing from both formats
+            // Fill in any active assessment items missing from both formats
             foreach ($activeAssessments as $item) {
                 $compText = trim($item->competency_text);
                 if (str_contains(strtolower($item->category), 'technical')) {
@@ -515,7 +515,7 @@ class OfficeMatchingController extends Controller
     }
 
     /**
-     * Serve the resume PDF securely for preview.
+     * Serve the resume PDF securely for preview
      */
     public function viewResume(OnboardingApplicant $applicant)
     {

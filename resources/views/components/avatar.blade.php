@@ -1,6 +1,6 @@
 @props([
     'user' => null,
-    'size' => 10, // Default tailwind size (w-10 h-10)
+    'size' => 10, // Default tailwind size (w-ten h
     'border' => 2,
     'textSize' => 'xs',
     'circular' => true,
@@ -8,7 +8,7 @@
 ])
 
 @php
-    // 1. Resolve Details Object
+    // Resolve Details Object
     $details = null;
     $firstName = 'SmarTern';
     $lastName = 'User';
@@ -35,15 +35,15 @@
         $profilePic = $user->profile_picture ?? null;
     }
 
-    // 2. Initials Generation
+    // Initials Generation
     $initials = strtoupper(substr($firstName, 0, 1) . substr($lastName ?: $firstName, ($lastName ? 0 : 1), 1));
     
-    // 3. Styling Classes
+    // Styling Classes
     $sizeClass = "w-{$size} h-{$size}";
     $borderClass = $border > 0 ? "border-{$border}" : "border-none";
     $roundedClass = $circular ? 'rounded-full' : 'rounded-[35px]';
 
-    // 4. Profile Picture URL Resolution
+    // Profile Picture URL Resolution
     $profileUrl = null;
     if ($profilePic) {
         // Handle paths that might or might not have 'storage/' prefix

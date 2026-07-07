@@ -6,14 +6,14 @@
     <style>
         body {
             font-family: 'Helvetica', 'Arial', sans-serif;
-            color: #1f2937;
+            color: # ftwoninethreeseven;
             line-height: 1.5;
             margin: 20px;
         }
         .header {
             text-align: center;
             margin-bottom: 40px;
-            border-bottom: 2px solid #0B5694;
+            border-bottom: 2px solid # Bfivesixninefour;
             padding-bottom: 20px;
         }
         .logo {
@@ -21,7 +21,7 @@
             margin-bottom: 10px;
         }
         h1 {
-            color: #0B5694;
+            color: # Bfivesixninefour;
             font-size: 24px;
             margin: 0;
             text-transform: uppercase;
@@ -30,7 +30,7 @@
         .report-info {
             margin-bottom: 30px;
             font-size: 12px;
-            color: #6b7280;
+            color: # bseventwoeightzero;
         }
         table {
             width: 100%;
@@ -39,17 +39,17 @@
             font-size: 10px;
         }
         th {
-            background-color: #f9fafb;
-            color: #4b5563;
+            background-color: # fninefafb;
+            color: # bfivefivesixthree;
             text-transform: uppercase;
             font-weight: bold;
             padding: 12px 8px;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 1px solid # efiveeseveneb;
             text-align: left;
         }
         td {
             padding: 10px 8px;
-            border-bottom: 1px solid #f3f4f6;
+            border-bottom: 1px solid # fthreeffourfsix;
             vertical-align: top;
         }
         .level {
@@ -61,14 +61,14 @@
             text-transform: uppercase;
             font-size: 8px;
         }
-        .level-critical { background-color: #ef4444; }
-        .level-warning { background-color: #f59e0b; }
-        .level-normal { background-color: #10b981; }
+        .level-critical { background-color: # effourfourfourfour; }
+        .level-warning { background-color: # ffivenineezerob; }
+        .level-normal { background-color: # bnineeightone; }
         
         .score-bar-bg {
             width: 60px;
             height: 6px;
-            background-color: #e5e7eb;
+            background-color: # efiveeseveneb;
             border-radius: 3px;
             display: inline-block;
             vertical-align: middle;
@@ -82,9 +82,9 @@
         .footer {
             margin-top: 50px;
             font-size: 10px;
-            color: #9ca3af;
+            color: # cathreeaf;
             text-align: center;
-            border-top: 1px solid #e5e7eb;
+            border-top: 1px solid # efiveeseveneb;
             padding-top: 20px;
         }
     </style>

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 class ScheduleController extends Controller
 {
     /**
-     * Display the global training schedule for the School Coordinator.
+     * Display the global training schedule for the School Coordinator
      */
     public function index(AttendanceService $attendanceService)
     {
@@ -32,7 +32,7 @@ class ScheduleController extends Controller
 
         $eventsByDate = [];
 
-        // 1. Add API holidays
+        // Add API holidays
         foreach ($apiHolidays as $dateStr => $holiday) {
             $eventsByDate[$dateStr][] = [
                 'type' => 'holiday',
@@ -40,7 +40,7 @@ class ScheduleController extends Controller
             ];
         }
 
-        // 2. Add database overrides (takes precedence/clears API holiday for the date)
+        // Add database overrides (takes precedence/clears API holiday for the date)
         // These are global schedule changes (holidays, suspensions, weekend work)
         $schedules = Schedule::whereNotNull('date')->orderBy('date', 'desc')->get();
         foreach ($schedules as $item) {
@@ -54,7 +54,7 @@ class ScheduleController extends Controller
             ];
         }
 
-        // 3. Add Absence Requests of interns from this coordinator's school
+        // Add Absence Requests of interns from this coordinator's school
         if ($coordinator && $coordinator->school) {
             $school = $coordinator->school;
             $internIds = User::whereHas('internDetails', function ($query) use ($school) {

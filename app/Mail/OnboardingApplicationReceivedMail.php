@@ -16,14 +16,14 @@ class OnboardingApplicationReceivedMail extends Mailable implements ShouldQueue
     use Queueable, SerializesModels;
 
     /**
-     * Create a new message instance.
+     * Create a new message instance
      */
     public function __construct(
         public OnboardingApplicant $applicant
     ) {}
 
     /**
-     * Get the message envelope.
+     * Get the message envelope
      */
     public function envelope(): Envelope
     {
@@ -33,7 +33,7 @@ class OnboardingApplicationReceivedMail extends Mailable implements ShouldQueue
     }
 
     /**
-     * Get the message content definition.
+     * Get the message content definition
      */
     public function content(): Content
     {
@@ -43,7 +43,7 @@ class OnboardingApplicationReceivedMail extends Mailable implements ShouldQueue
     }
 
     /**
-     * Get the attachments for the message.
+     * Get the attachments for the message
      *
      * @return array<int, Attachment>
      */

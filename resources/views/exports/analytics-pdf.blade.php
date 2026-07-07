@@ -6,17 +6,17 @@
     <style>
         body {
             font-family: 'Helvetica', 'Arial', sans-serif;
-            color: #1f2937;
+            color: # ftwoninethreeseven;
             margin: 0;
             padding: 30px 40px;
-            /* Increased global base size for better readability */
+            /* Increased global base size for better readability*/
             font-size: 13px; 
             line-height: 1.6;
-            background-color: #ffffff;
+            background-color: # ffffff;
         }
 
         .header {
-            border-bottom: 3.5px solid #0B5694;
+            border-bottom: 3.5px solid # Bfivesixninefour;
             padding-bottom: 20px;
             margin-bottom: 35px;
         }
@@ -35,7 +35,7 @@
         .brand {
             font-size: 30px;
             font-weight: bold;
-            color: #04091E;
+            color: # E;
             margin: 0;
             display: inline-block;
             vertical-align: middle;
@@ -44,7 +44,7 @@
         .subtitle {
             font-size: 13px;
             font-weight: bold;
-            color: #0B5694;
+            color: # Bfivesixninefour;
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-top: 5px;
@@ -53,11 +53,11 @@
         .date-info {
             text-align: right;
             font-size: 12px;
-            color: #04091E;
+            color: # E;
             text-transform: uppercase;
         }
 
-        /* Stats Cards */
+        /* Stats Cards*/
         .stats-table {
             width: 100%;
             border-collapse: collapse;
@@ -65,8 +65,8 @@
         }
 
         .stat-card-content {
-            background-color: #f9fafb;
-            border: 1.5px solid #f3f4f6;
+            background-color: # fninefafb;
+            border: 1.5px solid # fthreeffourfsix;
             padding: 25px;
             border-radius: 15px;
         }
@@ -74,28 +74,28 @@
         .stat-label {
             font-size: 12px;
             font-weight: bold;
-            color: #04091E;
+            color: # E;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 10px;
         }
 
         .stat-value {
-            font-size: 32px; /* Large, bold values */
+            font-size: 32px; /* Large, bold values*/
             font-weight: bold;
-            color: #04091E;
+            color: # E;
         }
 
-        /* Visual Analytics Section */
+        /* Visual Analytics Section*/
         .section-title {
             font-size: 16px;
             font-weight: bold;
-            color: #0B5694;
+            color: # Bfivesixninefour;
             margin-bottom: 15px;
             text-transform: uppercase;
         }
 
-        /* Data Table Readability */
+        /* Data Table Readability*/
         .data-table {
             width: 100%;
             border-collapse: collapse;
@@ -103,8 +103,8 @@
         }
 
         .data-table th {
-            background-color: #04091E;
-            color: #ffffff;
+            background-color: # E;
+            color: # ffffff;
             font-size: 13px;
             padding: 15px;
             text-align: left;
@@ -113,8 +113,8 @@
 
         .data-table td {
             padding: 15px;
-            border-bottom: 1px solid #f3f4f6;
-            font-size: 13px; /* Stronger table text */
+            border-bottom: 1px solid # fthreeffourfsix;
+            font-size: 13px; /* Stronger table text*/
         }
 
         .footer {
@@ -123,7 +123,7 @@
             width: 100%;
             text-align: center;
             font-size: 11px;
-            color: #d1d5db;
+            color: # donedfivedb;
             padding-bottom: 25px;
         }
     </style>

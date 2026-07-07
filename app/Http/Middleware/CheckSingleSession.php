@@ -13,10 +13,10 @@ use Symfony\Component\HttpFoundation\Response;
 class CheckSingleSession
 {
     /**
-     * Handle an incoming request.
+     * Handle an incoming request
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure $next
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function handle(Request $request, Closure $next): Response
@@ -26,13 +26,13 @@ class CheckSingleSession
 
             // If the user has MFA enabled but has not verified it in this session yet,
             // bypass single session checks to avoid invalidating the active session
-            // until the new session is fully verified and authorized.
+            // until the new session is fully verified and authorized
             if ($user->google2fa_enabled && !session('mfa_verified')) {
                 return $next($request);
             }
 
             // If the session has not been marked as verified in this session lifecycle yet,
-            // register its finalized session ID into the active cache and bind it to browser fingerprints.
+            // register its finalized session ID into the active cache and bind it to browser fingerprints
             if (!session()->has('session_verified')) {
                 $deviceId = Str::random(40);
                 session([
@@ -48,8 +48,8 @@ class CheckSingleSession
                 // Seed user baseline data to prevent cold-start warnings
                 app(\App\Services\AnomalyDetectionService::class)->seedUserBaseline($user, $request->ip(), $request->userAgent());
             } else {
-                // Prevent Session Hijacking/Cookie Injection:
-                // Check if the User-Agent, IP, custom device ID cookie, and client ID cookie match.
+                // Prevent Session Hijacking/Cookie Injection
+                // Check if the User-Agent, IP, custom device ID cookie, and client ID cookie match
                 $cookieDeviceId = $request->cookie('smartern_device_id');
                 $sessionDeviceId = session('session_device_id');
                 $cookieClientId = $request->cookie('smartern_client_id');
@@ -88,7 +88,7 @@ class CheckSingleSession
 
                 $cachedSessionId = Cache::get('user-session-' . $user->id);
 
-                // If the cache contains a different session ID, this session is no longer active.
+                // If the cache contains a different session ID, this session is no longer active
                 if ($cachedSessionId && $cachedSessionId !== session()->getId()) {
                     Auth::guard('web')->logout();
                     $request->session()->invalidate();

@@ -34,7 +34,7 @@ class ProgressController extends Controller
     }
 
     /**
-     * Display the Intern's Dashboard / Progress Overview.
+     * Display the Intern's Dashboard / Progress Overview
      */
     public function index()
     {
@@ -106,7 +106,7 @@ class ProgressController extends Controller
     }
 
     /**
-     * Update an existing journal entry's title and notes.
+     * Update an existing journal entry's title and notes
      */
     public function updateJournal(Request $request, Journal $journal)
     {
@@ -142,7 +142,7 @@ class ProgressController extends Controller
     }
 
     /**
-     * Preview compiled journal data via AJAX.
+     * Preview compiled journal data via AJAX
      */
     public function previewJournal(Request $request): JsonResponse
     {
@@ -236,7 +236,7 @@ class ProgressController extends Controller
     }
 
     /**
-     * Show specific task details.
+     * Show specific task details
      */
     public function showTask($taskKey)
     {
@@ -263,7 +263,7 @@ class ProgressController extends Controller
     }
 
     /**
-     * Handle Task Submission + Notify Supervisor with a direct link to the Review page.
+     * Handle Task Submission + Notify Supervisor with a direct link to the Review page
      */
     public function submitTask(SubmitTaskRequest $request, Task $task)
     {
@@ -331,7 +331,7 @@ class ProgressController extends Controller
     }
 
     /**
-     * Export Accomplishment Report (PDF).
+     * Export Accomplishment Report (PDF)
      */
     public function exportAccomplishments()
     {
@@ -353,7 +353,7 @@ class ProgressController extends Controller
 
         $pdf = Pdf::loadView('exports.accomplishments-pdf', $data);
 
-        // Uses student_id for the filename (e.g., 2023-0001_Accomplishments.pdf)
+        // Uses student_id for the filename (e.g., two thousand and twenty-three-zerozerozeroone_Accomplishments.pdf)
         $fileName = ($intern->student_id ?? $intern->id).'_Accomplishments.pdf';
 
         $this->auditService->log('Accomplishment Export', "Exported PDF: {$fileName}");

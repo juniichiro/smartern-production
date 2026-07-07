@@ -35,7 +35,7 @@ class OfficeRuleSeeder extends Seeder
         $wordProcessing = AssessmentItem::where('competency_text', 'like', '%word processing%')->first();
 
         $rules = [
-            // ICT Department (Office ID: 1)
+            // ICT Department (Office ID
             [
                 'office_id' => 1,
                 'item' => $spreadsheet,
@@ -57,7 +57,7 @@ class OfficeRuleSeeder extends Seeder
                 'priority' => 3, // Moderately Important
             ],
 
-            // Human Resources (Office ID: 2)
+            // Human Resources (Office ID
             [
                 'office_id' => 2,
                 'item' => $communication,
@@ -79,7 +79,7 @@ class OfficeRuleSeeder extends Seeder
                 'priority' => 3,
             ],
 
-            // Finance & Accounting (Office ID: 3)
+            // Finance & Accounting (Office ID
             [
                 'office_id' => 3,
                 'item' => $spreadsheet,
@@ -101,7 +101,7 @@ class OfficeRuleSeeder extends Seeder
                 'priority' => 4,
             ],
 
-            // Administrative Services (Office ID: 4)
+            // Administrative Services (Office ID
             [
                 'office_id' => 4,
                 'item' => $organizingDocs,

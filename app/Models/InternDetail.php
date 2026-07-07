@@ -74,7 +74,7 @@ class InternDetail extends Model
     }
 
     /**
-     * Scope a query to only include interns eligible for tasks.
+     * Scope a query to only include interns eligible for tasks
      * (Those who do not have a published certificate)
      */
     public function scopeEligibleForTasks($query)
@@ -85,8 +85,8 @@ class InternDetail extends Model
     }
 
     /**
-     * Scope a query to only include interns matching user_id, public_id, or intern_details id.
-     * Supports Hashids and encrypted IDs as well.
+     * Scope a query to only include interns matching user_id, public_id, or intern_details id
+     * Supports Hashids and encrypted IDs as well
      */
     public function scopeByPublicOrId($query, $id)
     {
@@ -120,7 +120,7 @@ class InternDetail extends Model
     }
 
     /**
-     * Get the student_id attribute, mapping it to the user's display_id.
+     * Get the student_id attribute, mapping it to the user's display_id
      */
     public function getStudentIdAttribute(): string
     {

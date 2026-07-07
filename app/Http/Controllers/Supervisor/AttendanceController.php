@@ -97,7 +97,7 @@ class AttendanceController extends Controller
         // Keep a copy of sorted logs for summary cards, unique interns list, and drawer
         $allLogs = $sortedLogs;
 
-        // 2. Stats for the cards (restricted to current office)
+        // Stats for the cards (restricted to current office)
         $todayCount = Attendance::where('office_id', $officeId)->whereDate('clock_in', now())->count();
 
         $activeCount = Attendance::where('office_id', $officeId)
@@ -105,7 +105,7 @@ class AttendanceController extends Controller
             ->whereNull('clock_out')
             ->count();
 
-        // 3. Weekly Hours Calculation
+        // Weekly Hours Calculation
         $weeklyLogsCount = Attendance::where('office_id', $officeId)
             ->whereBetween('clock_in', [now()->startOfWeek(), now()->endOfWeek()])
             ->whereNotNull('clock_out')
@@ -113,7 +113,7 @@ class AttendanceController extends Controller
 
         $weeklyHours = $weeklyLogsCount * 8;
 
-        // 4. Attendance Rate
+        // Attendance Rate
         $internCount = InternDetail::where('office_id', $officeId)->count();
 
         $expectedHours = $internCount * 40;

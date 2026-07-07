@@ -10,11 +10,11 @@ use Illuminate\Database\Seeder;
 class JohnDoeCompromisedSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Run the database seeds
      */
     public function run(): void
     {
-        // 1. Find John Doe
+        // Find John Doe
         $user = User::withoutGlobalScopes()->where('email', 'john.doe@smartern.com')->first();
 
         if (!$user) {
@@ -25,7 +25,7 @@ class JohnDoeCompromisedSeeder extends Seeder
         // Clean up existing logs for John Doe to make test data clean
         AuditLog::where('user_id', $user->id)->delete();
 
-        // 2. Add multiple recent normal logs
+        // Add multiple recent normal logs
         $normalIp = '120.28.64.99'; // Normal PLDT Broadband
         $normalUA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
         $normalDevice = 'Windows|Chrome';
@@ -87,7 +87,7 @@ class JohnDoeCompromisedSeeder extends Seeder
             AuditLog::create($logData);
         }
 
-        // 3. Add the flagged critical log (compromised/anomalous access)
+        // Add the flagged critical log (compromised/anomalous access)
         $anomalousIp = '198.51.100.77'; // Anomalous remote IP
         $anomalousUA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15';
         $anomalousDevice = 'MacOS|Safari';
@@ -99,11 +99,11 @@ class JohnDoeCompromisedSeeder extends Seeder
             'ip_address' => $anomalousIp,
             'user_agent' => $anomalousUA,
             'device' => $anomalousDevice,
-            'anomaly_score' => 0.895, // High anomaly score > 0.7 to trigger lockout logic
+            'anomaly_score' => 0.895, // High anomaly score > zero.seven to trigger lockout logic
             'timestamp' => Carbon::now()->subMinutes(10),
         ]);
 
-        // 4. Lock the user's account to enable the "Evaluate" workflow
+        // Lock the user's account to enable the "Evaluate" workflow
         $user->update([
             'locked_until' => Carbon::now()->addMinutes(30),
         ]);

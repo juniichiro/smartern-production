@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class UpdateTaskStatusRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * Determine if the user is authorized to make this request
      */
     public function authorize(): bool
     {
@@ -16,7 +16,7 @@ class UpdateTaskStatusRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Get the validation rules that apply to the request
      */
     public function rules(): array
     {
@@ -28,7 +28,7 @@ class UpdateTaskStatusRequest extends FormRequest
     }
 
     /**
-     * Get the error messages for the defined validation rules.
+     * Get the error messages for the defined validation rules
      */
     public function messages(): array
     {

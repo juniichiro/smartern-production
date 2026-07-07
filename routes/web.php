@@ -91,7 +91,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/read-all', [NotificationController::class, 'markAllAsRead'])->name('markAllRead');
     });
 
-    // --- MFA ---
+    // MFA
     Route::get('/mfa/setup', [MFAController::class, 'setup'])->name('mfa.setup');
     Route::post('/mfa/enable', [MFAController::class, 'enable'])->name('mfa.enable');
     Route::post('/mfa/disable', [MFAController::class, 'disable'])->name('mfa.disable');
@@ -104,7 +104,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/mfa/enable-email-ajax', [MFAController::class, 'enableEmailAjax'])->name('mfa.enable-email-ajax');
     Route::post('/mfa/disable-mfa-ajax', [MFAController::class, 'disableMfaAjax'])->name('mfa.disable-mfa-ajax');
 
-    // --- ADMIN (Role Restricted) ---
+    // ADMIN (Role Restricted)
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
         Route::get('/accounts', [AccountController::class, 'index'])->name('account');
@@ -134,7 +134,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/docs/{path?}', [\App\Http\Controllers\Admin\DocsController::class, 'index'])->where('path', '.*')->name('docs');
     });
 
-    // --- SUPERVISOR (Role Restricted) ---
+    // SUPERVISOR (Role Restricted)
     Route::middleware(['role:supervisor,head_supervisor'])->prefix('supervisor')->name('supervisor.')->group(function () {
         Route::get('/dashboard', [SupervisorDashboard::class, 'index'])->name('dashboard');
         Route::get('/interns', [SupervisorIntern::class, 'index'])->name('interns');
@@ -172,7 +172,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/schedule/absence/{absence}/attachment', [App\Http\Controllers\Supervisor\ScheduleController::class, 'showAttachment'])->name('schedule.absence.show');
     });
 
-    // --- HEAD SUPERVISOR (Role Restricted) ---
+    // HEAD SUPERVISOR (Role Restricted)
     Route::middleware(['role:head_supervisor'])->prefix('head-supervisor')->name('head-supervisor.')->group(function () {
         Route::get('/dashboard', [HeadSupervisorDashboard::class, 'index'])->name('dashboard');
 
@@ -207,7 +207,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/analytics/report-pdf', [AnalyticsController::class, 'exportReportPDF'])->name('report.pdf-export');
         Route::get('/reports', fn () => redirect()->route('head-supervisor.analytics', request()->query()))->name('report');
 
-        // Office Matching Routes[cite: 6]
+        // Office Matching Routes[cite: six]
         Route::get('/office-matching', [OfficeMatchingController::class, 'index'])->name('matching');
         Route::get('/office-matching/guide', [OfficeMatchingController::class, 'downloadGuide'])->name('matching.guide');
         Route::get('/office-matching/template', [OfficeMatchingController::class, 'downloadTemplate'])->name('template');
@@ -239,7 +239,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/schedule/{schedule}', [ScheduleController::class, 'destroy'])->name('schedule.destroy');
     });
 
-    // --- INTERN (Role Restricted) ---
+    // INTERN (Role Restricted)
     Route::middleware(['role:intern'])->prefix('intern')->name('intern.')->group(function () {
         Route::get('/dashboard', [InternDashboard::class, 'index'])->name('dashboard');
         Route::get('/announcements', [InternAnnouncement::class, 'index'])->name('announcements');
@@ -264,7 +264,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/schedule/absence/{absence}/attachment', [App\Http\Controllers\Intern\ScheduleController::class, 'showAttachment'])->name('schedule.absence.show');
     });
 
-    // --- COORDINATOR (Role Restricted) ---
+    // COORDINATOR (Role Restricted)
     Route::middleware(['role:school_coordinator'])->prefix('coordinator')->name('coordinator.')->group(function () {
         Route::get('/dashboard', [CoordinatorDashboard::class, 'index'])->name('dashboard');
         Route::get('/interns', [CoordinatorIntern::class, 'index'])->name('interns');
@@ -273,7 +273,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/schedule', [App\Http\Controllers\Coordinator\ScheduleController::class, 'index'])->name('schedule.index');
     });
 
-    // --- PROFILE ---
+    // PROFILE
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

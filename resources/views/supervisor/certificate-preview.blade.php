@@ -41,7 +41,7 @@
         </header>
 
         <style>
-            /* 1. Exact Font Mapping for Browser Preview */
+            /* Exact Font Mapping for Browser Preview*/
             @font-face {
                 font-family: 'OldEnglishText';
                 src: url('{{ asset("fonts/oldenglish.TTF") }}');
@@ -58,14 +58,14 @@
                 font-weight: bold; font-style: normal;
             }
 
-            /* 2. PDF Simulation Container */
+            /* PDF Simulation Container*/
             .pdf-simulation {
                 width: 215.9mm;
                 height: 279.4mm;
                 background-color: white;
                 box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
                 padding: 20mm 30mm 25mm 30mm;
-                color: #000;
+                color: # ;
                 position: relative;
                 box-sizing: border-box;
                 margin: 0 auto;
@@ -129,7 +129,7 @@
                 bottom: 15mm;
                 left: 30mm;
                 right: 30mm;
-                border-top: 1px solid #000;
+                border-top: 1px solid # ;
                 padding-top: 8px;
                 text-align: center;
             }

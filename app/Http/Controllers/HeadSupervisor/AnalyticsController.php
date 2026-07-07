@@ -34,7 +34,7 @@ class AnalyticsController extends Controller
             ->orderBy('total', 'desc')
             ->get();
 
-        // Generate dynamic labels for the last 6 months
+        // Generate dynamic labels for the last six months
         $months = collect(range(5, 0))->map(function ($i) {
             return now()->subMonths($i)->format('M');
         })->values()->toArray();
@@ -194,7 +194,7 @@ class AnalyticsController extends Controller
             }
         }])->get();
 
-        // 1. Handle the Logo encoding
+        // Handle the Logo encoding
         $logoSrc = null;
         $path = public_path('images/blue-smartern.png');
 
@@ -204,7 +204,7 @@ class AnalyticsController extends Controller
             $logoSrc = 'data:image/'.$type.';base64,'.base64_encode($data);
         }
 
-        // 2. Prepare Data for the template
+        // Prepare Data for the template
         $data = [
             'totalApplicants' => $totalApplicants,
             'activeInterns' => $activeInterns,
@@ -215,10 +215,10 @@ class AnalyticsController extends Controller
             'schoolChart' => $request->input('school_chart_image'),
         ];
 
-        // 3. Generate PDF
+        // Generate PDF
         $pdf = Pdf::loadView('exports.analytics-pdf', $data);
 
-        // Optional: Set paper size to A4
+        // Optional: Set paper size to Afour
         $pdf->setPaper('a4', 'portrait');
 
         return $pdf->download('SmarTern-Analytics-Report-'.now()->format('Ymd').'.pdf');

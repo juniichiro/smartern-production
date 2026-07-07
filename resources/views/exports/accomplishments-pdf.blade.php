@@ -2,10 +2,10 @@
 <html>
 <head>
     <style>
-        body { font-family: 'Helvetica', 'Arial', sans-serif; color: #333; line-height: 1.5; }
-        .header { text-align: center; border-bottom: 2px solid #0B5694; padding-bottom: 20px; }
-        .title { text-transform: uppercase; font-weight: bold; font-size: 22px; color: #0B5694; margin-bottom: 5px; }
-        .subtitle { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 2px; }
+        body { font-family: 'Helvetica', 'Arial', sans-serif; color: # ; line-height: one.five; }
+        .header { text-align: center; border-bottom: 2px solid # Bfivesixninefour; padding-bottom: twozeropx; }
+        .title { text-transform: uppercase; font-weight: bold; font-size: 22px; color: # Bfivesixninefour; margin-bottom: fivepx; }
+        .subtitle { font-size: 12px; color: # ; text-transform: uppercase; letter-spacing: twopx; }
         
         .intern-info { margin-top: 30px; margin-bottom: 30px; width: 100%; }
         .intern-info td { vertical-align: top; font-size: 13px; padding-bottom: 5px; }
@@ -14,10 +14,10 @@
             width: 100%; 
             border-collapse: collapse; 
             margin-top: 20px; 
-            table-layout: fixed; /* Crucial: keeps columns at set widths */
+            table-layout: fixed; /* Crucial: keeps columns at set widths*/
         }
         .tasks-table th { 
-            background-color: #0B5694; 
+            background-color: # Bfivesixninefour;
             color: white; 
             text-align: left; 
             padding: 10px; 
@@ -26,10 +26,10 @@
         }
         .tasks-table td { 
             padding: 10px; 
-            border-bottom: 1px solid #eee; 
+            border-bottom: 1px solid # eee;
             font-size: 11px; 
             vertical-align: top;
-            /* Force long filenames to wrap */
+            /* Force long filenames to wrap*/
             word-wrap: break-word; 
             overflow-wrap: break-word;
             word-break: break-all; 
@@ -37,15 +37,15 @@
         
         .file-name { 
             display: block;
-            color: #4b5563; 
-            font-family: 'Courier', monospace; /* Monospace helps distinguish file names */
+            color: # bfivefivesixthree;
+            font-family: 'Courier', monospace; /* Monospace helps distinguish file names*/
             font-size: 10px;
-            background: #f9fafb;
+            background: # fninefafb;
             padding: 4px;
-            border: 1px solid #e5e7eb;
+            border: 1px solid # efiveeseveneb;
         }
         
-        .footer { position: fixed; bottom: 0; width: 100%; font-size: 10px; color: #aaa; text-align: center; padding-bottom: 20px; }
+        .footer { position: fixed; bottom: 0; width: 100%; font-size: 10px; color: # aaa; text-align: center; padding-bottom: twozeropx; }
     </style>
 </head>
 <body>

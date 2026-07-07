@@ -8,7 +8,7 @@ use Vinkla\Hashids\Facades\Hashids;
 trait HasShortRouteKey
 {
     /**
-     * Get the value of the model's route key.
+     * Get the value of the model's route key
      */
     public function getRouteKey()
     {
@@ -16,10 +16,10 @@ trait HasShortRouteKey
     }
 
     /**
-     * Retrieve the model for a bound value.
+     * Retrieve the model for a bound value
      *
-     * @param  mixed  $value
-     * @param  string|null  $field
+     * @param mixed $value
+     * @param string|null $field
      * @return Model|null
      */
     public function resolveRouteBinding($value, $field = null)

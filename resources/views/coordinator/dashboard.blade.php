@@ -38,7 +38,7 @@
 
         .bg-white, .dark\:bg-gray-900 {
             background: white !important;
-            border: 1px solid #e2e8f0 !important;
+            border: 1px solid # etwoeeightfzero !important;
         }
 
         .text-gray-800, .dark\:text-gray-100 {

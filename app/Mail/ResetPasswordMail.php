@@ -14,7 +14,7 @@ class ResetPasswordMail extends Mailable
     use Queueable, SerializesModels;
 
     /**
-     * Create a new message instance.
+     * Create a new message instance
      */
     public function __construct(
         public User $user,
@@ -22,7 +22,7 @@ class ResetPasswordMail extends Mailable
     ) {}
 
     /**
-     * Get the message envelope.
+     * Get the message envelope
      */
     public function envelope(): Envelope
     {
@@ -32,7 +32,7 @@ class ResetPasswordMail extends Mailable
     }
 
     /**
-     * Get the message content definition.
+     * Get the message content definition
      */
     public function content(): Content
     {

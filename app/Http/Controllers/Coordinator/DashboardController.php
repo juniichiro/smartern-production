@@ -28,7 +28,7 @@ class DashboardController extends Controller
         $cacheKey = 'coordinator_dashboard_'.md5($school);
 
         $dashboardData = Cache::remember($cacheKey, 300, function () use ($school) {
-            // 1. Core cohort metrics
+            // Core cohort metrics
             $stats = [
                 'total_interns' => InternDetail::where('school', $school)->count(),
                 'placed_interns' => InternDetail::where('school', $school)->whereNotNull('office_id')->count(),
@@ -38,19 +38,19 @@ class DashboardController extends Controller
                 })->where('status', 'published')->count(),
             ];
 
-            // 2. SDO Division deployments with count of interns from THIS SCHOOL currently assigned
+            // SDO Division deployments with count of interns from THIS SCHOOL currently assigned
             $placements = Office::whereHas('internDetails', function ($query) use ($school) {
                 $query->where('school', $school);
             })->withCount(['internDetails' => function ($query) use ($school) {
                 $query->where('school', $school);
             }])->get();
 
-            // 3. SDO Delegation Registry
+            // SDO Delegation Registry
             $interns = InternDetail::with(['user', 'office', 'certificate'])
                 ->where('school', $school)
                 ->get();
 
-            // 4. Cohort Milestones
+            // Cohort Milestones
             $averageProgress = InternDetail::where('school', $school)
                 ->selectRaw('AVG(hours_rendered / COALESCE(NULLIF(required_hours, 0), 480) * 100) as avg_prog')
                 ->value('avg_prog') ?? 0;

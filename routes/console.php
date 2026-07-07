@@ -14,10 +14,10 @@ Artisan::command('inspire', function () {
 // Runs the ML script every minute in the background
 Schedule::command('app:recalculate-anomaly-scores')->everyMinute()->withoutOverlapping();
 
-// Automated Daily System Backup at 7:00 PM (19:00)
+// Automated Daily System Backup at zero PM (
 Schedule::command('backup:run --type=auto')->dailyAt('19:00');
 
-// Automated Daily Audit Log Archival and Pruning (retaining 90 days)
+// Automated Daily Audit Log Archival and Pruning (retaining ninety days)
 Schedule::command('app:archive-audit-logs --days=90')->daily()->withoutOverlapping();
 
 // Automated Daily Absence Logging and Auto-Checkout
@@ -51,7 +51,7 @@ Artisan::command('app:mark-absent', function () {
 
         $endTimeStr = $effectiveSchedule['end_time'] ?? '17:00:00';
         $endTime = Carbon::parse($today . ' ' . $endTimeStr);
-        // 15-minute grace period
+        // minute grace period
         $endTimeWithGrace = $endTime->copy()->addMinutes(15);
 
         if (! $attendance) {

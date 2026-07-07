@@ -24,7 +24,7 @@ def extract_keywords(skill_text):
     skill_lower = skill_text.lower()
     keywords = set()
     
-    # 1. Extract content within parentheses (e.g., MS Word, Google Docs)
+    # Extract content within parentheses (e.g., MS Word, Google Docs)
     parentheses_matches = re.findall(r'\((.*?)\)', skill_lower)
     for match in parentheses_matches:
         parts = [p.strip() for p in match.split(',')]
@@ -34,7 +34,7 @@ def extract_keywords(skill_text):
             if p_clean and len(p_clean) > 1:
                 keywords.add(p_clean)
 
-    # 2. Heuristic mapping for common competency themes
+    # Heuristic mapping for common competency themes
     if 'spreadsheet' in skill_lower: keywords.add('excel')
     if 'word processing' in skill_lower: keywords.add('word')
     if 'presentation' in skill_lower: keywords.add('powerpoint'); keywords.add('canva')
@@ -50,7 +50,7 @@ def run_rete_matching(students, rules_by_office):
     if isinstance(rules_by_office, list):
         rules_by_office = {}
 
-    # 1. Compile Rete Network: Extract unique skill requirements across all rules (Alpha nodes)
+    # Compile Rete Network: Extract unique skill requirements across all rules (Alpha nodes)
     unique_skills = set()
     for office_id, office_rules in rules_by_office.items():
         for rule in office_rules:
@@ -74,7 +74,7 @@ def run_rete_matching(students, rules_by_office):
         behavioral_score = get_safe_int(student.get('behavioral_score', 3))
         is_recommended = student.get('is_recommended', True)
 
-        # 2. Alpha Memory Evaluation
+        # Alpha Memory Evaluation
         alpha_memory = {}
         resume_matched_skills = set()
         interview_matched_skills = set()
@@ -107,7 +107,7 @@ def run_rete_matching(students, rules_by_office):
             
             if in_resume:
                 resume_matched_skills.add(skill)
-                # Resume boost (1.2x) if self-reported and not yet verified
+                # Resume boost (one.twox) if self-reported and not yet verified
                 if skill not in verified and weight < 1.2:
                     weight = 1.2
 
@@ -121,7 +121,7 @@ def run_rete_matching(students, rules_by_office):
             
             if in_interview:
                 interview_matched_skills.add(skill)
-                # Interview boost (1.3x) takes priority over resume boost
+                # Interview boost (one.threex) takes priority over resume boost
                 if skill not in verified and weight < 1.3:
                     weight = 1.3
             
@@ -130,7 +130,7 @@ def run_rete_matching(students, rules_by_office):
 
         student_results = []
 
-        # 3. Beta Memory Evaluation (Composite Join & Sorter)
+        # Beta Memory Evaluation (Composite Join & Sorter)
         for office_id, office_rules in rules_by_office.items():
             office_id_int = int(office_id)
             
@@ -168,7 +168,7 @@ def run_rete_matching(students, rules_by_office):
                 })
                 continue
 
-            # 4. Fuzzy TOPSIS Calculation Layer
+            # Fuzzy TOPSIS Calculation Layer
             sum_sq_dist_pis = 0.0
             sum_sq_dist_nis = 0.0
 
@@ -182,7 +182,7 @@ def run_rete_matching(students, rules_by_office):
                 priority = r['priority']
                 x_ij = alpha_memory.get(skill, 0.0)
                 
-                # pis_j = 7.5 (max possible: 5 * 1.5)
+                # pis_j = seven.five (max possible: five * one
                 sum_sq_dist_pis += (priority * (7.5 - x_ij)) ** 2
                 sum_sq_dist_nis += (priority * (x_ij - 0.0)) ** 2
 
@@ -205,11 +205,11 @@ def run_rete_matching(students, rules_by_office):
 
             skill_percentage = (d_minus / (d_plus + d_minus)) * 100.0 if (d_plus + d_minus) > 0 else 0.0
 
-            # 5. Integrate Behavioral Score (20% share)
+            # Integrate Behavioral Score (twenty percent share)
             behavioral_percentage = (behavioral_score / 5.0) * 100.0
             final_score = (skill_percentage * 0.8) + (behavioral_percentage * 0.2)
 
-            # 6. Recommendation Penalty
+            # Recommendation Penalty
             if not is_recommended or is_recommended == 'Needs More Training' or is_recommended is False:
                 final_score *= 0.5
 

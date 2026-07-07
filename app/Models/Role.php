@@ -23,7 +23,7 @@ class Role extends Model
     }
 
     /**
-     * A role can be assigned to many users.
+     * A role can be assigned to many users
      */
     public function users(): HasMany
     {

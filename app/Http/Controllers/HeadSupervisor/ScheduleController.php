@@ -27,7 +27,7 @@ class ScheduleController extends Controller
 
         $eventsByDate = [];
 
-        // 1. Add API holidays
+        // Add API holidays
         foreach ($apiHolidays as $dateStr => $holiday) {
             $eventsByDate[$dateStr][] = [
                 'type' => 'holiday',
@@ -35,7 +35,7 @@ class ScheduleController extends Controller
             ];
         }
 
-        // 2. Add database overrides (date-based exceptions)
+        // Add database overrides (date-based exceptions)
         $dateExceptions = Schedule::whereNotNull('date')->orderBy('date', 'desc')->get();
         foreach ($dateExceptions as $item) {
             $dateStr = $item->date->toDateString();
@@ -46,7 +46,7 @@ class ScheduleController extends Controller
             ];
         }
 
-        // 3. Add all Absence Requests
+        // Add all Absence Requests
         $absences = AbsenceRequest::with('intern.internDetails')->get();
         foreach ($absences as $absence) {
             $dateStr = $absence->date->toDateString();
@@ -63,7 +63,7 @@ class ScheduleController extends Controller
             ];
         }
 
-        // 4. School-specific default schedules
+        // School-specific default schedules
         $schoolSchedules = Schedule::where('type', 'school_default')->orderBy('school_name', 'asc')->get()->map(function ($schedule) {
             $schedule->hashid = $schedule->getRouteKey();
             return $schedule;

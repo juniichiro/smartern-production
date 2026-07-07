@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class CertificateController extends Controller
 {
     /**
-     * Display the intern's certificate preview page.
+     * Display the intern's certificate preview page
      */
     public function index()
     {
@@ -25,7 +25,7 @@ class CertificateController extends Controller
     }
 
     /**
-     * Export and Download the PDF for the intern.
+     * Export and Download the PDF for the intern
      */
     public function download(Certificate $certificate)
     {
@@ -63,7 +63,7 @@ class CertificateController extends Controller
 
         $pdf = Pdf::loadView('certificates.temp-certificate', $data);
 
-        // Use the exact rendering options established for the supervisor side[cite: 1, 7]
+        // Use the exact rendering options established for the supervisor side[cite: one, seven]
         $pdf->setOptions([
             'isRemoteEnabled' => true,
             'chroot' => public_path(),

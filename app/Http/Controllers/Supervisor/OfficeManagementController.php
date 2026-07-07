@@ -64,10 +64,10 @@ class OfficeManagementController extends Controller
             ->with(['user', 'tasks', 'attendances', 'office.supervisorDetails', 'certificate.evaluation'])
             ->firstOrFail();
 
-        // 1. Fetch complete merged logs
+        // Fetch complete merged logs
         $allLogs = $attendanceService->getMergedLogs($intern->user);
 
-        // 2. Metric calculations from Merged Logs (source of truth)
+        // Metric calculations from Merged Logs (source of truth)
         $tasks = $intern->tasks ?? collect();
         $totalTasks = $tasks->count();
         $completedTasks = $tasks->where('status', 'completed')->count();
@@ -76,11 +76,11 @@ class OfficeManagementController extends Controller
         $lates = $allLogs->where('status', 'late')->count();
         $excused = $allLogs->where('status', 'excused')->count();
 
-        // 3. Get latest entries for preview
+        // Get latest entries for preview
         $recentTasks = $intern->tasks()->latest()->take(5)->get();
         $recentAttendance = $allLogs->take(5);
 
-        // 4. Fetch school schedule for the timeline
+        // Fetch school schedule for the timeline
         $schoolSchedule = null;
         if ($intern->school) {
             $schoolSchedule = Schedule::where('type', 'school_default')
@@ -88,7 +88,7 @@ class OfficeManagementController extends Controller
                 ->first();
         }
 
-        // 5. Get today's effective schedule
+        // Get today's effective schedule
         $effectiveSchedule = $attendanceService->getEffectiveSchedule($intern->user, now());
 
         return view('supervisor.intern-profile', compact(
@@ -106,7 +106,7 @@ class OfficeManagementController extends Controller
     }
 
     /**
-     * Update the intern limit/slots for the supervisor's office and notify head supervisors.
+     * Update the intern limit/slots for the supervisor's office and notify head supervisors
      */
     public function updateRequirements(Request $request)
     {
@@ -145,7 +145,7 @@ class OfficeManagementController extends Controller
     }
 
     /**
-     * Show the matching rules configuration form for the supervisor's office.
+     * Show the matching rules configuration form for the supervisor's office
      */
     public function editRules()
     {
@@ -165,7 +165,7 @@ class OfficeManagementController extends Controller
     }
 
     /**
-     * Update the matching rules & intern limit for the supervisor's office.
+     * Update the matching rules & intern limit for the supervisor's office
      */
     public function updateRules(Request $request)
     {
@@ -224,7 +224,7 @@ class OfficeManagementController extends Controller
     }
 
     /**
-     * Add a custom competency item to the assessment form and automatically set its rule priority.
+     * Add a custom competency item to the assessment form and automatically set its rule priority
      */
     public function storeAssessmentItem(Request $request)
     {

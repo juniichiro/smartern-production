@@ -213,10 +213,10 @@ class OnboardingController extends Controller
             }
         }
 
-        // Logic:
-        // 1. Must have at least 3 distinct resume sections
-        // 2. Resume markers must outnumber academic anti-markers
-        // 3. Must have a detectable identity (Name AND (Email OR Phone))
+        // Logic
+        // Must have at least three distinct resume sections
+        // Resume markers must outnumber academic anti-markers
+        // Must have a detectable identity (Name AND (Email OR Phone))
         $hasIdentity = ! empty($possibleName) && (! empty($email) || ! empty($phone));
         $isLikelyResume = ($foundResumeMarkers >= 3) && ($foundResumeMarkers > $foundAntiMarkers) && $hasIdentity;
 
@@ -246,7 +246,7 @@ class OnboardingController extends Controller
         if ($possibleName) {
             $parts = explode(' ', $possibleName);
             if (count($parts) >= 3) {
-                // If 3+ words, assume first two are first name (e.g. "John Paul Doe")
+                // If three+ words, assume first two are first name (e.g. "John Paul Doe")
                 $firstName = $parts[0].' '.$parts[1];
                 $lastName = end($parts);
             } elseif (count($parts) == 2) {
@@ -336,7 +336,7 @@ class OnboardingController extends Controller
     }
 
     /**
-     * Process skills from the request into a structured array.
+     * Process skills from the request into a structured array
      */
     private function formatSkills(array $skills, array $scores): array
     {

@@ -193,7 +193,7 @@ APP_NAME=SmarTern
 APP_ENV=local
 APP_KEY=base64:zSm8Y29yZVNtYXJUZXJuUHJvZHVjdGlvbktleW==
 APP_DEBUG=true
-APP_URL=http://localhost:8000
+APP_URL=http:// localhost:eight thousand
 
 # Database coordinates
 DB_CONNECTION=mysql
@@ -241,7 +241,7 @@ php artisan migrate:fresh --seed
 <span class="text-[#94A3B8]">// Routes partitioning inside web.php</span>
 Route::middleware(['auth', 'verified'])->group(function () {
     
-    <span class="text-[#94A3B8]">// --- ADMIN BLOCK ---</span>
+    <span class="text-[#94A3B8]">// ADMIN BLOCK ---</span>
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
         Route::get('/accounts', [AccountController::class, 'index'])->name('account');
@@ -249,18 +249,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/docs', [DocsController::class, 'index'])->name('docs');
     });
 
-    <span class="text-[#94A3B8]">// --- SUPERVISOR & HEAD SUPERVISOR ---</span>
+    <span class="text-[#94A3B8]">// SUPERVISOR & HEAD SUPERVISOR ---</span>
     Route::middleware(['role:supervisor,head_supervisor'])->prefix('supervisor')->name('supervisor.')->group(function () {
         Route::get('/interns', [SupervisorIntern::class, 'index'])->name('interns');
         Route::get('/tasks', [TaskController::class, 'index'])->name('tasks');
     });
 
-    <span class="text-[#94A3B8]">// --- HEAD SUPERVISOR ONLY ---</span>
+    <span class="text-[#94A3B8]">// HEAD SUPERVISOR ONLY ---</span>
     Route::middleware(['role:head_supervisor'])->prefix('head-supervisor')->name('head-supervisor.')->group(function () {
         Route::get('/office-matching', [OfficeMatchingController::class, 'index'])->name('matching');
     });
 
-    <span class="text-[#94A3B8]">// --- INTERN BLOCK ---</span>
+    <span class="text-[#94A3B8]">// INTERN BLOCK ---</span>
     Route::middleware(['role:intern'])->prefix('intern')->name('intern.')->group(function () {
         Route::get('/attendance', [InternAttendance::class, 'index'])->name('attendance');
         Route::post('/attendance/process', [InternAttendance::class, 'processScan'])->name('attendance.process');

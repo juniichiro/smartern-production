@@ -22,7 +22,7 @@ class AssessmentItem extends Model
     ];
 
     /**
-     * Scope a query to only include active assessment items.
+     * Scope a query to only include active assessment items
      */
     public function scopeActive(Builder $query): Builder
     {
@@ -30,7 +30,7 @@ class AssessmentItem extends Model
     }
 
     /**
-     * Scope a query to order items by category and order_index.
+     * Scope a query to order items by category and order_index
      */
     public function scopeOrdered(Builder $query): Builder
     {

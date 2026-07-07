@@ -26,7 +26,7 @@ class Task extends Model
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * Get the attributes that should be cast
      *
      * @return array<string, string>
      */
@@ -56,7 +56,7 @@ class Task extends Model
     }
 
     /**
-     * Get all submissions for the task.
+     * Get all submissions for the task
      */
     public function submissions()
     {

@@ -12,21 +12,21 @@ use ZipArchive;
 class RestoreBackup extends Command
 {
     /**
-     * The name and signature of the console command.
+     * The name and signature of the console command
      *
      * @var string
      */
     protected $signature = 'backup:restore {id}';
 
     /**
-     * The console command description.
+     * The console command description
      *
      * @var string
      */
     protected $description = 'Restore the system to a specific backup snapshot';
 
     /**
-     * Execute the console command.
+     * Execute the console command
      */
     public function handle()
     {
@@ -51,7 +51,7 @@ class RestoreBackup extends Command
 
         $fullPath = Storage::disk('local')->path($backup->file_path);
 
-        // Calculate and validate SHA-256 hash to prevent tampering
+        // Calculate and validate SHA hash hash to prevent tampering
         $calculatedHash = hash_file('sha256', $fullPath);
         $storedHash = $backup->sha256_hash;
 
@@ -77,7 +77,7 @@ class RestoreBackup extends Command
         $zip = new ZipArchive;
         if ($zip->open($fullPath) === true) {
 
-            // 1. Restore Database
+            // Restore Database
             $driver = config('database.default');
             if ($driver === 'sqlite') {
                 $dbName = config('database.connections.sqlite.database');
@@ -210,7 +210,7 @@ class RestoreBackup extends Command
                 Log::warning($msg);
             }
 
-            // 2. Restore Storage
+            // Restore Storage
             $this->info('Restoring storage files...');
             // We extract everything in the 'storage/' folder of the ZIP
             for ($i = 0; $i < $zip->numFiles; $i++) {
@@ -228,7 +228,7 @@ class RestoreBackup extends Command
 
             $zip->close();
 
-            // 3. Update the restored database to mark THIS backup as success
+            // Update the restored database to mark THIS backup as success
             // This is needed because the DB inside the ZIP was captured while it was still 'in_progress'
             try {
                 $fileSize = $this->formatBytes(Storage::disk('local')->size($backup->file_path));
@@ -255,7 +255,7 @@ class RestoreBackup extends Command
     }
 
     /**
-     * Format bytes to readable string.
+     * Format bytes to readable string
      */
     private function formatBytes($bytes, $precision = 2)
     {

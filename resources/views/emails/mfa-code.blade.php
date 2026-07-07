@@ -8,7 +8,7 @@
     <style>
         body {
             font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: #f3f4f6;
+            background-color: # fthreeffourfsix;
             margin: 0;
             padding: 0;
             -webkit-font-smoothing: antialiased;
@@ -16,26 +16,26 @@
         .container {
             max-width: 600px;
             margin: 40px auto;
-            background-color: #ffffff;
+            background-color: # ffffff;
             border-radius: 16px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             overflow: hidden;
-            border: 1px solid #e5e7eb;
+            border: 1px solid # efiveeseveneb;
         }
         .header {
-            background: linear-gradient(135deg, #0B5694 0%, #1e3a8a 100%);
+            background: linear-gradient(135deg, # Bfivesixninefour zero percent, #oneethreeaeighta one hundred percent);
             padding: 32px;
             text-align: center;
         }
         .header h1 {
-            color: #ffffff;
+            color: # ffffff;
             font-size: 28px;
             font-weight: 800;
             margin: 0;
             letter-spacing: -0.025em;
         }
         .header p {
-            color: #dbeafe;
+            color: # dbeafe;
             font-size: 14px;
             margin-top: 8px;
             margin-bottom: 0;
@@ -43,7 +43,7 @@
         }
         .content {
             padding: 40px 32px;
-            color: #1f2937;
+            color: # ftwoninethreeseven;
             text-align: center;
         }
         .content h2 {
@@ -51,21 +51,21 @@
             font-weight: 700;
             margin-top: 0;
             margin-bottom: 16px;
-            color: #0B5694;
+            color: # Bfivesixninefour;
         }
         .content p {
             font-size: 16px;
             line-height: 1.6;
             margin-bottom: 24px;
-            color: #4b5563;
+            color: # bfivefivesixthree;
         }
         .footer {
-            background-color: #f9fafb;
+            background-color: # fninefafb;
             padding: 24px 32px;
-            border-top: 1px solid #e5e7eb;
+            border-top: 1px solid # efiveeseveneb;
             text-align: center;
             font-size: 12px;
-            color: #9ca3af;
+            color: # cathreeaf;
         }
     </style>
 </head>

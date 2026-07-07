@@ -14,7 +14,7 @@
     <script>
         /**
          * Flicker Prevention: Apply Dark Mode and Font Size immediately
-         * And enforce browser-instance level single session check via localStorage.
+         * And enforce browser-instance level single session check via localStorage
          */
         (function() {
             const isDark = localStorage.getItem('darkMode') === 'true' || 
@@ -45,7 +45,7 @@
             const cookieClientId = cookies['smartern_client_id'];
             const hasSession = cookies['smartern-session'];
 
-            // Only trigger cookie mismatch redirect if they possess an active session cookie.
+            // Only trigger cookie mismatch redirect if they possess an active session cookie
             if (hasSession && cookieClientId && cookieClientId !== clientId) {
                 // Clear the session cookies immediately and reload
                 document.cookie = "smartern_device_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";

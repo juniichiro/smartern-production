@@ -21,8 +21,8 @@ use Illuminate\Notifications\Notifiable;
  * @property string $display_id
  * @property string $public_id
  * @property string $email
- * @property string|null $google2fa_secret
- * @property bool $google2fa_enabled
+ * @property string|null $googletwofa_secret
+ * @property bool $googletwofa_enabled
  * @property int $failed_attempts
  * @property \Carbon\Carbon|null $locked_until
  * @property bool $is_first_login
@@ -33,18 +33,18 @@ use Illuminate\Notifications\Notifiable;
  */
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
+    /** @use HasFactory<UserFactory>*/
     use HasFactory, HasShortRouteKey, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+     * The attributes that are mass assignable
      *
      * @var list<string>
      */
     protected $fillable = ['role_id', 'display_id', 'public_id', 'email', 'password', 'google2fa_secret', 'google2fa_enabled', 'failed_attempts', 'locked_until', 'is_first_login', 'privacy_acknowledged_at'];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * The attributes that should be hidden for serialization
      *
      * @var list<string>
      */
@@ -54,7 +54,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * Get the attributes that should be cast
      *
      * @return array<string, string>
      */
@@ -131,12 +131,12 @@ class User extends Authenticatable
         $roleVal = $roleId instanceof UserRole ? $roleId->value : (int) $roleId;
 
         $base = match ($roleVal) {
-            1 => 101,      // Admin: 3 digits
-            2 => 201,      // Head Supervisor: 3 digits
-            3 => 3001,     // Supervisor: 4 digits
-            4 => 4001,     // School Coordinator: 4 digits
-            5 => 50001,    // Intern: 5 digits
-            6 => 601,      // Super Admin: 3 digits
+            1 => 101,      // Admin: three digits
+            2 => 201,      // Head Supervisor: three digits
+            3 => 3001,     // Supervisor: four digits
+            4 => 4001,     // School Coordinator: four digits
+            5 => 50001,    // Intern: five digits
+            6 => 601,      // Super Admin: three digits
             default => 50001
         };
 
@@ -181,7 +181,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the user's name dynamically.
+     * Get the user's name dynamically
      */
     protected function name(): Attribute
     {
@@ -227,9 +227,9 @@ class User extends Authenticatable
     }
 
     /**
-     * Send the password reset notification.
+     * Send the password reset notification
      *
-     * @param  string  $token
+     * @param string $token
      * @return void
      */
     public function sendPasswordResetNotification($token): void

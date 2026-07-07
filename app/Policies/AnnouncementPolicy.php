@@ -9,7 +9,7 @@ use App\Models\User;
 class AnnouncementPolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Determine whether the user can view any models
      */
     public function viewAny(User $user): bool
     {
@@ -17,7 +17,7 @@ class AnnouncementPolicy
     }
 
     /**
-     * Determine whether the user can view the model.
+     * Determine whether the user can view the model
      */
     public function view(User $user, Announcement $announcement): bool
     {
@@ -55,7 +55,7 @@ class AnnouncementPolicy
     }
 
     /**
-     * Determine whether the user can create models.
+     * Determine whether the user can create models
      */
     public function create(User $user): bool
     {
@@ -63,7 +63,7 @@ class AnnouncementPolicy
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Determine whether the user can update the model
      */
     public function update(User $user, Announcement $announcement): bool
     {
@@ -77,7 +77,7 @@ class AnnouncementPolicy
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * Determine whether the user can delete the model
      */
     public function delete(User $user, Announcement $announcement): bool
     {

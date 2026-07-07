@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class StoreTaskRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * Determine if the user is authorized to make this request
      */
     public function authorize(): bool
     {
@@ -18,7 +18,7 @@ class StoreTaskRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Get the validation rules that apply to the request
      *
      * @return array<string, ValidationRule|array<mixed>|string>
      */

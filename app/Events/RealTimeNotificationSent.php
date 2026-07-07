@@ -16,7 +16,7 @@ class RealTimeNotificationSent implements ShouldBroadcast
     public $notification;
 
     /**
-     * Create a new event instance.
+     * Create a new event instance
      */
     public function __construct($notification)
     {
@@ -24,7 +24,7 @@ class RealTimeNotificationSent implements ShouldBroadcast
     }
 
     /**
-     * Get the channels the event should broadcast on.
+     * Get the channels the event should broadcast on
      *
      * @return array<int, Channel>
      */
@@ -36,7 +36,7 @@ class RealTimeNotificationSent implements ShouldBroadcast
     }
 
     /**
-     * Customize the broadcast name.
+     * Customize the broadcast name
      */
     public function broadcastAs(): string
     {
@@ -44,7 +44,7 @@ class RealTimeNotificationSent implements ShouldBroadcast
     }
 
     /**
-     * Get the data to broadcast.
+     * Get the data to broadcast
      */
     public function broadcastWith(): array
     {

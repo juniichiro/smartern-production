@@ -19,11 +19,11 @@ class SecurityAuditService
     }
 
     /**
-     * Records a security action in the audit log and triggers ML analysis.
+     * Records a security action in the audit log and triggers ML analysis
      *
-     * @param  string  $action  The action performed (e.g., 'Clock-In', 'Task Submission')
-     * @param  string  $resource  The specific resource affected (e.g., 'Attendance Record #12', 'Task: Weekly Report')
-     * @param  int|null  $userId  Optional user ID (defaults to current authenticated user)
+     * @param string $action The action performed (e.g., 'Clock-In', 'Task Submission')
+     * @param string $resource The specific resource affected (e.g., 'Attendance Record #twelve', 'Task: Weekly Report')
+     * @param int|null $userId Optional user ID (defaults to current authenticated user)
      */
     public function log($action, $resource, $userId = null)
     {
@@ -51,7 +51,7 @@ class SecurityAuditService
             return null;
         }
 
-        // 1. Create the log entry (Instant)
+        // Create the log entry (Instant)
         $log = AuditLog::create([
             'user_id' => $userId,
             'action' => $action,
@@ -62,7 +62,7 @@ class SecurityAuditService
             'timestamp' => now(),
         ]);
 
-        // 2. Score anomaly synchronously for instant threat locking
+        // Score anomaly synchronously for instant threat locking
         try {
             app(\App\Services\AnomalyDetectionService::class)->scoreSingleLog($log);
         } catch (\Exception $e) {

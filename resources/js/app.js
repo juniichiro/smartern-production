@@ -320,7 +320,7 @@ Alpine.data('geofenceManager', (officesData) => ({
     async fetchAddress(lat, lng) {
         this.geofenceData.address = 'Fetching address...';
         try {
-            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`, {
+            const response = await fetch(`https:// nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`, {
                 headers: { 'User-Agent': 'SmarTern-IMS/1.0' }
             });
             const data = await response.json();
@@ -429,7 +429,7 @@ Alpine.data('geofenceManager', (officesData) => ({
         if (!query || query.length < 3) return;
         this.isSearching = true;
         try {
-            const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`);
+            const response = await fetch(`https:// nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=one`);
             const data = await response.json();
             if (data.length > 0) {
                 const result = data[0];
@@ -1088,7 +1088,7 @@ Alpine.data('internTaskSubmission', () => ({
     submitForm(event) {
         this.submitting = true;
         // The form will submit naturally, but we've now locked the UI
-        // and showed a loading state optimistically.
+        // and showed a loading state optimistically
     }
 }));
 
@@ -1176,7 +1176,7 @@ Alpine.data('headSupervisorOfficeManager', () => ({
     async fetchAddress(lat, lng) {
         this.geofenceOffice.address = 'Fetching address...';
         try {
-            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`, {
+            const response = await fetch(`https:// nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`, {
                 headers: { 'User-Agent': 'SmarTern-IMS/1.0' }
             });
             const data = await response.json();
