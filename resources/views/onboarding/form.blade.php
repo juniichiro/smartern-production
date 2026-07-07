@@ -692,12 +692,12 @@
                     if (!section) return;
                     const rect = section.getBoundingClientRect();
                     
-                    if (rect.top < window.innerHeight - 150) {
+                    if (rect.top < window.innerHeight * 0.5) {
                         if (!this.hasScrolledToAssessment) {
                             this.hasScrolledToAssessment = true;
                             this.validatePersonalDetailsOnly();
                         }
-                    } else if (rect.top > window.innerHeight + 100) {
+                    } else if (rect.top > window.innerHeight * 0.7) {
                         this.hasScrolledToAssessment = false;
                     }
                 });
