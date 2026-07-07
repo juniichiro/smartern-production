@@ -528,16 +528,17 @@
                                 <div class="flex items-start">
                                     <input type="checkbox" id="privacy_acknowledgement" name="privacy_acknowledgement" value="1" required 
                                            :checked="privacyAcknowledged"
-                                           @click.prevent="showPrivacyModal = true; checkPrivacyScroll()"
+                                           @click.prevent="if (!privacyAcknowledged) { showPrivacyModal = true; checkPrivacyScroll() }"
                                            class="h-5 w-5 rounded-[6px] border-gray-300 text-[#0B5694] focus:ring-[#0B5694] mt-0.5 shrink-0 pointer-events-none">
                                     <label class="ml-3 text-xs text-gray-600 dark:text-gray-400 font-bold leading-normal">
-                                        I acknowledge and agree to the <a href="javascript:void(0)" @click="showPrivacyModal = true; checkPrivacyScroll()" class="text-[#0B5694] dark:text-blue-400 hover:underline">Privacy Policy</a> and the Data Privacy Act of 2012.
+                                        I acknowledge and agree to the <a href="javascript:void(0)" @click="if (!privacyAcknowledged) { showPrivacyModal = true; checkPrivacyScroll() }" :class="privacyAcknowledged ? 'pointer-events-none cursor-default' : 'hover:underline'" class="text-[#0B5694] dark:text-blue-400">Privacy Policy</a> and the Data Privacy Act of 2012.
                                     </label>
                                 </div>
                                 <button type="button" 
                                         @click="showPrivacyModal = true; checkPrivacyScroll()"
+                                        :disabled="privacyAcknowledged"
                                         :class="privacyAcknowledged ? 'bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-800' : 'bg-[#0B5694] dark:bg-blue-600 text-white shadow-lg shadow-blue-500/10'"
-                                        class="w-full sm:w-auto px-5 py-3 rounded-xl font-bold uppercase text-[10px] tracking-wider transition-all active:scale-95 flex items-center justify-center gap-2">
+                                        class="w-full sm:w-auto px-5 py-3 rounded-xl font-bold uppercase text-[10px] tracking-wider transition-all active:scale-95 flex items-center justify-center gap-2 disabled:pointer-events-none disabled:opacity-100">
                                     <span x-show="!privacyAcknowledged">Read & Agree</span>
                                     <span x-show="privacyAcknowledged" class="flex items-center gap-1" x-cloak>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
