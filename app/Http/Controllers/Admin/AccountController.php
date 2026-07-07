@@ -128,7 +128,7 @@ class AccountController extends Controller
                     $finalRoleId = UserRole::HEAD_SUPERVISOR->value;
                 }
 
-                $plainPassword = Str::password(12, symbols: true);
+                $plainPassword = Str::random(12);
 
                 $user = User::create([
                     'email' => $request->input('email'),
@@ -218,7 +218,7 @@ class AccountController extends Controller
                     continue; // Skip if office is required but not resolved
                 }
 
-                $plainPassword = Str::password(12, symbols: true);
+                $plainPassword = Str::random(12);
                 $user = User::create([
                     'email' => $email,
                     'password' => Hash::make($plainPassword),
@@ -457,7 +457,7 @@ class AccountController extends Controller
         
         try {
             DB::transaction(function () use ($applicant, $match, $internRole) {
-                $plainPassword = Str::password(12, symbols: true);
+                $plainPassword = Str::random(12);
                 
                 $user = User::create([
                     'email' => $applicant->email,

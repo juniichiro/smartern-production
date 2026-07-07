@@ -142,7 +142,7 @@
                 </div>
                 <div class="credential-row">
                     <span class="credential-label">Password:</span>
-                    <span class="credential-value">{{ $plainPassword }}</span>
+                    <span class="credential-value">{!! $plainPassword !!}</span>
                 </div>
             </div>
 
