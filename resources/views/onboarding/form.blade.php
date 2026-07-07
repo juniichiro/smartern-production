@@ -27,7 +27,7 @@
 
     <div class="w-full max-w-4xl">
         {{-- Header Section --}}
-        <div class="text-center mb-10" x-show="step > 0 && step < 4">
+        <div class="text-center mb-10" x-show="step > 0 && step < 4" x-cloak>
             <div class="inline-flex items-center justify-center p-4 bg-white dark:bg-gray-900 rounded-[24px] mb-6 shadow-xl border border-gray-100 dark:border-gray-800">
                 <img src="{{ asset('images/blue-smartern.png') }}" alt="SmarTern Logo" class="h-10">
             </div>
@@ -42,7 +42,7 @@
         </div>
 
         {{-- Progress Indicator --}}
-        <div class="flex items-center justify-between max-w-lg mx-auto mb-12 relative px-4" x-show="step > 0 && step < 4">
+        <div class="flex items-center justify-between max-w-lg mx-auto mb-12 relative px-4" x-show="step > 0 && step < 4" x-cloak>
             <div class="absolute top-1/2 left-0 w-full h-0.5 bg-gray-200 dark:bg-gray-800 -translate-y-1/2 z-0"></div>
             <div class="absolute top-1/2 left-0 h-0.5 bg-[#0B5694] dark:bg-blue-500 -translate-y-1/2 z-0 transition-all duration-500"
                  :style="'width: ' + ((step - 1) / 2 * 100) + '%'"></div>
