@@ -92,7 +92,7 @@
                 <input type="file" x-ref="profileInput" name="profile_picture" class="hidden" @change="handleProfileUpload">
 
                 {{-- STEP 0: WELCOME & INTRODUCTION --}}
-                <div x-show="step === 0" class="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-2xl mx-auto">
+                <div x-show="step === 0" x-cloak class="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-2xl mx-auto">
                     <div class="bg-white dark:bg-gray-900 rounded-[24px] xs:rounded-[32px] sm:rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 p-5 xs:p-8 md:p-12 text-center space-y-8">
                         <div class="space-y-6">
                             <div class="inline-flex items-center justify-center p-4 bg-white dark:bg-gray-900 rounded-[24px] mb-4 shadow-xl border border-gray-100 dark:border-gray-800">
@@ -138,7 +138,7 @@
                 </div>
 
                 {{-- STEP 1: RESUME UPLOAD --}}
-                <div x-show="step === 1" class="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div x-show="step === 1" x-cloak class="animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <div class="bg-white dark:bg-gray-900 rounded-[24px] xs:rounded-[32px] sm:rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 p-5 xs:p-8 md:p-12 text-center space-y-10">
                         <div class="space-y-4">
                             <div class="w-16 h-16 sm:w-20 sm:h-20 bg-blue-50 dark:bg-blue-900/20 rounded-[20px] sm:rounded-[28px] flex items-center justify-center mx-auto text-[#0B5694] dark:text-blue-400 mb-6 group-hover:scale-110 transition-transform shadow-sm">
@@ -180,7 +180,7 @@
                 </div>
 
                 {{-- STEP 2: PROFILE & SKILLS --}}
-                <div x-show="step === 2" class="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500 pb-32">
+                <div x-show="step === 2" x-cloak class="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500 pb-32">
                     {{-- Personal Details Card --}}                    {{-- Personal Details Card --}}
                     <div class="bg-white dark:bg-gray-900 rounded-[24px] xs:rounded-[32px] sm:rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 p-5 xs:p-8 md:p-12 space-y-12">
                         <div class="flex flex-col sm:flex-row items-center gap-6 sm:gap-10">
@@ -397,7 +397,7 @@
                 </div>
 
                 {{-- STEP 3: PREVIEW & VERIFY --}}
-                <div x-show="step === 3" class="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500 pb-32">                    {{-- Personal Details Card (Mirroring Step 2) --}}
+                <div x-show="step === 3" x-cloak class="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500 pb-32">                    {{-- Personal Details Card (Mirroring Step 2) --}}
                     <div class="bg-white dark:bg-gray-900 rounded-[24px] xs:rounded-[32px] sm:rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 p-5 xs:p-8 md:p-12 space-y-12">
                         <div class="flex flex-col sm:flex-row items-center gap-6 sm:gap-10">
                             <div class="relative group shrink-0">
