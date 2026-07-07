@@ -214,9 +214,10 @@
                             <div class="flex-1 space-y-6 w-full text-left">
                                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
                                     <div class="space-y-2">
-                                        <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">First Name</label>
+                                        <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">First Name <span class="text-rose-500">*</span></label>
                                         <input type="text" name="first_name" required x-model="formData.first_name" 
-                                               @input="errors['first_name'] = false"
+                                               @input="validateField('first_name')"
+                                               @blur="validateField('first_name')"
                                                :class="errors['first_name'] ? 'border-rose-500 focus:border-rose-500 ring-4 ring-rose-500/5' : 'border-gray-100 dark:border-gray-800 focus:border-blue-500/20'"
                                                class="w-full bg-gray-50 dark:bg-gray-800 border-2 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 focus:ring-4 focus:ring-blue-500/5 transition-all outline-none">
                                         <p x-show="errors['first_name']" x-text="errors['first_name']" class="text-[9px] font-black text-rose-500 uppercase tracking-widest mt-1 ml-1 animate-in fade-in slide-in-from-top-1"></p>
@@ -224,24 +225,27 @@
                                     <div class="space-y-2">
                                         <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Middle Name</label>
                                         <input type="text" name="middle_name" x-model="formData.middle_name" 
-                                               @input="errors['middle_name'] = false"
+                                               @input="validateField('middle_name')"
+                                               @blur="validateField('middle_name')"
                                                :class="errors['middle_name'] ? 'border-rose-500 focus:border-rose-500 ring-4 ring-rose-500/5' : 'border-gray-100 dark:border-gray-800 focus:border-blue-500/20'"
                                                class="w-full bg-gray-50 dark:bg-gray-800 border-2 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 focus:ring-4 focus:ring-blue-500/5 transition-all outline-none">
                                         <p x-show="errors['middle_name']" x-text="errors['middle_name']" class="text-[9px] font-black text-rose-500 uppercase tracking-widest mt-1 ml-1 animate-in fade-in slide-in-from-top-1"></p>
                                     </div>
                                     <div class="space-y-2">
-                                        <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Last Name</label>
+                                        <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Last Name <span class="text-rose-500">*</span></label>
                                         <input type="text" name="last_name" required x-model="formData.last_name"
-                                               @input="errors['last_name'] = false"
+                                               @input="validateField('last_name')"
+                                               @blur="validateField('last_name')"
                                                :class="errors['last_name'] ? 'border-rose-500 focus:border-rose-500 ring-4 ring-rose-500/5' : 'border-gray-100 dark:border-gray-800 focus:border-blue-500/20'"
                                                class="w-full bg-gray-50 dark:bg-gray-800 border-2 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 focus:ring-4 focus:ring-blue-500/5 transition-all outline-none">
                                         <p x-show="errors['last_name']" x-text="errors['last_name']" class="text-[9px] font-black text-rose-500 uppercase tracking-widest mt-1 ml-1 animate-in fade-in slide-in-from-top-1"></p>
                                     </div>
                                 </div>
                                 <div class="space-y-2">
-                                    <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Email Address</label>
+                                    <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Email Address <span class="text-rose-500">*</span></label>
                                     <input type="email" name="email" required x-model="formData.email"
-                                           @input="errors['email'] = false"
+                                           @input="validateField('email')"
+                                           @blur="validateField('email')"
                                            :class="errors['email'] ? 'border-rose-500 focus:border-rose-500 ring-4 ring-rose-500/5' : 'border-gray-100 dark:border-gray-800 focus:border-blue-500/20'"
                                            class="w-full bg-gray-50 dark:bg-gray-800 border-2 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 focus:ring-4 focus:ring-blue-500/5 transition-all outline-none">
                                     <p x-show="errors['email']" x-text="errors['email']" class="text-[9px] font-black text-rose-500 uppercase tracking-widest mt-1 ml-1 animate-in fade-in slide-in-from-top-1"></p>
@@ -251,17 +255,18 @@
  
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
                             <div class="space-y-2" id="gender-selection">
-                                <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Gender Identification</label>
+                                <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Gender Identification <span class="text-rose-500">*</span></label>
                                 <div class="grid grid-cols-3 gap-2.5">
-                                    <button type="button" @click="gender = 'male'; errors['gender'] = false" :class="gender === 'male' ? 'bg-[#0B5694] text-white border-transparent' : (errors['gender'] ? 'bg-rose-50/50 dark:bg-rose-900/10 border-rose-500 text-rose-500' : 'bg-gray-50 dark:bg-gray-800 text-gray-400 border-gray-100 dark:border-gray-800')" class="py-3.5 sm:py-4 rounded-xl xs:rounded-2xl text-[9px] xs:text-[10px] font-bold uppercase tracking-wider transition-all border-2">Male</button>
-                                    <button type="button" @click="gender = 'female'; errors['gender'] = false" :class="gender === 'female' ? 'bg-[#0B5694] text-white border-transparent' : (errors['gender'] ? 'bg-rose-50/50 dark:bg-rose-900/10 border-rose-500 text-rose-500' : 'bg-gray-50 dark:bg-gray-800 text-gray-400 border-gray-100 dark:border-gray-800')" class="py-3.5 sm:py-4 rounded-xl xs:rounded-2xl text-[9px] xs:text-[10px] font-bold uppercase tracking-wider transition-all border-2">Female</button>
-                                    <button type="button" @click="gender = 'other'; errors['gender'] = false" :class="gender === 'other' ? 'bg-[#0B5694] text-white border-transparent' : (errors['gender'] ? 'bg-rose-50/50 dark:bg-rose-900/10 border-rose-500 text-rose-500' : 'bg-gray-50 dark:bg-gray-800 text-gray-400 border-gray-100 dark:border-gray-800')" class="py-3.5 sm:py-4 rounded-xl xs:rounded-2xl text-[9px] xs:text-[10px] font-bold uppercase tracking-wider transition-all border-2">Other</button>
+                                    <button type="button" @click="gender = 'male'; validateField('gender')" :class="gender === 'male' ? 'bg-[#0B5694] text-white border-transparent' : (errors['gender'] ? 'bg-rose-50/50 dark:bg-rose-900/10 border-rose-500 text-rose-500' : 'bg-gray-50 dark:bg-gray-800 text-gray-400 border-gray-100 dark:border-gray-800')" class="py-3.5 sm:py-4 rounded-xl xs:rounded-2xl text-[9px] xs:text-[10px] font-bold uppercase tracking-wider transition-all border-2">Male</button>
+                                    <button type="button" @click="gender = 'female'; validateField('gender')" :class="gender === 'female' ? 'bg-[#0B5694] text-white border-transparent' : (errors['gender'] ? 'bg-rose-50/50 dark:bg-rose-900/10 border-rose-500 text-rose-500' : 'bg-gray-50 dark:bg-gray-800 text-gray-400 border-gray-100 dark:border-gray-800')" class="py-3.5 sm:py-4 rounded-xl xs:rounded-2xl text-[9px] xs:text-[10px] font-bold uppercase tracking-wider transition-all border-2">Female</button>
+                                    <button type="button" @click="gender = 'other'; validateField('gender')" :class="gender === 'other' ? 'bg-[#0B5694] text-white border-transparent' : (errors['gender'] ? 'bg-rose-50/50 dark:bg-rose-900/10 border-rose-500 text-rose-500' : 'bg-gray-50 dark:bg-gray-800 text-gray-400 border-gray-100 dark:border-gray-800')" class="py-3.5 sm:py-4 rounded-xl xs:rounded-2xl text-[9px] xs:text-[10px] font-bold uppercase tracking-wider transition-all border-2">Other</button>
                                 </div>
                                 <p x-show="errors['gender']" x-text="errors['gender']" class="text-[9px] font-black text-rose-500 uppercase tracking-widest mt-1 ml-1 animate-in fade-in slide-in-from-top-1"></p>
                                 <input type="hidden" name="gender" :value="gender">
                                 <div x-show="gender === 'other'" class="mt-4 animate-in slide-in-from-top-2">
                                     <input type="text" name="gender_other_specify" x-model="formData.gender_other_specify" 
-                                           @input="errors['gender_other_specify'] = false"
+                                           @input="validateField('gender_other_specify')"
+                                           @blur="validateField('gender_other_specify')"
                                            :class="errors['gender_other_specify'] ? 'border-rose-500 focus:border-rose-500 ring-4 ring-rose-500/5' : 'border-gray-100 dark:border-gray-800 focus:border-blue-500/20'"
                                            placeholder="Please specify gender" class="w-full bg-gray-50 dark:bg-gray-800 border-2 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 outline-none">
                                     <p x-show="errors['gender_other_specify']" x-text="errors['gender_other_specify']" class="text-[9px] font-black text-rose-500 uppercase tracking-widest mt-1 ml-1 animate-in fade-in slide-in-from-top-1"></p>
@@ -269,19 +274,20 @@
                             </div>
 
                             <div class="space-y-2">
-                                <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Academic Institution</label>
+                                <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Academic Institution <span class="text-rose-500">*</span></label>
                                 <div class="relative" @click.away="isUniDropdownOpen = false">
                                     <input type="text" name="school" required x-model="formData.school"
                                            autocomplete="off"
                                            @focus="isUniDropdownOpen = true"
-                                           @input="uniSearch = formData.school; isUniDropdownOpen = true; errors['school'] = false"
+                                           @input="uniSearch = formData.school; isUniDropdownOpen = true; validateField('school')"
+                                           @blur="validateField('school')"
                                            :class="errors['school'] ? 'border-rose-500 focus:border-rose-500 ring-4 ring-rose-500/5' : 'border-gray-100 dark:border-gray-800 focus:border-blue-500/20'"
                                            class="w-full bg-gray-50 dark:bg-gray-800 border-2 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 focus:ring-4 focus:ring-blue-500/5 transition-all outline-none">
                                     <p x-show="errors['school']" x-text="errors['school']" class="text-[9px] font-black text-rose-500 uppercase tracking-widest mt-1 ml-1 animate-in fade-in slide-in-from-top-1"></p>
                                     <div x-show="isUniDropdownOpen && filteredUniversities.length > 0" 
                                          class="absolute z-[120] w-full mt-2 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[24px] shadow-2xl max-h-64 overflow-y-auto py-2 no-scrollbar">
                                         <template x-for="uni in filteredUniversities" :key="uni">
-                                            <div @click="formData.school = uni; uniSearch = uni; isUniDropdownOpen = false; errors['school'] = false" 
+                                            <div @click="formData.school = uni; uniSearch = uni; isUniDropdownOpen = false; validateField('school')" 
                                                  class="px-6 py-4 text-sm font-bold text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-[#0B5694] dark:hover:text-blue-400 cursor-pointer transition-colors"
                                                  x-text="uni"></div>
                                         </template>
@@ -290,9 +296,10 @@
                             </div>
 
                             <div class="space-y-2">
-                                <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Contact Number</label>
+                                <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Contact Number <span class="text-rose-500">*</span></label>
                                 <input type="text" name="phone_number" required x-model="formData.phone_number"
-                                       @input="errors['phone_number'] = false"
+                                       @input="validateField('phone_number')"
+                                       @blur="validateField('phone_number')"
                                        :class="errors['phone_number'] ? 'border-rose-500 focus:border-rose-500 ring-4 ring-rose-500/5' : 'border-gray-100 dark:border-gray-800 focus:border-blue-500/20'"
                                        class="w-full bg-gray-50 dark:bg-gray-800 border-2 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 focus:ring-4 focus:ring-blue-500/5 transition-all outline-none">
                                 <p x-show="errors['phone_number']" x-text="errors['phone_number']" class="text-[9px] font-black text-rose-500 uppercase tracking-widest mt-1 ml-1 animate-in fade-in slide-in-from-top-1"></p>
@@ -300,17 +307,19 @@
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 col-span-1 md:col-span-2">
                                 <div class="space-y-2">
-                                    <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Emergency Contact (Full Name)</label>
+                                    <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Emergency Contact (Full Name) <span class="text-rose-500">*</span></label>
                                     <input type="text" name="emergency_contact" required x-model="formData.emergency_contact"
-                                           @input="errors['emergency_contact'] = false"
+                                           @input="validateField('emergency_contact')"
+                                           @blur="validateField('emergency_contact')"
                                            :class="errors['emergency_contact'] ? 'border-rose-500 focus:border-rose-500 ring-4 ring-rose-500/5' : 'border-gray-100 dark:border-gray-800 focus:border-blue-500/20'"
                                            class="w-full bg-gray-50 dark:bg-gray-800 border-2 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 outline-none transition-all">
                                     <p x-show="errors['emergency_contact']" x-text="errors['emergency_contact']" class="text-[9px] font-black text-rose-500 uppercase tracking-widest mt-1 ml-1 animate-in fade-in slide-in-from-top-1"></p>
                                 </div>
                                 <div class="space-y-2">
-                                    <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Emergency Contact Number</label>
+                                    <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Emergency Contact Number <span class="text-rose-500">*</span></label>
                                     <input type="text" name="emergency_contact_number" required x-model="formData.emergency_contact_number"
-                                           @input="errors['emergency_contact_number'] = false"
+                                           @input="validateField('emergency_contact_number')"
+                                           @blur="validateField('emergency_contact_number')"
                                            :class="errors['emergency_contact_number'] ? 'border-rose-500 focus:border-rose-500 ring-4 ring-rose-500/5' : 'border-gray-100 dark:border-gray-800 focus:border-blue-500/20'"
                                            class="w-full bg-gray-50 dark:bg-gray-800 border-2 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 outline-none transition-all">
                                     <p x-show="errors['emergency_contact_number']" x-text="errors['emergency_contact_number']" class="text-[9px] font-black text-rose-500 uppercase tracking-widest mt-1 ml-1 animate-in fade-in slide-in-from-top-1"></p>
@@ -812,6 +821,68 @@
                     // Otherwise, just use the cleaned digits (or original if symbols are preferred,
                     // but usually for system consistency we want the clean format)
                     this.formData[f] = digits;
+                }
+            },
+            validateField(f) {
+                if (f === 'phone_number' || f === 'emergency_contact_number') {
+                    this.normalizePhoneNumber(f);
+                }
+
+                const rules = {
+                    first_name: { required: true, name: true, max: 50, label: 'First Name' },
+                    middle_name: { required: false, name: true, max: 50, label: 'Middle Name' },
+                    last_name: { required: true, name: true, max: 50, label: 'Last Name' },
+                    email: { required: true, email: true, max: 100, label: 'Email Address' },
+                    school: { required: true, alphanumeric: true, max: 150, label: 'Academic Institution' },
+                    phone_number: { required: true, phone: true, min: 10, max: 11, label: 'Contact Number' },
+                    emergency_contact: { required: true, name: true, max: 100, label: 'Emergency Contact Name' },
+                    emergency_contact_number: { required: true, phone: true, min: 10, max: 11, label: 'Emergency Contact Number' }
+                };
+
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                const phoneRegex = /^[0-9]*$/;
+                const nameRegex = /^[a-zA-Z\s\-\.]*$/;
+                const alphanumericRegex = /^[a-zA-Z0-9\s\-\.,&()]*$/;
+
+                const val = this.formData[f];
+                const rule = rules[f];
+
+                if (f === 'gender') {
+                    if (!this.gender) {
+                        this.errors['gender'] = 'Please select a gender option.';
+                    } else {
+                        this.errors['gender'] = false;
+                    }
+                    return;
+                }
+
+                if (f === 'gender_other_specify') {
+                    if (this.gender === 'other' && (!this.formData.gender_other_specify || !this.formData.gender_other_specify.trim())) {
+                        this.errors['gender_other_specify'] = 'Please specify your identity details.';
+                    } else {
+                        this.errors['gender_other_specify'] = false;
+                    }
+                    return;
+                }
+
+                if (!rule) return;
+
+                if (rule.required && (!val || (typeof val === 'string' && val.trim() === ''))) {
+                    this.errors[f] = `Please provide your ${rule.label.toLowerCase()}.`;
+                } else if (rule.max && val && val.length > rule.max) {
+                    this.errors[f] = `The ${rule.label.toLowerCase()} is too long (max ${rule.max} characters).`;
+                } else if (rule.min && val && val.length < rule.min) {
+                    this.errors[f] = `Please provide a complete ${rule.label.toLowerCase()}.`;
+                } else if (rule.email && val && !emailRegex.test(val)) {
+                    this.errors[f] = `We need a valid email format to reach you.`;
+                } else if (rule.phone && val && !phoneRegex.test(val)) {
+                    this.errors[f] = `Please use numbers only for contact details.`;
+                } else if (rule.name && val && !nameRegex.test(val)) {
+                    this.errors[f] = `Names should only contain letters and standard symbols.`;
+                } else if (rule.alphanumeric && val && !alphanumericRegex.test(val)) {
+                    this.errors[f] = `This field contains invalid special characters.`;
+                } else {
+                    this.errors[f] = false;
                 }
             },
             validateStep(s) { 
