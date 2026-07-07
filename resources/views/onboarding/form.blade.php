@@ -353,7 +353,24 @@
                                                     {{ $item->competency_text }}
                                                 </p>
                                             </div>
-                                            <div class="lg:col-span-4" x-data="{ open: false, score: null }">
+                                            <div class="lg:col-span-4" x-data="{ 
+                                                 open: false, 
+                                                 get score() {
+                                                     const isTech = {{ str_contains($category, 'I.') ? 'true' : 'false' }};
+                                                     const list = isTech ? techSkills : softSkills;
+                                                     const skill = list.find(s => s.name === '{{ addslashes($item->competency_text) }}');
+                                                     return skill ? skill.score : null;
+                                                 },
+                                                 set score(val) {
+                                                     const isTech = {{ str_contains($category, 'I.') ? 'true' : 'false' }};
+                                                     const list = isTech ? techSkills : softSkills;
+                                                     const skill = list.find(s => s.name === '{{ addslashes($item->competency_text) }}');
+                                                     if (skill) {
+                                                         skill.score = val;
+                                                         saveState();
+                                                     }
+                                                 }
+                                            }">
                                                 <div class="relative w-full" :id="'competency-' + '{{ $item->id }}'">
                                                     @if(str_contains($category, 'I.'))
                                                         <input type="hidden" name="tech_skills[]" value="{{ $item->competency_text }}">
