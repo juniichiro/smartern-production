@@ -810,7 +810,13 @@
                 }
 
                 // Register watchers to automatically save state on change
-                this.$watch('step', () => this.saveState());
+                this.$watch('step', (val) => {
+                    if (val < 3) {
+                        this.privacyAcknowledged = false;
+                        this.hasScrolledToBottom = false;
+                    }
+                    this.saveState();
+                });
                 this.$watch('gender', () => this.saveState());
                 this.$watch('formData', () => this.saveState(), { deep: true });
                 this.$watch('techSkills', () => this.saveState(), { deep: true });
