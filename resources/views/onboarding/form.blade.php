@@ -569,7 +569,7 @@
             <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-2 mb-10 leading-relaxed max-w-md mx-auto">
                 Your onboarding profile has been successfully submitted and finalized! You will receive real-time email updates regarding your office matches, coordinator feedback, and system login credentials shortly.
             </p>
-            <button type="button" @click="window.location.reload()" class="w-full bg-[#0B5694] dark:bg-blue-600 text-white py-5 rounded-[20px] sm:rounded-[24px] font-black text-sm uppercase tracking-widest shadow-xl">Finish Process</button>
+            <button type="button" @click="window.location.href = '{{ url('/') }}'" class="w-full bg-[#0B5694] dark:bg-blue-600 text-white py-5 rounded-[20px] sm:rounded-[24px] font-black text-sm uppercase tracking-widest shadow-xl">Finish Process</button>
         </div>
     </div>
 
