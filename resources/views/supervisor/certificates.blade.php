@@ -92,10 +92,17 @@
                                                         Endorse
                                                     </button>
                                                 @else
-                                                    <span class="text-[10px] font-black text-emerald-500 dark:text-emerald-400 uppercase tracking-widest flex items-center justify-end gap-2 px-2">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                                                        In Queue
-                                                    </span>
+                                                    @if($cert->status === 'published')
+                                                        <span class="text-[10px] font-black text-blue-500 dark:text-blue-400 uppercase tracking-widest flex items-center justify-end gap-2 px-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                                            Published
+                                                        </span>
+                                                    @else
+                                                        <span class="text-[10px] font-black text-amber-500 dark:text-amber-400 uppercase tracking-widest flex items-center justify-end gap-2 px-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                                            Processing
+                                                        </span>
+                                                    @endif
                                                 @endif
                                             </div>
                                         @else
@@ -184,10 +191,17 @@
                                             Endorse
                                         </button>
                                     @else
-                                        <span class="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[10px] font-black text-emerald-500 dark:text-emerald-400 uppercase tracking-widest">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                                            In Queue
-                                        </span>
+                                        @if($cert->status === 'published')
+                                            <span class="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[10px] font-black text-blue-500 dark:text-blue-400 uppercase tracking-widest">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                                                Published
+                                            </span>
+                                        @else
+                                            <span class="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[10px] font-black text-amber-500 dark:text-amber-400 uppercase tracking-widest">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                                Processing
+                                            </span>
+                                        @endif
                                     @endif
                                 </div>
                             @else
