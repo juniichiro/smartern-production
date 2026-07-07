@@ -566,7 +566,9 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" class="sm:w-12 sm:h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
             </div>
             <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white uppercase tracking-tight">Application Finalized!</h2>
-            <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-2 mb-10 leading-relaxed">We couldn't find any issues with your submission. Your credentials have been authorized.</p>
+            <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-2 mb-10 leading-relaxed max-w-md mx-auto">
+                Your onboarding profile has been successfully submitted and finalized! You will receive real-time email updates regarding your office matches, coordinator feedback, and system login credentials shortly.
+            </p>
             <button type="button" @click="window.location.reload()" class="w-full bg-[#0B5694] dark:bg-blue-600 text-white py-5 rounded-[20px] sm:rounded-[24px] font-black text-sm uppercase tracking-widest shadow-xl">Finish Process</button>
         </div>
     </div>
