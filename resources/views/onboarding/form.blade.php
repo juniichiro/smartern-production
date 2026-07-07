@@ -330,31 +330,14 @@
 
                     {{-- Dynamic Competency Assessment Form --}}
                     <div class="space-y-12" id="competency-assessment-section">
-                        <!-- Progress & Assessment Instructions -->
-                        <div class="bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100/50 dark:border-blue-900/30 rounded-[24px] xs:rounded-[32px] sm:rounded-[40px] p-6 xs:p-8 text-left space-y-4">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-12 h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/40 text-[#0B5694] dark:text-blue-400 flex items-center justify-center shrink-0">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-                                    </div>
-                                    <div>
-                                        <h4 class="text-xs font-black text-gray-900 dark:text-white uppercase tracking-wider">Competency Self-Assessment</h4>
-                                        <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1 font-medium">Please rate your proficiency across all competency standards. Ratings range from 1 (Novice) to 5 (Expert).</p>
-                                    </div>
-                                </div>
-                                <div class="flex flex-col sm:items-end justify-center shrink-0 pl-16 sm:pl-0">
-                                    <span class="text-[10px] font-black text-[#0B5694] dark:text-blue-400 uppercase tracking-widest">Progress</span>
-                                    <span class="text-sm font-black text-gray-700 dark:text-gray-200 mt-0.5">
-                                        <span x-text="ratedSkillsCount"></span> / <span x-text="totalSkillsCount"></span> Answered
-                                    </span>
-                                </div>
-                            </div>
-                            
-                            <!-- Dynamic Progress Bar -->
-                            <div class="w-full bg-gray-100 dark:bg-gray-800 h-2 rounded-full overflow-hidden">
-                                <div class="bg-[#0B5694] dark:bg-blue-500 h-full transition-all duration-300 rounded-full" 
-                                     :style="'width: ' + ((ratedSkillsCount / totalSkillsCount) * 100) + '%'"></div>
-                            </div>
+                        <!-- Simplified Progress & Assessment Title -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-4 mb-8 text-left gap-2 px-1">
+                            <h3 class="text-xs font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest">
+                                Competency Self-Assessment
+                            </h3>
+                            <span class="text-xs font-black text-[#0B5694] dark:text-blue-400 uppercase tracking-widest">
+                                Progress: <span x-text="ratedSkillsCount"></span> / <span x-text="totalSkillsCount"></span> Answered
+                            </span>
                         </div>
 
                         @foreach($assessmentItems as $category => $categoryItems)
