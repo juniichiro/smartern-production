@@ -419,6 +419,12 @@ class OfficeMatchingController extends Controller
             $match->update(['is_confirmed' => false]);
             $officeName = $match->office ? $match->office->name : "Unknown Office";
             $this->auditService->log('Match Unfinalized', "Undid office placement for {$name} from {$officeName}");
+
+            if ($applicant && $match->office) {
+                \Illuminate\Support\Facades\Mail::to($applicant->email)->send(
+                    new \App\Mail\OfficeAssignmentUnfinalizedMail($applicant, $match->office)
+                );
+            }
         }
 
         return back()->with('success', "Placement undone for {$name}.");
