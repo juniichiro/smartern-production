@@ -111,7 +111,7 @@
         <div class="content">
             <h2>Office Assignment Under Review</h2>
             <p>Hello {{ $applicant->first_name }},</p>
-            <p>We are writing to inform you that your office placement has been unfinalized by the Head Supervisor and is currently undergoing matching review.</p>
+            <p>We are writing to inform you that your office placement has been changed by the Head Supervisor and is currently undergoing matching review.</p>
             
             <div class="info-card">
                 <div class="info-row">
@@ -124,7 +124,7 @@
                 </div>
                 <div class="info-row">
                     <span class="info-label">Current Status:</span>
-                    <span class="info-value">Returned to Matching Pool</span>
+                    <span class="info-value">For review</span>
                 </div>
             </div>
 
