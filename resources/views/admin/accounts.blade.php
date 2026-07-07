@@ -61,7 +61,7 @@
                     <button @click="setTab('onboarding')" 
                             :class="activeTab === 'onboarding' ? 'bg-white dark:bg-gray-700 text-[#0B5694] dark:text-blue-400 shadow-sm border-gray-100 dark:border-gray-600' : 'text-gray-400 dark:text-slate-500 border-transparent hover:text-gray-600 dark:hover:text-gray-300'" 
                             class="px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all whitespace-nowrap active:scale-95">
-                        Onboarding Approvals
+                        Pending Account Creations
                         @if(isset($pendingOnboarding) && $pendingOnboarding->isNotEmpty())
                             <span class="ml-2 px-2 py-0.5 rounded-full text-[9px] bg-red-500 text-white font-extrabold">{{ $pendingOnboarding->count() }}</span>
                         @endif
@@ -406,7 +406,7 @@
         {{-- Pending Onboarding Accounts Section --}}
         <div x-show="activeTab === 'onboarding'" x-cloak class="relative z-30 flex flex-col flex-1 animate-in fade-in duration-300">
             <x-table-container 
-                title="Pending Onboarding Approvals" 
+                title="Pending Account Creations" 
                 subtitle="Applications matching completed. Ready for account creation."
             >
                 @if(isset($pendingOnboarding) && $pendingOnboarding->isNotEmpty())
@@ -448,29 +448,9 @@
                                                 @csrf
                                                 <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-xl text-xs font-bold transition active:scale-95 flex items-center gap-1 shadow-sm cursor-pointer">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                                                    Approve
+                                                    Create Account
                                                 </button>
                                             </form>
-                                            <button @click="editData = { 
-                                                id: '{{ $applicant->id }}', 
-                                                email: '{{ $applicant->email }}',
-                                                role: 'intern',
-                                                first_name: '{{ $applicant->first_name }}',
-                                                middle_name: '{{ $applicant->middle_name ?? '' }}',
-                                                last_name: '{{ $applicant->last_name }}',
-                                                office_id: '{{ $applicant->office_id }}',
-                                                school: '{{ $applicant->university }}',
-                                                gender: '{{ strtolower($applicant->gender ?? 'male') }}',
-                                                gender_other_specify: '{{ $applicant->gender_other_specify ?? '' }}',
-                                                phone_number: '{{ $applicant->phone_number ?? '09000000000' }}',
-                                                emergency_contact: '{{ $applicant->emergency_contact ?? '' }}',
-                                                initials: '{{ strtoupper(substr($applicant->first_name, 0, 1) . substr($applicant->last_name, 0, 1)) }}',
-                                                isOnboarding: true,
-                                                profile_picture: '{{ $applicant->profile_picture ? (str_starts_with($applicant->profile_picture, 'profiles/') || str_starts_with($applicant->profile_picture, 'profile-pictures/') ? Storage::disk('public')->url($applicant->profile_picture) : asset($applicant->profile_picture)) : '' }}'
-                                            }; showEditModal = true" class="bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/30 text-blue-600 dark:text-blue-400 px-4 py-2 rounded-xl text-xs font-bold transition active:scale-95 flex items-center gap-1 shadow-sm cursor-pointer">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-                                                Edit
-                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -509,35 +489,15 @@
                                     @csrf
                                     <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white min-h-[44px] rounded-xl text-xs font-bold uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-2 shadow-sm cursor-pointer">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                                        Approve
+                                        Create Account
                                     </button>
                                 </form>
-                                <button @click="editData = { 
-                                    id: '{{ $applicant->id }}', 
-                                    email: '{{ $applicant->email }}',
-                                    role: 'intern',
-                                    first_name: '{{ $applicant->first_name }}',
-                                    middle_name: '{{ $applicant->middle_name ?? '' }}',
-                                    last_name: '{{ $applicant->last_name }}',
-                                    office_id: '{{ $applicant->office_id }}',
-                                    school: '{{ $applicant->university }}',
-                                    gender: '{{ strtolower($applicant->gender ?? 'male') }}',
-                                    gender_other_specify: '{{ $applicant->gender_other_specify ?? '' }}',
-                                    phone_number: '{{ $applicant->phone_number ?? '09000000000' }}',
-                                    emergency_contact: '{{ $applicant->emergency_contact ?? '' }}',
-                                    initials: '{{ strtoupper(substr($applicant->first_name, 0, 1) . substr($applicant->last_name, 0, 1)) }}',
-                                    isOnboarding: true,
-                                    profile_picture: '{{ $applicant->profile_picture ? (str_starts_with($applicant->profile_picture, 'profiles/') || str_starts_with($applicant->profile_picture, 'profile-pictures/') ? Storage::disk('public')->url($applicant->profile_picture) : asset($applicant->profile_picture)) : '' }}'
-                                }; showEditModal = true" class="flex-1 bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/30 text-blue-600 dark:text-blue-400 min-h-[44px] rounded-xl text-xs font-bold uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-2 shadow-sm cursor-pointer">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-                                    Edit
-                                </button>
                             </div>
                         </div>
                         @endforeach
                     </div>
                 @else
-                    <x-empty-state title="No pending onboarding approvals." compact="true" />
+                    <x-empty-state title="No pending account creations." compact="true" />
                 @endif
             </x-table-container>
         </div>
