@@ -685,6 +685,60 @@
                     });
                 });
 
+                // Load saved state from localStorage
+                try {
+                    const saved = localStorage.getItem('smartOnboardingState');
+                    if (saved) {
+                        const state = JSON.parse(saved);
+                        // Only load step if there are no server-side validation errors
+                        if (Object.keys(this.errors).length === 0) {
+                            if (state.step !== undefined && state.step < 4) {
+                                this.step = state.step;
+                            }
+                        }
+                        if (state.formData) {
+                            Object.keys(state.formData).forEach(k => {
+                                if (state.formData[k] !== undefined) {
+                                    this.formData[k] = state.formData[k];
+                                }
+                            });
+                        }
+                        if (state.gender !== undefined) this.gender = state.gender;
+                        if (state.resumeFileName !== undefined) this.resumeFileName = state.resumeFileName;
+                        
+                        // Load techSkills and softSkills scores
+                        if (state.techSkills) {
+                            state.techSkills.forEach(savedSkill => {
+                                const skill = this.techSkills.find(s => s.name === savedSkill.name);
+                                if (skill) skill.score = savedSkill.score;
+                            });
+                        }
+                        if (state.softSkills) {
+                            state.softSkills.forEach(savedSkill => {
+                                const skill = this.softSkills.find(s => s.name === savedSkill.name);
+                                if (skill) skill.score = savedSkill.score;
+                            });
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error loading onboarding state:', e);
+                }
+
+                // If registration succeeded (step 4), clear the persisted state
+                if (this.step === 4) {
+                    try {
+                        localStorage.removeItem('smartOnboardingState');
+                    } catch (e) {}
+                }
+
+                // Register watchers to automatically save state on change
+                this.$watch('step', () => this.saveState());
+                this.$watch('gender', () => this.saveState());
+                this.$watch('formData', () => this.saveState(), { deep: true });
+                this.$watch('techSkills', () => this.saveState(), { deep: true });
+                this.$watch('softSkills', () => this.saveState(), { deep: true });
+                this.$watch('resumeFileName', () => this.saveState());
+
                 // Window Scroll listener to trigger validation when moving on to assessment form
                 window.addEventListener('scroll', () => {
                     if (this.step !== 2) return;
@@ -702,10 +756,28 @@
                     }
                 });
             },
+            saveState() {
+                try {
+                    const state = {
+                        step: this.step,
+                        formData: this.formData,
+                        gender: this.gender,
+                        resumeFileName: this.resumeFileName,
+                        techSkills: this.techSkills,
+                        softSkills: this.softSkills
+                    };
+                    localStorage.setItem('smartOnboardingState', JSON.stringify(state));
+                } catch (e) {
+                    console.error('Error saving onboarding state:', e);
+                }
+            },
             updateSkillInSummary(name, score, isTech) {
                 const list = isTech ? this.techSkills : this.softSkills;
                 const match = list.find(s => s.name === name);
-                if (match) match.score = score;
+                if (match) {
+                    match.score = score;
+                    this.saveState();
+                }
             },
             handleProfileUpload(event) {
                 const file = event.target.files[0];
