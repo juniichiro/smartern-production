@@ -63,7 +63,7 @@
                 <div class="xl:col-span-5 flex flex-col h-full" x-data="{
                     requiredHours: {{ $intern->required_hours ?? 480 }},
                     scheduleDays: @js($intern->schedule_assignment ?? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']),
-                    startDate: '{{ $schoolSchedule && $schoolSchedule->start_date ? $schoolSchedule->start_date->format('Y-m-d') : '' }}',
+                    startDate: '{{ ($intern->start_date ?? ($schoolSchedule->start_date ?? null)) ? ($intern->start_date ?? $schoolSchedule->start_date)->format('Y-m-d') : '' }}',
                     dailyHours: {{ $schoolSchedule ? $schoolSchedule->daily_hours ?? 8 : 8 }},
                     holidays: @js($holidaysAndSuspensions ?? []),
                     configModalOpen: false,
@@ -140,18 +140,18 @@
                                     </p>
                                 </div>
 
-                                @if($schoolSchedule && $schoolSchedule->start_date)
                                 <div>
                                     <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block mb-1">Official Start</span>
-                                    <p class="text-xs font-black text-gray-800 dark:text-gray-100 uppercase">{{ $schoolSchedule->start_date->format('M d, Y') }}</p>
+                                    <p class="text-xs font-black text-gray-800 dark:text-gray-100 uppercase" x-text="startDate ? new Date(startDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).toUpperCase() : 'NOT SET'">
+                                        {{ ($intern->start_date ?? ($schoolSchedule->start_date ?? null)) ? ($intern->start_date ?? $schoolSchedule->start_date)->format('M d, Y') : 'NOT SET' }}
+                                    </p>
                                 </div>
-                                @if($schoolSchedule->target_end_date)
                                 <div>
-                                    <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block mb-1">Target End</span>
-                                    <p class="text-xs font-black text-[#0B5694] dark:text-blue-400 uppercase" x-text="targetEndDate">{{ $schoolSchedule->target_end_date->format('M d, Y') }}</p>
+                                    <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block mb-1">Expected End</span>
+                                    <p class="text-xs font-black text-[#0B5694] dark:text-blue-400 uppercase" x-text="targetEndDate">
+                                        N/A
+                                    </p>
                                 </div>
-                                @endif
-                                @endif
                             </div>
                         </div>
 
@@ -208,6 +208,12 @@
                                             </div>
                                         </div>
                                         
+                                        <div class="space-y-2">
+                                            <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Official Start Date</span>
+                                            <input type="date" name="start_date" x-model="startDate"
+                                                class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 rounded-xl text-xs font-bold text-gray-800 dark:text-gray-100 focus:ring-[#0B5694]/20 focus:border-[#0B5694] transition">
+                                        </div>
+
                                         <div class="space-y-2">
                                             <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Required Internship Hours</span>
                                             <input type="number" name="required_hours" x-model.number="requiredHours" min="1" required

@@ -117,12 +117,14 @@ class InternManagementController extends Controller
             'schedule_assignment' => 'nullable|array',
             'schedule_assignment.*' => 'string|in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday',
             'required_hours' => 'required|integer|min:1',
+            'start_date' => 'nullable|date',
         ]);
 
         $intern = InternDetail::where('user_id', $user->id)->firstOrFail();
         $intern->update([
             'schedule_assignment' => $request->input('schedule_assignment'),
             'required_hours' => $request->input('required_hours'),
+            'start_date' => $request->input('start_date'),
         ]);
 
         return redirect()->back()->with('success', 'Intern reporting schedule updated successfully.');
