@@ -61,7 +61,7 @@
                     <button @click="setTab('onboarding')" 
                             :class="activeTab === 'onboarding' ? 'bg-white dark:bg-gray-700 text-[#0B5694] dark:text-blue-400 shadow-sm border-gray-100 dark:border-gray-600' : 'text-gray-400 dark:text-slate-500 border-transparent hover:text-gray-600 dark:hover:text-gray-300'" 
                             class="px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all whitespace-nowrap active:scale-95">
-                        Pending Account Creations
+                        Intern Account Creation
                         @if(isset($pendingOnboarding) && $pendingOnboarding->isNotEmpty())
                             <span class="ml-2 px-2 py-0.5 rounded-full text-[9px] bg-red-500 text-white font-extrabold">{{ $pendingOnboarding->count() }}</span>
                         @endif
@@ -406,7 +406,7 @@
         {{-- Pending Onboarding Accounts Section --}}
         <div x-show="activeTab === 'onboarding'" x-cloak class="relative z-30 flex flex-col flex-1 animate-in fade-in duration-300">
             <x-table-container 
-                title="Pending Account Creations" 
+                title="Intern Account Creation" 
                 subtitle="Applications matching completed. Ready for account creation."
             >
                 @if(isset($pendingOnboarding) && $pendingOnboarding->isNotEmpty())
