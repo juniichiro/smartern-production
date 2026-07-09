@@ -115,8 +115,10 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                                 </div>
                                 <div class="min-w-0 flex-1">
-                                    <p class="text-sm sm:text-base font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight truncate" title="{{ $effectiveSchedule['description'] }}">{{ $effectiveSchedule['description'] }}</p>
-                                    <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest truncate" title="{{ $effectiveSchedule['type'] === 'school_default' ? $intern->school : 'Institutional Default' }}">{{ $effectiveSchedule['type'] === 'school_default' ? $intern->school : 'Institutional Default' }}</p>
+                                    <p class="text-sm sm:text-base font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight truncate" title="{{ $schoolSchedule ? 'Schedule for ' . $intern->school : 'Standard Office Hours' }}">
+                                        {{ $schoolSchedule ? 'Schedule for ' . $intern->school : 'Standard Office Hours' }}
+                                    </p>
+                                    <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest truncate" title="{{ $schoolSchedule ? $intern->school : 'Institutional Default' }}">{{ $schoolSchedule ? $intern->school : 'Institutional Default' }}</p>
                                 </div>
                             </div>
                             
@@ -124,17 +126,17 @@
                                 <div>
                                     <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block mb-1">Shift Windows</span>
                                     <p class="text-xs sm:text-sm font-black text-gray-700 dark:text-gray-300">
-                                        @if(isset($effectiveSchedule['start_time']))
-                                            {{ \Carbon\Carbon::parse($effectiveSchedule['start_time'])->format('h:i A') }} - {{ \Carbon\Carbon::parse($effectiveSchedule['end_time'])->format('h:i A') }}
+                                        @if($schoolSchedule && isset($schoolSchedule->start_time))
+                                            {{ \Carbon\Carbon::parse($schoolSchedule->start_time)->format('h:i A') }} - {{ \Carbon\Carbon::parse($schoolSchedule->end_time)->format('h:i A') }}
                                         @else
-                                            Blocked
+                                            08:00 AM - 05:00 PM
                                         @endif
                                     </p>
                                 </div>
                                 <div>
                                     <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block mb-1">Daily Credit</span>
                                     <p class="text-xs sm:text-sm font-black text-gray-800 dark:text-white uppercase">
-                                        {{ isset($effectiveSchedule['daily_hours']) ? (float)$effectiveSchedule['daily_hours'] . ' HRS' : '0 HRS' }}
+                                        {{ $schoolSchedule && isset($schoolSchedule->daily_hours) ? (float)$schoolSchedule->daily_hours . ' HRS' : '8.0 HRS' }}
                                     </p>
                                 </div>
 
