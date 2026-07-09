@@ -9,7 +9,7 @@
 
     {{-- Main Content --}}
     <main class="flex-1 min-w-0 ml-0 lg:ml-64 mr-0 lg:mr-80 p-4 md:p-6 lg:p-10 pt-20 lg:pt-10 text-left transition-all duration-300"
-          x-data="calendarManager(JSON.parse('{{ addslashes($schedulesJson) }}'))">
+          x-data="calendarManager(JSON.parse('{{ addslashes($schedulesJson) }}'), JSON.parse('{{ addslashes($scheduleAssignmentJson ?? json_encode(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'])) }}'))">
         
         {{-- Header --}}
         <x-page-header 
@@ -161,7 +161,7 @@
                                 <span class="text-sm font-bold leading-none"
                                       :class="mobileSelectedDay === day.dateStr
                                           ? 'text-[#0B5694] dark:text-blue-400'
-                                          : day.isWeekend ? 'text-gray-300 dark:text-gray-600' : 'text-gray-700 dark:text-gray-300'"
+                                          : !day.isScheduledDay ? 'text-gray-300 dark:text-gray-600' : 'text-gray-700 dark:text-gray-300'"
                                       x-text="day.day"></span>
                                 {{-- Event dot indicators --}}
                                 <div class="flex items-center gap-0.5 mt-1 h-1.5">
@@ -580,12 +580,13 @@
 </div>
 
 <script>
-    function calendarManager(initialEvents) {
+    function calendarManager(initialEvents, scheduleAssignment) {
         return {
             currentDate: new Date(),
             daysInMonth: [],
             blankDays: [],
             events: initialEvents || {},
+            scheduleAssignment: scheduleAssignment || ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
             showModal: false,
             showRevokeModal: false,
             modalTitle: '',
@@ -660,12 +661,15 @@
                     const dateStr = `${yyyy}-${mm}-${dd}`;
 
                     const isWeekend = dateObj.getDay() === 0 || dateObj.getDay() === 6;
+                    const dayName = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dateObj.getDay()];
+                    const isScheduledDay = this.scheduleAssignment.includes(dayName);
                     const events = this.events[dateStr] || [];
 
                     return {
                         day: dayNum,
                         dateStr: dateStr,
                         isWeekend: isWeekend,
+                        isScheduledDay: isScheduledDay,
                         dayNameShort: dayNames[dateObj.getDay()],
                         events: events
                     };
@@ -692,7 +696,7 @@
                     }
                     if (day.events.some(e => e.type === 'task')) return 'Task Due';
                 }
-                return day.isWeekend ? 'Weekend' : 'Workday';
+                return day.isScheduledDay ? 'Workday' : 'Non-workday';
             },
 
             isToday(dateStr) {

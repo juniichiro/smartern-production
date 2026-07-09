@@ -90,8 +90,10 @@ class ScheduleController extends Controller
         }
 
         $schedulesJson = json_encode($eventsByDate);
+        $scheduleAssignment = $user->internDetails->schedule_assignment ?? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+        $scheduleAssignmentJson = json_encode($scheduleAssignment);
 
-        return view('shared.schedule-read-only', compact('portalType', 'userName', 'userRole', 'schedulesJson'));
+        return view('shared.schedule-read-only', compact('portalType', 'userName', 'userRole', 'schedulesJson', 'scheduleAssignmentJson'));
     }
 
     public function storeAbsenceRequest(Request $request)
