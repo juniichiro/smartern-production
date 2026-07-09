@@ -54,7 +54,152 @@
         </div>
 
         {{-- ACTUAL CONTENT VIEW --}}
-        <div x-show="!loading" x-cloak x-transition:enter="transition ease-out duration-500 delay-200" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" class="flex flex-col flex-1">
+        <div x-show="!loading" x-cloak 
+             x-data="{
+                requiredHours: {{ $totalRequired }},
+                scheduleDays: @js($intern->schedule_assignment ?? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']),
+                startDate: '{{ ($intern->start_date ?? ($schoolSchedule->start_date ?? null)) ? ($intern->start_date ?? $schoolSchedule->start_date)->format('Y-m-d') : '' }}',
+                endDate: '{{ $intern->end_date ? $intern->end_date->format('Y-m-d') : '' }}',
+                renderedHours: {{ $rendered }},
+                dailyHours: {{ $schoolSchedule ? $schoolSchedule->daily_hours ?? 8 : 8 }},
+                holidays: @js($holidaysAndSuspensions ?? []),
+                extensionModalOpen: false,
+                extensionDate: '',
+                extensionReason: '',
+                
+                get targetEndDate() {
+                    if (!this.startDate || !this.requiredHours || this.requiredHours <= 0 || !this.scheduleDays.length) {
+                        return 'N/A';
+                    }
+                    
+                    let hoursLeft = this.requiredHours;
+                    let currentDate = new Date(this.startDate);
+                    
+                    let safetyCounter = 0;
+                    const maxIterations = 365 * 5; 
+                    
+                    while (hoursLeft > 0 && safetyCounter < maxIterations) {
+                        safetyCounter++;
+                        
+                        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                        const currentDayName = dayNames[currentDate.getDay()];
+                        
+                        const yyyy = currentDate.getFullYear();
+                        const mm = String(currentDate.getMonth() + 1).padStart(2, '0');
+                        const dd = String(currentDate.getDate()).padStart(2, '0');
+                        const dateStr = `${yyyy}-${mm}-${dd}`;
+                        
+                        const isReportingDay = this.scheduleDays.includes(currentDayName);
+                        const isNonWorkingDay = this.holidays.includes(dateStr);
+                        
+                        if (isReportingDay && !isNonWorkingDay) {
+                            hoursLeft -= this.dailyHours;
+                        }
+                        
+                        if (hoursLeft > 0) {
+                            currentDate.setDate(currentDate.getDate() + 1);
+                        }
+                    }
+                    
+                    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+                    return currentDate.toLocaleDateString('en-US', options).toUpperCase();
+                },
+
+                get projectedEndDate() {
+                    let hoursLeft = Math.max(0, this.requiredHours - this.renderedHours);
+                    if (hoursLeft <= 0) {
+                        return 'COMPLETED';
+                    }
+                    let currentDate = new Date();
+                    currentDate.setHours(0, 0, 0, 0);
+                    
+                    let safetyCounter = 0;
+                    const maxIterations = 365 * 5;
+                    
+                    while (hoursLeft > 0 && safetyCounter < maxIterations) {
+                        safetyCounter++;
+                        
+                        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                        const currentDayName = dayNames[currentDate.getDay()];
+                        
+                        const yyyy = currentDate.getFullYear();
+                        const mm = String(currentDate.getMonth() + 1).padStart(2, '0');
+                        const dd = String(currentDate.getDate()).padStart(2, '0');
+                        const dateStr = `${yyyy}-${mm}-${dd}`;
+                        
+                        const isReportingDay = this.scheduleDays.includes(currentDayName);
+                        const isNonWorkingDay = this.holidays.includes(dateStr);
+                        
+                        if (isReportingDay && !isNonWorkingDay) {
+                            hoursLeft -= this.dailyHours;
+                        }
+                        
+                        if (hoursLeft > 0) {
+                            currentDate.setDate(currentDate.getDate() + 1);
+                        }
+                    }
+                    
+                    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+                    return currentDate.toLocaleDateString('en-US', options).toUpperCase();
+                },
+
+                get isProjectedOverdue() {
+                    let referenceEndDate = this.endDate || (this.targetEndDate !== 'N/A' ? this.targetEndDate : null);
+                    if (!referenceEndDate) return false;
+                    
+                    let projDateStr = this.projectedEndDate;
+                    if (projDateStr === 'N/A' || projDateStr === 'COMPLETED') return false;
+                    
+                    let projDate = new Date(projDateStr);
+                    let officialEndDate = new Date(referenceEndDate);
+                    
+                    return projDate.getTime() > officialEndDate.getTime();
+                },
+
+                get daysUntilEndDate() {
+                    let referenceEndDate = this.endDate || (this.targetEndDate !== 'N/A' ? this.targetEndDate : null);
+                    if (!referenceEndDate) return 999;
+                    let diffTime = new Date(referenceEndDate).getTime() - new Date().getTime();
+                    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                },
+
+                get showExtensionBanner() {
+                    let incomplete = this.requiredHours - this.renderedHours > 0;
+                    return incomplete && (this.isProjectedOverdue || this.daysUntilEndDate <= 7);
+                }
+             }"
+             x-transition:enter="transition ease-out duration-500 delay-200" 
+             x-transition:enter-start="opacity-0 translate-y-4" 
+             x-transition:enter-end="opacity-100 translate-y-0" 
+             class="flex flex-col flex-1"
+        >
+            {{-- ALERT BANNER FOR EXTENSIONS --}}
+            <template x-if="showExtensionBanner">
+                <div class="mb-8 p-6 bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/50 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
+                    <div class="flex items-center gap-4 text-left">
+                        <div class="w-12 h-12 bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 rounded-2xl flex items-center justify-center flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-black text-rose-800 dark:text-rose-400 uppercase tracking-tight">Extension Required</h4>
+                            <p class="text-xs text-rose-600 dark:text-rose-300 font-bold mt-1">
+                                <span x-show="isProjectedOverdue">You are currently projected to complete on <span class="font-black" x-text="projectedEndDate"></span>, which is past your Expected End Date.</span>
+                                <span x-show="!isProjectedOverdue">Your internship expected end date is in <span x-text="daysUntilEndDate"></span> days but you still have incomplete hours.</span>
+                            </p>
+                        </div>
+                    </div>
+                    @if($pendingExtension)
+                        <span class="px-5 py-3 bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 text-xs font-black uppercase tracking-wider rounded-xl border border-amber-200 dark:border-amber-900/50">
+                            Extension Pending Approval
+                        </span>
+                    @else
+                        <button @click="extensionModalOpen = true; extensionDate = new Date(projectedEndDate).toISOString().substring(0, 10);" class="px-6 py-3.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-black uppercase tracking-wider rounded-2xl transition active:scale-95 shadow-md shadow-rose-500/10 cursor-pointer">
+                            Request Extension
+                        </button>
+                    @endif
+                </div>
+            </template>
+
             {{-- ROW 1: ENLARGED PROGRESS CARD --}}
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-10">
             {{-- LARGE PROGRESS CARD --}}
@@ -318,6 +463,60 @@
                         @endforelse
                     </div>
                 </x-card-container>
+            </div>
+
+            {{-- Extension Request Modal --}}
+            <div x-show="extensionModalOpen" 
+                 class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm" 
+                 x-cloak
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0">
+                
+                <div @click.away="extensionModalOpen = false" 
+                     class="bg-white dark:bg-gray-900 w-full max-w-lg rounded-[30px] sm:rounded-[40px] shadow-2xl overflow-hidden border border-gray-100 dark:border-gray-800">
+                    
+                    <div class="p-6 sm:p-8">
+                        <div class="flex justify-between items-start mb-6">
+                            <div>
+                                <p class="text-[10px] font-black text-rose-500 uppercase tracking-[0.2em] mb-1">Request extension</p>
+                                <h3 class="text-xl sm:text-2xl font-black text-gray-900 dark:text-white tracking-tight">Extend Internship Period</h3>
+                            </div>
+                            <button @click="extensionModalOpen = false" class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                            </button>
+                        </div>
+        
+                        <form action="{{ route('intern.schedule.extension.store') }}" method="POST" class="space-y-6">
+                            @csrf
+                            
+                            <div class="space-y-2 text-left">
+                                <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Proposed End Date</span>
+                                <input type="date" name="new_end_date" x-model="extensionDate" required
+                                    class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 rounded-xl text-xs font-bold text-gray-800 dark:text-gray-100 focus:ring-[#0B5694]/20 focus:border-[#0B5694] transition">
+                                <span class="text-[10px] text-gray-400">Recommended base date on remaining hours: <span class="font-bold text-gray-700 dark:text-gray-300" x-text="projectedEndDate"></span></span>
+                            </div>
+
+                            <div class="space-y-2 text-left">
+                                <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Reason for Extension</span>
+                                <textarea name="reason" x-model="extensionReason" required rows="3" placeholder="Briefly describe the reason for the extension request (e.g. Absences, schedule conflicts...)"
+                                    class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 rounded-xl text-xs font-bold text-gray-800 dark:text-gray-100 focus:ring-[#0B5694]/20 focus:border-[#0B5694] transition resize-none"></textarea>
+                            </div>
+                            
+                            <div class="pt-4 flex flex-col sm:flex-row gap-3">
+                                <button @click="extensionModalOpen = false" type="button" class="w-full sm:w-auto px-6 py-3.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-750 transition active:scale-95 text-center cursor-pointer">
+                                    Cancel
+                                </button>
+                                <button type="submit" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition active:scale-95 shadow-md shadow-rose-500/10 cursor-pointer text-center">
+                                    Submit Request
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

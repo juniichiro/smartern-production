@@ -194,6 +194,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/interns', [InternManagementController::class, 'index'])->name('interns');
         Route::get('/interns/{user}', [InternManagementController::class, 'show'])->name('interns.show');
         Route::put('/interns/{user}/schedule', [InternManagementController::class, 'updateSchedule'])->name('interns.update-schedule');
+        Route::put('/extensions/{extension}/resolve', [InternManagementController::class, 'resolveExtension'])->name('interns.resolve-extension');
 
         // Assessment Form Management
         Route::resource('assessment-items', AssessmentItemController::class)
@@ -259,6 +260,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/profile/avatar', [InternProfile::class, 'updateAvatar'])->name('profile.avatar');
         Route::get('/schedule', [App\Http\Controllers\Intern\ScheduleController::class, 'index'])->name('schedule.index');
         Route::post('/schedule/absence', [App\Http\Controllers\Intern\ScheduleController::class, 'storeAbsenceRequest'])->name('schedule.absence.store');
+        Route::post('/schedule/extension', [App\Http\Controllers\Intern\ScheduleController::class, 'storeExtensionRequest'])->name('schedule.extension.store');
         Route::put('/schedule/absence/{absence}', [App\Http\Controllers\Intern\ScheduleController::class, 'updateAbsenceRequest'])->name('schedule.absence.update');
         Route::delete('/schedule/absence/{absence}', [App\Http\Controllers\Intern\ScheduleController::class, 'destroyAbsenceRequest'])->name('schedule.absence.revoke');
         Route::get('/schedule/absence/{absence}/attachment', [App\Http\Controllers\Intern\ScheduleController::class, 'showAttachment'])->name('schedule.absence.show');

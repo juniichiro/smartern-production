@@ -64,6 +64,8 @@
                     requiredHours: {{ $intern->required_hours ?? 480 }},
                     scheduleDays: @js($intern->schedule_assignment ?? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']),
                     startDate: '{{ ($intern->start_date ?? ($schoolSchedule->start_date ?? null)) ? ($intern->start_date ?? $schoolSchedule->start_date)->format('Y-m-d') : '' }}',
+                    endDate: '{{ $intern->end_date ? $intern->end_date->format('Y-m-d') : '' }}',
+                    renderedHours: {{ $intern->hours_rendered ?? 0 }},
                     dailyHours: {{ $schoolSchedule ? $schoolSchedule->daily_hours ?? 8 : 8 }},
                     holidays: @js($holidaysAndSuspensions ?? []),
                     configModalOpen: false,
@@ -104,6 +106,57 @@
                         
                         const options = { year: 'numeric', month: 'short', day: 'numeric' };
                         return currentDate.toLocaleDateString('en-US', options).toUpperCase();
+                    },
+
+                    get projectedEndDate() {
+                        let hoursLeft = Math.max(0, this.requiredHours - this.renderedHours);
+                        if (hoursLeft <= 0) {
+                            return 'COMPLETED';
+                        }
+                        let currentDate = new Date();
+                        currentDate.setHours(0, 0, 0, 0);
+                        
+                        let safetyCounter = 0;
+                        const maxIterations = 365 * 5;
+                        
+                        while (hoursLeft > 0 && safetyCounter < maxIterations) {
+                            safetyCounter++;
+                            
+                            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                            const currentDayName = dayNames[currentDate.getDay()];
+                            
+                            const yyyy = currentDate.getFullYear();
+                            const mm = String(currentDate.getMonth() + 1).padStart(2, '0');
+                            const dd = String(currentDate.getDate()).padStart(2, '0');
+                            const dateStr = `${yyyy}-${mm}-${dd}`;
+                            
+                            const isReportingDay = this.scheduleDays.includes(currentDayName);
+                            const isNonWorkingDay = this.holidays.includes(dateStr);
+                            
+                            if (isReportingDay && !isNonWorkingDay) {
+                                hoursLeft -= this.dailyHours;
+                            }
+                            
+                            if (hoursLeft > 0) {
+                                currentDate.setDate(currentDate.getDate() + 1);
+                            }
+                        }
+                        
+                        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+                        return currentDate.toLocaleDateString('en-US', options).toUpperCase();
+                    },
+
+                    get isProjectedOverdue() {
+                        let referenceEndDate = this.endDate || (this.targetEndDate !== 'N/A' ? this.targetEndDate : null);
+                        if (!referenceEndDate) return false;
+                        
+                        let projDateStr = this.projectedEndDate;
+                        if (projDateStr === 'N/A' || projDateStr === 'COMPLETED') return false;
+                        
+                        let projDate = new Date(projDateStr);
+                        let officialEndDate = new Date(referenceEndDate);
+                        
+                        return projDate.getTime() > officialEndDate.getTime();
                     }
                 }">
                     <div class="bg-white dark:bg-gray-900 rounded-[20px] sm:rounded-[30px] border border-gray-100 dark:border-gray-800 shadow-sm p-4 sm:p-8 flex flex-col justify-between h-full transition-all">
@@ -148,9 +201,14 @@
                                 </div>
                                 <div>
                                     <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block mb-1">Expected End</span>
-                                    <p class="text-xs font-black text-gray-800 dark:text-gray-100 uppercase" x-text="targetEndDate">
-                                        N/A
+                                    <p class="text-xs font-black text-gray-800 dark:text-gray-100 uppercase" x-text="endDate ? new Date(endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).toUpperCase() : targetEndDate">
+                                        {{ $intern->end_date ? $intern->end_date->format('M d, Y') : 'NOT SET' }}
                                     </p>
+                                    <div x-show="isProjectedOverdue" x-cloak class="mt-1">
+                                        <span class="inline-flex items-center gap-1 text-[9px] font-black text-rose-500 uppercase tracking-wider animate-pulse">
+                                            ⚠️ OVERDUE: Projected <span x-text="projectedEndDate"></span>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -287,6 +345,11 @@
                         <button @click="activeTab = 'journals'" :class="activeTab === 'journals' ? 'text-[#0B5694] dark:text-blue-400 border-b-2 border-[#0B5694] dark:border-blue-400' : 'text-gray-400 dark:text-gray-500 border-transparent hover:text-gray-600 dark:hover:text-gray-300'" class="pb-4 -mb-[17px] text-[10px] sm:text-xs font-black uppercase tracking-widest transition-colors whitespace-nowrap">
                             Journals ({{ $intern->journals->count() }})
                         </button>
+                        @if($intern->extensions->isNotEmpty())
+                        <button @click="activeTab = 'extensions'" :class="activeTab === 'extensions' ? 'text-[#0B5694] dark:text-blue-400 border-b-2 border-[#0B5694] dark:border-blue-400' : 'text-gray-400 dark:text-gray-500 border-transparent hover:text-gray-600 dark:hover:text-gray-300'" class="pb-4 -mb-[17px] text-[10px] sm:text-xs font-black uppercase tracking-widest transition-colors whitespace-nowrap">
+                            Extensions ({{ $intern->extensions->count() }})
+                        </button>
+                        @endif
                     </div>
 
                     <div x-show="!loading" x-transition.opacity.duration.500ms class="flex-1 overflow-y-auto custom-scrollbar pr-2 flex flex-col">
@@ -469,6 +532,72 @@
                                 </table>
                             </div>
                         </div>
+
+                        {{-- Extensions Content --}}
+                        @if($intern->extensions->isNotEmpty())
+                        <div x-show="activeTab === 'extensions'" x-cloak class="flex-1 flex flex-col h-full">
+                            <div class="flex-1 flex flex-col overflow-hidden border border-gray-100 dark:border-gray-800 rounded-2xl">
+                                <table class="min-w-full text-left h-full flex flex-col">
+                                    <thead class="bg-gray-50 dark:bg-gray-950 text-[10px] sm:text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest border-b border-gray-100 dark:border-gray-800 sticky top-0 z-10 flex-shrink-0">
+                                        <tr class="flex">
+                                            <th class="px-4 sm:px-6 py-4 sm:py-5 w-28 sm:w-40">Submitted</th>
+                                            <th class="px-4 sm:px-6 py-4 sm:py-5 w-32 sm:w-44">New End Date</th>
+                                            <th class="px-4 sm:px-6 py-4 sm:py-5 flex-1">Reason / Status</th>
+                                            <th class="px-4 sm:px-6 py-4 sm:py-5 w-32 sm:w-44 text-right">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-sm divide-y divide-gray-50 dark:divide-gray-800 flex-1 overflow-y-auto">
+                                        @foreach($intern->extensions as $ext)
+                                        <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors flex">
+                                            <td class="px-4 sm:px-6 py-5 sm:py-6 font-black text-gray-500 dark:text-gray-400 text-[10px] sm:text-xs tracking-widest uppercase w-28 sm:w-40 flex items-center">
+                                                {{ $ext->created_at->format('M d, Y') }}
+                                            </td>
+                                            <td class="px-4 sm:px-6 py-5 sm:py-6 font-black text-gray-800 dark:text-white text-[10px] sm:text-xs tracking-widest uppercase w-32 sm:w-44 flex items-center">
+                                                {{ $ext->new_end_date->format('M d, Y') }}
+                                            </td>
+                                            <td class="px-4 sm:px-6 py-5 sm:py-6 flex-1 flex flex-col justify-center min-w-0">
+                                                <p class="font-bold text-gray-700 dark:text-gray-300 truncate" title="{{ $ext->reason }}">{{ $ext->reason }}</p>
+                                                <div class="mt-1 flex items-center gap-2">
+                                                    @if($ext->status === 'pending')
+                                                        <span class="px-2 py-0.5 rounded-full text-[9px] bg-amber-50 text-amber-600 border border-amber-200 uppercase font-black tracking-wider">Pending</span>
+                                                    @elseif($ext->status === 'approved')
+                                                        <span class="px-2 py-0.5 rounded-full text-[9px] bg-emerald-50 text-emerald-600 border border-emerald-200 uppercase font-black tracking-wider">Approved</span>
+                                                    @else
+                                                        <span class="px-2 py-0.5 rounded-full text-[9px] bg-rose-50 text-rose-600 border border-rose-200 uppercase font-black tracking-wider">Rejected</span>
+                                                        @if($ext->rejection_note)
+                                                            <span class="text-[10px] text-gray-400 italic">({{ $ext->rejection_note }})</span>
+                                                        @endif
+                                                    @endif
+                                                </div>
+                                            </td>
+                                            <td class="px-4 sm:px-6 py-5 sm:py-6 w-32 sm:w-44 text-right flex items-center justify-end gap-2">
+                                                @if($ext->status === 'pending')
+                                                    <form action="{{ route('head-supervisor.interns.resolve-extension', $ext) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <input type="hidden" name="status" value="approved">
+                                                        <button type="submit" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-[10px] font-black uppercase tracking-wider transition active:scale-95 shadow-sm cursor-pointer">
+                                                            Approve
+                                                        </button>
+                                                    </form>
+                                                    <button @click="let note = prompt('Rejection reason:'); if(note !== null) { 
+                                                        let f = document.createElement('form'); f.method = 'POST'; f.action = '{{ route('head-supervisor.interns.resolve-extension', $ext) }}';
+                                                        f.innerHTML = `@csrf @method('PUT') <input type='hidden' name='status' value='rejected'><input type='hidden' name='rejection_note' :value='note'>`;
+                                                        document.body.appendChild(f); f.submit();
+                                                    }" class="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-lg text-[10px] font-black uppercase tracking-wider transition active:scale-95 shadow-sm cursor-pointer">
+                                                        Reject
+                                                    </button>
+                                                @else
+                                                    <span class="text-xs text-gray-400 italic">Resolved</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        @endif
                     </div>
                 </div>
 

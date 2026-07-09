@@ -73,6 +73,11 @@ class InternDetail extends Model
         return $this->hasOne(Certificate::class, 'intern_id', 'user_id');
     }
 
+    public function extensions()
+    {
+        return $this->hasMany(InternExtension::class, 'intern_detail_id');
+    }
+
     /**
      * Scope a query to only include interns eligible for tasks
      * (Those who do not have a published certificate)

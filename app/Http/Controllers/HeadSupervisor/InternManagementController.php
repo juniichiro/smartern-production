@@ -59,6 +59,9 @@ class InternManagementController extends Controller
             'office', 
             'tasks', 
             'attendances', 
+            'extensions' => function ($query) {
+                $query->orderBy('created_at', 'desc');
+            },
             'journals' => function ($query) {
                 $query->orderBy('entry_date', 'desc')->orderBy('created_at', 'desc');
             }
@@ -128,5 +131,35 @@ class InternManagementController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Intern reporting schedule updated successfully.');
+    }
+
+    /**
+     * Resolve the date extension request for an intern.
+     */
+    public function resolveExtension(\Illuminate\Http\Request $request, \App\Models\InternExtension $extension)
+    {
+        $request->validate([
+            'status' => 'required|string|in:approved,rejected',
+            'rejection_note' => 'nullable|string|required_if:status,rejected|max:255',
+        ]);
+
+        $status = $request->input('status');
+        $rejectionNote = $request->input('rejection_note');
+
+        $extension->update([
+            'status' => $status,
+            'resolved_by' => auth()->id(),
+            'rejection_note' => $status === 'rejected' ? $rejectionNote : null,
+        ]);
+
+        if ($status === 'approved') {
+            $intern = $extension->internDetail;
+            $intern->update([
+                'end_date' => $extension->new_end_date,
+            ]);
+        }
+
+        $message = $status === 'approved' ? 'Extension request approved.' : 'Extension request rejected.';
+        return redirect()->back()->with('success', $message);
     }
 }

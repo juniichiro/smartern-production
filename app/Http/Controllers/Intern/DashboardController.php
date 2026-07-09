@@ -99,10 +99,31 @@ class DashboardController extends Controller
             $attendanceColor = 'text-emerald-500 dark:text-emerald-400';
         }
 
+        // Fetch official school schedule and holidays for timeline
+        $schoolSchedule = null;
+        $holidaysAndSuspensions = [];
+        if ($intern->school) {
+            $schoolSchedule = \App\Models\Schedule::where('type', 'school_default')
+                ->where('school_name', $intern->school)
+                ->first();
+
+            $holidaysAndSuspensions = \App\Models\Schedule::where('school_name', $intern->school)
+                ->whereIn('type', ['holiday', 'suspension'])
+                ->pluck('date')
+                ->map(fn($d) => \Carbon\Carbon::parse($d)->format('Y-m-d'))
+                ->toArray();
+        }
+
+        // Fetch any existing pending extension request
+        $pendingExtension = \App\Models\InternExtension::where('intern_detail_id', $intern->id)
+            ->where('status', 'pending')
+            ->first();
+
         // Notifications (assuming you have a system or empty collection)
         $notifications = collect([]);
 
         return view('intern.dashboard', compact(
+            'intern',
             'rendered',
             'totalRequired',
             'percentage',
@@ -114,7 +135,10 @@ class DashboardController extends Controller
             'notifications',
             'attendanceStatus',
             'attendanceSub',
-            'attendanceColor'
+            'attendanceColor',
+            'schoolSchedule',
+            'holidaysAndSuspensions',
+            'pendingExtension'
         ));
     }
 }

@@ -208,4 +208,37 @@ class ScheduleController extends Controller
             'Content-Disposition' => 'inline; filename="' . basename($absence->attachment_path) . '"',
         ]);
     }
+
+    public function storeExtensionRequest(Request $request)
+    {
+        $request->validate([
+            'new_end_date' => 'required|date|after:today',
+            'reason' => 'required|string|max:255',
+        ]);
+
+        $user = Auth::user();
+        $intern = $user->internDetails;
+
+        if (!$intern) {
+            return back()->with('error', 'Intern details not found.');
+        }
+
+        $existing = \App\Models\InternExtension::where('intern_detail_id', $intern->id)
+            ->where('status', 'pending')
+            ->first();
+
+        if ($existing) {
+            return back()->with('error', 'You already have a pending extension request.');
+        }
+
+        \App\Models\InternExtension::create([
+            'intern_detail_id' => $intern->id,
+            'previous_end_date' => $intern->end_date ?? $intern->start_date ?? now(),
+            'new_end_date' => $request->input('new_end_date'),
+            'reason' => $request->input('reason'),
+            'status' => 'pending',
+        ]);
+
+        return back()->with('success', 'Date extension requested successfully.');
+    }
 }
