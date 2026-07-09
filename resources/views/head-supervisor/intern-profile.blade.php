@@ -148,7 +148,7 @@
                                 </div>
                                 <div>
                                     <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block mb-1">Expected End</span>
-                                    <p class="text-xs font-black text-[#0B5694] dark:text-blue-400 uppercase" x-text="targetEndDate">
+                                    <p class="text-xs font-black text-gray-800 dark:text-gray-100 uppercase" x-text="targetEndDate">
                                         N/A
                                     </p>
                                 </div>
