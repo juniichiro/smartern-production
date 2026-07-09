@@ -161,7 +161,7 @@
                                 <span class="text-sm font-bold leading-none"
                                       :class="mobileSelectedDay === day.dateStr
                                           ? 'text-[#0B5694] dark:text-blue-400'
-                                          : !day.isScheduledDay ? 'text-gray-300 dark:text-gray-600' : 'text-gray-700 dark:text-gray-300'"
+                                          : ('{{ $portalType }}' === 'Intern' ? !day.isScheduledDay : day.isWeekend) ? 'text-gray-300 dark:text-gray-600' : 'text-gray-700 dark:text-gray-300'"
                                       x-text="day.day"></span>
                                 {{-- Event dot indicators --}}
                                 <div class="flex items-center gap-0.5 mt-1 h-1.5">
@@ -695,6 +695,12 @@
                         return primary.type === 'holiday' ? 'Holiday' : (primary.type === 'suspension' ? 'Suspended' : 'Weekend Work');
                     }
                     if (day.events.some(e => e.type === 'task')) return 'Task Due';
+                }
+                if ('{{ $portalType }}' !== 'Intern') {
+                    return day.isWeekend ? 'Weekend' : 'Workday';
+                }
+                if (day.isWeekend) {
+                    return 'Weekend';
                 }
                 return day.isScheduledDay ? 'Workday' : 'Non-workday';
             },
