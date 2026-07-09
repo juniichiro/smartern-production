@@ -56,9 +56,7 @@ class AttendanceController extends Controller
                 ->first();
         }
 
-        $hasSchoolTimeline = $schoolSchedule && $schoolSchedule->start_date && $schoolSchedule->target_end_date;
-        $hasInternTimeline = $intern && $intern->start_date && $intern->end_date;
-        $timelineNotSet = !$hasSchoolTimeline && !$hasInternTimeline;
+        $timelineNotSet = !$schoolSchedule;
 
         $isEnabled = true;
         $nextAvailableScan = null;
