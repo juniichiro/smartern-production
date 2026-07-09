@@ -206,7 +206,7 @@
                                     </p>
                                     <div x-show="isProjectedOverdue" x-cloak class="mt-1">
                                         <span class="inline-flex items-center gap-1 text-[9px] font-black text-rose-500 uppercase tracking-wider animate-pulse">
-                                            ⚠️ OVERDUE: Projected <span x-text="projectedEndDate"></span>
+                                            OVERDUE: Projected <span x-text="projectedEndDate"></span>
                                         </span>
                                     </div>
                                 </div>

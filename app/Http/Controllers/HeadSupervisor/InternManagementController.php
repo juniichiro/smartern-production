@@ -124,13 +124,68 @@ class InternManagementController extends Controller
         ]);
 
         $intern = InternDetail::where('user_id', $user->id)->firstOrFail();
+        
+        $startDate = $request->input('start_date') ?? $intern->start_date;
+        $requiredHours = $request->input('required_hours');
+        $scheduleDays = $request->input('schedule_assignment') ?? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+        
+        $dailyHours = 8;
+        $holidays = [];
+        if ($intern->school) {
+            $schoolSchedule = Schedule::where('type', 'school_default')
+                ->where('school_name', $intern->school)
+                ->first();
+            if ($schoolSchedule) {
+                $dailyHours = $schoolSchedule->daily_hours ?? 8;
+            }
+            $holidays = Schedule::where('school_name', $intern->school)
+                ->whereIn('type', ['holiday', 'suspension'])
+                ->pluck('date')
+                ->map(fn($d) => \Carbon\Carbon::parse($d)->format('Y-m-d'))
+                ->toArray();
+        }
+
+        $newEndDate = $this->calculateExpectedEndDate($startDate, $requiredHours, $dailyHours, $scheduleDays, $holidays);
+
         $intern->update([
-            'schedule_assignment' => $request->input('schedule_assignment'),
-            'required_hours' => $request->input('required_hours'),
-            'start_date' => $request->input('start_date'),
+            'schedule_assignment' => $scheduleDays,
+            'required_hours' => $requiredHours,
+            'start_date' => $startDate,
+            'end_date' => $newEndDate,
         ]);
 
         return redirect()->back()->with('success', 'Intern reporting schedule updated successfully.');
+    }
+
+    private function calculateExpectedEndDate($startDate, $requiredHours, $dailyHours, $scheduleDays, $holidays)
+    {
+        if (!$startDate || !$requiredHours || $requiredHours <= 0 || empty($scheduleDays)) {
+            return null;
+        }
+
+        $hoursLeft = $requiredHours;
+        $currentDate = \Carbon\Carbon::parse($startDate);
+        $safetyCounter = 0;
+        $maxIterations = 365 * 5;
+
+        while ($hoursLeft > 0 && $safetyCounter < $maxIterations) {
+            $safetyCounter++;
+            $currentDayName = $currentDate->format('l');
+            $dateStr = $currentDate->format('Y-m-d');
+
+            $isReportingDay = in_array($currentDayName, $scheduleDays);
+            $isNonWorkingDay = in_array($dateStr, $holidays);
+
+            if ($isReportingDay && !$isNonWorkingDay) {
+                $hoursLeft -= $dailyHours;
+            }
+
+            if ($hoursLeft > 0) {
+                $currentDate->addDay();
+            }
+        }
+
+        return $currentDate->format('Y-m-d');
     }
 
     /**
