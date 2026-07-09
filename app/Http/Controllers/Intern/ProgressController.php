@@ -66,7 +66,9 @@ class ProgressController extends Controller
                 ->first();
         }
 
-        $timelineNotSet = !$schoolSchedule || !$schoolSchedule->start_date || !$schoolSchedule->target_end_date;
+        $hasSchoolTimeline = $schoolSchedule && $schoolSchedule->start_date && $schoolSchedule->target_end_date;
+        $hasInternTimeline = $intern && $intern->start_date && $intern->end_date;
+        $timelineNotSet = !$hasSchoolTimeline && !$hasInternTimeline;
 
         return view('intern.progress', compact(
             'rendered', 'remaining', 'percentage', 'totalRequired',
