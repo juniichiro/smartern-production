@@ -168,14 +168,14 @@ class OnboardingController extends Controller
 
         if (! $process->isSuccessful()) {
             \Log::error('PDF Parser Process failed. Exit code: ' . $process->getExitCode() . '. Error output: ' . $process->getErrorOutput() . '. Command: ' . $process->getCommandLine());
-            return response()->json(['error' => 'Failed to parse PDF.'], 500);
+            return response()->json(['error' => 'The PDF is invalid or corrupted. Please upload a valid text-based PDF resume.'], 422);
         }
 
         $output = json_decode($process->getOutput(), true);
         
         if (isset($output['error'])) {
             \Log::error('PDF Parser Script failed: ' . $output['error']);
-            return response()->json(['error' => 'Failed to parse PDF: ' . $output['error']], 500);
+            return response()->json(['error' => 'Failed to parse PDF: ' . $output['error']], 422);
         }
 
         $text = $output['text'] ?? '';
@@ -233,8 +233,15 @@ class OnboardingController extends Controller
         }
 
         // Sanity check on extracted data formats
-        if ($phone && ! preg_match('/^(09|\+639)\d{9}$/', str_replace([' ', '-', '+63'], ['', '', '09'], $phone))) {
-            $phone = ''; // Clear invalid phone noise (like academic identifiers)
+        $cleanPhone = str_replace([' ', '-', '+'], '', $phone);
+        if (strlen($cleanPhone) === 12 && str_starts_with($cleanPhone, '639')) {
+            $cleanPhone = '0' . substr($cleanPhone, 2);
+        }
+
+        if ($phone && ! preg_match('/^(09)\d{9}$/', $cleanPhone)) {
+            $phone = ''; // Clear invalid phone noise
+        } else {
+            $phone = $cleanPhone;
         }
 
         if ($email && ! filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -264,8 +271,8 @@ class OnboardingController extends Controller
             'first_name' => mb_convert_case($firstName, MB_CASE_TITLE, 'UTF-8'),
             'last_name' => mb_convert_case($lastName, MB_CASE_TITLE, 'UTF-8'),
             'university' => mb_convert_case($output['university'] ?? '', MB_CASE_TITLE, 'UTF-8'),
-            'email' => strtolower($output['email'] ?? ''),
-            'phone_number' => $output['phone'] ?? '',
+            'email' => strtolower($email),
+            'phone_number' => $phone,
         ]);
 
     }
