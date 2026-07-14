@@ -559,231 +559,8 @@
                                                                  </div>
                                                              @endforeach
                                                          </div>
-                                                     @foreach($top5Matches as $match)
-                                                        @php
-                                                            $breakdown = $match->breakdown ? json_decode($match->breakdown, true) : null;
-                                                        @endphp
-                                                        {{-- MODAL FOR FULL BREAKDOWN --}}
-                                                        @if($breakdown)
-                                                             <div x-show="showBreakdown === '{{ $match->id }}'" 
-                                                                  x-cloak
-                                                                  class="fixed inset-0 z-[300] flex items-center justify-center p-3 sm:p-4 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm"
-                                                                  x-transition:enter="transition ease-out duration-300"
-                                                                  x-transition:enter-start="opacity-0"
-                                                                  x-transition:enter-end="opacity-100"
-                                                                  x-transition:leave="transition ease-in duration-200"
-                                                                  x-transition:leave-start="opacity-100"
-                                                                  x-transition:leave-end="opacity-0"
-                                                                  @keydown.escape.window="showBreakdown = null"
-                                                                  style="display: none;"
-                                                             >
-                                                                 <div class="w-full max-w-[calc(100%-0.5rem)] sm:max-w-lg lg:max-w-2xl bg-white dark:bg-gray-900 rounded-[24px] sm:rounded-[32px] border border-gray-100 dark:border-gray-800 shadow-2xl overflow-hidden flex flex-col max-h-[85vh] transition-all duration-300 text-left"
-                                                                      x-transition:enter="transition ease-out duration-300"
-                                                                      x-transition:enter-start="opacity-0 scale-95 translate-y-4"
-                                                                      x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                                                                      @click.away="showBreakdown = null"
-                                                                 >
-                                                                     {{-- Modal Header --}}
-                                                                     <div class="px-5 sm:px-8 py-4 sm:py-6 border-b border-gray-100 dark:border-gray-800 shrink-0 flex items-center justify-between gap-3">
-                                                                         <div class="min-w-0">
-                                                                             <h2 class="text-xs sm:text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight truncate">{{ $applicant->full_name }} &bull; {{ $match->office->name }}</h2>
-                                                                         </div>
-                                                                         <button @click="showBreakdown = null" class="p-2 shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors active:scale-90">
-                                                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                                                                         </button>
-                                                                     </div>
-  
-                                                                     {{-- Modal Body (Scrollable) --}}
-                                                                     <div class="px-5 sm:px-8 py-4 sm:py-6 overflow-y-auto custom-scrollbar flex-1 text-sm text-gray-600 dark:text-gray-300 space-y-6 leading-relaxed font-sans">
-                                                                        {{-- Status Pills --}}
-                                                                        <div class="flex flex-wrap gap-2">
-                                                                            @php
-                                                                                $score = $match->score;
-                                                                                if ($score >= 80) {
-                                                                                    $recommendationText = "Highly Recommended";
-                                                                                    $qualityClass = "bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/50";
-                                                                                } elseif ($score >= 60) {
-                                                                                    $recommendationText = "Recommended";
-                                                                                    $qualityClass = "bg-blue-50/70 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/50";
-                                                                                } elseif ($score >= 40) {
-                                                                                    $recommendationText = "Needs Training";
-                                                                                    $qualityClass = "bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/50";
-                                                                                } else {
-                                                                                    $recommendationText = "Not Recommended";
-                                                                                    $qualityClass = "bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-amber-900/50";
-                                                                                }
-                                                                            @endphp
-                                                                            <span class="px-3 py-1 {{ $qualityClass }} font-extrabold uppercase rounded-full text-[9px] tracking-wider">Recommendation: {{ $recommendationText }}</span>
- 
-                                                                            @if(!$breakdown['is_recommended'] || $breakdown['is_recommended'] === 'Needs More Training' || $breakdown['is_recommended'] === false)
-                                                                                <span class="px-3 py-1 bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 font-extrabold uppercase rounded-full border border-rose-100 dark:border-rose-900 text-[9px] tracking-wider">50% Penalty Applied</span>
-                                                                            @endif
- 
-                                                                            <span class="px-3 py-1 bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 font-extrabold uppercase rounded-full border border-gray-200 dark:border-gray-700 text-[9px] tracking-wider">Verification: {{ $match->confidence }}</span>
-                                                                        </div>
- 
-                                                                         {{-- Structured HTML Breakdown --}}
-                                                                         <div class="markdown-content text-left dark:text-gray-300 mt-4 overflow-x-auto">
-                                                                            <div class="p-5 bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50 rounded-2xl mb-6 space-y-3">
-                                                                                <h4 class="text-xs font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400">TOPSIS Concept Definition</h4>
-                                                                                <div class="space-y-3 text-sm font-semibold leading-relaxed text-gray-600 dark:text-gray-300">
-                                                                                    <div class="flex items-start gap-2">
-                                                                                        <span class="text-[#0B5694] dark:text-blue-400 font-extrabold mt-0.5">&bull;</span>
-                                                                                        <span><strong>Positive Ideal Solution (\(PIS\) / \(v^*\)):</strong> The theoretical perfect score. In this engine, it is configured at <strong>7.5</strong> (a max skill score of 5 boosted by the 1.5x supervisor verification multiplier).</span>
-                                                                                    </div>
-                                                                                    <div class="flex items-start gap-2">
-                                                                                        <span class="text-[#0B5694] dark:text-blue-400 font-extrabold mt-0.5">&bull;</span>
-                                                                                        <span><strong>Negative Ideal Solution (\(NIS\) / \(v^-\)):</strong> The theoretical worst possible score, configured at <strong>0.0</strong>.</span>
-                                                                                    </div>
-                                                                                    <div class="flex items-start gap-2">
-                                                                                        <span class="text-[#0B5694] dark:text-blue-400 font-extrabold mt-0.5">&bull;</span>
-                                                                                        <span><strong>Closeness Coefficient (\(CC_i\)):</strong> The final relative closeness score ranging from 0% to 100%. A higher percentage indicates that the candidate's scores are closer to the Positive Ideal than the Negative Ideal.</span>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
+                                                     </div>
 
-                                                                            @if(isset($breakdown['skills_breakdown']) && count($breakdown['skills_breakdown']) > 0)
-                                                                                <h3>1. Intern Scores & Multipliers</h3>
-                                                                                <ul>
-                                                                                    @foreach($breakdown['skills_breakdown'] as $skillItem)
-                                                                                        @php
-                                                                                            $base = $skillItem['self_reported'] ?? 0;
-                                                                                            $verified = $skillItem['verified'] ?? null;
-                                                                                            $isVerified = ($verified !== null);
-                                                                                            
-                                                                                            $sourceDesc = "";
-                                                                                            if ($isVerified) {
-                                                                                                $sourceDesc = "verified at <strong>" . $verified . "</strong> (giving " . $verified . " &times; 1.5 = " . $skillItem['effective_score'] . " due to supervisor verification)";
-                                                                                            } elseif ($skillItem['resume_match'] ?? false) {
-                                                                                                if ($base > 0) {
-                                                                                                    $sourceDesc = "self-reported at <strong>" . $base . "</strong> with resume match (giving " . $base . " &times; 1.2 = " . $skillItem['effective_score'] . " due to resume triangulation)";
-                                                                                                } else {
-                                                                                                    $sourceDesc = "found in resume text (giving 0 &times; 1.2 = 0)";
-                                                                                                }
-                                                                                            } else {
-                                                                                                $sourceDesc = "self-reported at <strong>" . $base . "</strong> (giving " . $base . " &times; 1.0 = " . $skillItem['effective_score'] . ")";
-                                                                                            }
-                                                                                        @endphp
-                                                                                        <li><code>{{ strtoupper($skillItem['skill']) }}</code> is {!! $sourceDesc !!}.</li>
-                                                                                    @endforeach
-                                                                                </ul>
-
-                                                                                @php
-                                                                                    $pisTerms = [];
-                                                                                    $nisTerms = [];
-                                                                                    $pisSimpTerms = [];
-                                                                                    $nisSimpTerms = [];
-                                                                                    $pisSumSq = 0;
-                                                                                    $nisSumSq = 0;
-                                                                                    foreach($breakdown['skills_breakdown'] as $skillItem) {
-                                                                                        $wj = $skillItem['priority'];
-                                                                                        $xij = $skillItem['effective_score'];
-                                                                                        
-                                                                                        $diffPis = round(7.5 - $xij, 2);
-                                                                                        $diffNis = round($xij - 0.0, 2);
-                                                                                        
-                                                                                        $termPisVal = ($wj * $diffPis) ** 2;
-                                                                                        $termNisVal = ($wj * $diffNis) ** 2;
-                                                                                        
-                                                                                        $pisSumSq += $termPisVal;
-                                                                                        $nisSumSq += $termNisVal;
-                                                                                        
-                                                                                        $pisTerms[] = "({$wj} \\cdot (7.5 - {$xij}))^2";
-                                                                                        $nisTerms[] = "({$wj} \\cdot ({$xij} - 0.0))^2";
-                                                                                        
-                                                                                        $pisSimpTerms[] = round($wj * $diffPis, 2) . "^2";
-                                                                                        $nisSimpTerms[] = round($wj * $diffNis, 2) . "^2";
-                                                                                    }
-                                                                                    
-                                                                                    $dPlus = round(sqrt($pisSumSq), 2);
-                                                                                    $dMinus = round(sqrt($nisSumSq), 2);
-                                                                                    
-                                                                                    $cc = 0;
-                                                                                    if (($dPlus + $dMinus) > 0) {
-                                                                                        $cc = round(($dMinus / ($dPlus + $dMinus)) * 100, 2);
-                                                                                    }
-                                                                                    
-                                                                                    $behScore = $breakdown['behavioral_score'] ?? 3;
-                                                                                    $behPct = $breakdown['behavioral_percentage'] ?? 60.0;
-                                                                                    
-                                                                                    $skillContribution = round($cc * 0.8, 2);
-                                                                                    $behavioralContribution = round($behPct * 0.2, 2);
-                                                                                    $rawScore = round($skillContribution + $behavioralContribution, 2);
-                                                                                    
-                                                                                    $isRecommended = $breakdown['is_recommended'] ?? true;
-                                                                                    $recommendedText = ($isRecommended === true || $isRecommended === 1 || $isRecommended === "1" || $isRecommended === "Recommended") ? "Recommended" : "Needs More Training";
-                                                                                @endphp
-
-                                                                                 <h3>2. Geometric Distances</h3>
-                                                                                 <p>Distance to Positive Ideal (\(D^+\shrink\)):</p>
-                                                                                 <div class="my-3 overflow-x-auto overflow-y-hidden text-center font-semibold text-gray-800 dark:text-gray-200 pb-2">
-                                                                                     $$D^+ = \sqrt{ {!! implode(" + ", $pisTerms) !!} } = \sqrt{ {!! implode(" + ", $pisSimpTerms) !!} } = \sqrt{ {{ round($pisSumSq, 2) }} } \approx {{ $dPlus }}$$
-                                                                                 </div>
-
-                                                                                 <p>Distance to Negative Ideal (\(D^-\shrink\)):</p>
-                                                                                 <div class="my-3 overflow-x-auto overflow-y-hidden text-center font-semibold text-gray-800 dark:text-gray-200 pb-2">
-                                                                                     $$D^- = \sqrt{ {!! implode(" + ", $nisTerms) !!} } = \sqrt{ {!! implode(" + ", $nisSimpTerms) !!} } = \sqrt{ {{ round($nisSumSq, 2) }} } \approx {{ $dMinus }}$$
-                                                                                 </div>
-
-                                                                                 <h3>3. Closeness Coefficient (\(CC_i\))</h3>
-                                                                                 <div class="my-3 overflow-x-auto overflow-y-hidden text-center font-semibold text-gray-800 dark:text-gray-200 pb-2">
-                                                                                     $$CC_i = \frac{D^-}{D^+ + D^-} = \frac{ {{ $dMinus }} }{ {{ $dPlus }} + {{ $dMinus }} } = \frac{ {{ $dMinus }} }{ {{ round($dPlus + $dMinus, 2) }} } \approx {{ $cc }}\%$$
-                                                                                 </div>
-
-                                                                                <h3>4. Behavioral Integration</h3>
-                                                                                <p>Behavioral score is <strong><code>{{ $behScore }}</code></strong> ({{ $behPct }}%).</p>
-
-                                                                                 <h3>5. Weighted Score Formula</h3>
-                                                                                 <div class="my-3 overflow-x-auto overflow-y-hidden text-center font-semibold text-gray-800 dark:text-gray-200 pb-2">
-                                                                                     $$\text{Base Score} = ({{ $cc }}\% \times 0.8) + ({{ $behPct }}\% \times 0.2) = {{ $skillContribution }}\% + {{ $behavioralContribution }}\% = {{ $rawScore }}\%$$
-                                                                                 </div>
-
-                                                                                @if($recommendedText === "Needs More Training")
-                                                                                    @php $finalScore = round($rawScore * 0.5); @endphp
-                                                                                     <h3>6. Recommendation Penalty (Needs More Training)</h3>
-                                                                                     <p>"Needs More Training" triggers a strict <strong>50% reduction</strong>:</p>
-                                                                                     <div class="my-3 overflow-x-auto overflow-y-hidden text-center font-semibold text-gray-800 dark:text-gray-200 pb-2">
-                                                                                         $$\text{Final Score} = {{ $rawScore }}\% \times 0.5 = {{ round($rawScore * 0.5, 2) }}\% \rightarrow \mathbf{ {{ $finalScore }}\% }$$
-                                                                                     </div>
-                                                                                 @else
-                                                                                     @php $finalScore = round($rawScore); @endphp
-                                                                                     <h3>6. Final Score</h3>
-                                                                                     <div class="my-3 overflow-x-auto overflow-y-hidden text-center font-semibold text-gray-800 dark:text-gray-200 pb-2">
-                                                                                         $$\text{Final Score} = {{ $rawScore }}\% \rightarrow \mathbf{ {{ $finalScore }}\% }$$
-                                                                                     </div>
-                                                                                 @endif
-                                                                            @else
-                                                                                <div class="p-5 bg-amber-50/50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/50 rounded-2xl mb-6">
-                                                                                    <h4 class="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">Direct Assignment / Fallback Score</h4>
-                                                                                    <p class="text-sm font-semibold text-gray-600 dark:text-gray-300 mt-2 leading-relaxed">
-                                                                                        This matching result was created directly or manually mapped. The TOPSIS mathematical analysis breakdown is not applicable for this record.
-                                                                                    </p>
-                                                                                </div>
-                                                                            @endif
-                                                                        </div>
-                                                                    </div>
-
-                                                                     {{-- Modal Footer --}}
-                                                                     <div class="px-5 sm:px-8 py-4 sm:py-6 border-t border-gray-100 dark:border-gray-800 shrink-0 bg-gray-50 dark:bg-gray-900/50 flex flex-col sm:flex-row items-center justify-between gap-4">
-                                                                         <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider shrink-0">Final Score: {{ $match->score }}%</span>
-                                                                         <div class="flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-end">
-                                                                            @if(!$confirmedMatch)
-                                                                                <form action="{{ route('head-supervisor.matching.finalize') }}" method="POST" class="inline">
-                                                                                    @csrf
-                                                                                    <input type="hidden" name="applicant_names[]" value="{{ $applicant->full_name }}">
-                                                                                    <input type="hidden" name="office_id" value="{{ $match->office_id }}">
-                                                                                    <button type="submit" class="px-6 py-2.5 bg-[#0B5694] hover:bg-[#084577] dark:bg-blue-600 dark:hover:bg-blue-500 text-white font-bold uppercase text-[10px] tracking-wider rounded-xl transition-all shadow-md active:scale-95">Assign</button>
-                                                                                </form>
-                                                                            @elseif($confirmedMatch->id === $match->id)
-                                                                                <span class="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider bg-emerald-100 dark:bg-emerald-950/50 px-4 py-2 rounded-xl border border-emerald-200 dark:border-emerald-800">Current Assignment</span>
-                                                                            @endif
-                                                                            <button @click="showBreakdown = null" type="button" class="px-6 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold uppercase text-[10px] tracking-wider rounded-xl transition-all shadow-md active:scale-95">Close</button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        @endif
-                                                    @endforeach
                                                 @else
                                                     <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">No matching office configurations found.</p>
                                                 @endif
@@ -1227,12 +1004,284 @@
                 <template x-if="resumeUrl">
                     <iframe :src="resumeUrl" class="w-full h-full border-none shadow-inner" loading="lazy"></iframe>
                 </template>
-                <div x-show="!resumeUrl" class="absolute inset-0 flex items-center justify-center">
-                    <div class="animate-spin rounded-full h-12 w-12 border-4 border-[#0B5694] border-t-transparent"></div>
-                </div>
             </div>
         </div>
     </div>
+
+    {{-- MATCH COMPATIBILITY BREAKDOWN MODALS --}}
+    @php
+        $activeAssessmentItems = \App\Models\AssessmentItem::active()
+            ->pluck('category', 'competency_text')
+            ->mapWithKeys(fn($cat, $txt) => [strtolower(trim($txt)) => trim($cat)])
+            ->toArray();
+    @endphp
+    @foreach($applicants as $applicant)
+        @php
+            $matches = $results->get($applicant->full_name, collect());
+            $top5Matches = $matches->sortByDesc('score')->take(5);
+            $confirmedMatch = $matches->where('is_confirmed', true)->first();
+        @endphp
+        @foreach($top5Matches as $match)
+            @php
+                $breakdown = $match->breakdown ? json_decode($match->breakdown, true) : null;
+            @endphp
+            @if($breakdown)
+                {{-- MODAL FOR FULL BREAKDOWN --}}
+                <div x-show="showBreakdown === '{{ $match->id }}'" 
+                     x-cloak
+                     class="fixed inset-0 z-[300] flex items-center justify-center p-3 sm:p-4 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm"
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0"
+                     x-transition:enter-end="opacity-100"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0"
+                     @keydown.escape.window="showBreakdown = null"
+                     style="display: none;"
+                >
+                    <div class="w-full max-w-[calc(100%-0.5rem)] sm:max-w-lg lg:max-w-2xl bg-white dark:bg-gray-900 rounded-[24px] sm:rounded-[32px] border border-gray-100 dark:border-gray-800 shadow-2xl overflow-hidden flex flex-col max-h-[85vh] transition-all duration-300 text-left"
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 scale-95 translate-y-4"
+                         x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                         @click.away="showBreakdown = null"
+                    >
+                        {{-- Modal Header --}}
+                        <div class="px-5 sm:px-8 py-4 sm:py-6 border-b border-gray-100 dark:border-gray-800 shrink-0 flex items-center justify-between gap-3">
+                            <div class="min-w-0">
+                                <h2 class="text-xs sm:text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight truncate">{{ $applicant->full_name }} &bull; {{ $match->office->name }}</h2>
+                            </div>
+                            <button @click="showBreakdown = null" class="p-2 shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors active:scale-90">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                            </button>
+                        </div>
+
+                        {{-- Modal Body (Scrollable) --}}
+                        <div class="px-5 sm:px-8 py-4 sm:py-6 overflow-y-auto custom-scrollbar flex-1 text-sm text-gray-600 dark:text-gray-300 space-y-6 leading-relaxed font-sans">
+                            {{-- Status Pills --}}
+                            <div class="flex flex-wrap gap-2">
+                                @php
+                                    $score = $match->score;
+                                    if ($score >= 80) {
+                                        $recommendationText = "Highly Recommended";
+                                        $qualityClass = "bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/50";
+                                    } elseif ($score >= 60) {
+                                        $recommendationText = "Recommended";
+                                        $qualityClass = "bg-blue-50/70 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/50";
+                                    } elseif ($score >= 40) {
+                                        $recommendationText = "Needs Training";
+                                        $qualityClass = "bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/50";
+                                    } else {
+                                        $recommendationText = "Not Recommended";
+                                        $qualityClass = "bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-amber-900/50";
+                                    }
+                                @endphp
+                                <span class="px-3 py-1 {{ $qualityClass }} font-extrabold uppercase rounded-full text-[9px] tracking-wider">Recommendation: {{ $recommendationText }}</span>
+
+                                @if(!$breakdown['is_recommended'] || $breakdown['is_recommended'] === 'Needs More Training' || $breakdown['is_recommended'] === false)
+                                    <span class="px-3 py-1 bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 font-extrabold uppercase rounded-full border border-rose-100 dark:border-rose-900 text-[9px] tracking-wider">50% Penalty Applied</span>
+                                @endif
+
+                                <span class="px-3 py-1 bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 font-extrabold uppercase rounded-full border border-gray-200 dark:border-gray-700 text-[9px] tracking-wider">Verification: {{ $match->confidence }}</span>
+                            </div>
+
+                            {{-- Structured HTML Breakdown --}}
+                            <div class="markdown-content text-left dark:text-gray-300 mt-4 overflow-x-auto">
+                                <div class="p-5 bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50 rounded-2xl mb-6 space-y-3">
+                                    <h4 class="text-xs font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400">TOPSIS Concept Definition</h4>
+                                    <div class="space-y-3 text-sm font-semibold leading-relaxed text-gray-600 dark:text-gray-300">
+                                        <div class="flex items-start gap-2">
+                                            <span class="text-[#0B5694] dark:text-blue-400 font-extrabold mt-0.5">&bull;</span>
+                                            <span><strong>Positive Ideal Solution (\(PIS\) / \(v^*\)):</strong> The theoretical perfect score. In this engine, it is configured at <strong>7.5</strong> (a max skill score of 5 boosted by the 1.5x supervisor verification multiplier).</span>
+                                        </div>
+                                        <div class="flex items-start gap-2">
+                                            <span class="text-[#0B5694] dark:text-blue-400 font-extrabold mt-0.5">&bull;</span>
+                                            <span><strong>Negative Ideal Solution (\(NIS\) / \(v^-\)):</strong> The theoretical worst possible score, configured at <strong>0.0</strong>.</span>
+                                        </div>
+                                        <div class="flex items-start gap-2">
+                                            <span class="text-[#0B5694] dark:text-blue-400 font-extrabold mt-0.5">&bull;</span>
+                                            <span><strong>Closeness Coefficient (\(CC_i\)):</strong> The final relative closeness score ranging from 0% to 100%. A higher percentage indicates that the candidate's scores are closer to the Positive Ideal than the Negative Ideal.</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @if(isset($breakdown['skills_breakdown']) && count($breakdown['skills_breakdown']) > 0)
+                                    <h3>1. Intern Scores & Multipliers</h3>
+                                    
+                                    @php
+                                        $groupedSkills = [
+                                            'I. Digital and Technical Skills' => [],
+                                            'II. Administrative and Office Skills' => [],
+                                            'III. Analytical and Problem-Solving Skills' => [],
+                                            'IV. Communication and Interpersonal Skills' => [],
+                                            'V. Work Attitude and Professional Values' => [],
+                                            'Other / Custom Competencies' => [],
+                                        ];
+
+                                        foreach($breakdown['skills_breakdown'] as $skillItem) {
+                                            $skillName = trim($skillItem['skill']);
+                                            $lowerSkillName = strtolower($skillName);
+                                            
+                                            $mappedCategory = $activeAssessmentItems[$lowerSkillName] ?? null;
+                                            
+                                            $assignedCategory = 'Other / Custom Competencies';
+                                            if ($mappedCategory) {
+                                                foreach (array_keys($groupedSkills) as $allowedCategory) {
+                                                    if (strcasecmp($mappedCategory, $allowedCategory) === 0) {
+                                                        $assignedCategory = $allowedCategory;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            $groupedSkills[$assignedCategory][] = $skillItem;
+                                        }
+                                    @endphp
+
+                                    @foreach($groupedSkills as $categoryName => $skills)
+                                        @if(count($skills) > 0)
+                                            <h4 class="text-[11px] font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mt-4 mb-2">{{ $categoryName }}</h4>
+                                            <ul>
+                                                @foreach($skills as $skillItem)
+                                                    @php
+                                                        $base = $skillItem['self_reported'] ?? 0;
+                                                        $verified = $skillItem['verified'] ?? null;
+                                                        $isVerified = ($verified !== null);
+                                                        
+                                                        $sourceDesc = "";
+                                                        if ($isVerified) {
+                                                            $sourceDesc = "verified at <strong>" . $verified . "</strong> (giving " . $verified . " &times; 1.5 = " . $skillItem['effective_score'] . " due to supervisor verification)";
+                                                        } elseif ($skillItem['resume_match'] ?? false) {
+                                                            if ($base > 0) {
+                                                                $sourceDesc = "self-reported at <strong>" . $base . "</strong> with resume match (giving " . $base . " &times; 1.2 = " . $skillItem['effective_score'] . " due to resume triangulation)";
+                                                            } else {
+                                                                $sourceDesc = "found in resume text (giving 0 &times; 1.2 = 0)";
+                                                            }
+                                                        } else {
+                                                            $sourceDesc = "self-reported at <strong>" . $base . "</strong> (giving " . $base . " &times; 1.0 = " . $skillItem['effective_score'] . ")";
+                                                        }
+                                                    @endphp
+                                                    <li><code>{{ strtoupper($skillItem['skill']) }}</code> is {!! $sourceDesc !!}.</li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
+                                    @endforeach
+
+                                    @php
+                                        $pisTerms = [];
+                                        $nisTerms = [];
+                                        $pisSimpTerms = [];
+                                        $nisSimpTerms = [];
+                                        $pisSumSq = 0;
+                                        $nisSumSq = 0;
+                                        foreach($breakdown['skills_breakdown'] as $skillItem) {
+                                            $wj = $skillItem['priority'];
+                                            $xij = $skillItem['effective_score'];
+                                            
+                                            $diffPis = round(7.5 - $xij, 2);
+                                            $diffNis = round($xij - 0.0, 2);
+                                            
+                                            $termPisVal = ($wj * $diffPis) ** 2;
+                                            $termNisVal = ($wj * $diffNis) ** 2;
+                                            
+                                            $pisSumSq += $termPisVal;
+                                            $nisSumSq += $termNisVal;
+                                            
+                                            $pisTerms[] = "({$wj} \\cdot (7.5 - {$xij}))^2";
+                                            $nisTerms[] = "({$wj} \\cdot ({$xij} - 0.0))^2";
+                                            
+                                            $pisSimpTerms[] = round($wj * $diffPis, 2) . "^2";
+                                            $nisSimpTerms[] = round($wj * $diffNis, 2) . "^2";
+                                        }
+                                        
+                                        $dPlus = round(sqrt($pisSumSq), 2);
+                                        $dMinus = round(sqrt($nisSumSq), 2);
+                                        
+                                        $cc = 0;
+                                        if (($dPlus + $dMinus) > 0) {
+                                            $cc = round(($dMinus / ($dPlus + $dMinus)) * 100, 2);
+                                        }
+                                        
+                                        $behScore = $breakdown['behavioral_score'] ?? 3;
+                                        $behPct = $breakdown['behavioral_percentage'] ?? 60.0;
+                                        
+                                        $skillContribution = round($cc * 0.8, 2);
+                                        $behavioralContribution = round($behPct * 0.2, 2);
+                                        $rawScore = round($skillContribution + $behavioralContribution, 2);
+                                        
+                                        $isRecommended = $breakdown['is_recommended'] ?? true;
+                                        $recommendedText = ($isRecommended === true || $isRecommended === 1 || $isRecommended === "1" || $isRecommended === "Recommended") ? "Recommended" : "Needs More Training";
+                                    @endphp
+
+                                    <h3>2. Geometric Distances</h3>
+                                    <p>Distance to Positive Ideal (\(D^+\shrink\)):</p>
+                                    <div class="my-3 overflow-x-auto overflow-y-hidden text-center font-semibold text-gray-800 dark:text-gray-200 pb-2">
+                                        $$D^+ = \sqrt{ {!! implode(" + ", $pisTerms) !!} } = \sqrt{ {!! implode(" + ", $pisSimpTerms) !!} } = \sqrt{ {{ round($pisSumSq, 2) }} } \approx {{ $dPlus }}$$
+                                    </div>
+
+                                    <p>Distance to Negative Ideal (\(D^-\shrink\)):</p>
+                                    <div class="my-3 overflow-x-auto overflow-y-hidden text-center font-semibold text-gray-800 dark:text-gray-200 pb-2">
+                                        $$D^- = \sqrt{ {!! implode(" + ", $nisTerms) !!} } = \sqrt{ {!! implode(" + ", $nisSimpTerms) !!} } = \sqrt{ {{ round($nisSumSq, 2) }} } \approx {{ $dMinus }}$$
+                                    </div>
+
+                                    <h3>3. Closeness Coefficient (\(CC_i\))</h3>
+                                    <div class="my-3 overflow-x-auto overflow-y-hidden text-center font-semibold text-gray-800 dark:text-gray-200 pb-2">
+                                        $$CC_i = \frac{D^-}{D^+ + D^-} = \frac{ {{ $dMinus }} }{ {{ $dPlus }} + {{ $dMinus }} } = \frac{ {{ $dMinus }} }{ {{ round($dPlus + $dMinus, 2) }} } \approx {{ $cc }}\%$$
+                                    </div>
+
+                                    <h3>4. Behavioral Integration</h3>
+                                    <p>Behavioral score is <strong><code>{{ $behScore }}</code></strong> ({{ $behPct }}%).</p>
+
+                                    <h3>5. Weighted Score Formula</h3>
+                                    <div class="my-3 overflow-x-auto overflow-y-hidden text-center font-semibold text-gray-800 dark:text-gray-200 pb-2">
+                                        $$\text{Base Score} = ({{ $cc }}\% \times 0.8) + ({{ $behPct }}\% \times 0.2) = {{ $skillContribution }}\% + {{ $behavioralContribution }}\% = {{ $rawScore }}\%$$
+                                    </div>
+
+                                    @if($recommendedText === "Needs More Training")
+                                        @php $finalScore = round($rawScore * 0.5); @endphp
+                                        <h3>6. Recommendation Penalty (Needs More Training)</h3>
+                                        <p>"Needs More Training" triggers a strict <strong>50% reduction</strong>:</p>
+                                        <div class="my-3 overflow-x-auto overflow-y-hidden text-center font-semibold text-gray-800 dark:text-gray-200 pb-2">
+                                            $$\text{Final Score} = {{ $rawScore }}\% \times 0.5 = {{ round($rawScore * 0.5, 2) }}\% \rightarrow \mathbf{ {{ $finalScore }}\% }$$
+                                        </div>
+                                    @else
+                                        @php $finalScore = round($rawScore); @endphp
+                                        <h3>6. Final Score</h3>
+                                        <div class="my-3 overflow-x-auto overflow-y-hidden text-center font-semibold text-gray-800 dark:text-gray-200 pb-2">
+                                            $$\text{Final Score} = {{ $rawScore }}\% \rightarrow \mathbf{ {{ $finalScore }}\% }$$
+                                        </div>
+                                    @endif
+                                @else
+                                    <div class="p-5 bg-amber-50/50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/50 rounded-2xl mb-6">
+                                        <h4 class="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">Direct Assignment / Fallback Score</h4>
+                                        <p class="text-sm font-semibold text-gray-600 dark:text-gray-300 mt-2 leading-relaxed">
+                                            This matching result was created directly or manually mapped. The TOPSIS mathematical analysis breakdown is not applicable for this record.
+                                        </p>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+
+                        {{-- Modal Footer --}}
+                        <div class="px-5 sm:px-8 py-4 sm:py-6 border-t border-gray-100 dark:border-gray-800 shrink-0 bg-gray-50 dark:bg-gray-900/50 flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider shrink-0">Final Score: {{ $match->score }}%</span>
+                            <div class="flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-end">
+                                @if(!$confirmedMatch)
+                                    <form action="{{ route('head-supervisor.matching.finalize') }}" method="POST" class="inline">
+                                        @csrf
+                                        <input type="hidden" name="applicant_names[]" value="{{ $applicant->full_name }}">
+                                        <input type="hidden" name="office_id" value="{{ $match->office_id }}">
+                                        <button type="submit" class="px-6 py-2.5 bg-[#0B5694] hover:bg-[#084577] dark:bg-blue-600 dark:hover:bg-blue-500 text-white font-bold uppercase text-[10px] tracking-wider rounded-xl transition-all shadow-md active:scale-95">Assign</button>
+                                    </form>
+                                @elseif($confirmedMatch->id === $match->id)
+                                    <span class="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider bg-emerald-100 dark:bg-emerald-950/50 px-4 py-2 rounded-xl border border-emerald-200 dark:border-emerald-800">Current Assignment</span>
+                                @endif
+                                <button @click="showBreakdown = null" type="button" class="px-6 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold uppercase text-[10px] tracking-wider rounded-xl transition-all shadow-md active:scale-95">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+        @endforeach
+    @endforeach
 </div>
 </x-page-layout>
 
