@@ -52,7 +52,6 @@ def create_resume_template():
     cell_left.width = Inches(1.5)
     p_photo = cell_left.paragraphs[0]
     p_photo.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    # Add vertical spacing
     p_photo.paragraph_format.space_before = Pt(20)
     p_photo.paragraph_format.space_after = Pt(20)
     run_photo = p_photo.add_run("[ INSERT\nPHOTO\nHERE ]")
@@ -87,7 +86,7 @@ def create_resume_template():
     p_degree.paragraph_format.space_before = Pt(0)
     p_degree.paragraph_format.space_after = Pt(0)
     p_degree.paragraph_format.left_indent = Inches(0.2)
-    run_degree = p_degree.add_run("Bachelor of Science in Information Technology with Specialization in\nWeb and Mobile Application")
+    run_degree = p_degree.add_run("[YOUR DEGREE / PROGRAM, e.g., Bachelor of Science in Information Technology]")
     run_degree.font.size = Pt(11)
     run_degree.font.color.rgb = RGBColor(80, 80, 80)
 
@@ -159,42 +158,42 @@ def create_resume_template():
     p.paragraph_format.space_after = Pt(2)
     run = p.add_run("Phone:\t")
     run.font.bold = True
-    p.add_run("[+63 9XX XXX XXXX]")
+    p.add_run("[CONTACT NUMBER, e.g., 09303044030]")
     
     p = col_left.add_paragraph()
     p.paragraph_format.space_after = Pt(2)
     run = p.add_run("Email:\t")
     run.font.bold = True
-    p.add_run("[your.email@emaildomain.com]")
+    p.add_run("[EMAIL ADDRESS, e.g., student@emaildomain.com]")
     
     p = col_left.add_paragraph()
     p.paragraph_format.space_after = Pt(12)
     run = p.add_run("Address:\t")
     run.font.bold = True
-    p.add_run("[Street, Barangay, City, Province, Zip Code]")
+    p.add_run("[PHYSICAL ADDRESS, e.g., Quezon City, Metro Manila 1109]")
 
     # Section: Education
     add_section_header(col_left, "Education")
     
     p = col_left.add_paragraph()
     p.paragraph_format.space_after = Pt(2)
-    run = p.add_run("BS in Information Technology with Specialization in Web and Mobile Application (WMA)")
+    run = p.add_run("[DEGREE / PROGRAM DETAILS, e.g., BS in Information Technology]")
     run.font.bold = True
     run.font.size = Pt(10)
     
     p = col_left.add_paragraph()
     p.paragraph_format.space_after = Pt(2)
-    run = p.add_run("FEU Institute of Technology")
+    run = p.add_run("[YOUR UNIVERSITY / ACADEMIC INSTITUTION, e.g., FEU Institute of Technology]")
     run.font.bold = True
     run.font.color.rgb = RGBColor(80, 80, 80)
     
     p = col_left.add_paragraph()
     p.paragraph_format.space_after = Pt(2)
-    p.add_run("P. Paredes St., Sampaloc, Manila")
+    p.add_run("[CAMPUS LOCATION, e.g., P. Paredes St., Sampaloc, Manila]")
     
     p = col_left.add_paragraph()
     p.paragraph_format.space_after = Pt(12)
-    run = p.add_run("Expected Graduation – [Year]")
+    run = p.add_run("Expected Graduation – [Year, e.g., 2025]")
     run.font.italic = True
 
     # Section: Key Skills / Proficiency
@@ -220,11 +219,11 @@ def create_resume_template():
     
     p = col_left.add_paragraph(style='List Bullet')
     p.paragraph_format.space_after = Pt(2)
-    p.add_run("UI/UX Design & Prototyping (Figma)")
+    p.add_run("[Core Competency 1, e.g., UI/UX Design & Prototyping]")
     
     p = col_left.add_paragraph(style='List Bullet')
     p.paragraph_format.space_after = Pt(2)
-    p.add_run("API Development & Integration")
+    p.add_run("[Core Competency 2, e.g., API Development & Integration]")
     
     p = col_left.add_paragraph(style='List Bullet')
     p.paragraph_format.space_after = Pt(4)
@@ -240,13 +239,13 @@ def create_resume_template():
     
     p = col_left.add_paragraph(style='List Bullet')
     p.paragraph_format.space_after = Pt(2)
-    p.add_run("Oral and written communication")
+    p.add_run("[Soft Skill 1, e.g., Oral and written communication]")
     p = col_left.add_paragraph(style='List Bullet')
     p.paragraph_format.space_after = Pt(2)
-    p.add_run("Teamwork & Collaboration")
+    p.add_run("[Soft Skill 2, e.g., Teamwork & Collaboration]")
     p = col_left.add_paragraph(style='List Bullet')
     p.paragraph_format.space_after = Pt(12)
-    p.add_run("Creativity & Critical Thinking")
+    p.add_run("[Soft Skill 3, e.g., Critical Thinking]")
 
     # Section: Accomplished Projects / Engagements
     add_section_header(col_left, "Accomplished Projects / Engagements")
@@ -256,7 +255,7 @@ def create_resume_template():
     run_title = p.add_run("[Project Title 1]")
     run_title.font.bold = True
     p.add_run(" : [Description of web/mobile system or research project] | ")
-    run_role = p.add_run("[Role, e.g., Project Manager]")
+    run_role = p.add_run("[Your Role, e.g., Lead Developer]")
     run_role.font.italic = True
     
     p = col_left.add_paragraph(style='List Bullet')
@@ -264,7 +263,7 @@ def create_resume_template():
     run_title = p.add_run("[Project Title 2]")
     run_title.font.bold = True
     p.add_run(" : [Description of a seminar, organization project or activity] | ")
-    run_role = p.add_run("[Role, e.g., Organizer]")
+    run_role = p.add_run("[Your Role, e.g., Organizer]")
     run_role.font.italic = True
     
     p = col_left.add_paragraph(style='List Bullet')
@@ -272,7 +271,7 @@ def create_resume_template():
     run_title = p.add_run("[Project Title 3]")
     run_title.font.bold = True
     p.add_run(" : [Description of programming course project] | ")
-    run_role = p.add_run("[Role, e.g., Lead Developer]")
+    run_role = p.add_run("[Your Role, e.g., Lead Developer]")
     run_role.font.italic = True
 
 
@@ -329,12 +328,12 @@ def create_resume_template():
     
     p = col_right.add_paragraph(style='List Bullet')
     p.paragraph_format.space_after = Pt(2)
-    p.add_run("Vlogging")
+    p.add_run("[Interest / Hobby 1, e.g., Vlogging]")
     p = col_right.add_paragraph(style='List Bullet')
     p.paragraph_format.space_after = Pt(0)
-    p.add_run("Digital Painting")
+    p.add_run("[Interest / Hobby 2, e.g., Digital Painting]")
 
-    doc.save("public/templates/FEU_TECH_Student_Resume_Template.docx")
+    doc.save("public/templates/SmarTern_Student_Resume_Template.docx")
     print("Template generated successfully!")
 
 if __name__ == '__main__':

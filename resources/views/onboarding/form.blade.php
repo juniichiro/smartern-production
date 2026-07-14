@@ -148,11 +148,11 @@
                             <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 max-w-sm mx-auto font-medium">Reference materials assist the matching engine in identifying your core competencies automatically.</p>
                             <div class="pt-2 flex flex-wrap gap-2.5 justify-center text-[10px] font-bold uppercase tracking-wider">
                                 <span class="text-gray-400 dark:text-gray-500 self-center">Resume Template:</span>
-                                <a href="{{ asset('templates/FEU_TECH_Student_Resume_Template.docx') }}" download class="px-3 py-1.5 bg-[#0B5694]/10 dark:bg-blue-500/10 text-[#0B5694] dark:text-blue-400 rounded-xl hover:bg-[#0B5694]/20 dark:hover:bg-blue-500/20 transition-all flex items-center gap-1.5">
+                                <a href="{{ asset('templates/SmarTern_Student_Resume_Template.docx') }}" download class="px-3 py-1.5 bg-[#0B5694]/10 dark:bg-blue-500/10 text-[#0B5694] dark:text-blue-400 rounded-xl hover:bg-[#0B5694]/20 dark:hover:bg-blue-500/20 transition-all flex items-center gap-1.5">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                                     Word (.docx)
                                 </a>
-                                <a href="{{ asset('templates/FEU_TECH_Student_Resume_Template.pdf') }}" download class="px-3 py-1.5 bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded-xl hover:bg-rose-500/20 transition-all flex items-center gap-1.5">
+                                <a href="{{ asset('templates/SmarTern_Student_Resume_Template.pdf') }}" download class="px-3 py-1.5 bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded-xl hover:bg-rose-500/20 transition-all flex items-center gap-1.5">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                                     PDF Reference
                                 </a>

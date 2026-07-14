@@ -3,12 +3,12 @@
 use Illuminate\Http\UploadedFile;
 
 test('it successfully parses a valid pdf resume template', function () {
-    $filePath = base_path('FEU TECH Student Résumé ver. 2024-2025.pdf');
+    $filePath = public_path('templates/SmarTern_Student_Resume_Template.pdf');
     
     // Create an UploadedFile instance from the actual file
     $uploadedFile = new UploadedFile(
         $filePath,
-        'FEU_TECH_Student_Resume.pdf',
+        'SmarTern_Student_Resume_Template.pdf',
         'application/pdf',
         null,
         true // test mode
@@ -29,10 +29,10 @@ test('it successfully parses a valid pdf resume template', function () {
 
     // Check specific fields parsed from the template
     $data = $response->json();
-    expect($data['first_name'])->toBe('Carlo A.');
-    expect($data['last_name'])->toBe('Briones');
-    expect($data['university'])->toBe('Feu Institute Of Technology');
-    expect($data['email'])->toBe('cbriones@emaildomain.com');
+    expect($data['first_name'])->toBe('[Your Full');
+    expect($data['last_name'])->toBe('Name]');
+    expect($data['university'])->toBe('[Your University / Academic Institution, E.g., Feu');
+    expect($data['email'])->toBe('student@emaildomain.com');
     expect($data['phone_number'])->toBe('09303044030');
 });
 
