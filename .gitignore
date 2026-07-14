@@ -62,3 +62,6 @@ scratch/
 /phpstan.neon
 /phpstan_errors.txt
 
+/phpunit.xml
+.~lock.*
+*.tmp
