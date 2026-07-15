@@ -45,6 +45,125 @@ def extract_keywords(skill_text):
     
     return list(keywords)
 
+def evaluate_resume_factors(resume_text, office_name):
+    """
+    Heuristically scores degree alignment, work experience, certifications, and awards
+    based on the office name domain and key indicators in the resume text.
+    """
+    resume_lower = resume_text.lower()
+    office_lower = office_name.lower()
+    
+    # 1. Determine Office Domain
+    domain = 'admin'
+    if any(k in office_lower for k in ['it', 'ict', 'tech', 'computer', 'system', 'developer', 'network']):
+        domain = 'ict'
+    elif any(k in office_lower for k in ['hr', 'human', 'resource', 'psych']):
+        domain = 'hr'
+    elif any(k in office_lower for k in ['finance', 'accounting', 'budget', 'audit', 'treasury']):
+        domain = 'finance'
+        
+    # 2. Degree Alignment (Da) - 15% weight
+    degree_alignment = 0.0
+    
+    ict_degrees_strong = ['information technology', 'computer science', 'computer engineering', 'wma', 'information systems', 'software engineering']
+    ict_degrees_partial = ['engineering', 'mathematics', 'statistics', 'science']
+    
+    hr_degrees_strong = ['human resource', 'psychology', 'bsba-hr', 'behavioral science', 'office administration']
+    hr_degrees_partial = ['communications', 'sociology', 'social work', 'education']
+    
+    finance_degrees_strong = ['accountancy', 'accounting', 'finance', 'financial management', 'bsba-fm']
+    finance_degrees_partial = ['economics', 'mathematics', 'statistics', 'banking']
+    
+    admin_degrees_strong = ['office administration', 'public administration', 'business administration', 'management', 'secretarial']
+    admin_degrees_partial = ['communications', 'english', 'humanities']
+    
+    if domain == 'ict':
+        if any(d in resume_lower for d in ict_degrees_strong):
+            degree_alignment = 100.0
+        elif any(d in resume_lower for d in ict_degrees_partial):
+            degree_alignment = 50.0
+    elif domain == 'hr':
+        if any(d in resume_lower for d in hr_degrees_strong):
+            degree_alignment = 100.0
+        elif any(d in resume_lower for d in hr_degrees_partial):
+            degree_alignment = 50.0
+    elif domain == 'finance':
+        if any(d in resume_lower for d in finance_degrees_strong):
+            degree_alignment = 100.0
+        elif any(d in resume_lower for d in finance_degrees_partial):
+            degree_alignment = 50.0
+    else:  # admin
+        if any(d in resume_lower for d in admin_degrees_strong):
+            degree_alignment = 100.0
+        elif any(d in resume_lower for d in admin_degrees_partial):
+            degree_alignment = 50.0
+            
+    # 3. Work Experience Alignment (Ea) - 15% weight
+    experience_score = 0.0
+    has_experience_section = any(k in resume_lower for k in ['work experience', 'professional experience', 'employment history', 'job history', 'past experience', 'experience'])
+    
+    if has_experience_section or any(k in resume_lower for k in ['internship', 'web developer intern', 'work history', 'intern']):
+        experience_score = 50.0  # Baseline for having any experience
+        
+        ict_exp_keywords = ['developer', 'programmer', 'software', 'code', 'coding', 'web', 'mobile', 'database', 'sql', 'sysadmin', 'support', 'helpdesk']
+        hr_exp_keywords = ['recruitment', 'hiring', 'interview', 'training', 'payroll', 'personnel', 'human resource']
+        finance_exp_keywords = ['accounting', 'bookkeeping', 'audit', 'tax', 'billing', 'ledger', 'invoice', 'cashier']
+        admin_exp_keywords = ['administrative', 'clerk', 'secretary', 'filing', 'archive', 'record', 'document', 'typing']
+        
+        if domain == 'ict' and any(w in resume_lower for w in ict_exp_keywords):
+            experience_score = 100.0
+        elif domain == 'hr' and any(w in resume_lower for w in hr_exp_keywords):
+            experience_score = 100.0
+        elif domain == 'finance' and any(w in resume_lower for w in finance_exp_keywords):
+            experience_score = 100.0
+        elif domain == 'admin' and any(w in resume_lower for w in admin_exp_keywords):
+            experience_score = 100.0
+
+    # 4. Trainings & Certifications (Tc) - 10% weight
+    certification_score = 0.0
+    has_cert_section = any(k in resume_lower for k in ['certifications', 'training', 'courses', 'credentials', 'certified user'])
+    
+    if has_cert_section or any(k in resume_lower for k in ['certified', 'certificate', 'course']):
+        certification_score = 50.0  # Baseline
+        
+        ict_cert_keywords = ['microsoft', 'aws', 'azure', 'cisco', 'oracle', 'python', 'java', 'kotlin', 'ccna', 'itil', 'scrum']
+        hr_admin_cert_keywords = ['six sigma', 'pmp', 'project management', 'ms word', 'ms office', 'sap']
+        finance_cert_keywords = ['cpa', 'cma', 'bookkeeping', 'sap', 'quickbooks', 'ms excel']
+        
+        if domain == 'ict' and any(w in resume_lower for w in ict_cert_keywords):
+            certification_score = 100.0
+        elif domain in ['hr', 'admin'] and any(w in resume_lower for w in hr_admin_cert_keywords):
+            certification_score = 100.0
+        elif domain == 'finance' and any(w in resume_lower for w in finance_cert_keywords):
+            certification_score = 100.0
+
+    # 5. Awards & Recognition (Ar) - 10% weight
+    awards_score = 0.0
+    has_awards = any(k in resume_lower for k in ['awards', 'recognition', 'honors', 'achievements', 'accomplishments', 'scholar'])
+    
+    if has_awards or any(k in resume_lower for k in ['champion', 'winner', 'first place', 'outstanding', 'dean\'s list', 'honor']):
+        awards_score = 50.0  # Baseline
+        
+        relevant_keywords = []
+        if domain == 'ict':
+            relevant_keywords = ['hackathon', 'quiz bee', 'it', 'programming', 'tech', 'science']
+        elif domain == 'finance':
+            relevant_keywords = ['accounting', 'finance', 'business', 'math']
+        elif domain == 'hr':
+            relevant_keywords = ['outstanding', 'leadership', 'organization']
+        elif domain == 'admin':
+            relevant_keywords = ['outstanding', 'academic', 'service']
+            
+        if any(w in resume_lower for w in relevant_keywords):
+            awards_score = 100.0
+
+    return {
+        'degree_alignment': degree_alignment,
+        'experience_score': experience_score,
+        'certification_score': certification_score,
+        'awards_score': awards_score
+    }
+
 def run_rete_matching(students, rules_by_office):
     # Ensure rules_by_office is a dictionary
     if isinstance(rules_by_office, list):
@@ -107,7 +226,7 @@ def run_rete_matching(students, rules_by_office):
             
             if in_resume:
                 resume_matched_skills.add(skill)
-                # Resume boost (one.twox) if self-reported and not yet verified
+                # Resume boost (1.2x) if self-reported and not yet verified
                 if skill not in verified and weight < 1.2:
                     weight = 1.2
 
@@ -121,7 +240,7 @@ def run_rete_matching(students, rules_by_office):
             
             if in_interview:
                 interview_matched_skills.add(skill)
-                # Interview boost (one.threex) takes priority over resume boost
+                # Interview boost (1.3x) takes priority over resume boost
                 if skill not in verified and weight < 1.3:
                     weight = 1.3
             
@@ -143,6 +262,20 @@ def run_rete_matching(students, rules_by_office):
                         'priority': get_safe_int(rule.get('priority', 1))
                     })
             
+            # Retrieve Office Name to identify domain for factor scoring
+            office_name = ""
+            if office_rules:
+                first_rule = office_rules[0]
+                office_obj = ensure_dict(first_rule.get('office', {}))
+                office_name = get_safe_str(office_obj.get('name', ''))
+            
+            # Fallback to general domains if office name not provided
+            if not office_name:
+                if office_id_int == 1: office_name = "ict department"
+                elif office_id_int == 2: office_name = "human resources"
+                elif office_id_int == 3: office_name = "finance and accounting"
+                else: office_name = "administrative services"
+
             if not valid_rules:
                 student_results.append({
                     'office_id': office_id_int,
@@ -182,7 +315,7 @@ def run_rete_matching(students, rules_by_office):
                 priority = r['priority']
                 x_ij = alpha_memory.get(skill, 0.0)
                 
-                # pis_j = seven.five (max possible: five * one
+                # pis_j = 7.5 (max possible: 5 * 1.5)
                 sum_sq_dist_pis += (priority * (7.5 - x_ij)) ** 2
                 sum_sq_dist_nis += (priority * (x_ij - 0.0)) ** 2
 
@@ -205,9 +338,20 @@ def run_rete_matching(students, rules_by_office):
 
             skill_percentage = (d_minus / (d_plus + d_minus)) * 100.0 if (d_plus + d_minus) > 0 else 0.0
 
-            # Integrate Behavioral Score (twenty percent share)
+            # Evaluate multi-factor resume components
+            factors = evaluate_resume_factors(resume_text, office_name)
+            degree_alignment = factors['degree_alignment']
+            experience_score = factors['experience_score']
+            certification_score = factors['certification_score']
+            awards_score = factors['awards_score']
+
+            # Calculate composite competency index (Ci)
+            # Weights: Skills (50%), Degree (15%), Experience (15%), Certifications (10%), Awards (10%)
+            ci = (skill_percentage * 0.50) + (degree_alignment * 0.15) + (experience_score * 0.15) + (certification_score * 0.10) + (awards_score * 0.10)
+
+            # Integrate Behavioral Score (20% share)
             behavioral_percentage = (behavioral_score / 5.0) * 100.0
-            final_score = (skill_percentage * 0.8) + (behavioral_percentage * 0.2)
+            final_score = (ci * 0.8) + (behavioral_percentage * 0.2)
 
             # Recommendation Penalty
             if not is_recommended or is_recommended == 'Needs More Training' or is_recommended is False:
@@ -233,6 +377,11 @@ def run_rete_matching(students, rules_by_office):
                     'behavioral_percentage': round(behavioral_percentage, 2),
                     'skills_breakdown': skills_breakdown,
                     'skill_percentage': round(skill_percentage, 2),
+                    'degree_alignment': round(degree_alignment, 2),
+                    'experience_score': round(experience_score, 2),
+                    'certification_score': round(certification_score, 2),
+                    'awards_score': round(awards_score, 2),
+                    'competency_index': round(ci, 2),
                     'final_score': rounded_score
                 }
             })
@@ -250,9 +399,9 @@ if __name__ == "__main__":
 
         input_data = json.loads(input_raw)
         students = input_data.get('students', [])
-        rules_by_office = input_data.get('rules', {})
+        rules = input_data.get('rules', {})
         
-        batch_results = run_rete_matching(students, rules_by_office)
+        batch_results = run_rete_matching(students, rules)
         print(json.dumps(batch_results))
 
     except Exception as e:

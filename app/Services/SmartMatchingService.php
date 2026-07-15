@@ -15,7 +15,7 @@ class SmartMatchingService
      */
     public function runMatchingForApplicant(OnboardingApplicant $applicant)
     {
-        $rules = OfficeRule::all()->groupBy('office_id');
+        $rules = OfficeRule::with('office')->get()->groupBy('office_id');
         $resumeText = $this->extractResumeText($applicant->resume_path);
 
         $evaluation = $applicant->evaluation;

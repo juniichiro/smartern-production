@@ -1200,51 +1200,73 @@
                                             $cc = round(($dMinus / ($dPlus + $dMinus)) * 100, 2);
                                         }
                                         
+                                        $degreeAlignment = $breakdown['degree_alignment'] ?? 0.0;
+                                        $experienceScore = $breakdown['experience_score'] ?? 0.0;
+                                        $certificationScore = $breakdown['certification_score'] ?? 0.0;
+                                        $awardsScore = $breakdown['awards_score'] ?? 0.0;
+                                        
+                                        $ci = $breakdown['competency_index'] ?? round(($cc * 0.50) + ($degreeAlignment * 0.15) + ($experienceScore * 0.15) + ($certificationScore * 0.10) + ($awardsScore * 0.10), 2);
+                                        
                                         $behScore = $breakdown['behavioral_score'] ?? 3;
                                         $behPct = $breakdown['behavioral_percentage'] ?? 60.0;
                                         
-                                        $skillContribution = round($cc * 0.8, 2);
+                                        $compContribution = round($ci * 0.8, 2);
                                         $behavioralContribution = round($behPct * 0.2, 2);
-                                        $rawScore = round($skillContribution + $behavioralContribution, 2);
+                                        $rawScore = round($compContribution + $behavioralContribution, 2);
                                         
                                         $isRecommended = $breakdown['is_recommended'] ?? true;
                                         $recommendedText = ($isRecommended === true || $isRecommended === 1 || $isRecommended === "1" || $isRecommended === "Recommended") ? "Recommended" : "Needs More Training";
                                     @endphp
 
                                     <h3>2. Geometric Distances</h3>
-                                    <p>Distance to Positive Ideal (\(D^+\shrink\)):</p>
+                                    <p>Distance to Positive Ideal (\(D^+\)):</p>
                                     <div class="my-3 overflow-x-auto overflow-y-hidden text-center font-semibold text-gray-800 dark:text-gray-200 pb-2">
                                         $$D^+ = \sqrt{ {!! implode(" + ", $pisTerms) !!} } = \sqrt{ {!! implode(" + ", $pisSimpTerms) !!} } = \sqrt{ {{ round($pisSumSq, 2) }} } \approx {{ $dPlus }}$$
                                     </div>
 
-                                    <p>Distance to Negative Ideal (\(D^-\shrink\)):</p>
+                                    <p>Distance to Negative Ideal (\(D^-\)):</p>
                                     <div class="my-3 overflow-x-auto overflow-y-hidden text-center font-semibold text-gray-800 dark:text-gray-200 pb-2">
                                         $$D^- = \sqrt{ {!! implode(" + ", $nisTerms) !!} } = \sqrt{ {!! implode(" + ", $nisSimpTerms) !!} } = \sqrt{ {{ round($nisSumSq, 2) }} } \approx {{ $dMinus }}$$
                                     </div>
 
                                     <h3>3. Closeness Coefficient (\(CC_i\))</h3>
                                     <div class="my-3 overflow-x-auto overflow-y-hidden text-center font-semibold text-gray-800 dark:text-gray-200 pb-2">
-                                        $$CC_i = \frac{D^-}{D^+ + D^-} = \frac{ {{ $dMinus }} }{ {{ $dPlus }} + {{ $dMinus }} } = \frac{ {{ $dMinus }} }{ {{ round($dPlus + $dMinus, 2) }} } \approx {{ $cc }}\%$$
+                                        $$CC_i = \frac{D^-}{D^+ + D^-} = \frac{ {{ $dMinus }} }{ {{ $dPlus }} + {{ $dMinus }} } \approx {{ $cc }}\%$$
                                     </div>
 
-                                    <h3>4. Behavioral Integration</h3>
+                                    <h3>4. Additional Matching Parameters</h3>
+                                    <ul class="space-y-1 mb-4">
+                                        <li>Degree Program Alignment (\(D_a\)): <strong>{{ $degreeAlignment }}%</strong> (15% weight)</li>
+                                        <li>Work Experience Alignment (\(E_a\)): <strong>{{ $experienceScore }}%</strong> (15% weight)</li>
+                                        <li>Trainings & Certifications (\(T_c\)): <strong>{{ $certificationScore }}%</strong> (10% weight)</li>
+                                        <li>Awards & Recognition (\(A_r\)): <strong>{{ $awardsScore }}%</strong> (10% weight)</li>
+                                    </ul>
+
+                                    <h3>5. Composite Competency Index (\(C_i\))</h3>
+                                    <p>Combines skills Fuzzy TOPSIS ($$CC_i$$) and multi-factor parameters:</p>
+                                    <div class="my-3 overflow-x-auto overflow-y-hidden text-center font-semibold text-gray-800 dark:text-gray-200 pb-2">
+                                        $$C_i = (CC_i \cdot 0.50) + (D_a \cdot 0.15) + (E_a \cdot 0.15) + (T_c \cdot 0.10) + (A_r \cdot 0.10)$$
+                                        $$C_i = ({{ $cc }}\% \cdot 0.50) + ({{ $degreeAlignment }}\% \cdot 0.15) + ({{ $experienceScore }}\% \cdot 0.15) + ({{ $certificationScore }}\% \cdot 0.10) + ({{ $awardsScore }}\% \cdot 0.10) = {{ $ci }}\%$$
+                                    </div>
+
+                                    <h3>6. Behavioral Integration</h3>
                                     <p>Behavioral score is <strong><code>{{ $behScore }}</code></strong> ({{ $behPct }}%).</p>
 
-                                    <h3>5. Weighted Score Formula</h3>
+                                    <h3>7. Weighted Score Formula</h3>
                                     <div class="my-3 overflow-x-auto overflow-y-hidden text-center font-semibold text-gray-800 dark:text-gray-200 pb-2">
-                                        $$\text{Base Score} = ({{ $cc }}\% \times 0.8) + ({{ $behPct }}\% \times 0.2) = {{ $skillContribution }}\% + {{ $behavioralContribution }}\% = {{ $rawScore }}\%$$
+                                        $$\text{Base Score} = (C_i \cdot 0.8) + (B_p \cdot 0.2) = ({{ $ci }}\% \cdot 0.8) + ({{ $behPct }}\% \cdot 0.2) = {{ $compContribution }}\% + {{ $behavioralContribution }}\% = {{ $rawScore }}\%$$
                                     </div>
 
                                     @if($recommendedText === "Needs More Training")
                                         @php $finalScore = round($rawScore * 0.5); @endphp
-                                        <h3>6. Recommendation Penalty (Needs More Training)</h3>
+                                        <h3>8. Recommendation Penalty (Needs More Training)</h3>
                                         <p>"Needs More Training" triggers a strict <strong>50% reduction</strong>:</p>
                                         <div class="my-3 overflow-x-auto overflow-y-hidden text-center font-semibold text-gray-800 dark:text-gray-200 pb-2">
-                                            $$\text{Final Score} = {{ $rawScore }}\% \times 0.5 = {{ round($rawScore * 0.5, 2) }}\% \rightarrow \mathbf{ {{ $finalScore }}\% }$$
+                                            $$\text{Final Score} = {{ $rawScore }}\% \cdot 0.5 = {{ round($rawScore * 0.5, 2) }}\% \rightarrow \mathbf{ {{ $finalScore }}\% }$$
                                         </div>
                                     @else
                                         @php $finalScore = round($rawScore); @endphp
-                                        <h3>6. Final Score</h3>
+                                        <h3>8. Final Score</h3>
                                         <div class="my-3 overflow-x-auto overflow-y-hidden text-center font-semibold text-gray-800 dark:text-gray-200 pb-2">
                                             $$\text{Final Score} = {{ $rawScore }}\% \rightarrow \mathbf{ {{ $finalScore }}\% }$$
                                         </div>

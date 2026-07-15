@@ -121,7 +121,7 @@ class OfficeMatchingController extends Controller
         
         $headerMap = array_flip(array_map('trim', $headers));
 
-        $rules = OfficeRule::all()->groupBy('office_id');
+        $rules = OfficeRule::with('office')->get()->groupBy('office_id');
         $activeAssessments = AssessmentItem::active()->get();
         
         $competencies = [];
