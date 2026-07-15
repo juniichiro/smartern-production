@@ -582,7 +582,7 @@
                                                     </form>
                                                     <button @click="let note = prompt('Rejection reason:'); if(note !== null) { 
                                                         let f = document.createElement('form'); f.method = 'POST'; f.action = '{{ route('head-supervisor.interns.resolve-extension', $ext) }}';
-                                                        f.innerHTML = `@csrf @method('PUT') <input type='hidden' name='status' value='rejected'><input type='hidden' name='rejection_note' :value='note'>`;
+                                                        f.innerHTML = `<input type='hidden' name='_token' value='{{ csrf_token() }}'><input type='hidden' name='_method' value='PUT'><input type='hidden' name='status' value='rejected'><input type='hidden' name='rejection_note' value='${note.replace(/'/g, '&apos;')}'>`;
                                                         document.body.appendChild(f); f.submit();
                                                     }" class="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-lg text-[10px] font-black uppercase tracking-wider transition active:scale-95 shadow-sm cursor-pointer">
                                                         Reject
