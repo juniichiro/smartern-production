@@ -315,6 +315,12 @@ class AttendanceService
             // Case A: Actual check-in exists in database
             if (isset($actualAttendances[$dateStr])) {
                 $log = $actualAttendances[$dateStr];
+
+                // Guard: status=absent with clock_in/clock_out is invalid data — skip to fall through to absent logic
+                if ($log->status === 'absent') {
+                    continue;
+                }
+
                 // (rest of actual attendance logic)
 
                 // Fetch effective schedule to get rounding mode
