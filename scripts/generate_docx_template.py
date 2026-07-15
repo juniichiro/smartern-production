@@ -18,11 +18,11 @@ def create_resume_template():
         section.page_width = Inches(8.5)
         section.page_height = Inches(11.0)
 
-    # Base style font (Highly readable 10.5pt)
+    # Base style font (Highly readable 12.0pt)
     style = doc.styles['Normal']
     font = style.font
     font.name = 'Arial'
-    font.size = Pt(10.5)
+    font.size = Pt(12.0)
 
     # 1. Header (Name, Specialization)
     header_table = doc.add_table(rows=1, cols=2)
@@ -52,11 +52,11 @@ def create_resume_template():
     cell_left.width = Inches(1.3)
     p_photo = cell_left.paragraphs[0]
     p_photo.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p_photo.paragraph_format.space_before = Pt(8)
-    p_photo.paragraph_format.space_after = Pt(8)
+    p_photo.paragraph_format.space_before = Pt(4)
+    p_photo.paragraph_format.space_after = Pt(4)
     run_photo = p_photo.add_run("[ INSERT\nPHOTO\nHERE ]")
     run_photo.font.bold = True
-    run_photo.font.size = Pt(8.5)
+    run_photo.font.size = Pt(9.0)
     run_photo.font.color.rgb = RGBColor(120, 120, 120)
     
     tcPr = cell_left._tc.get_or_add_tcPr()
@@ -74,11 +74,11 @@ def create_resume_template():
     cell_right = header_table.cell(0, 1)
     cell_right.width = Inches(6.0)
     p_name = cell_right.paragraphs[0]
-    p_name.paragraph_format.space_before = Pt(6)
+    p_name.paragraph_format.space_before = Pt(4)
     p_name.paragraph_format.space_after = Pt(2)
     p_name.paragraph_format.left_indent = Inches(0.2)
     run_name = p_name.add_run("JOHN DOE")
-    run_name.font.size = Pt(18)
+    run_name.font.size = Pt(20)
     run_name.font.bold = True
     run_name.font.color.rgb = RGBColor(11, 86, 148) # SmarTern theme Blue
 
@@ -87,13 +87,13 @@ def create_resume_template():
     p_degree.paragraph_format.space_after = Pt(0)
     p_degree.paragraph_format.left_indent = Inches(0.2)
     run_degree = p_degree.add_run("Bachelor of Science in Information Technology\nSpecialization in Web and Mobile Application")
-    run_degree.font.size = Pt(11)
+    run_degree.font.size = Pt(12)
     run_degree.font.color.rgb = RGBColor(80, 80, 80)
 
     # Add a horizontal line below header
     p_space = doc.add_paragraph()
-    p_space.paragraph_format.space_before = Pt(6)
-    p_space.paragraph_format.space_after = Pt(10)
+    p_space.paragraph_format.space_before = Pt(4)
+    p_space.paragraph_format.space_after = Pt(8)
     pPr = p_space._p.get_or_add_pPr()
     pBdr = parse_xml(
         '<w:pBdr %s>'
@@ -133,11 +133,11 @@ def create_resume_template():
     # Helper function to add structured headers
     def add_section_header(cell, text):
         p = cell.paragraphs[0] if len(cell.paragraphs[0].text) == 0 else cell.add_paragraph()
-        p.paragraph_format.space_before = Pt(10)
-        p.paragraph_format.space_after = Pt(4)
+        p.paragraph_format.space_before = Pt(8)
+        p.paragraph_format.space_after = Pt(3)
         p.paragraph_format.keep_with_next = True
         run = p.add_run(text)
-        run.font.size = Pt(12.0)
+        run.font.size = Pt(13.0)
         run.font.bold = True
         run.font.color.rgb = RGBColor(11, 86, 148)
         
@@ -151,24 +151,24 @@ def create_resume_template():
         return p
 
     # --- LEFT COLUMN CONTENT ---
-    # Section: Contact Information
+    # Section: Contact Information (No tabs, clean spacing)
     add_section_header(col_left, "Contact Information")
     
     p = col_left.add_paragraph()
     p.paragraph_format.space_after = Pt(2)
-    run = p.add_run("Phone:\t")
+    run = p.add_run("Phone: ")
     run.font.bold = True
     p.add_run("09303044030")
     
     p = col_left.add_paragraph()
     p.paragraph_format.space_after = Pt(2)
-    run = p.add_run("Email:\t")
+    run = p.add_run("Email: ")
     run.font.bold = True
     p.add_run("johndoe@emaildomain.com")
     
     p = col_left.add_paragraph()
-    p.paragraph_format.space_after = Pt(10)
-    run = p.add_run("Address:\t")
+    p.paragraph_format.space_after = Pt(6)
+    run = p.add_run("Address: ")
     run.font.bold = True
     p.add_run("Quezon City, Metro Manila, Philippines 1109")
 
@@ -179,7 +179,6 @@ def create_resume_template():
     p.paragraph_format.space_after = Pt(2)
     run = p.add_run("BS in Information Technology (WMA)")
     run.font.bold = True
-    run.font.size = Pt(10)
     
     p = col_left.add_paragraph()
     p.paragraph_format.space_after = Pt(2)
@@ -192,18 +191,17 @@ def create_resume_template():
     p.add_run("P. Paredes St., Sampaloc, Manila")
     
     p = col_left.add_paragraph()
-    p.paragraph_format.space_after = Pt(10)
+    p.paragraph_format.space_after = Pt(6)
     run = p.add_run("Expected Graduation – 2025")
     run.font.italic = True
 
-    # Section: Work Experience (Optional)
-    add_section_header(col_left, "Work Experience (Optional)")
+    # Section: Work Experience
+    add_section_header(col_left, "Work Experience")
     
     p = col_left.add_paragraph()
     p.paragraph_format.space_after = Pt(2)
     run = p.add_run("Web Developer Intern")
     run.font.bold = True
-    run.font.size = Pt(10)
     
     p = col_left.add_paragraph()
     p.paragraph_format.space_after = Pt(2)
@@ -222,7 +220,7 @@ def create_resume_template():
     p.add_run("Developed responsive user interface components using Alpine.js and Tailwind CSS.")
     
     p = col_left.add_paragraph(style='List Bullet')
-    p.paragraph_format.space_after = Pt(10)
+    p.paragraph_format.space_after = Pt(6)
     p.add_run("Collaborated with the backend engineering team to integrate RESTful API endpoints.")
 
     # Section: Key Skills / Proficiency
@@ -234,19 +232,19 @@ def create_resume_template():
     run.font.bold = True
     
     p = col_left.add_paragraph(style='List Bullet')
-    p.paragraph_format.space_after = Pt(2)
+    p.paragraph_format.space_after = Pt(1)
     run = p.add_run("Programming Languages | ")
     run.font.bold = True
-    p.add_run("HTML, JavaScript, Kotlin, PHP, Python")
+    p.add_run("HTML, JavaScript, Kotlin, PHP")
     
     p = col_left.add_paragraph(style='List Bullet')
-    p.paragraph_format.space_after = Pt(2)
+    p.paragraph_format.space_after = Pt(1)
     run = p.add_run("Databases & Cloud | ")
     run.font.bold = True
     p.add_run("SQL, MySQL, Git, Azure")
     
     p = col_left.add_paragraph(style='List Bullet')
-    p.paragraph_format.space_after = Pt(4)
+    p.paragraph_format.space_after = Pt(3)
     p.add_run("UI/UX Design & Prototyping (Figma)")
     
     p = col_left.add_paragraph()
@@ -255,20 +253,20 @@ def create_resume_template():
     run.font.bold = True
     
     p = col_left.add_paragraph(style='List Bullet')
-    p.paragraph_format.space_after = Pt(2)
+    p.paragraph_format.space_after = Pt(1)
     p.add_run("Oral and written communication")
     p = col_left.add_paragraph(style='List Bullet')
-    p.paragraph_format.space_after = Pt(10)
+    p.paragraph_format.space_after = Pt(6)
     p.add_run("Teamwork & Collaboration")
 
-    # Section: Accomplished Projects / Engagements (1 item)
-    add_section_header(col_left, "Accomplished Projects / Engagements")
+    # Section: Accomplished Projects / Engagements
+    add_section_header(col_left, "Accomplished Projects")
     
     p = col_left.add_paragraph(style='List Bullet')
     p.paragraph_format.space_after = Pt(0)
     run_title = p.add_run("Auto-Axis")
     run_title.font.bold = True
-    p.add_run(" : A Web Auto Repair Shop Management System and a Mobile Proximity Geolocation Services | ")
+    p.add_run(" : A Web Auto Repair Shop Management System | ")
     run_role = p.add_run("Project Manager")
     run_role.font.italic = True
 
@@ -278,54 +276,54 @@ def create_resume_template():
     add_section_header(col_right, "Awards")
     
     p = col_right.add_paragraph(style='List Bullet')
-    p.paragraph_format.space_after = Pt(2)
+    p.paragraph_format.space_after = Pt(1)
     p.add_run("Champion, IT Quiz Bee 2024")
     
     p = col_right.add_paragraph(style='List Bullet')
-    p.paragraph_format.space_after = Pt(10)
+    p.paragraph_format.space_after = Pt(6)
     p.add_run("Runner Up, HEALTHhack 2024")
 
     # Section: Certifications
     add_section_header(col_right, "Certifications")
     
     p = col_right.add_paragraph(style='List Bullet')
-    p.paragraph_format.space_after = Pt(2)
+    p.paragraph_format.space_after = Pt(1)
     p.add_run("Autodesk® Certified User: Maya®")
     
     p = col_right.add_paragraph(style='List Bullet')
-    p.paragraph_format.space_after = Pt(10)
+    p.paragraph_format.space_after = Pt(6)
     p.add_run("Microsoft® Certified Professional")
 
     # Section: Organizations
     add_section_header(col_right, "Organizations")
     
     p = col_right.add_paragraph(style='List Bullet')
-    p.paragraph_format.space_after = Pt(2)
+    p.paragraph_format.space_after = Pt(1)
     run = p.add_run("Treasurer")
     run.font.bold = True
-    p.add_run(", Theater Guild, Artist Connection")
+    p.add_run(", Theater Guild")
     
     p = col_right.add_paragraph(style='List Bullet')
-    p.paragraph_format.space_after = Pt(10)
+    p.paragraph_format.space_after = Pt(6)
     run = p.add_run("Member")
     run.font.bold = True
-    p.add_run(", Alliance of Information Technology Students")
+    p.add_run(", Alliance of IT Students")
 
     # Section: Languages Spoken
     add_section_header(col_right, "Languages Spoken")
     
     p = col_right.add_paragraph(style='List Bullet')
-    p.paragraph_format.space_after = Pt(2)
+    p.paragraph_format.space_after = Pt(1)
     p.add_run("Filipino")
     p = col_right.add_paragraph(style='List Bullet')
-    p.paragraph_format.space_after = Pt(10)
+    p.paragraph_format.space_after = Pt(6)
     p.add_run("English")
 
     # Section: Other Interests
     add_section_header(col_right, "Other Interests")
     
     p = col_right.add_paragraph(style='List Bullet')
-    p.paragraph_format.space_after = Pt(2)
+    p.paragraph_format.space_after = Pt(1)
     p.add_run("Vlogging")
     p = col_right.add_paragraph(style='List Bullet')
     p.paragraph_format.space_after = Pt(0)
