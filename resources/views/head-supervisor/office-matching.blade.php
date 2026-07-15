@@ -341,7 +341,7 @@
                                                                             $itemCategory = $skillToCategory[trim($skill)] ?? 'Other';
                                                                         @endphp
                                                                         <tr x-show="skillFilter === 'all' || skillFilter === '{{ $itemCategory }}'">
-                                                                            <td class="px-6 py-3.5 text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-tight">{{ $skill }}</td>
+                                                                            <td class="px-6 py-3.5 text-xs font-bold text-gray-700 dark:text-gray-300 normal-case leading-relaxed">{{ $skill }}</td>
                                                                             <td class="px-6 py-3.5 text-xs font-bold text-gray-500 text-center">
                                                                                 <span class="inline-block bg-gray-100 dark:bg-gray-800 px-2.5 py-1 rounded-lg text-[10px] font-extrabold">{{ $score }} / 5</span>
                                                                             </td>
@@ -753,7 +753,7 @@
                                                         @foreach(array_merge($applicant->tech_skills, $applicant->soft_skills) as $skill => $score)
                                                             @php $itemCategory = $skillToCategory[trim($skill)] ?? 'Other'; @endphp
                                                             <tr x-show="skillFilter === 'all' || skillFilter === '{{ $itemCategory }}'">
-                                                                <td class="px-3 py-2.5 font-bold text-gray-700 dark:text-gray-300 uppercase tracking-tight">{{ $skill }}</td>
+                                                                <td class="px-3 py-2.5 font-bold text-gray-700 dark:text-gray-300 normal-case leading-relaxed">{{ $skill }}</td>
                                                                 <td class="px-3 py-2.5 text-center"><span class="inline-block bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded text-[9px] font-extrabold">{{ $score }}/5</span></td>
                                                                 <td class="px-3 py-2.5 text-right">
                                                                     <select name="verified_skills[{{ $skill }}]" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-2 py-1.5 text-[10px] font-bold focus:ring-2 focus:ring-[#0B5694]/20 outline-none">
