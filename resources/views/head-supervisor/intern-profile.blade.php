@@ -580,7 +580,7 @@
                                                             Approve
                                                         </button>
                                                     </form>
-                                                    <button @click="let note = prompt('Rejection reason:'); if(note !== null) { 
+                                                    <button onclick="let note = prompt('Rejection reason:'); if(note !== null) { 
                                                         let f = document.createElement('form'); f.method = 'POST'; f.action = '{{ route('head-supervisor.interns.resolve-extension', $ext) }}';
                                                         f.innerHTML = `<input type='hidden' name='_token' value='{{ csrf_token() }}'><input type='hidden' name='_method' value='PUT'><input type='hidden' name='status' value='rejected'><input type='hidden' name='rejection_note' value='${note.replace(/'/g, '&apos;')}'>`;
                                                         document.body.appendChild(f); f.submit();
