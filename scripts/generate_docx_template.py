@@ -21,7 +21,7 @@ def create_resume_template():
     # Base style font (Highly readable 12.0pt)
     style = doc.styles['Normal']
     font = style.font
-    font.name = 'Arial'
+    font.name = 'Times New Roman'
     font.size = Pt(12.0)
 
     # 1. Header (Name, Specialization)
@@ -78,6 +78,7 @@ def create_resume_template():
     p_name.paragraph_format.space_after = Pt(2)
     p_name.paragraph_format.left_indent = Inches(0.2)
     run_name = p_name.add_run("JOHN DOE")
+    run_name.font.name = 'Arial'
     run_name.font.size = Pt(20)
     run_name.font.bold = True
     run_name.font.color.rgb = RGBColor(11, 86, 148) # SmarTern theme Blue
