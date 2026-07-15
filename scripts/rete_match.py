@@ -53,13 +53,16 @@ def evaluate_resume_factors(resume_text, office_name):
     resume_lower = resume_text.lower()
     office_lower = office_name.lower()
     
-    # 1. Determine Office Domain
+    # 1. Determine Office Domain using whole-word matching
+    # Split the office name into clean words to prevent substring collisions (e.g. 'unit' containing 'it')
+    office_words = set(re.findall(r'\b\w+\b', office_lower))
+    
     domain = 'admin'
-    if any(k in office_lower for k in ['it', 'ict', 'tech', 'computer', 'system', 'developer', 'network']):
+    if any(k in office_words for k in ['it', 'ict', 'tech', 'computer', 'system', 'developer', 'network']) or 'technology' in office_words:
         domain = 'ict'
-    elif any(k in office_lower for k in ['hr', 'human', 'resource', 'psych']):
+    elif any(k in office_words for k in ['hr', 'human', 'resource', 'psych', 'hrmu']):
         domain = 'hr'
-    elif any(k in office_lower for k in ['finance', 'accounting', 'budget', 'audit', 'treasury']):
+    elif any(k in office_words for k in ['finance', 'accounting', 'budget', 'audit', 'treasury']):
         domain = 'finance'
         
     # 2. Degree Alignment (Da) - 15% weight
