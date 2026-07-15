@@ -336,9 +336,22 @@
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody class="divide-y divide-gray-100 dark:divide-gray-800 bg-white dark:bg-gray-900">
-                                                                    @foreach(array_merge($applicant->tech_skills, $applicant->soft_skills) as $skill => $score)
+                                                                    @php
+                                                                        $assessmentItems = \App\Models\AssessmentItem::active()->orderBy('id')->get();
+                                                                        $allApplicantSkills = [];
+                                                                        foreach (array_merge($applicant->tech_skills, $applicant->soft_skills) as $s => $v) {
+                                                                            $allApplicantSkills[strtolower(trim($s))] = $v;
+                                                                        }
+                                                                    @endphp
+                                                                    @foreach($assessmentItems as $item)
                                                                         @php
-                                                                            $itemCategory = $skillToCategory[trim($skill)] ?? 'Other';
+                                                                            $skillKey = strtolower(trim($item->competency_text));
+                                                                            if (!isset($allApplicantSkills[$skillKey])) {
+                                                                                continue;
+                                                                            }
+                                                                            $score = $allApplicantSkills[$skillKey];
+                                                                            $skill = $item->competency_text;
+                                                                            $itemCategory = $item->category;
                                                                         @endphp
                                                                         <tr x-show="skillFilter === 'all' || skillFilter === '{{ $itemCategory }}'">
                                                                             <td class="px-6 py-3.5 text-xs font-bold text-gray-700 dark:text-gray-300 normal-case leading-relaxed">{{ $skill }}</td>
@@ -750,8 +763,23 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody class="divide-y divide-gray-100 dark:divide-gray-800 bg-white dark:bg-gray-900 text-[11px]">
-                                                        @foreach(array_merge($applicant->tech_skills, $applicant->soft_skills) as $skill => $score)
-                                                            @php $itemCategory = $skillToCategory[trim($skill)] ?? 'Other'; @endphp
+                                                        @php
+                                                            $assessmentItems = \App\Models\AssessmentItem::active()->orderBy('id')->get();
+                                                            $allApplicantSkills = [];
+                                                            foreach (array_merge($applicant->tech_skills, $applicant->soft_skills) as $s => $v) {
+                                                                $allApplicantSkills[strtolower(trim($s))] = $v;
+                                                            }
+                                                        @endphp
+                                                        @foreach($assessmentItems as $item)
+                                                            @php
+                                                                $skillKey = strtolower(trim($item->competency_text));
+                                                                if (!isset($allApplicantSkills[$skillKey])) {
+                                                                    continue;
+                                                                }
+                                                                $score = $allApplicantSkills[$skillKey];
+                                                                $skill = $item->competency_text;
+                                                                $itemCategory = $item->category;
+                                                            @endphp
                                                             <tr x-show="skillFilter === 'all' || skillFilter === '{{ $itemCategory }}'">
                                                                 <td class="px-3 py-2.5 font-bold text-gray-700 dark:text-gray-300 normal-case leading-relaxed">{{ $skill }}</td>
                                                                 <td class="px-3 py-2.5 text-center"><span class="inline-block bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded text-[9px] font-extrabold">{{ $score }}/5</span></td>
