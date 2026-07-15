@@ -65,6 +65,10 @@ def evaluate_resume_factors(resume_text, office_name):
     # 2. Degree Alignment (Da) - 15% weight
     degree_alignment = 0.0
     
+    # Restrict degree matching to header and footer blocks of the resume
+    # to avoid matching certification/project keywords (e.g., 'management' or 'finance')
+    degree_text = resume_lower[:450] + resume_lower[-350:]
+    
     ict_degrees_strong = ['information technology', 'computer science', 'computer engineering', 'wma', 'information systems', 'software engineering']
     ict_degrees_partial = ['engineering', 'mathematics', 'statistics', 'science']
     
@@ -78,24 +82,24 @@ def evaluate_resume_factors(resume_text, office_name):
     admin_degrees_partial = ['communications', 'english', 'humanities']
     
     if domain == 'ict':
-        if any(d in resume_lower for d in ict_degrees_strong):
+        if any(d in degree_text for d in ict_degrees_strong):
             degree_alignment = 100.0
-        elif any(d in resume_lower for d in ict_degrees_partial):
+        elif any(d in degree_text for d in ict_degrees_partial):
             degree_alignment = 50.0
     elif domain == 'hr':
-        if any(d in resume_lower for d in hr_degrees_strong):
+        if any(d in degree_text for d in hr_degrees_strong):
             degree_alignment = 100.0
-        elif any(d in resume_lower for d in hr_degrees_partial):
+        elif any(d in degree_text for d in hr_degrees_partial):
             degree_alignment = 50.0
     elif domain == 'finance':
-        if any(d in resume_lower for d in finance_degrees_strong):
+        if any(d in degree_text for d in finance_degrees_strong):
             degree_alignment = 100.0
-        elif any(d in resume_lower for d in finance_degrees_partial):
+        elif any(d in degree_text for d in finance_degrees_partial):
             degree_alignment = 50.0
     else:  # admin
-        if any(d in resume_lower for d in admin_degrees_strong):
+        if any(d in degree_text for d in admin_degrees_strong):
             degree_alignment = 100.0
-        elif any(d in resume_lower for d in admin_degrees_partial):
+        elif any(d in degree_text for d in admin_degrees_partial):
             degree_alignment = 50.0
             
     # 3. Work Experience Alignment (Ea) - 15% weight
