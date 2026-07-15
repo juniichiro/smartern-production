@@ -580,11 +580,7 @@
                                                             Approve
                                                         </button>
                                                     </form>
-                                                     <button onclick="let note = prompt('Rejection reason:'); if(note !== null) { 
-                                                         let f = document.createElement('form'); f.method = 'POST'; f.action = '{{ route('head-supervisor.interns.resolve-extension', $ext) }}';
-                                                         f.innerHTML = '<input type=&quot;hidden&quot; name=&quot;_token&quot; value=&quot;{{ csrf_token() }}&quot;><input type=&quot;hidden&quot; name=&quot;_method&quot; value=&quot;PUT&quot;><input type=&quot;hidden&quot; name=&quot;status&quot; value=&quot;rejected&quot;><input type=&quot;hidden&quot; name=&quot;rejection_note&quot; value=&quot;' + note.replace(/&quot;/g, '&amp;quot;').replace(/'/g, '&amp;#39;') + '&quot;>';
-                                                         document.body.appendChild(f); f.submit();
-                                                     }" class="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-lg text-[10px] font-black uppercase tracking-wider transition active:scale-95 shadow-sm cursor-pointer">
+                                                     <button @click="$dispatch('open-reject-modal', { url: '{{ route('head-supervisor.interns.resolve-extension', $ext) }}' })" class="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-lg text-[10px] font-black uppercase tracking-wider transition active:scale-95 shadow-sm cursor-pointer">
                                                          Reject
                                                      </button>
                                                 @else
@@ -669,6 +665,57 @@
                             Back to Profile
                         </button>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Rejection Reason Modal --}}
+        <div x-data="{ rejectModalOpen: false, rejectionNote: '', rejectActionUrl: '' }"
+             x-show="rejectModalOpen" 
+             @open-reject-modal.window="rejectModalOpen = true; rejectActionUrl = $event.detail.url; rejectionNote = '';"
+             class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm" 
+             x-cloak
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0">
+            
+            <div @click.away="rejectModalOpen = false" 
+                 class="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-[30px] sm:rounded-[40px] shadow-2xl overflow-hidden border border-gray-100 dark:border-gray-800">
+                
+                <div class="p-8 sm:p-12">
+                    <div class="flex justify-between items-start mb-8">
+                        <div>
+                            <span class="text-xs sm:text-sm font-black text-rose-500 uppercase tracking-[0.2em] mb-1.5 block">Resolve Request</span>
+                            <h3 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase">Reject Extension Request</h3>
+                        </div>
+                        <button @click="rejectModalOpen = false" class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </button>
+                    </div>
+    
+                    <form :action="rejectActionUrl" method="POST" class="space-y-8">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="status" value="rejected">
+
+                        <div class="space-y-3 text-left">
+                            <span class="text-xs sm:text-sm font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Reason for Rejection</span>
+                            <textarea name="rejection_note" x-model="rejectionNote" required rows="4" placeholder="Describe the reason why this extension request is being rejected..."
+                                class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 rounded-2xl text-sm font-semibold text-gray-800 dark:text-gray-100 focus:ring-[#0B5694]/20 focus:border-[#0B5694] transition resize-none"></textarea>
+                        </div>
+                        
+                        <div class="pt-6 flex flex-col sm:flex-row gap-4">
+                            <button @click="rejectModalOpen = false" type="button" class="w-full sm:w-auto px-8 py-4 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-750 transition active:scale-95 text-center cursor-pointer">
+                                Cancel
+                            </button>
+                            <button type="submit" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white py-4 px-8 rounded-xl text-sm font-bold uppercase tracking-wider transition active:scale-95 shadow-md shadow-rose-500/10 cursor-pointer text-center">
+                                Submit Rejection
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
