@@ -54,10 +54,10 @@
                             }
                         @endphp
                         
-                        <div class="flex flex-col lg:flex-row lg:items-center justify-between p-6 sm:p-8 rounded-[30px] border border-gray-100 dark:border-gray-800/80 bg-gray-50/20 dark:bg-gray-900/40 hover:shadow-xl hover:border-blue-100 dark:hover:border-blue-900/50 transition-all duration-300 gap-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-12 items-center p-6 sm:p-8 rounded-[30px] border border-gray-100 dark:border-gray-800/80 bg-gray-50/20 dark:bg-gray-900/40 hover:shadow-xl hover:border-blue-100 dark:hover:border-blue-900/50 transition-all duration-300 gap-6">
                             
-                            {{-- LEFT: Candidate Details & Scores --}}
-                            <div class="flex items-start gap-5">
+                            {{-- LEFT: Candidate Details & Scores (5 Columns) --}}
+                            <div class="lg:col-span-5 flex items-start gap-5">
                                 <div class="w-16 h-16 shrink-0 rounded-2xl flex flex-col items-center justify-center {{ $scoreBg }} border shadow-sm font-black text-xl">
                                     {{ $match->score }}%
                                 </div>
@@ -85,8 +85,8 @@
                                 </div>
                             </div>
 
-                            {{-- CENTER: Triangulated Overlaps Preview --}}
-                            <div class="flex-1 lg:max-w-md text-left space-y-2">
+                            {{-- CENTER: Triangulated Overlaps Preview (4 Columns) --}}
+                            <div class="lg:col-span-4 text-left space-y-2">
                                 <span class="text-[10px] font-extrabold uppercase tracking-wider text-gray-400 dark:text-gray-500">Verified Competencies</span>
                                 <div class="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto custom-scrollbar pr-1">
                                     @php
@@ -109,17 +109,17 @@
                                 </div>
                             </div>
 
-                            {{-- RIGHT: Supervisor Request Action --}}
-                            <div class="shrink-0 flex items-center justify-end">
+                            {{-- RIGHT: Supervisor Request Action (3 Columns) --}}
+                            <div class="lg:col-span-3 flex items-center justify-end w-full lg:w-auto lg:justify-self-end">
                                 @if($match->requested_by_supervisor)
                                     <div class="flex items-center gap-2 px-6 py-3.5 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 border border-emerald-100 dark:border-emerald-900/30 rounded-2xl text-xs font-extrabold uppercase tracking-wider shadow-sm select-none">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><polyline points="20 6 9 17 4 12"/></svg>
                                         Intern Requested
                                     </div>
                                 @else
-                                    <form action="{{ route('supervisor.office-matching.request', $match->id) }}" method="POST">
+                                    <form action="{{ route('supervisor.office-matching.request', $match->id) }}" method="POST" class="w-full lg:w-auto">
                                         @csrf
-                                        <button type="submit" class="w-full sm:w-auto px-6 py-3.5 bg-[#0B5694] hover:bg-[#09477b] dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/50 active:scale-[0.98]">
+                                        <button type="submit" class="w-full lg:w-auto px-6 py-3.5 bg-[#0B5694] hover:bg-[#09477b] dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/50 active:scale-[0.98]">
                                             Request Intern
                                         </button>
                                     </form>
