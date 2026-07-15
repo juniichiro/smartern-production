@@ -341,6 +341,13 @@
 
                     {{-- Dynamic Competency Assessment Form --}}
                     <div class="space-y-12" id="skills-assessment-section">
+                        {{-- Personal Details Gate --}}
+                        <div x-show="hasPersonalDetailsErrors" class="bg-amber-50 dark:bg-amber-900/10 border-2 border-amber-200 dark:border-amber-800 rounded-[24px] xs:rounded-[32px] sm:rounded-[40px] p-8 sm:p-12 text-center space-y-4">
+                            <h3 class="text-base sm:text-lg font-black text-amber-800 dark:text-amber-300 uppercase tracking-wider">Complete Your Profile First</h3>
+                            <p class="text-xs sm:text-sm text-amber-600 dark:text-amber-400 font-medium max-w-md mx-auto">
+                                Please fill out all required personal details above before proceeding to the competency self-assessment.
+                            </p>
+                        </div>
                         <!-- Simplified Progress & Assessment Title -->
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-4 mb-8 text-left gap-2 px-1">
                             <h3 class="text-xs font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest">
@@ -351,6 +358,7 @@
                             </span>
                         </div>
 
+                        <div x-show="!hasPersonalDetailsErrors" class="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
                         @foreach($assessmentItems as $category => $categoryItems)
                             <div class="bg-white dark:bg-gray-900 rounded-[24px] xs:rounded-[32px] sm:rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 text-left">
                                 <div class="bg-gray-50 dark:bg-gray-950 px-5 xs:px-8 sm:px-10 py-5 sm:py-6 border-b border-gray-100 dark:border-gray-800 rounded-t-[24px] xs:rounded-t-[32px] sm:rounded-t-[40px]">
@@ -414,6 +422,7 @@
                                 </div>
                             </div>
                         @endforeach
+                        </div>
                     </div>
 
                     <div class="pt-10">
@@ -1119,6 +1128,14 @@
                 if (this.gender === 'other' && (!this.formData.gender_other_specify || !this.formData.gender_other_specify.trim())) {
                     this.errors['gender_other_specify'] = 'Please specify your identity details.';
                 }
+            },
+            get hasPersonalDetailsErrors() {
+                const fields = ['first_name', 'last_name', 'email', 'school', 'phone_number', 'emergency_contact', 'emergency_contact_number'];
+                for (const f of fields) {
+                    const val = this.formData[f];
+                    if (!val || (typeof val === 'string' && val.trim() === '')) return true;
+                }
+                return !this.gender;
             },
             get ratedSkillsCount() {
                 const techRated = this.techSkills.filter(s => s.score !== null).length;
