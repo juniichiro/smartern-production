@@ -192,6 +192,35 @@
 
                 {{-- STEP 2: PROFILE & SKILLS --}}
                 <div x-show="step === 2" x-cloak class="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500 pb-32">
+                    {{-- Pre-Assessment Intro --}}
+                    <div x-show="assessmentIntro" class="bg-white dark:bg-gray-900 rounded-[24px] xs:rounded-[32px] sm:rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 p-5 xs:p-8 md:p-12 text-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 bg-amber-50 dark:bg-amber-900/20 rounded-[20px] sm:rounded-[28px] flex items-center justify-center mx-auto text-amber-500 dark:text-amber-400 shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" class="sm:w-8 sm:h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                        </div>
+                        <div class="space-y-4 max-w-lg mx-auto">
+                            <h3 class="text-xl sm:text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Competency Self-Assessment</h3>
+                            <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 font-medium leading-relaxed">
+                                Before we finalize your application, please complete the self-assessment form below. This helps our matching engine better understand your strengths and find the best office fit for you.
+                            </p>
+                            <div class="bg-gray-50 dark:bg-gray-800/50 rounded-3xl p-5 sm:p-6 space-y-3 text-left mt-6">
+                                <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
+                                    <div class="w-8 h-8 rounded-full bg-[#0B5694]/10 dark:bg-blue-500/10 flex items-center justify-center text-[#0B5694] dark:text-blue-400 font-bold text-xs shrink-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold uppercase tracking-wider">Total Items to Answer</p>
+                                        <p class="text-2xl font-black text-[#0B5694] dark:text-blue-400 mt-0.5" x-text="totalSkillsCount"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" @click="assessmentIntro = false" class="w-full bg-[#0B5694] dark:bg-blue-600 text-white py-5 rounded-[30px] font-black text-sm uppercase tracking-widest shadow-xl shadow-blue-500/20 hover:shadow-blue-500/40 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 group">
+                            <span>Begin Assessment</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </button>
+                    </div>
+
+                    <div x-show="!assessmentIntro" class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     {{-- Personal Details Card --}}                    {{-- Personal Details Card --}}
                     <div class="bg-white dark:bg-gray-900 rounded-[24px] xs:rounded-[32px] sm:rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 p-5 xs:p-8 md:p-12 space-y-12">
                         <div class="flex flex-col sm:flex-row items-center gap-6 sm:gap-10">
@@ -421,6 +450,7 @@
                             <span>Review Assessment</span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                         </button>
+                    </div>
                     </div>
                 </div>
 
@@ -775,6 +805,7 @@
             techSkills: [],
             softSkills: [],
             hasScrolledToAssessment: false,
+            assessmentIntro: savedState && savedState.step === 2 ? false : true,
             showPrivacyModal: false,
             hasScrolledToBottom: false,
             privacyAcknowledged: savedState && savedState.privacyAcknowledged ? true : false,
