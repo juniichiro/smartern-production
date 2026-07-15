@@ -8,7 +8,7 @@
     userName="{{ Auth::user()->supervisorDetails->first_name }}" 
     userRole="{{ Auth::user()->supervisorDetails->office->name }}"
 >
-    <div class="flex flex-col space-y-6 sm:space-y-8">
+    <div class="flex flex-col space-y-6 sm:space-y-8" x-data="{ activeCompetencies: [], activeCandidateName: '', showSkillsModal: false }">
         {{-- HEADER --}}
         <x-page-header
             title="Office Placement"
@@ -101,7 +101,8 @@
                                             </span>
                                         @endforeach
                                         @if(count($skills) > 3)
-                                            <span class="px-2 py-0.5 bg-blue-50/50 dark:bg-blue-900/10 text-blue-500 text-[10px] font-bold rounded-lg shrink-0">
+                                            <span @click="activeCompetencies = {{ json_encode($skills) }}; activeCandidateName = '{{ $match->applicant_name }}'; showSkillsModal = true"
+                                                  class="px-2 py-0.5 bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/40 dark:hover:bg-blue-900/50 text-blue-500 hover:text-blue-600 text-[10px] font-bold rounded-lg shrink-0 cursor-pointer transition shadow-sm select-none">
                                                 +{{ count($skills) - 3 }} more
                                             </span>
                                         @endif
@@ -131,6 +132,79 @@
                 </div>
             @endif
         </x-card-container>
+
+        {{-- SKILLS BREAKDOWN MODAL --}}
+        <div x-show="showSkillsModal" 
+             x-cloak
+             class="fixed inset-0 z-[300] flex items-center justify-center p-3 sm:p-4 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             @keydown.escape.window="showSkillsModal = false"
+             style="display: none;"
+        >
+            <div class="w-full max-w-[calc(100%-0.5rem)] sm:max-w-lg lg:max-w-xl bg-white dark:bg-gray-900 rounded-[24px] sm:rounded-[32px] border border-gray-100 dark:border-gray-800 shadow-2xl overflow-hidden flex flex-col max-h-[80vh] transition-all duration-300 text-left"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 scale-95 translate-y-4"
+                 x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                 @click.away="showSkillsModal = false"
+            >
+                {{-- Modal Header --}}
+                <div class="px-5 sm:px-8 py-4 sm:py-6 border-b border-gray-100 dark:border-gray-800 shrink-0 flex items-center justify-between gap-3">
+                    <div class="min-w-0">
+                        <h2 class="text-xs sm:text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight truncate">
+                            Competency Profile &bull; <span x-text="activeCandidateName"></span>
+                        </h2>
+                    </div>
+                    <button @click="showSkillsModal = false" class="p-2 shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors active:scale-90">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                </div>
+
+                {{-- Modal Content --}}
+                <div class="p-5 sm:p-8 overflow-y-auto custom-scrollbar flex-1 space-y-4">
+                    <template x-for="skill in activeCompetencies" :key="skill.skill">
+                        <div class="p-4 rounded-2xl bg-gray-50/50 dark:bg-gray-800/20 border border-gray-100 dark:border-gray-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="space-y-1">
+                                <h4 class="text-xs font-semibold text-gray-800 dark:text-gray-200 leading-normal normal-case" x-text="skill.skill"></h4>
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                    <template x-if="skill.resume_match">
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 dark:bg-blue-950/40 text-blue-500 border border-blue-200/50 rounded-lg text-[9px] font-bold uppercase tracking-wider">
+                                            Resume Match
+                                        </span>
+                                    </template>
+                                    <template x-if="skill.interview_match">
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-500 border border-emerald-200/50 rounded-lg text-[9px] font-bold uppercase tracking-wider">
+                                            Interview Match
+                                        </span>
+                                    </template>
+                                </div>
+                            </div>
+                            <div class="shrink-0 flex items-center gap-2 sm:self-center">
+                                <div class="text-right">
+                                    <span class="block text-[8px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Self-Reported</span>
+                                    <span class="text-xs font-black text-gray-700 dark:text-gray-300" x-text="skill.self_reported + ' / 5'"></span>
+                                </div>
+                                <template x-if="skill.verified !== null">
+                                    <div class="text-right pl-2 border-l border-gray-200 dark:border-gray-800">
+                                        <span class="block text-[8px] font-bold text-emerald-600 dark:text-emerald-500 uppercase tracking-widest">Verified</span>
+                                        <span class="text-xs font-black text-emerald-600 dark:text-emerald-500" x-text="skill.verified + ' / 5'"></span>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                {{-- Modal Footer --}}
+                <div class="px-5 sm:px-8 py-4 sm:py-6 border-t border-gray-100 dark:border-gray-800 shrink-0 bg-gray-50 dark:bg-gray-900/50 flex justify-end">
+                    <button @click="showSkillsModal = false" type="button" class="px-6 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold uppercase text-[10px] tracking-wider rounded-xl transition-all shadow-md active:scale-95">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 </x-page-layout>
 @endsection
