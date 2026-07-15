@@ -570,7 +570,7 @@
                                                                              {{ $match->office->name }}
                                                                          </span>
                                                                          @if($match->requested_by_supervisor)
-                                                                             <span class="inline-block mt-1 bg-amber-50 dark:bg-amber-950/30 text-amber-600 border border-amber-400/30 px-1 py-0.5 rounded text-[7px] tracking-wider font-extrabold uppercase shadow-sm">Requested</span>
+                                                                             <span class="inline-block mt-1 bg-amber-50 dark:bg-amber-950/30 text-amber-600 border border-amber-400/30 px-1.5 py-0.5 rounded text-[8px] sm:text-[9px] tracking-wider font-black uppercase shadow-sm">Requested</span>
                                                                          @elseif($confirmedMatch && $confirmedMatch->id === $match->id)
                                                                              <span class="inline-block mt-1 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-500 border border-emerald-500/20 px-1 py-0.5 rounded text-[7px] tracking-widest font-black uppercase shadow-sm">Assigned</span>
                                                                          @endif
@@ -587,7 +587,7 @@
                                                                          {{ $match->office->name }}
                                                                      </span>
                                                                      @if($match->requested_by_supervisor)
-                                                                         <span class="inline-block mt-2 bg-amber-50 dark:bg-amber-950/30 text-amber-600 border border-amber-400/40 px-3 py-1 rounded-xl text-[9px] tracking-wider font-black uppercase shadow-sm">Supervisor Requested Placement</span>
+                                                                         <span class="inline-block mt-2 bg-amber-50 dark:bg-amber-950/30 text-amber-600 border border-amber-400/40 px-3.5 py-1.5 rounded-xl text-[10px] sm:text-xs font-black uppercase shadow-sm tracking-wider">Supervisor Requested Placement</span>
                                                                      @elseif($confirmedMatch && $confirmedMatch->id === $match->id)
                                                                          <span class="inline-block mt-2 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-500 border border-emerald-500/20 px-3 py-1 rounded-xl text-[9px] tracking-widest font-black uppercase shadow-sm">Current Assignment</span>
                                                                      @endif
@@ -971,7 +971,7 @@
                                                             {{ $match->office->name }}
                                                         </span>
                                                         @if($match->requested_by_supervisor)
-                                                            <span class="inline-block bg-amber-50 dark:bg-amber-950/30 text-amber-600 border border-amber-400/35 px-2 py-0.5 rounded-lg text-[7px] tracking-wider font-extrabold uppercase shadow-sm">Supervisor Requested Placement</span>
+                                                            <span class="inline-block bg-amber-50 dark:bg-amber-950/30 text-amber-600 border border-amber-400/35 px-2.5 py-1 rounded-lg text-[9px] tracking-wider font-black uppercase shadow-sm">Supervisor Requested Placement</span>
                                                         @endif
                                                     </div>
                                                 @endforeach
