@@ -146,7 +146,7 @@
              @keydown.escape.window="showSkillsModal = false"
              style="display: none;"
         >
-            <div class="w-full max-w-[calc(100%-0.5rem)] sm:max-w-xl lg:max-w-3xl bg-white dark:bg-gray-900 rounded-[24px] sm:rounded-[32px] border border-gray-100 dark:border-gray-800 shadow-2xl overflow-hidden flex flex-col max-h-[80vh] transition-all duration-300 text-left"
+            <div class="w-full max-w-[calc(100%-1rem)] sm:max-w-2xl md:max-w-3xl lg:max-w-5xl bg-white dark:bg-gray-900 rounded-[24px] sm:rounded-[32px] border border-gray-100 dark:border-gray-800 shadow-2xl overflow-hidden flex flex-col max-h-[80vh] transition-all duration-300 text-left"
                  x-transition:enter="transition ease-out duration-300"
                  x-transition:enter-start="opacity-0 scale-95 translate-y-4"
                  x-transition:enter-end="opacity-100 scale-100 translate-y-0"
