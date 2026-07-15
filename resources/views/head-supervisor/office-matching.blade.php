@@ -259,11 +259,21 @@
                                         <div class="truncate" title="{{ $displayMatch ? $displayMatch->office->name : 'No Results' }}">
                                             {{ $displayMatch ? $displayMatch->office->name : 'No Results' }}
                                         </div>
-                                         @if($displayMatch && $displayMatch->requested_by_supervisor)
-                                             <div class="mt-1 flex items-center gap-1.5 text-[10px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-400/40 px-2.5 py-1 rounded-xl w-max uppercase tracking-wider animate-pulse shadow-sm">
-                                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                                                 Supervisor Requested Placement
-                                             </div>
+                                         @php
+                                             $anyRequestedMatch = $matches->first(fn($m) => $m->requested_by_supervisor);
+                                         @endphp
+                                         @if($anyRequestedMatch)
+                                             @if($displayMatch && $displayMatch->id === $anyRequestedMatch->id)
+                                                 <div class="mt-1 flex items-center gap-1.5 text-[10px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-400/40 px-2.5 py-1 rounded-xl w-max uppercase tracking-wider animate-pulse shadow-sm">
+                                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                                     Supervisor Requested
+                                                 </div>
+                                             @else
+                                                 <div class="mt-1 flex items-center gap-1.5 text-[10px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-400/40 px-2.5 py-1 rounded-xl w-max uppercase tracking-wider animate-pulse shadow-sm" title="Requested by {{ $anyRequestedMatch->office->name }}">
+                                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                                     Requested by: {{ $anyRequestedMatch->office->name }}
+                                                 </div>
+                                             @endif
                                          @endif
                                     </td>
                                     <td class="px-3 sm:px-6 py-4 sm:py-6">
@@ -434,6 +444,10 @@
                                     <td colspan="6" class="px-4 sm:px-12 py-6 sm:py-8">
                                         @php
                                             $top5Matches = $matches->sortByDesc('score')->take(5);
+                                            $requestedOutsideTop5 = $matches->filter(fn($m) => $m->requested_by_supervisor && !$top5Matches->contains('id', $m->id));
+                                            if ($requestedOutsideTop5->isNotEmpty()) {
+                                                $top5Matches = $top5Matches->concat($requestedOutsideTop5);
+                                            }
                                         @endphp
                                         <div class="bg-white dark:bg-gray-900 p-6 sm:p-8 rounded-[25px] sm:rounded-[35px] border border-gray-100 dark:border-gray-800 shadow-lg space-y-6 sm:space-y-8"
                                              x-data="{ activeMatchId: 'all' }">
@@ -652,6 +666,10 @@
                              }
 
                             $top5Matches = $matches->sortByDesc('score')->take(5);
+                            $requestedOutsideTop5 = $matches->filter(fn($m) => $m->requested_by_supervisor && !$top5Matches->contains('id', $m->id));
+                            if ($requestedOutsideTop5->isNotEmpty()) {
+                                $top5Matches = $top5Matches->concat($requestedOutsideTop5);
+                            }
                             $skillToCategory = \App\Models\AssessmentItem::active()->pluck('category', 'competency_text')->mapWithKeys(fn($cat, $txt) => [trim($txt) => $cat])->toArray();
                             $verifiedSkills = $applicant->evaluation?->verified_skills ?? [];
                         @endphp
@@ -695,11 +713,21 @@
                                     <span class="text-[9px] sm:text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Match</span>
                                     <span class="text-[10px] sm:text-xs font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight truncate ml-2">{{ $displayMatch ? $displayMatch->office->name : 'No Results' }}</span>
                                 </div>
-                                @if($displayMatch && $displayMatch->requested_by_supervisor)
-                                    <div class="flex items-center justify-end gap-1.5 text-[9px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-400/40 px-2 py-0.5 rounded-lg uppercase tracking-wider w-max ml-auto animate-pulse">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                                        Supervisor Requested Placement
-                                    </div>
+                                @php
+                                    $anyRequestedMatch = $matches->first(fn($m) => $m->requested_by_supervisor);
+                                @endphp
+                                @if($anyRequestedMatch)
+                                    @if($displayMatch && $displayMatch->id === $anyRequestedMatch->id)
+                                        <div class="flex items-center justify-end gap-1.5 text-[9px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-400/40 px-2 py-0.5 rounded-lg uppercase tracking-wider w-max ml-auto animate-pulse">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                            Supervisor Requested
+                                        </div>
+                                    @else
+                                        <div class="flex items-center justify-end gap-1.5 text-[9px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-400/40 px-2 py-0.5 rounded-lg uppercase tracking-wider w-max ml-auto animate-pulse" title="Requested by {{ $anyRequestedMatch->office->name }}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                            Requested: {{ $anyRequestedMatch->office->name }}
+                                        </div>
+                                    @endif
                                 @endif
                                 
                                 @if($displayMatch)
@@ -1066,6 +1094,10 @@
         @php
             $matches = $results->get($applicant->full_name, collect());
             $top5Matches = $matches->sortByDesc('score')->take(5);
+            $requestedOutsideTop5 = $matches->filter(fn($m) => $m->requested_by_supervisor && !$top5Matches->contains('id', $m->id));
+            if ($requestedOutsideTop5->isNotEmpty()) {
+                $top5Matches = $top5Matches->concat($requestedOutsideTop5);
+            }
             $confirmedMatch = $matches->where('is_confirmed', true)->first();
         @endphp
         @foreach($top5Matches as $match)
