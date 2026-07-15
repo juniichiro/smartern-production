@@ -231,19 +231,19 @@ def create_resume_template():
     run = p.add_run("Technical Skills:")
     run.font.bold = True
     
-    p = col_left.add_paragraph(style='List Bullet')
+    p = col_left.add_paragraph()
     p.paragraph_format.space_after = Pt(1)
     run = p.add_run("Programming Languages | ")
     run.font.bold = True
     p.add_run("HTML, JavaScript, Kotlin, PHP")
     
-    p = col_left.add_paragraph(style='List Bullet')
+    p = col_left.add_paragraph()
     p.paragraph_format.space_after = Pt(1)
     run = p.add_run("Databases & Cloud | ")
     run.font.bold = True
     p.add_run("SQL, MySQL, Git, Azure")
     
-    p = col_left.add_paragraph(style='List Bullet')
+    p = col_left.add_paragraph()
     p.paragraph_format.space_after = Pt(3)
     p.add_run("UI/UX Design & Prototyping (Figma)")
     
@@ -252,10 +252,11 @@ def create_resume_template():
     run = p.add_run("Soft Skills:")
     run.font.bold = True
     
-    p = col_left.add_paragraph(style='List Bullet')
+    p = col_left.add_paragraph()
     p.paragraph_format.space_after = Pt(1)
     p.add_run("Oral and written communication")
-    p = col_left.add_paragraph(style='List Bullet')
+    
+    p = col_left.add_paragraph()
     p.paragraph_format.space_after = Pt(6)
     p.add_run("Teamwork & Collaboration")
 
@@ -275,35 +276,35 @@ def create_resume_template():
     # Section: Awards
     add_section_header(col_right, "Awards")
     
-    p = col_right.add_paragraph(style='List Bullet')
+    p = col_right.add_paragraph()
     p.paragraph_format.space_after = Pt(1)
     p.add_run("Champion, IT Quiz Bee 2024")
     
-    p = col_right.add_paragraph(style='List Bullet')
+    p = col_right.add_paragraph()
     p.paragraph_format.space_after = Pt(6)
     p.add_run("Runner Up, HEALTHhack 2024")
 
     # Section: Certifications
     add_section_header(col_right, "Certifications")
     
-    p = col_right.add_paragraph(style='List Bullet')
+    p = col_right.add_paragraph()
     p.paragraph_format.space_after = Pt(1)
     p.add_run("Autodesk® Certified User: Maya®")
     
-    p = col_right.add_paragraph(style='List Bullet')
+    p = col_right.add_paragraph()
     p.paragraph_format.space_after = Pt(6)
     p.add_run("Microsoft® Certified Professional")
 
     # Section: Organizations
     add_section_header(col_right, "Organizations")
     
-    p = col_right.add_paragraph(style='List Bullet')
+    p = col_right.add_paragraph()
     p.paragraph_format.space_after = Pt(1)
     run = p.add_run("Treasurer")
     run.font.bold = True
     p.add_run(", Theater Guild")
     
-    p = col_right.add_paragraph(style='List Bullet')
+    p = col_right.add_paragraph()
     p.paragraph_format.space_after = Pt(6)
     run = p.add_run("Member")
     run.font.bold = True
@@ -312,20 +313,22 @@ def create_resume_template():
     # Section: Languages Spoken
     add_section_header(col_right, "Languages Spoken")
     
-    p = col_right.add_paragraph(style='List Bullet')
+    p = col_right.add_paragraph()
     p.paragraph_format.space_after = Pt(1)
     p.add_run("Filipino")
-    p = col_right.add_paragraph(style='List Bullet')
+    
+    p = col_right.add_paragraph()
     p.paragraph_format.space_after = Pt(6)
     p.add_run("English")
 
     # Section: Other Interests
     add_section_header(col_right, "Other Interests")
     
-    p = col_right.add_paragraph(style='List Bullet')
+    p = col_right.add_paragraph()
     p.paragraph_format.space_after = Pt(1)
     p.add_run("Vlogging")
-    p = col_right.add_paragraph(style='List Bullet')
+    
+    p = col_right.add_paragraph()
     p.paragraph_format.space_after = Pt(0)
     p.add_run("Digital Painting")
 
