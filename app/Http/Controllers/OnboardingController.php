@@ -66,7 +66,7 @@ class OnboardingController extends Controller
         }
 
         $fullName = trim($request->first_name.' '.($request->middle_name ? $request->middle_name.' ' : '').$request->last_name);
-        $applicantId = 'APP-'.rand(1000, 9999);
+        $applicantId = User::generateDisplayId(\App\Enums\UserRole::INTERN);
 
         // Save to Database
         $applicant = OnboardingApplicant::create([

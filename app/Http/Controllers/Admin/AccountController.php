@@ -460,6 +460,7 @@ class AccountController extends Controller
                 $plainPassword = Str::random(12);
                 
                 $user = User::create([
+                    'display_id' => $applicant->applicant_id,
                     'email' => $applicant->email,
                     'password' => Hash::make($plainPassword),
                     'role_id' => $internRole->id,
