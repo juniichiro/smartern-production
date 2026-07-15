@@ -7,7 +7,6 @@
     portalType="Supervisor" 
     userName="{{ Auth::user()->supervisorDetails->first_name }}" 
     userRole="{{ Auth::user()->supervisorDetails->office->name }}"
-    fullHeight="false"
 >
     <div class="flex flex-col space-y-6 sm:space-y-8">
         {{-- HEADER --}}
