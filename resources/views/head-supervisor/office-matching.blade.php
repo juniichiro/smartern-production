@@ -264,11 +264,11 @@
                                          @endphp
                                          @if($anyRequestedMatch)
                                              @if($displayMatch && $displayMatch->id === $anyRequestedMatch->id)
-                                                 <div class="mt-1 px-2.5 py-1 text-[10px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-400/40 rounded-xl max-w-full truncate block uppercase tracking-wider animate-pulse shadow-sm" title="Supervisor Requested">
+                                                 <div class="mt-1 px-2.5 py-1 text-[10px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-400/40 rounded-xl max-w-full truncate block uppercase tracking-wider shadow-sm" title="Supervisor Requested">
                                                      Supervisor Requested
                                                  </div>
                                              @else
-                                                 <div class="mt-1 px-2.5 py-1 text-[10px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-400/40 rounded-xl max-w-full truncate block uppercase tracking-wider animate-pulse shadow-sm" title="Requested by {{ $anyRequestedMatch->office->name }}">
+                                                 <div class="mt-1 px-2.5 py-1 text-[10px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-400/40 rounded-xl max-w-full truncate block uppercase tracking-wider shadow-sm" title="Requested by {{ $anyRequestedMatch->office->name }}">
                                                      Requested: {{ $anyRequestedMatch->office->name }}
                                                  </div>
                                              @endif
@@ -570,7 +570,7 @@
                                                                              {{ $match->office->name }}
                                                                          </span>
                                                                          @if($match->requested_by_supervisor)
-                                                                             <span class="inline-block mt-1 bg-amber-50 dark:bg-amber-950/30 text-amber-600 border border-amber-400/30 px-1 py-0.5 rounded text-[7px] tracking-wider font-extrabold uppercase shadow-sm animate-pulse">Requested</span>
+                                                                             <span class="inline-block mt-1 bg-amber-50 dark:bg-amber-950/30 text-amber-600 border border-amber-400/30 px-1 py-0.5 rounded text-[7px] tracking-wider font-extrabold uppercase shadow-sm">Requested</span>
                                                                          @elseif($confirmedMatch && $confirmedMatch->id === $match->id)
                                                                              <span class="inline-block mt-1 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-500 border border-emerald-500/20 px-1 py-0.5 rounded text-[7px] tracking-widest font-black uppercase shadow-sm">Assigned</span>
                                                                          @endif
@@ -587,7 +587,7 @@
                                                                          {{ $match->office->name }}
                                                                      </span>
                                                                      @if($match->requested_by_supervisor)
-                                                                         <span class="inline-block mt-2 bg-amber-50 dark:bg-amber-950/30 text-amber-600 border border-amber-400/40 px-3 py-1 rounded-xl text-[9px] tracking-wider font-black uppercase shadow-sm animate-pulse">Supervisor Requested Placement</span>
+                                                                         <span class="inline-block mt-2 bg-amber-50 dark:bg-amber-950/30 text-amber-600 border border-amber-400/40 px-3 py-1 rounded-xl text-[9px] tracking-wider font-black uppercase shadow-sm">Supervisor Requested Placement</span>
                                                                      @elseif($confirmedMatch && $confirmedMatch->id === $match->id)
                                                                          <span class="inline-block mt-2 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-500 border border-emerald-500/20 px-3 py-1 rounded-xl text-[9px] tracking-widest font-black uppercase shadow-sm">Current Assignment</span>
                                                                      @endif
@@ -716,11 +716,11 @@
                                 @endphp
                                 @if($anyRequestedMatch)
                                     @if($displayMatch && $displayMatch->id === $anyRequestedMatch->id)
-                                        <div class="px-2 py-0.5 text-[9px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-400/40 rounded-lg uppercase tracking-wider max-w-[200px] truncate block ml-auto animate-pulse" title="Supervisor Requested">
+                                        <div class="px-2 py-0.5 text-[9px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-400/40 rounded-lg uppercase tracking-wider max-w-[200px] truncate block ml-auto shadow-sm" title="Supervisor Requested">
                                             Supervisor Requested
                                         </div>
                                     @else
-                                        <div class="px-2 py-0.5 text-[9px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-400/40 rounded-lg uppercase tracking-wider max-w-[200px] truncate block ml-auto animate-pulse" title="Requested by {{ $anyRequestedMatch->office->name }}">
+                                        <div class="px-2 py-0.5 text-[9px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-400/40 rounded-lg uppercase tracking-wider max-w-[200px] truncate block ml-auto shadow-sm" title="Requested by {{ $anyRequestedMatch->office->name }}">
                                             Requested: {{ $anyRequestedMatch->office->name }}
                                         </div>
                                     @endif
@@ -971,7 +971,7 @@
                                                             {{ $match->office->name }}
                                                         </span>
                                                         @if($match->requested_by_supervisor)
-                                                            <span class="inline-block bg-amber-50 dark:bg-amber-950/30 text-amber-600 border border-amber-400/35 px-2 py-0.5 rounded-lg text-[7px] tracking-wider font-extrabold uppercase shadow-sm animate-pulse">Supervisor Requested Placement</span>
+                                                            <span class="inline-block bg-amber-50 dark:bg-amber-950/30 text-amber-600 border border-amber-400/35 px-2 py-0.5 rounded-lg text-[7px] tracking-wider font-extrabold uppercase shadow-sm">Supervisor Requested Placement</span>
                                                         @endif
                                                     </div>
                                                 @endforeach
@@ -1126,7 +1126,7 @@
                                 <h2 class="flex flex-wrap items-center gap-2 text-xs sm:text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight truncate">
                                     <span>{{ $applicant->full_name }} &bull; {{ $match->office->name }}</span>
                                     @if($match->requested_by_supervisor)
-                                        <span class="inline-flex items-center gap-1.5 text-[9px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-400/40 px-2 py-1 rounded-lg uppercase tracking-wider animate-pulse">
+                                        <span class="inline-flex items-center gap-1.5 text-[9px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-400/40 px-2 py-1 rounded-lg uppercase tracking-wider">
                                             Supervisor Requested Placement
                                         </span>
                                     @endif
