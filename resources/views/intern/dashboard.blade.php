@@ -143,6 +143,36 @@
                     return currentDate.toLocaleDateString('en-US', options).toUpperCase();
                 },
 
+                get projectedEndDateISO() {
+                    let hoursLeft = Math.max(0, this.requiredHours - this.renderedHours);
+                    if (hoursLeft <= 0) return '';
+                    let currentDate = new Date();
+                    currentDate.setHours(0, 0, 0, 0);
+                    let safetyCounter = 0;
+                    const maxIterations = 365 * 5;
+                    while (hoursLeft > 0 && safetyCounter < maxIterations) {
+                        safetyCounter++;
+                        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                        const currentDayName = dayNames[currentDate.getDay()];
+                        const yyyy = currentDate.getFullYear();
+                        const mm = String(currentDate.getMonth() + 1).padStart(2, '0');
+                        const dd = String(currentDate.getDate()).padStart(2, '0');
+                        const dateStr = `${yyyy}-${mm}-${dd}`;
+                        const isReportingDay = this.scheduleDays.includes(currentDayName);
+                        const isNonWorkingDay = this.holidays.includes(dateStr);
+                        if (isReportingDay && !isNonWorkingDay) {
+                            hoursLeft -= this.dailyHours;
+                        }
+                        if (hoursLeft > 0) {
+                            currentDate.setDate(currentDate.getDate() + 1);
+                        }
+                    }
+                    const yyyy = currentDate.getFullYear();
+                    const mm = String(currentDate.getMonth() + 1).padStart(2, '0');
+                    const dd = String(currentDate.getDate()).padStart(2, '0');
+                    return `${yyyy}-${mm}-${dd}`;
+                },
+
                 get isProjectedOverdue() {
                     let referenceEndDate = this.endDate || (this.targetEndDate !== 'N/A' ? this.targetEndDate : null);
                     if (!referenceEndDate) return false;
@@ -193,7 +223,7 @@
                             Extension Pending Approval
                         </span>
                     @else
-                        <button @click="extensionModalOpen = true; extensionDate = new Date(projectedEndDate).toISOString().substring(0, 10);" class="px-6 py-3.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-black uppercase tracking-wider rounded-2xl transition active:scale-95 shadow-md shadow-rose-500/10 cursor-pointer">
+                        <button @click="extensionModalOpen = true; extensionDate = projectedEndDateISO;" class="px-6 py-3.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-black uppercase tracking-wider rounded-2xl transition active:scale-95 shadow-md shadow-rose-500/10 cursor-pointer">
                             Request Extension
                         </button>
                     @endif
