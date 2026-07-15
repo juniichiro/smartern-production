@@ -114,13 +114,13 @@
                                 @if($match->requested_by_supervisor)
                                     <div class="flex items-center gap-2 px-6 py-3.5 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 border border-emerald-100 dark:border-emerald-900/30 rounded-2xl text-xs font-extrabold uppercase tracking-wider shadow-sm select-none">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><polyline points="20 6 9 17 4 12"/></svg>
-                                        Assignment Requested
+                                        Intern Requested
                                     </div>
                                 @else
                                     <form action="{{ route('supervisor.office-matching.request', $match->id) }}" method="POST">
                                         @csrf
                                         <button type="submit" class="w-full sm:w-auto px-6 py-3.5 bg-[#0B5694] hover:bg-[#09477b] dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/50 active:scale-[0.98]">
-                                            Request Assignment
+                                            Request Intern
                                         </button>
                                     </form>
                                 @endif
