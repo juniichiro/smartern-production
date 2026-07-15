@@ -29,10 +29,10 @@ test('it successfully parses a valid pdf resume template', function () {
 
     // Check specific fields parsed from the template
     $data = $response->json();
-    expect($data['first_name'])->toBe('[Your Full');
-    expect($data['last_name'])->toBe('Name]');
-    expect($data['university'])->toBe('[Your University / Academic Institution, E.g., Feu Institute Of');
-    expect($data['email'])->toBe('student@emaildomain.com');
+    expect($data['first_name'])->toBe('John');
+    expect($data['last_name'])->toBe('Doe');
+    expect($data['university'])->toBe('Feu Institute Of Technology');
+    expect($data['email'])->toBe('johndoe@emaildomain.com');
     expect($data['phone_number'])->toBe('09303044030');
 });
 
