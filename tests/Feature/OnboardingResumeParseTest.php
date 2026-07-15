@@ -31,7 +31,7 @@ test('it successfully parses a valid pdf resume template', function () {
     $data = $response->json();
     expect($data['first_name'])->toBe('[Your Full');
     expect($data['last_name'])->toBe('Name]');
-    expect($data['university'])->toBe('[Your University / Academic Institution, E.g., Feu');
+    expect($data['university'])->toBe('[Your University / Academic Institution, E.g., Feu Institute Of');
     expect($data['email'])->toBe('student@emaildomain.com');
     expect($data['phone_number'])->toBe('09303044030');
 });
