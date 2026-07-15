@@ -259,12 +259,12 @@
                                         <div class="truncate" title="{{ $displayMatch ? $displayMatch->office->name : 'No Results' }}">
                                             {{ $displayMatch ? $displayMatch->office->name : 'No Results' }}
                                         </div>
-                                        @if($displayMatch && $displayMatch->requested_by_supervisor)
-                                            <div class="mt-1 flex items-center gap-1 text-[9px] font-extrabold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-500/20 px-2 py-0.5 rounded-lg w-max uppercase tracking-wider">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><polyline points="20 6 9 17 4 12"/></svg>
-                                                Requested by Supervisor
-                                            </div>
-                                        @endif
+                                         @if($displayMatch && $displayMatch->requested_by_supervisor)
+                                             <div class="mt-1 flex items-center gap-1.5 text-[10px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-400/40 px-2.5 py-1 rounded-xl w-max uppercase tracking-wider animate-pulse shadow-sm">
+                                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                                 Supervisor Requested Placement
+                                             </div>
+                                         @endif
                                     </td>
                                     <td class="px-3 sm:px-6 py-4 sm:py-6">
                                         @if($displayMatch)
@@ -558,7 +558,7 @@
                                                                              {{ $match->office->name }}
                                                                          </span>
                                                                          @if($match->requested_by_supervisor)
-                                                                             <span class="inline-block mt-1 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 border border-emerald-500/20 px-1 py-0.5 rounded text-[7px] tracking-wider font-extrabold uppercase shadow-sm">Requested</span>
+                                                                             <span class="inline-block mt-1 bg-amber-50 dark:bg-amber-950/30 text-amber-600 border border-amber-400/30 px-1 py-0.5 rounded text-[7px] tracking-wider font-extrabold uppercase shadow-sm animate-pulse">Requested</span>
                                                                          @elseif($confirmedMatch && $confirmedMatch->id === $match->id)
                                                                              <span class="inline-block mt-1 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-500 border border-emerald-500/20 px-1 py-0.5 rounded text-[7px] tracking-widest font-black uppercase shadow-sm">Assigned</span>
                                                                          @endif
@@ -575,7 +575,7 @@
                                                                          {{ $match->office->name }}
                                                                      </span>
                                                                      @if($match->requested_by_supervisor)
-                                                                         <span class="inline-block mt-2 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 border border-emerald-500/20 px-3 py-1 rounded-xl text-[9px] tracking-widest font-black uppercase shadow-sm">Requested by Supervisor</span>
+                                                                         <span class="inline-block mt-2 bg-amber-50 dark:bg-amber-950/30 text-amber-600 border border-amber-400/40 px-3 py-1 rounded-xl text-[9px] tracking-wider font-black uppercase shadow-sm animate-pulse">Supervisor Requested Placement</span>
                                                                      @elseif($confirmedMatch && $confirmedMatch->id === $match->id)
                                                                          <span class="inline-block mt-2 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-500 border border-emerald-500/20 px-3 py-1 rounded-xl text-[9px] tracking-widest font-black uppercase shadow-sm">Current Assignment</span>
                                                                      @endif
@@ -696,9 +696,9 @@
                                     <span class="text-[10px] sm:text-xs font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight truncate ml-2">{{ $displayMatch ? $displayMatch->office->name : 'No Results' }}</span>
                                 </div>
                                 @if($displayMatch && $displayMatch->requested_by_supervisor)
-                                    <div class="flex items-center justify-end gap-1 text-[9px] font-extrabold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-500/20 px-2 py-0.5 rounded-lg uppercase tracking-wider w-max ml-auto">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><polyline points="20 6 9 17 4 12"/></svg>
-                                        Requested by Supervisor
+                                    <div class="flex items-center justify-end gap-1.5 text-[9px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-400/40 px-2 py-0.5 rounded-lg uppercase tracking-wider w-max ml-auto animate-pulse">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                        Supervisor Requested Placement
                                     </div>
                                 @endif
                                 
@@ -947,7 +947,7 @@
                                                             {{ $match->office->name }}
                                                         </span>
                                                         @if($match->requested_by_supervisor)
-                                                            <span class="inline-block bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 border border-emerald-500/20 px-2 py-0.5 rounded-lg text-[7px] tracking-wider font-extrabold uppercase shadow-sm">Requested by Supervisor</span>
+                                                            <span class="inline-block bg-amber-50 dark:bg-amber-950/30 text-amber-600 border border-amber-400/35 px-2 py-0.5 rounded-lg text-[7px] tracking-wider font-extrabold uppercase shadow-sm animate-pulse">Supervisor Requested Placement</span>
                                                         @endif
                                                     </div>
                                                 @endforeach
@@ -1098,8 +1098,9 @@
                                 <h2 class="flex flex-wrap items-center gap-2 text-xs sm:text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight truncate">
                                     <span>{{ $applicant->full_name }} &bull; {{ $match->office->name }}</span>
                                     @if($match->requested_by_supervisor)
-                                        <span class="inline-flex items-center gap-1 text-[9px] font-extrabold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-500/20 px-2 py-0.5 rounded-lg uppercase tracking-wider">
-                                            Requested by Supervisor
+                                        <span class="inline-flex items-center gap-1.5 text-[9px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-400/40 px-2 py-1 rounded-lg uppercase tracking-wider animate-pulse">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                            Supervisor Requested Placement
                                         </span>
                                     @endif
                                 </h2>

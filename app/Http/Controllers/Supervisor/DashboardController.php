@@ -142,6 +142,18 @@ class DashboardController extends Controller
 
         $matchResult->update(['requested_by_supervisor' => true]);
 
+        // Dispatch database and real-time notification to all Head Supervisors
+        $headSupervisors = \App\Models\User::where('role_id', \App\Enums\UserRole::HEAD_SUPERVISOR->value)->get();
+        foreach ($headSupervisors as $hs) {
+            \App\Http\Controllers\NotificationController::send(
+                $hs->id,
+                'info',
+                'Placement Request',
+                "The {$supervisor->office->name} Supervisor has requested {$matchResult->applicant_name} for placement.",
+                route('head-supervisor.matching')
+            );
+        }
+
         return back()->with('success', "Intern nomination request submitted to the Head Supervisor for {$matchResult->applicant_name}.");
     }
 }
