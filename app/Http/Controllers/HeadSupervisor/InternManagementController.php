@@ -263,6 +263,23 @@ class InternManagementController extends Controller
                     route('intern.schedule.index'),
                     true
                 );
+
+                $supervisors = $intern->office?->supervisorDetails;
+                if ($supervisors) {
+                    $supType = $status === 'approved' ? 'Extension Approved' : 'Extension Rejected';
+                    $supMessage = $status === 'approved'
+                        ? "Extension request for {$intern->first_name} {$intern->last_name} has been approved. New end date: " . $extension->new_end_date->format('M d, Y') . '.'
+                        : "Extension request for {$intern->first_name} {$intern->last_name} has been rejected." . ($rejectionNote ? " Reason: {$rejectionNote}" : '');
+                    foreach ($supervisors as $sup) {
+                        NotificationController::send(
+                            $sup->user_id,
+                            $supType,
+                            'system',
+                            $supMessage,
+                            route('supervisor.certificates.index')
+                        );
+                    }
+                }
             }
         } catch (\Exception $e) {
             \Log::error('Failed to notify intern of extension resolution: ' . $e->getMessage());
