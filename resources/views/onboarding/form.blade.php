@@ -192,35 +192,6 @@
 
                 {{-- STEP 2: PROFILE & SKILLS --}}
                 <div x-show="step === 2" x-cloak class="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500 pb-32">
-                    {{-- Pre-Assessment Intro --}}
-                    <div x-show="assessmentIntro" class="bg-white dark:bg-gray-900 rounded-[24px] xs:rounded-[32px] sm:rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 p-5 xs:p-8 md:p-12 text-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                        <div class="w-16 h-16 sm:w-20 sm:h-20 bg-amber-50 dark:bg-amber-900/20 rounded-[20px] sm:rounded-[28px] flex items-center justify-center mx-auto text-amber-500 dark:text-amber-400 shadow-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" class="sm:w-8 sm:h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                        </div>
-                        <div class="space-y-4 max-w-lg mx-auto">
-                            <h3 class="text-xl sm:text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Competency Self-Assessment</h3>
-                            <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 font-medium leading-relaxed">
-                                Before we finalize your application, please complete the self-assessment form below. This helps our matching engine better understand your strengths and find the best office fit for you.
-                            </p>
-                            <div class="bg-gray-50 dark:bg-gray-800/50 rounded-3xl p-5 sm:p-6 space-y-3 text-left mt-6">
-                                <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-                                    <div class="w-8 h-8 rounded-full bg-[#0B5694]/10 dark:bg-blue-500/10 flex items-center justify-center text-[#0B5694] dark:text-blue-400 font-bold text-xs shrink-0">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                                    </div>
-                                    <div>
-                                        <p class="text-xs font-bold uppercase tracking-wider">Total Items to Answer</p>
-                                        <p class="text-2xl font-black text-[#0B5694] dark:text-blue-400 mt-0.5" x-text="totalSkillsCount"></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="button" @click="assessmentIntro = false" class="w-full bg-[#0B5694] dark:bg-blue-600 text-white py-5 rounded-[30px] font-black text-sm uppercase tracking-widest shadow-xl shadow-blue-500/20 hover:shadow-blue-500/40 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 group">
-                            <span>Begin Assessment</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                        </button>
-                    </div>
-
-                    <div x-show="!assessmentIntro" class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     {{-- Personal Details Card --}}                    {{-- Personal Details Card --}}
                     <div class="bg-white dark:bg-gray-900 rounded-[24px] xs:rounded-[32px] sm:rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 p-5 xs:p-8 md:p-12 space-y-12">
                         <div class="flex flex-col sm:flex-row items-center gap-6 sm:gap-10">
@@ -370,6 +341,16 @@
 
                     {{-- Dynamic Competency Assessment Form --}}
                     <div class="space-y-12" id="skills-assessment-section">
+                        {{-- Personal Details Gate --}}
+                        <div x-show="hasPersonalDetailsErrors" class="bg-amber-50 dark:bg-amber-900/10 border-2 border-amber-200 dark:border-amber-800 rounded-[24px] xs:rounded-[32px] sm:rounded-[40px] p-8 sm:p-12 text-center space-y-4">
+                            <div class="w-14 h-14 sm:w-16 sm:h-16 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mx-auto text-amber-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                            </div>
+                            <h3 class="text-base sm:text-lg font-black text-amber-800 dark:text-amber-300 uppercase tracking-wider">Complete Your Profile First</h3>
+                            <p class="text-xs sm:text-sm text-amber-600 dark:text-amber-400 font-medium max-w-md mx-auto">
+                                Please fill out all required personal details above before proceeding to the competency self-assessment.
+                            </p>
+                        </div>
                         <!-- Simplified Progress & Assessment Title -->
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-4 mb-8 text-left gap-2 px-1">
                             <h3 class="text-xs font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest">
@@ -380,6 +361,7 @@
                             </span>
                         </div>
 
+                        <div x-show="!hasPersonalDetailsErrors" class="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
                         @foreach($assessmentItems as $category => $categoryItems)
                             <div class="bg-white dark:bg-gray-900 rounded-[24px] xs:rounded-[32px] sm:rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 text-left">
                                 <div class="bg-gray-50 dark:bg-gray-950 px-5 xs:px-8 sm:px-10 py-5 sm:py-6 border-b border-gray-100 dark:border-gray-800 rounded-t-[24px] xs:rounded-t-[32px] sm:rounded-t-[40px]">
@@ -443,6 +425,7 @@
                                 </div>
                             </div>
                         @endforeach
+                        </div>
                     </div>
 
                     <div class="pt-10">
@@ -450,7 +433,6 @@
                             <span>Review Assessment</span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                         </button>
-                    </div>
                     </div>
                 </div>
 
@@ -805,7 +787,6 @@
             techSkills: [],
             softSkills: [],
             hasScrolledToAssessment: false,
-            assessmentIntro: savedState && savedState.step === 2 ? false : true,
             showPrivacyModal: false,
             hasScrolledToBottom: false,
             privacyAcknowledged: savedState && savedState.privacyAcknowledged ? true : false,
@@ -1150,6 +1131,14 @@
                 if (this.gender === 'other' && (!this.formData.gender_other_specify || !this.formData.gender_other_specify.trim())) {
                     this.errors['gender_other_specify'] = 'Please specify your identity details.';
                 }
+            },
+            get hasPersonalDetailsErrors() {
+                const fields = ['first_name', 'last_name', 'email', 'school', 'phone_number', 'emergency_contact', 'emergency_contact_number'];
+                for (const f of fields) {
+                    const val = this.formData[f];
+                    if (!val || (typeof val === 'string' && val.trim() === '')) return true;
+                }
+                return !this.gender;
             },
             get ratedSkillsCount() {
                 const techRated = this.techSkills.filter(s => s.score !== null).length;
