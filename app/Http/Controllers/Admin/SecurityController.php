@@ -310,6 +310,7 @@ class SecurityController extends Controller
         ]);
 
         $service->warmBaseline($log);
+        $service->seedUserBaseline($user, $log->ip_address, $log->user_agent, true);
 
         $auditService->log(
             'Evaluated Anomaly: Marked Safe',
