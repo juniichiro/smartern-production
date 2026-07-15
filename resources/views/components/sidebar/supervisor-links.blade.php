@@ -17,6 +17,11 @@
         Office Management
     </a>
 
+    <a href="{{ route('supervisor.office-matching') }}" class="flex items-center gap-3 px-4 py-3 {{ $current === 'supervisor.office-matching' ? 'bg-white/20' : 'hover:bg-white/10' }} rounded-lg text-sm font-medium transition">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="16" x2="22" y1="11" y2="11"/></svg>
+        Intern Placement
+    </a>
+
     <a href="{{ route('supervisor.tasks') }}" class="flex items-center gap-3 px-4 py-3 {{ $current === 'supervisor.tasks' ? 'bg-white/20' : 'hover:bg-white/10' }} rounded-lg text-sm font-medium transition">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="4" y="4" rx="2"/><path d="m9 12 2 2 4-4"/><path d="M12 4v16"/><path d="M4 12h16"/></svg>
         Task Monitoring

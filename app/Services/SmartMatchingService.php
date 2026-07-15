@@ -50,10 +50,16 @@ class SmartMatchingService
                 foreach ($allStudentData as $student) {
                     $name = $student['student_name'];
                     if (isset($pythonResults[$name])) {
-                        // Clear old non-confirmed results for this student
+                        // Keep track of which offices were requested by the supervisor for this student
+                        $requestedOffices = MatchResult::where('applicant_name', $name)
+                            ->where('requested_by_supervisor', true)
+                            ->pluck('office_id')
+                            ->toArray();
+
                         MatchResult::where('applicant_name', $name)->where('is_confirmed', false)->delete();
 
                         foreach ($pythonResults[$name] as $match) {
+                            $isRequested = in_array($match['office_id'], $requestedOffices);
                             MatchResult::create([
                                 'office_id' => $match['office_id'],
                                 'applicant_name' => $name,
@@ -63,6 +69,7 @@ class SmartMatchingService
                                 'status' => $match['match_score'] >= 80 ? 'matched' : 'pending',
                                 'is_confirmed' => false,
                                 'breakdown' => isset($match['breakdown']) ? json_encode($match['breakdown']) : null,
+                                'requested_by_supervisor' => $isRequested,
                             ]);
                         }
                     } else {

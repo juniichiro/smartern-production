@@ -16,6 +16,7 @@ class MatchResult extends Model
         'status',
         'is_confirmed',
         'breakdown',
+        'requested_by_supervisor',
     ];
 
     /**

@@ -170,6 +170,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/schedule', [App\Http\Controllers\Supervisor\ScheduleController::class, 'index'])->name('schedule.index');
         Route::patch('/schedule/absence/{absence}', [App\Http\Controllers\Supervisor\ScheduleController::class, 'reviewAbsenceRequest'])->name('schedule.absence.review');
         Route::get('/schedule/absence/{absence}/attachment', [App\Http\Controllers\Supervisor\ScheduleController::class, 'showAttachment'])->name('schedule.absence.show');
+        
+        Route::get('/office-matching', [App\Http\Controllers\Supervisor\DashboardController::class, 'officeMatching'])->name('office-matching');
+        Route::post('/office-matching/{matchResult}/request', [App\Http\Controllers\Supervisor\DashboardController::class, 'requestIntern'])->name('office-matching.request');
     });
 
     // HEAD SUPERVISOR (Role Restricted)

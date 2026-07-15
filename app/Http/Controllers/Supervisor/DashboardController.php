@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\InternDetail;
 use App\Models\Task;
+use App\Models\MatchResult;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -100,5 +101,41 @@ class DashboardController extends Controller
             'activeAttendance',
             'submissionsNeedingReview'
         ));
+    }
+
+    public function officeMatching()
+    {
+        $user = Auth::user();
+        $supervisor = $user->supervisorDetails;
+
+        if (! $supervisor) {
+            return redirect()->route('supervisor.dashboard')->with('error', 'Supervisor details not found.');
+        }
+
+        $officeId = $supervisor->office_id;
+        $office = $supervisor->office;
+
+        // Fetch top 5 match results for this specific office ordered by score descending (only unconfirmed ones)
+        $topMatches = MatchResult::where('office_id', $officeId)
+            ->where('is_confirmed', false)
+            ->orderByDesc('score')
+            ->take(5)
+            ->get();
+
+        return view('supervisor.office-matching', compact('supervisor', 'office', 'topMatches'));
+    }
+
+    public function requestIntern(MatchResult $matchResult)
+    {
+        $user = Auth::user();
+        $supervisor = $user->supervisorDetails;
+
+        if (! $supervisor || $matchResult->office_id !== $supervisor->office_id) {
+            return back()->with('error', 'Unauthorized action.');
+        }
+
+        $matchResult->update(['requested_by_supervisor' => true]);
+
+        return back()->with('success', "Intern nomination request submitted to the Head Supervisor for {$matchResult->applicant_name}.");
     }
 }
