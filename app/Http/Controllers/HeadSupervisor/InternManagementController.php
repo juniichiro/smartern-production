@@ -8,6 +8,7 @@ use App\Models\Office;
 use App\Models\Schedule;
 use App\Models\User;
 use App\Services\AttendanceService;
+use Illuminate\Http\Request;
 
 class InternManagementController extends Controller
 {
@@ -46,6 +47,38 @@ class InternManagementController extends Controller
             'distribution',
             'offices'
         ));
+    }
+
+    public function myInterns(Request $request)
+    {
+        $supervisor = auth()->user()->supervisorDetails;
+
+        if (!$supervisor || !$supervisor->office) {
+            return redirect()->route('head-supervisor.interns')
+                ->with('error', 'You are not assigned to a specific office.');
+        }
+
+        $officeId = $supervisor->office_id;
+
+        $query = InternDetail::where('office_id', $officeId)
+            ->whereDoesntHave('certificate', fn($q) => $q->where('status', 'published'))
+            ->with(['user', 'certificate']);
+
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('first_name', 'like', '%'.$request->search.'%')
+                    ->orWhere('last_name', 'like', '%'.$request->search.'%')
+                    ->orWhere('user_id', 'like', '%'.$request->search.'%');
+            });
+        }
+
+        $interns = $query->paginate(10)->withQueryString();
+
+        $totalInterns = InternDetail::where('office_id', $officeId)
+            ->whereDoesntHave('certificate', fn($q) => $q->where('status', 'published'))
+            ->count();
+
+        return view('head-supervisor.my-interns', compact('interns', 'totalInterns'));
     }
 
     /**

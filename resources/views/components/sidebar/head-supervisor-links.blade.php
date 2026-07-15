@@ -2,8 +2,8 @@
     $user = Auth::user();
     $isDeptSupervisor = $user->supervisorDetails && $user->supervisorDetails->office_id;
 
-    $deptActive = Route::is('supervisor.tasks*') || Route::is('supervisor.announcements*') || Route::is('supervisor.attendance*') || Route::is('supervisor.certificates.*');
-    $divisionActive = Route::is('head-supervisor.schedule.*') || Route::is('head-supervisor.matching*') || Route::is('head-supervisor.onboarding.*') || Route::is('head-supervisor.offices.*') || Route::is('head-supervisor.interns*') || Route::is('head-supervisor.analytics*') || Route::is('head-supervisor.report*') || Route::is('head-supervisor.certificates.*');
+    $deptActive = Route::is('supervisor.tasks*') || Route::is('supervisor.announcements*') || Route::is('supervisor.attendance*') || Route::is('supervisor.certificates.*') || Route::is('supervisor.interns*');
+    $divisionActive = Route::is('head-supervisor.schedule.*') || Route::is('head-supervisor.matching*') || Route::is('head-supervisor.onboarding.*') || Route::is('head-supervisor.offices.*') || Route::is('head-supervisor.interns*') || Route::is('head-supervisor.my-interns*') || Route::is('head-supervisor.analytics*') || Route::is('head-supervisor.report*') || Route::is('head-supervisor.certificates.*');
 @endphp
 
 <div x-data="{ 
@@ -25,6 +25,11 @@
         </div>
 
         <div x-show="openDept" x-collapse x-cloak class="space-y-1">
+            <a href="{{ route('supervisor.interns') }}" class="flex items-center gap-3 px-4 py-3 {{ Route::is('supervisor.interns*') ? 'bg-white/20' : 'hover:bg-white/10' }} rounded-lg text-sm font-medium transition">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Intern Directory
+            </a>
+
             <a href="{{ route('supervisor.tasks') }}" class="flex items-center gap-3 px-4 py-3 {{ Route::is('supervisor.tasks*') ? 'bg-white/20' : 'hover:bg-white/10' }} rounded-lg text-sm font-medium transition">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="4" y="4" rx="2"/><path d="m9 12 2 2 4-4"/><path d="M12 4v16"/><path d="M4 12h16"/></svg>
                 Task Monitoring
@@ -73,10 +78,18 @@
                 Onboarding
             </a>
 
-            {{-- 5. Interns --}}
-            <a href="{{ route('head-supervisor.interns') }}" class="flex items-center gap-3 px-4 py-3 {{ Route::is('head-supervisor.interns*') ? 'bg-white/20' : 'hover:bg-white/10' }} rounded-lg text-sm font-medium transition">
+            {{-- 5. My Interns --}}
+            @if($isDeptSupervisor)
+            <a href="{{ route('head-supervisor.my-interns') }}" class="flex items-center gap-3 px-4 py-3 {{ Route::is('head-supervisor.my-interns*') ? 'bg-white/20' : 'hover:bg-white/10' }} rounded-lg text-sm font-medium transition">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                Interns
+                My Interns
+            </a>
+            @endif
+
+            {{-- 6. Interns --}}
+            <a href="{{ route('head-supervisor.interns') }}" class="flex items-center gap-3 px-4 py-3 {{ Route::is('head-supervisor.interns*') && !Route::is('head-supervisor.my-interns*') ? 'bg-white/20' : 'hover:bg-white/10' }} rounded-lg text-sm font-medium transition">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Interns (All)
             </a>
 
             {{-- 6. Analytics & Reports --}}

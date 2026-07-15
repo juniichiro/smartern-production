@@ -197,6 +197,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Intern Management
         Route::get('/interns', [InternManagementController::class, 'index'])->name('interns');
         Route::get('/interns/{user}', [InternManagementController::class, 'show'])->name('interns.show');
+        Route::get('/my-interns', [InternManagementController::class, 'myInterns'])->name('my-interns');
         Route::put('/interns/{user}/schedule', [InternManagementController::class, 'updateSchedule'])->name('interns.update-schedule');
         Route::put('/extensions/{extension}/resolve', [InternManagementController::class, 'resolveExtension'])->name('interns.resolve-extension');
 
