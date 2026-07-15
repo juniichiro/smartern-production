@@ -542,7 +542,8 @@
                                         <tr class="flex">
                                             <th class="px-4 sm:px-6 py-4 sm:py-5 w-28 sm:w-40">Submitted</th>
                                             <th class="px-4 sm:px-6 py-4 sm:py-5 w-32 sm:w-44">New End Date</th>
-                                            <th class="px-4 sm:px-6 py-4 sm:py-5 flex-1">Reason / Status</th>
+                                            <th class="px-4 sm:px-6 py-4 sm:py-5 flex-1">Reason</th>
+                                            <th class="px-4 sm:px-6 py-4 sm:py-5 w-28 sm:w-36 text-center">Status</th>
                                             <th class="px-4 sm:px-6 py-4 sm:py-5 w-32 sm:w-44 text-right">Actions</th>
                                         </tr>
                                     </thead>
@@ -555,20 +556,22 @@
                                             <td class="px-4 sm:px-6 py-5 sm:py-6 font-black text-gray-800 dark:text-white text-[10px] sm:text-xs tracking-widest uppercase w-32 sm:w-44 flex items-center">
                                                 {{ $ext->new_end_date->format('M d, Y') }}
                                             </td>
-                                            <td class="px-4 sm:px-6 py-5 sm:py-6 flex-1 flex flex-col justify-center min-w-0">
+                                            <td class="px-4 sm:px-6 py-5 sm:py-6 flex-1 flex items-center min-w-0">
                                                 <p class="font-bold text-gray-700 dark:text-gray-300 truncate" title="{{ $ext->reason }}">{{ $ext->reason }}</p>
-                                                <div class="mt-1 flex items-center gap-2">
-                                                    @if($ext->status === 'pending')
-                                                        <span class="px-2 py-0.5 rounded-full text-[9px] bg-amber-50 text-amber-600 border border-amber-200 uppercase font-black tracking-wider">Pending</span>
-                                                    @elseif($ext->status === 'approved')
-                                                        <span class="px-2 py-0.5 rounded-full text-[9px] bg-emerald-50 text-emerald-600 border border-emerald-200 uppercase font-black tracking-wider">Approved</span>
-                                                    @else
-                                                        <span class="px-2 py-0.5 rounded-full text-[9px] bg-rose-50 text-rose-600 border border-rose-200 uppercase font-black tracking-wider">Rejected</span>
+                                            </td>
+                                            <td class="px-4 sm:px-6 py-5 sm:py-6 w-28 sm:w-36 flex flex-col justify-center items-center text-center">
+                                                @if($ext->status === 'pending')
+                                                    <span class="px-2.5 py-1 rounded-full text-[9px] bg-amber-50 text-amber-600 border border-amber-200 uppercase font-black tracking-wider">Pending</span>
+                                                @elseif($ext->status === 'approved')
+                                                    <span class="px-2.5 py-1 rounded-full text-[9px] bg-emerald-50 text-emerald-600 border border-emerald-200 uppercase font-black tracking-wider">Approved</span>
+                                                @else
+                                                    <div class="flex flex-col items-center gap-1">
+                                                        <span class="px-2.5 py-1 rounded-full text-[9px] bg-rose-50 text-rose-600 border border-rose-200 uppercase font-black tracking-wider">Rejected</span>
                                                         @if($ext->rejection_note)
-                                                            <span class="text-[10px] text-gray-400 italic">({{ $ext->rejection_note }})</span>
+                                                            <span class="text-[9px] text-gray-400 font-bold uppercase truncate max-w-[90px]" title="{{ $ext->rejection_note }}">{{ $ext->rejection_note }}</span>
                                                         @endif
-                                                    @endif
-                                                </div>
+                                                    </div>
+                                                @endif
                                             </td>
                                             <td class="px-4 sm:px-6 py-5 sm:py-6 w-32 sm:w-44 text-right flex items-center justify-end gap-2">
                                                 @if($ext->status === 'pending')
