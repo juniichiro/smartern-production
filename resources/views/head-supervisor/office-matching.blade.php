@@ -264,14 +264,12 @@
                                          @endphp
                                          @if($anyRequestedMatch)
                                              @if($displayMatch && $displayMatch->id === $anyRequestedMatch->id)
-                                                 <div class="mt-1 flex items-center gap-1.5 text-[10px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-400/40 px-2.5 py-1 rounded-xl w-max uppercase tracking-wider animate-pulse shadow-sm">
-                                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                                 <div class="mt-1 px-2.5 py-1 text-[10px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-400/40 rounded-xl max-w-full truncate block uppercase tracking-wider animate-pulse shadow-sm" title="Supervisor Requested">
                                                      Supervisor Requested
                                                  </div>
                                              @else
-                                                 <div class="mt-1 flex items-center gap-1.5 text-[10px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-400/40 px-2.5 py-1 rounded-xl w-max uppercase tracking-wider animate-pulse shadow-sm" title="Requested by {{ $anyRequestedMatch->office->name }}">
-                                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                                                     Requested by: {{ $anyRequestedMatch->office->name }}
+                                                 <div class="mt-1 px-2.5 py-1 text-[10px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-400/40 rounded-xl max-w-full truncate block uppercase tracking-wider animate-pulse shadow-sm" title="Requested by {{ $anyRequestedMatch->office->name }}">
+                                                     Requested: {{ $anyRequestedMatch->office->name }}
                                                  </div>
                                              @endif
                                          @endif
@@ -718,13 +716,11 @@
                                 @endphp
                                 @if($anyRequestedMatch)
                                     @if($displayMatch && $displayMatch->id === $anyRequestedMatch->id)
-                                        <div class="flex items-center justify-end gap-1.5 text-[9px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-400/40 px-2 py-0.5 rounded-lg uppercase tracking-wider w-max ml-auto animate-pulse">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                        <div class="px-2 py-0.5 text-[9px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-400/40 rounded-lg uppercase tracking-wider max-w-[200px] truncate block ml-auto animate-pulse" title="Supervisor Requested">
                                             Supervisor Requested
                                         </div>
                                     @else
-                                        <div class="flex items-center justify-end gap-1.5 text-[9px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-400/40 px-2 py-0.5 rounded-lg uppercase tracking-wider w-max ml-auto animate-pulse" title="Requested by {{ $anyRequestedMatch->office->name }}">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                        <div class="px-2 py-0.5 text-[9px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-400/40 rounded-lg uppercase tracking-wider max-w-[200px] truncate block ml-auto animate-pulse" title="Requested by {{ $anyRequestedMatch->office->name }}">
                                             Requested: {{ $anyRequestedMatch->office->name }}
                                         </div>
                                     @endif
@@ -1131,7 +1127,6 @@
                                     <span>{{ $applicant->full_name }} &bull; {{ $match->office->name }}</span>
                                     @if($match->requested_by_supervisor)
                                         <span class="inline-flex items-center gap-1.5 text-[9px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-400/40 px-2 py-1 rounded-lg uppercase tracking-wider animate-pulse">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                                             Supervisor Requested Placement
                                         </span>
                                     @endif
