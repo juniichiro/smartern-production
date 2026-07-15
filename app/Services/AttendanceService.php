@@ -540,6 +540,13 @@ class AttendanceService
                 $statusMessage = 'The scheduled shift for today has already ended at ' . $endTime->format('h:i A') . '.';
             }
         }
+        if ($canScan && !$todayRecord && $intern && $intern->end_date) {
+            $endDate = Carbon::parse($intern->end_date)->startOfDay();
+            if (now()->startOfDay()->greaterThan($endDate)) {
+                $canScan = false;
+                $statusMessage = 'Your expected internship completion date has passed (' . Carbon::parse($intern->end_date)->format('M d, Y') . '). Please request a date extension from your dashboard to continue logging attendance.';
+            }
+        }
 
         return [
             'todayRecord' => $todayRecord,
@@ -722,6 +729,17 @@ class AttendanceService
         }
 
         // Clock In Logic
+        $intern = $user->internDetails;
+        if ($intern && $intern->end_date) {
+            $endDate = Carbon::parse($intern->end_date)->startOfDay();
+            if (now()->startOfDay()->greaterThan($endDate)) {
+                return [
+                    'success' => false,
+                    'message' => 'Your expected internship completion date has passed (' . Carbon::parse($intern->end_date)->format('M d, Y') . '). Please request a date extension from your dashboard to continue logging attendance.'
+                ];
+            }
+        }
+
         $effectiveSchedule = $this->getEffectiveSchedule($user, now());
 
         if (isset($effectiveSchedule['blocked']) && $effectiveSchedule['blocked']) {
