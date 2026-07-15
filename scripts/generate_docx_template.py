@@ -196,6 +196,38 @@ def create_resume_template():
     run = p.add_run("Expected Graduation – [Year, e.g., 2025]")
     run.font.italic = True
 
+    # Section: Work Experience (Optional)
+    add_section_header(col_left, "Work Experience (Optional)")
+    
+    p = col_left.add_paragraph()
+    p.paragraph_format.space_after = Pt(2)
+    run = p.add_run("[Job Title / Position, e.g., Web Developer Intern]")
+    run.font.bold = True
+    run.font.size = Pt(10)
+    
+    p = col_left.add_paragraph()
+    p.paragraph_format.space_after = Pt(2)
+    run = p.add_run("[Company / Organization Name, e.g., Tech Solutions Inc.]")
+    run.font.bold = True
+    run.font.color.rgb = RGBColor(80, 80, 80)
+    
+    p = col_left.add_paragraph()
+    p.paragraph_format.space_after = Pt(2)
+    p.add_run("[Location, e.g., Makati City, Philippines]")
+    
+    p = col_left.add_paragraph()
+    p.paragraph_format.space_after = Pt(4)
+    run = p.add_run("[Inclusive Dates, e.g., June 2024 – August 2024]")
+    run.font.italic = True
+    
+    p = col_left.add_paragraph(style='List Bullet')
+    p.paragraph_format.space_after = Pt(2)
+    p.add_run("[Describe key responsibility or achievement, e.g., Developed responsive user interface components using Alpine.js and Tailwind CSS]")
+    
+    p = col_left.add_paragraph(style='List Bullet')
+    p.paragraph_format.space_after = Pt(12)
+    p.add_run("[Describe another responsibility or achievement, e.g., Collaborated with backend team to integrate RESTful API endpoints]")
+
     # Section: Key Skills / Proficiency
     add_section_header(col_left, "Key Skills / Proficiency")
     
