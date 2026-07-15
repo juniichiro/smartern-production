@@ -146,7 +146,7 @@
              @keydown.escape.window="showSkillsModal = false"
              style="display: none;"
         >
-            <div class="w-full max-w-[calc(100%-0.5rem)] sm:max-w-lg lg:max-w-xl bg-white dark:bg-gray-900 rounded-[24px] sm:rounded-[32px] border border-gray-100 dark:border-gray-800 shadow-2xl overflow-hidden flex flex-col max-h-[80vh] transition-all duration-300 text-left"
+            <div class="w-full max-w-[calc(100%-0.5rem)] sm:max-w-xl lg:max-w-3xl bg-white dark:bg-gray-900 rounded-[24px] sm:rounded-[32px] border border-gray-100 dark:border-gray-800 shadow-2xl overflow-hidden flex flex-col max-h-[80vh] transition-all duration-300 text-left"
                  x-transition:enter="transition ease-out duration-300"
                  x-transition:enter-start="opacity-0 scale-95 translate-y-4"
                  x-transition:enter-end="opacity-100 scale-100 translate-y-0"
@@ -155,7 +155,7 @@
                 {{-- Modal Header --}}
                 <div class="px-5 sm:px-8 py-4 sm:py-6 border-b border-gray-100 dark:border-gray-800 shrink-0 flex items-center justify-between gap-3">
                     <div class="min-w-0">
-                        <h2 class="text-xs sm:text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight truncate">
+                        <h2 class="text-sm sm:text-base font-black text-gray-900 dark:text-white uppercase tracking-wider truncate">
                             Competency Profile &bull; <span x-text="activeCandidateName"></span>
                         </h2>
                     </div>
@@ -167,31 +167,31 @@
                 {{-- Modal Content --}}
                 <div class="p-5 sm:p-8 overflow-y-auto custom-scrollbar flex-1 space-y-4">
                     <template x-for="skill in activeCompetencies" :key="skill.skill">
-                        <div class="p-4 rounded-2xl bg-gray-50/50 dark:bg-gray-800/20 border border-gray-100 dark:border-gray-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                            <div class="space-y-1">
-                                <h4 class="text-xs font-semibold text-gray-800 dark:text-gray-200 leading-normal normal-case" x-text="skill.skill"></h4>
+                        <div class="p-5 rounded-[22px] bg-gray-50/50 dark:bg-gray-800/20 border border-gray-100 dark:border-gray-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div class="space-y-2">
+                                <h4 class="text-sm sm:text-[15px] font-bold text-gray-800 dark:text-gray-200 leading-relaxed normal-case" x-text="skill.skill"></h4>
                                 <div class="flex items-center gap-1.5 flex-wrap">
                                     <template x-if="skill.resume_match">
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 dark:bg-blue-950/40 text-blue-500 border border-blue-200/50 rounded-lg text-[9px] font-bold uppercase tracking-wider">
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 dark:bg-blue-950/40 text-blue-500 border border-blue-200/50 rounded-lg text-[10px] font-bold uppercase tracking-wider">
                                             Resume Match
                                         </span>
                                     </template>
                                     <template x-if="skill.interview_match">
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-500 border border-emerald-200/50 rounded-lg text-[9px] font-bold uppercase tracking-wider">
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-500 border border-emerald-200/50 rounded-lg text-[10px] font-bold uppercase tracking-wider">
                                             Interview Match
                                         </span>
                                     </template>
                                 </div>
                             </div>
-                            <div class="shrink-0 flex items-center gap-2 sm:self-center">
+                            <div class="shrink-0 flex items-center gap-3 sm:self-center">
                                 <div class="text-right">
-                                    <span class="block text-[8px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Self-Reported</span>
-                                    <span class="text-xs font-black text-gray-700 dark:text-gray-300" x-text="skill.self_reported + ' / 5'"></span>
+                                    <span class="block text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-wider">Self-Reported</span>
+                                    <span class="text-sm font-black text-gray-700 dark:text-gray-300" x-text="skill.self_reported + ' / 5'"></span>
                                 </div>
                                 <template x-if="skill.verified !== null">
-                                    <div class="text-right pl-2 border-l border-gray-200 dark:border-gray-800">
-                                        <span class="block text-[8px] font-bold text-emerald-600 dark:text-emerald-500 uppercase tracking-widest">Verified</span>
-                                        <span class="text-xs font-black text-emerald-600 dark:text-emerald-500" x-text="skill.verified + ' / 5'"></span>
+                                    <div class="text-right pl-3 border-l border-gray-200 dark:border-gray-800">
+                                        <span class="block text-[9px] font-black text-emerald-600 dark:text-emerald-500 uppercase tracking-wider">Verified</span>
+                                        <span class="text-sm font-black text-emerald-600 dark:text-emerald-500" x-text="skill.verified + ' / 5'"></span>
                                     </div>
                                 </template>
                             </div>
