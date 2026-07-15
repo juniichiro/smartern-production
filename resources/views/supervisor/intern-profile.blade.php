@@ -140,7 +140,18 @@
                                         $pendingExtension = \App\Models\InternExtension::where('intern_detail_id', $intern->id)
                                             ->where('status', 'pending')
                                             ->first();
+                                        $hasApprovedExtension = \App\Models\InternExtension::where('intern_detail_id', $intern->id)
+                                            ->where('status', 'approved')
+                                            ->exists();
                                     @endphp
+                                    @if($hasApprovedExtension)
+                                    <tr class="flex flex-col sm:table-row bg-rose-50/30 dark:bg-rose-950/10">
+                                        <td class="bg-rose-50/50 dark:bg-rose-950/20 p-3 md:p-5 font-bold text-rose-600 dark:text-rose-400 uppercase text-[10px] sm:w-1/3">Extension Limit</td>
+                                        <td class="p-3 md:p-5 text-rose-700 dark:text-rose-455 text-xs md:text-sm font-black uppercase tracking-wider">
+                                            Max Extensions Reached
+                                        </td>
+                                    </tr>
+                                    @endif
                                     @if($pendingExtension)
                                     <tr class="flex flex-col sm:table-row bg-amber-50/30 dark:bg-amber-950/10">
                                         <td class="bg-amber-50/50 dark:bg-amber-950/20 p-3 md:p-5 font-bold text-amber-600 dark:text-amber-400 uppercase text-[10px] sm:w-1/3">Extension Pending</td>
@@ -170,7 +181,7 @@
                     </div>
 
                     {{-- Extension Request Action --}}
-                    @if(!$isCompleted && !$pendingExtension && $intern->hours_rendered < $targetHours)
+                    @if(!$isCompleted && !$pendingExtension && !$hasApprovedExtension && $intern->hours_rendered < $targetHours)
                         <div x-data="{ openRequest: false }" class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
                             <button @click="openRequest = !openRequest" type="button" class="w-full px-5 py-3 bg-[#0B5694] hover:bg-[#0B5694]/90 text-white font-bold text-xs uppercase tracking-widest rounded-xl transition active:scale-95 text-center flex items-center justify-center gap-2 cursor-pointer shadow-md">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M12 14v6"/><path d="M9 17h6"/></svg>

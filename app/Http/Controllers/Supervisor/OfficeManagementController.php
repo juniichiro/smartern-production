@@ -344,6 +344,14 @@ class OfficeManagementController extends Controller
             return back()->with('error', 'There is already a pending extension request for this intern.');
         }
 
+        $hasApproved = \App\Models\InternExtension::where('intern_detail_id', $intern->id)
+            ->where('status', 'approved')
+            ->exists();
+
+        if ($hasApproved) {
+            return back()->with('error', 'This intern has already been granted a date extension. Further extensions are not allowed.');
+        }
+
         \App\Models\InternExtension::create([
             'intern_detail_id' => $intern->id,
             'previous_end_date' => $intern->end_date ?? $intern->start_date ?? now(),

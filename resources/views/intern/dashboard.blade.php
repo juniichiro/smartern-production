@@ -218,7 +218,11 @@
                             </p>
                         </div>
                     </div>
-                    @if($pendingExtension)
+                    @if($hasApprovedExtension)
+                        <span class="px-5 py-3 bg-rose-100 dark:bg-rose-950/40 text-rose-700 dark:text-rose-455 text-xs font-black uppercase tracking-wider rounded-xl border border-rose-200 dark:border-rose-900/50">
+                            Max Extensions Reached
+                        </span>
+                    @elseif($pendingExtension)
                         <span class="px-5 py-3 bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 text-xs font-black uppercase tracking-wider rounded-xl border border-amber-200 dark:border-amber-900/50">
                             Extension Pending Approval
                         </span>

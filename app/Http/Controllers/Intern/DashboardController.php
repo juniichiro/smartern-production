@@ -119,6 +119,10 @@ class DashboardController extends Controller
             ->where('status', 'pending')
             ->first();
 
+        $hasApprovedExtension = \App\Models\InternExtension::where('intern_detail_id', $intern->id)
+            ->where('status', 'approved')
+            ->exists();
+
         // Notifications (assuming you have a system or empty collection)
         $notifications = collect([]);
 
@@ -138,7 +142,8 @@ class DashboardController extends Controller
             'attendanceColor',
             'schoolSchedule',
             'holidaysAndSuspensions',
-            'pendingExtension'
+            'pendingExtension',
+            'hasApprovedExtension'
         ));
     }
 }

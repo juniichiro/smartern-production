@@ -231,6 +231,14 @@ class ScheduleController extends Controller
             return back()->with('error', 'You already have a pending extension request.');
         }
 
+        $hasApproved = \App\Models\InternExtension::where('intern_detail_id', $intern->id)
+            ->where('status', 'approved')
+            ->exists();
+
+        if ($hasApproved) {
+            return back()->with('error', 'You have already been granted a date extension. Further extensions are not allowed.');
+        }
+
         \App\Models\InternExtension::create([
             'intern_detail_id' => $intern->id,
             'previous_end_date' => $intern->end_date ?? $intern->start_date ?? now(),
