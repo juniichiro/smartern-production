@@ -148,7 +148,7 @@ class DashboardController extends Controller
             \App\Http\Controllers\NotificationController::send(
                 $hs->id,
                 'info',
-                'Placement Request',
+                'system',
                 "The {$supervisor->office->name} Supervisor has requested {$matchResult->applicant_name} for placement.",
                 route('head-supervisor.matching')
             );
