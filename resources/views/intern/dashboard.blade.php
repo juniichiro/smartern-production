@@ -509,38 +509,38 @@
                 <div @click.away="extensionModalOpen = false" 
                      class="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-[30px] sm:rounded-[40px] shadow-2xl overflow-hidden border border-gray-100 dark:border-gray-800">
                     
-                    <div class="p-6 sm:p-8">
-                        <div class="flex justify-between items-start mb-6">
+                    <div class="p-8 sm:p-12">
+                        <div class="flex justify-between items-start mb-8">
                             <div>
-                                <p class="text-[10px] font-black text-rose-500 uppercase tracking-[0.2em] mb-1">Request extension</p>
-                                <h3 class="text-xl sm:text-2xl font-black text-gray-900 dark:text-white tracking-tight">Extend Internship Period</h3>
+                                <p class="text-xs sm:text-sm font-black text-rose-500 uppercase tracking-[0.2em] mb-1.5">Request extension</p>
+                                <h3 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase">Extend Internship Period</h3>
                             </div>
                             <button @click="extensionModalOpen = false" class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                             </button>
                         </div>
         
-                        <form action="{{ route('intern.schedule.extension.store') }}" method="POST" class="space-y-6">
+                        <form action="{{ route('intern.schedule.extension.store') }}" method="POST" class="space-y-8">
                             @csrf
                             
-                            <div class="space-y-2 text-left">
-                                <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Proposed End Date</span>
+                            <div class="space-y-3 text-left">
+                                <span class="text-xs sm:text-sm font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Proposed End Date</span>
                                 <input type="date" name="new_end_date" x-model="extensionDate" required
-                                    class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 rounded-xl text-xs font-bold text-gray-800 dark:text-gray-100 focus:ring-[#0B5694]/20 focus:border-[#0B5694] transition">
-                                <span class="text-[10px] text-gray-400">Recommended base date on remaining hours: <span class="font-bold text-gray-700 dark:text-gray-300" x-text="projectedEndDate"></span></span>
+                                    class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 rounded-2xl text-sm font-semibold text-gray-800 dark:text-gray-100 focus:ring-[#0B5694]/20 focus:border-[#0B5694] transition">
+                                <span class="text-xs sm:text-sm text-gray-450 dark:text-gray-400 block mt-1.5">Recommended base date on remaining hours: <span class="font-black text-[#0B5694] dark:text-blue-400" x-text="projectedEndDate"></span></span>
                             </div>
 
-                            <div class="space-y-2 text-left">
-                                <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Reason for Extension</span>
-                                <textarea name="reason" x-model="extensionReason" required rows="3" placeholder="Briefly describe the reason for the extension request (e.g. Absences, schedule conflicts...)"
-                                    class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 rounded-xl text-xs font-bold text-gray-800 dark:text-gray-100 focus:ring-[#0B5694]/20 focus:border-[#0B5694] transition resize-none"></textarea>
+                            <div class="space-y-3 text-left">
+                                <span class="text-xs sm:text-sm font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Reason for Extension</span>
+                                <textarea name="reason" x-model="extensionReason" required rows="4" placeholder="Briefly describe the reason for the extension request (e.g. Absences, schedule conflicts...)"
+                                    class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 rounded-2xl text-sm font-semibold text-gray-800 dark:text-gray-100 focus:ring-[#0B5694]/20 focus:border-[#0B5694] transition resize-none"></textarea>
                             </div>
                             
-                            <div class="pt-4 flex flex-col sm:flex-row gap-3">
-                                <button @click="extensionModalOpen = false" type="button" class="w-full sm:w-auto px-6 py-3.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-750 transition active:scale-95 text-center cursor-pointer">
+                            <div class="pt-6 flex flex-col sm:flex-row gap-4">
+                                <button @click="extensionModalOpen = false" type="button" class="w-full sm:w-auto px-8 py-4 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-750 transition active:scale-95 text-center cursor-pointer">
                                     Cancel
                                 </button>
-                                <button type="submit" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition active:scale-95 shadow-md shadow-rose-500/10 cursor-pointer text-center">
+                                <button type="submit" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white py-4 px-8 rounded-xl text-sm font-bold uppercase tracking-wider transition active:scale-95 shadow-md shadow-rose-500/10 cursor-pointer text-center">
                                     Submit Request
                                 </button>
                             </div>
