@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Supervisor;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\NotificationController;
 use App\Models\Certificate;
 use App\Models\InternDetail;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -159,6 +160,15 @@ class CertificateController extends Controller
                 'communication_skills' => $request->input('communication_skills'),
                 'team_collaboration' => $request->input('team_collaboration'),
             ]
+        );
+
+        NotificationController::send(
+            $intern->user_id,
+            'Certificate Endorsed',
+            'system',
+            'Your certificate has been endorsed by your supervisor and is pending final approval.',
+            route('intern.certificates.index'),
+            true
         );
 
         return redirect()->route('supervisor.certificates.index')->with('success', "Endorsement finalized for {$intern->first_name}.");

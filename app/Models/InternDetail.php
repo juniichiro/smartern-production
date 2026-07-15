@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\NotificationController;
+use App\Models\Notification;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Vinkla\Hashids\Facades\Hashids;
@@ -93,6 +95,29 @@ class InternDetail extends Model
      * Scope a query to only include interns matching user_id, public_id, or intern_details id
      * Supports Hashids and encrypted IDs as well
      */
+    protected static function booted()
+    {
+        static::saved(function ($intern) {
+            $alreadyNotified = Notification::where('recipient_id', $intern->user_id)
+                ->where('type', 'Hours Completed')
+                ->exists();
+
+            if (!$alreadyNotified
+                && $intern->hours_rendered >= $intern->required_hours
+                && !$intern->certificate
+            ) {
+                NotificationController::send(
+                    $intern->user_id,
+                    'Hours Completed',
+                    'system',
+                    'Congratulations! You\'ve completed your required hours. Your certificate is now being processed.',
+                    route('intern.certificates.index'),
+                    true
+                );
+            }
+        });
+    }
+
     public function scopeByPublicOrId($query, $id)
     {
         return $query->where(function ($q) use ($id) {
