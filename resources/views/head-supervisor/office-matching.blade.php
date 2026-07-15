@@ -354,7 +354,7 @@
                                                                             $itemCategory = $item->category;
                                                                         @endphp
                                                                         <tr x-show="skillFilter === 'all' || skillFilter === '{{ $itemCategory }}'">
-                                                                            <td class="px-6 py-3.5 text-xs font-bold text-gray-700 dark:text-gray-300 normal-case leading-relaxed">{{ $skill }}</td>
+                                                                            <td class="px-6 py-3.5 text-sm font-semibold text-gray-800 dark:text-gray-200 normal-case leading-relaxed">{{ $skill }}</td>
                                                                             <td class="px-6 py-3.5 text-xs font-bold text-gray-500 text-center">
                                                                                 <span class="inline-block bg-gray-100 dark:bg-gray-800 px-2.5 py-1 rounded-lg text-[10px] font-extrabold">{{ $score }} / 5</span>
                                                                             </td>
@@ -762,7 +762,7 @@
                                                             <th class="px-3 py-2.5 text-[9px] font-black uppercase tracking-wider text-gray-500 text-right">Score</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody class="divide-y divide-gray-100 dark:divide-gray-800 bg-white dark:bg-gray-900 text-[11px]">
+                                                    <tbody class="divide-y divide-gray-100 dark:divide-gray-800 bg-white dark:bg-gray-900 text-xs">
                                                         @php
                                                             $assessmentItems = \App\Models\AssessmentItem::active()->orderBy('id')->get();
                                                             $allApplicantSkills = [];
@@ -781,7 +781,7 @@
                                                                 $itemCategory = $item->category;
                                                             @endphp
                                                             <tr x-show="skillFilter === 'all' || skillFilter === '{{ $itemCategory }}'">
-                                                                <td class="px-3 py-2.5 font-bold text-gray-700 dark:text-gray-300 normal-case leading-relaxed">{{ $skill }}</td>
+                                                                <td class="px-3 py-2.5 font-semibold text-gray-800 dark:text-gray-200 normal-case leading-relaxed">{{ $skill }}</td>
                                                                 <td class="px-3 py-2.5 text-center"><span class="inline-block bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded text-[9px] font-extrabold">{{ $score }}/5</span></td>
                                                                 <td class="px-3 py-2.5 text-right">
                                                                     <select name="verified_skills[{{ $skill }}]" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-2 py-1.5 text-[10px] font-bold focus:ring-2 focus:ring-[#0B5694]/20 outline-none">
