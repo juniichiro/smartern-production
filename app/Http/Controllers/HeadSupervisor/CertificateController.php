@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\HeadSupervisor;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\NotificationController;
 use App\Models\Certificate;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Str;
@@ -70,6 +71,15 @@ class CertificateController extends Controller
             'head_supervisor_id' => auth()->id(),
             'issue_date' => now(),
         ]);
+
+        NotificationController::send(
+            $certificate->intern_id,
+            'Certificate Published',
+            'system',
+            'Your certificate has been published and is ready for pickup.',
+            route('intern.certificates.index'),
+            true
+        );
 
         return redirect()->route('head-supervisor.certificates.index')
             ->with('success', 'Certificate finalized & published.');
