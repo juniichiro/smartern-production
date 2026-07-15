@@ -139,6 +139,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/dashboard', [SupervisorDashboard::class, 'index'])->name('dashboard');
         Route::get('/interns', [SupervisorIntern::class, 'index'])->name('interns');
         Route::get('/interns/{user}', [SupervisorIntern::class, 'show'])->name('interns.show');
+        Route::post('/interns/{user}/extend', [SupervisorIntern::class, 'requestExtension'])->name('interns.extend');
         Route::post('/office/requirements', [SupervisorIntern::class, 'updateRequirements'])->name('office.requirements');
         Route::get('/office/rules', [SupervisorIntern::class, 'editRules'])->name('office.rules');
         Route::put('/office/rules', [SupervisorIntern::class, 'updateRules'])->name('office.rules.update');

@@ -129,12 +129,26 @@
                                         <td class="bg-gray-50/50 dark:bg-gray-800/50 p-3 md:p-5 font-bold text-[#0B5694] dark:text-blue-400 uppercase text-[10px] sm:w-1/3">Official Start</td>
                                         <td class="p-3 md:p-5 font-black text-gray-800 dark:text-gray-100 uppercase text-xs md:text-sm">{{ $schoolSchedule->start_date->format('F d, Y') }}</td>
                                     </tr>
-                                    @if($schoolSchedule->target_end_date)
                                     <tr class="flex flex-col sm:table-row">
-                                        <td class="bg-gray-50/50 dark:bg-gray-800/50 p-3 md:p-5 font-bold text-[#0B5694] dark:text-blue-400 uppercase text-[10px] sm:w-1/3">Target Finish</td>
-                                        <td class="p-3 md:p-5 font-black text-gray-800 dark:text-gray-100 uppercase text-xs md:text-sm">{{ $schoolSchedule->target_end_date->format('F d, Y') }}</td>
+                                        <td class="bg-gray-50/50 dark:bg-gray-800/50 p-3 md:p-5 font-bold text-[#0B5694] dark:text-blue-400 uppercase text-[10px] sm:w-1/3">Target Finish Date</td>
+                                        <td class="p-3 md:p-5 font-black text-gray-800 dark:text-gray-100 uppercase text-xs md:text-sm">
+                                             {{ $intern->end_date ? \Carbon\Carbon::parse($intern->end_date)->format('F d, Y') : ($schoolSchedule->target_end_date ? $schoolSchedule->target_end_date->format('F d, Y') : 'Not Set') }}
+                                        </td>
                                     </tr>
                                     @endif
+                                    @php
+                                        $pendingExtension = \App\Models\InternExtension::where('intern_detail_id', $intern->id)
+                                            ->where('status', 'pending')
+                                            ->first();
+                                    @endphp
+                                    @if($pendingExtension)
+                                    <tr class="flex flex-col sm:table-row bg-amber-50/30 dark:bg-amber-950/10">
+                                        <td class="bg-amber-50/50 dark:bg-amber-950/20 p-3 md:p-5 font-bold text-amber-600 dark:text-amber-400 uppercase text-[10px] sm:w-1/3">Extension Pending</td>
+                                        <td class="p-3 md:p-5 text-gray-850 dark:text-gray-100 text-xs md:text-sm">
+                                            <span class="font-black text-amber-600 dark:text-amber-400 block sm:inline">Proposed Finish:</span> {{ \Carbon\Carbon::parse($pendingExtension->new_end_date)->format('F d, Y') }}
+                                            <p class="text-[11px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider mt-1 leading-normal">Reason: {{ $pendingExtension->reason }}</p>
+                                        </td>
+                                    </tr>
                                     @endif
                                     <tr class="flex flex-col sm:table-row">
                                         <td class="bg-gray-50/50 dark:bg-gray-800/50 p-3 md:p-5 font-bold text-gray-400 dark:text-gray-500 uppercase text-[10px] sm:w-1/3">Emergency</td>
@@ -154,6 +168,36 @@
                             </table>
                         </div>
                     </div>
+
+                    {{-- Extension Request Action --}}
+                    @if(!$isCompleted && !$pendingExtension && $intern->hours_rendered < $targetHours)
+                        <div x-data="{ openRequest: false }" class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
+                            <button @click="openRequest = !openRequest" type="button" class="w-full px-5 py-3 bg-[#0B5694] hover:bg-[#0B5694]/90 text-white font-bold text-xs uppercase tracking-widest rounded-xl transition active:scale-95 text-center flex items-center justify-center gap-2 cursor-pointer shadow-md">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M12 14v6"/><path d="M9 17h6"/></svg>
+                                Request Date Extension
+                            </button>
+                            
+                            <div x-show="openRequest" x-collapse x-cloak class="mt-4 p-4 bg-gray-50 dark:bg-gray-800/30 border border-gray-100 dark:border-gray-800 rounded-xl space-y-4">
+                                <form action="{{ route('supervisor.interns.extend', $intern->user) }}" method="POST" class="space-y-4">
+                                    @csrf
+                                    <div>
+                                        <label class="block text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1.5">New Expected End Date</label>
+                                        <input type="date" name="new_end_date" required min="{{ date('Y-m-d', strtotime('+1 day')) }}" value="{{ $intern->end_date ?? ($schoolSchedule && $schoolSchedule->target_end_date ? $schoolSchedule->target_end_date->format('Y-m-d') : '') }}"
+                                            class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-xs focus:ring-1 focus:ring-[#0B5694] focus:outline-none font-semibold text-gray-700 dark:text-gray-300">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1.5">Reason for Extension</label>
+                                        <textarea name="reason" required placeholder="Briefly describe the reason for the extension request (e.g. absences, suspension, school requirement changes)..." rows="3"
+                                            class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-xs focus:ring-1 focus:ring-[#0B5694] focus:outline-none font-semibold text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500"></textarea>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <button type="submit" class="flex-1 px-4 py-2.5 bg-[#0B5694] hover:bg-[#0B5694]/90 text-white font-bold text-[10px] uppercase tracking-widest rounded-lg transition active:scale-95 text-center cursor-pointer shadow-sm">Submit Request</button>
+                                        <button @click="openRequest = false" type="button" class="px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-250 dark:border-gray-700 text-gray-650 dark:text-gray-300 font-bold text-[10px] uppercase tracking-widest rounded-lg hover:bg-gray-50 transition active:scale-95 text-center cursor-pointer">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    @endif
                 </div>
 
                 <div class="bg-white dark:bg-gray-900 rounded-[25px] p-4 md:p-8 shadow-sm border border-gray-100 dark:border-gray-800">

@@ -284,4 +284,48 @@ class OfficeManagementController extends Controller
 
         return redirect()->back()->with('success', 'Custom competency added and linked as requirement rule.');
     }
+
+    public function requestExtension(Request $request, User $user)
+    {
+        $request->validate([
+            'new_end_date' => 'required|date|after:today',
+            'reason' => 'required|string|max:255',
+        ]);
+
+        $intern = InternDetail::where('user_id', $user->id)->firstOrFail();
+
+        $existing = \App\Models\InternExtension::where('intern_detail_id', $intern->id)
+            ->where('status', 'pending')
+            ->first();
+
+        if ($existing) {
+            return back()->with('error', 'There is already a pending extension request for this intern.');
+        }
+
+        \App\Models\InternExtension::create([
+            'intern_detail_id' => $intern->id,
+            'previous_end_date' => $intern->end_date ?? $intern->start_date ?? now(),
+            'new_end_date' => $request->new_end_date,
+            'reason' => $request->reason,
+            'status' => 'pending',
+        ]);
+
+        // Find Head Supervisors and notify them
+        $headSupervisorRole = Role::where('name', 'head_supervisor')->first();
+        if ($headSupervisorRole) {
+            $headSupervisors = User::where('role_id', $headSupervisorRole->id)->get();
+            $supervisor = auth()->user()->supervisorDetails;
+            foreach ($headSupervisors as $hs) {
+                NotificationController::send(
+                    $hs->id,
+                    'Date Extension Requested',
+                    'system',
+                    "The {$supervisor->office->name} Supervisor has requested a date extension for {$intern->first_name} {$intern->last_name} to " . \Carbon\Carbon::parse($request->new_end_date)->format('M d, Y') . ".",
+                    route('head-supervisor.interns.show', $intern->user->getRouteKey())
+                );
+            }
+        }
+
+        return back()->with('success', 'Date extension request submitted to Head Supervisor.');
+    }
 }
