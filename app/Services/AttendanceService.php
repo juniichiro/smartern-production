@@ -316,8 +316,18 @@ class AttendanceService
             if (isset($actualAttendances[$dateStr])) {
                 $log = $actualAttendances[$dateStr];
 
-                // Guard: status=absent with clock_in/clock_out is invalid data — skip to fall through to absent logic
+                // Guard: status=absent with clock_in/clock_out is invalid data — treat as normal absent
                 if ($log->status === 'absent') {
+                    $mergedLogs->push([
+                        'type' => 'absent',
+                        'date' => $date->copy(),
+                        'clock_in' => null,
+                        'clock_out' => null,
+                        'status' => 'absent',
+                        'remarks' => 'Absent for the day',
+                        'duration' => 0.00,
+                        'record' => null,
+                    ]);
                     continue;
                 }
 
