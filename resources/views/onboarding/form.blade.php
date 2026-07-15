@@ -358,9 +358,10 @@
                             </span>
                         </div>
 
-                        <div x-show="!hasPersonalDetailsErrors" class="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        @php $catIdx = 0; @endphp
                         @foreach($assessmentItems as $category => $categoryItems)
-                            <div class="bg-white dark:bg-gray-900 rounded-[24px] xs:rounded-[32px] sm:rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 text-left">
+                            <div x-show="!hasPersonalDetailsErrors && {{ $catIdx }} <= completedCategoriesCount"
+                                 class="bg-white dark:bg-gray-900 rounded-[24px] xs:rounded-[32px] sm:rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800 text-left">
                                 <div class="bg-gray-50 dark:bg-gray-950 px-5 xs:px-8 sm:px-10 py-5 sm:py-6 border-b border-gray-100 dark:border-gray-800 rounded-t-[24px] xs:rounded-t-[32px] sm:rounded-t-[40px]">
                                     <h3 class="text-xs font-black text-[#0B5694] dark:text-blue-400 uppercase tracking-[0.2em]">{{ $category }}</h3>
                                 </div>
@@ -421,8 +422,13 @@
                                     @endforeach
                                 </div>
                             </div>
+                            <div x-show="!hasPersonalDetailsErrors && {{ $catIdx }} > completedCategoriesCount"
+                                 class="bg-gray-50 dark:bg-gray-800/30 rounded-[24px] xs:rounded-[32px] sm:rounded-[40px] border-2 border-dashed border-gray-200 dark:border-gray-700 p-8 sm:p-12 text-center space-y-3">
+                                <h3 class="text-sm sm:text-base font-black text-gray-400 dark:text-gray-500 uppercase tracking-wider">{{ $category }}</h3>
+                                <p class="text-xs text-gray-400 dark:text-gray-600 font-medium">Complete the previous section first to unlock this category.</p>
+                            </div>
+                            @php $catIdx++; @endphp
                         @endforeach
-                        </div>
                     </div>
 
                     <div class="pt-10">
@@ -1136,6 +1142,28 @@
                     if (!val || (typeof val === 'string' && val.trim() === '')) return true;
                 }
                 return !this.gender;
+            },
+            get categoryNames() {
+                return Object.keys(assessmentItems);
+            },
+            isCategoryComplete(index) {
+                const catName = this.categoryNames[index];
+                if (!catName) return true;
+                const items = assessmentItems[catName];
+                return items.every(item => {
+                    const isTech = catName.includes('I.');
+                    const list = isTech ? this.techSkills : this.softSkills;
+                    const skill = list.find(s => s.name === item.competency_text);
+                    return skill && skill.score !== null;
+                });
+            },
+            get completedCategoriesCount() {
+                let count = 0;
+                for (let i = 0; i < this.categoryNames.length; i++) {
+                    if (this.isCategoryComplete(i)) count++;
+                    else break;
+                }
+                return count;
             },
             get ratedSkillsCount() {
                 const techRated = this.techSkills.filter(s => s.score !== null).length;
