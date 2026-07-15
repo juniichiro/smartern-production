@@ -115,9 +115,15 @@ class DashboardController extends Controller
         $officeId = $supervisor->office_id;
         $office = $supervisor->office;
 
-        // Fetch top 5 match results for this specific office ordered by score descending (only unconfirmed ones)
+        // Get the list of applicant names that are already finalized/assigned to an office
+        $finalizedApplicants = MatchResult::where('is_confirmed', true)
+            ->pluck('applicant_name')
+            ->toArray();
+
+        // Fetch top 5 match results for this specific office belonging to unassigned applicants
         $topMatches = MatchResult::where('office_id', $officeId)
             ->where('is_confirmed', false)
+            ->whereNotIn('applicant_name', $finalizedApplicants)
             ->orderByDesc('score')
             ->take(5)
             ->get();
