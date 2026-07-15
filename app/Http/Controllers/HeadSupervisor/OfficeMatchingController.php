@@ -4,20 +4,23 @@ namespace App\Http\Controllers\HeadSupervisor;
 
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\NotificationController;
 use App\Http\Requests\HeadSupervisor\FinalizeMatchBatchRequest;
 use App\Http\Requests\HeadSupervisor\StoreEvaluationRequest;
 use App\Http\Requests\HeadSupervisor\UploadAssessmentRequest;
 use App\Http\Requests\HeadSupervisor\UndoFinalizeRequest;
 use App\Mail\OfficeAssignmentFinalizedMail;
 use App\Models\ApplicantEvaluation;
-use Illuminate\Support\Facades\Mail;
 use App\Models\AssessmentItem;
 use App\Models\MatchResult;
 use App\Models\Office;
 use App\Models\OfficeRule;
 use App\Models\OnboardingApplicant;
+use App\Models\Role;
+use App\Models\User;
 use App\Services\SecurityAuditService;
 use App\Services\SmartMatchingService;
+use Illuminate\Support\Facades\Mail;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Process\Process;
@@ -391,6 +394,26 @@ class OfficeMatchingController extends Controller
                     \Illuminate\Support\Facades\Log::error("Failed to send office assignment finalized email to {$applicant->email}: " . $e->getMessage());
                 }
             }
+        }
+
+        try {
+            $adminRoles = Role::whereIn('name', ['admin', 'super_admin'])->pluck('id');
+            if ($adminRoles->isNotEmpty()) {
+                $admins = User::whereIn('role_id', $adminRoles)->get();
+                $count = count($request->applicant_names);
+                foreach ($admins as $admin) {
+                    NotificationController::send(
+                        $admin->id,
+                        'Account Creation Needed',
+                        'system',
+                        "{$count} applicant(s) have been assigned to {$office->name} and need account creation.",
+                        route('admin.account'),
+                        false
+                    );
+                }
+            }
+        } catch (\Exception $e) {
+            \Log::error('Failed to notify admins of finalized assignments: ' . $e->getMessage());
         }
 
         return back()->with('success', 'Assignments finalized.');
