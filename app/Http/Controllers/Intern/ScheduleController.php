@@ -239,6 +239,21 @@ class ScheduleController extends Controller
             'status' => 'pending',
         ]);
 
+        // Find Head Supervisors and notify them
+        $headSupervisorRole = \App\Models\Role::where('name', 'head_supervisor')->first();
+        if ($headSupervisorRole) {
+            $headSupervisors = \App\Models\User::where('role_id', $headSupervisorRole->id)->get();
+            foreach ($headSupervisors as $hs) {
+                \App\Http\Controllers\NotificationController::send(
+                    $hs->id,
+                    'Date Extension Requested',
+                    'system',
+                    "Intern {$intern->first_name} {$intern->last_name} has requested a date extension to " . \Carbon\Carbon::parse($request->input('new_end_date'))->format('M d, Y') . ".",
+                    route('head-supervisor.interns.show', $intern->user->getRouteKey())
+                );
+            }
+        }
+
         return back()->with('success', 'Date extension requested successfully.');
     }
 }
