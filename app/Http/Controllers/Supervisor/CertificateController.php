@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\NotificationController;
 use App\Models\Certificate;
 use App\Models\InternDetail;
+use App\Models\Role;
+use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -170,6 +172,24 @@ class CertificateController extends Controller
             route('intern.certificates.index'),
             true
         );
+
+        try {
+            $headSupervisorRole = Role::where('name', 'head_supervisor')->first();
+            if ($headSupervisorRole) {
+                $headSupervisors = User::where('role_id', $headSupervisorRole->id)->get();
+                foreach ($headSupervisors as $hs) {
+                    NotificationController::send(
+                        $hs->id,
+                        'Endorsement Request',
+                        'system',
+                        "{$intern->first_name} {$intern->last_name} has been endorsed by their supervisor and is awaiting your final approval.",
+                        route('head-supervisor.certificates.index'),
+                    );
+                }
+            }
+        } catch (\Exception $e) {
+            \Log::error('Failed to notify head supervisors of endorsement: '.$e->getMessage());
+        }
 
         return redirect()->route('supervisor.certificates.index')->with('success', "Endorsement finalized for {$intern->first_name}.");
     }
