@@ -91,6 +91,47 @@ class OfficeManagementController extends Controller
         // Get today's effective schedule
         $effectiveSchedule = $attendanceService->getEffectiveSchedule($intern->user, now());
 
+        // Calculate Projected End Date
+        $requiredHours = $intern->required_hours ?? 480;
+        $renderedHours = $intern->hours_rendered ?? 0;
+        $hoursLeft = max(0, $requiredHours - $renderedHours);
+        
+        $projectedEndDate = null;
+        if ($hoursLeft > 0) {
+            $currentDate = now()->startOfDay();
+            $scheduleDays = $intern->schedule_assignment ?? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+            $dailyHours = $schoolSchedule ? $schoolSchedule->daily_hours ?? 8 : 8;
+            
+            $holidaysAndSuspensions = \App\Models\SpecialDate::active()
+                ->whereIn('type', ['holiday', 'suspension'])
+                ->pluck('date')
+                ->map(fn($d) => $d->format('Y-m-d'))
+                ->toArray();
+                
+            $safetyCounter = 0;
+            $maxIterations = 365 * 5;
+            
+            while ($hoursLeft > 0 && $safetyCounter < $maxIterations) {
+                $safetyCounter++;
+                $currentDayName = $currentDate->format('l');
+                $dateStr = $currentDate->format('Y-m-d');
+                
+                $isReportingDay = in_array($currentDayName, $scheduleDays);
+                $isNonWorkingDay = in_array($dateStr, $holidaysAndSuspensions);
+                
+                if ($isReportingDay && !$isNonWorkingDay) {
+                    $hoursLeft -= $dailyHours;
+                }
+                
+                if ($hoursLeft > 0) {
+                    $currentDate->addDay();
+                }
+            }
+            $projectedEndDate = $currentDate;
+        } else {
+            $projectedEndDate = now();
+        }
+
         return view('supervisor.intern-profile', compact(
             'intern',
             'totalTasks',
@@ -101,7 +142,8 @@ class OfficeManagementController extends Controller
             'recentTasks',
             'recentAttendance',
             'schoolSchedule',
-            'effectiveSchedule'
+            'effectiveSchedule',
+            'projectedEndDate'
         ));
     }
 

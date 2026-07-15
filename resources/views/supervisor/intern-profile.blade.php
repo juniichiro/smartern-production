@@ -182,8 +182,9 @@
                                     @csrf
                                     <div>
                                         <label class="block text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1.5">New Expected End Date</label>
-                                        <input type="date" name="new_end_date" required min="{{ date('Y-m-d', strtotime('+1 day')) }}" value="{{ $intern->end_date ?? ($schoolSchedule && $schoolSchedule->target_end_date ? $schoolSchedule->target_end_date->format('Y-m-d') : '') }}"
+                                        <input type="date" name="new_end_date" required min="{{ date('Y-m-d', strtotime('+1 day')) }}" value="{{ $projectedEndDate ? $projectedEndDate->format('Y-m-d') : ($intern->end_date ?? ($schoolSchedule && $schoolSchedule->target_end_date ? $schoolSchedule->target_end_date->format('Y-m-d') : '')) }}"
                                             class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-xs focus:ring-1 focus:ring-[#0B5694] focus:outline-none font-semibold text-gray-700 dark:text-gray-300">
+                                        <span class="text-[10px] text-gray-400 block mt-1.5">Recommended base date on remaining hours: <span class="font-bold text-[#0B5694] dark:text-blue-400">{{ $projectedEndDate ? $projectedEndDate->format('M d, Y') : 'N/A' }}</span></span>
                                     </div>
                                     <div>
                                         <label class="block text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1.5">Reason for Extension</label>
