@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\HeadSupervisor;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\NotificationController;
 use App\Models\InternDetail;
 use App\Models\Office;
 use App\Models\Schedule;
@@ -245,6 +246,26 @@ class InternManagementController extends Controller
             $intern->update([
                 'end_date' => $extension->new_end_date,
             ]);
+        }
+
+        try {
+            $intern = $extension->internDetail;
+            if ($intern) {
+                $type = $status === 'approved' ? 'Extension Approved' : 'Extension Rejected';
+                $message = $status === 'approved'
+                    ? 'Your date extension request has been approved. Your new end date is ' . $extension->new_end_date->format('M d, Y') . '.'
+                    : 'Your date extension request has been rejected.' . ($rejectionNote ? " Reason: {$rejectionNote}" : '');
+                NotificationController::send(
+                    $intern->user_id,
+                    $type,
+                    'system',
+                    $message,
+                    route('intern.schedule.index'),
+                    true
+                );
+            }
+        } catch (\Exception $e) {
+            \Log::error('Failed to notify intern of extension resolution: ' . $e->getMessage());
         }
 
         $message = $status === 'approved' ? 'Extension request approved.' : 'Extension request rejected.';
