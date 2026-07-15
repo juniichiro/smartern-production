@@ -8,7 +8,13 @@
     userName="{{ Auth::user()->supervisorDetails->first_name }}" 
     userRole="{{ Auth::user()->supervisorDetails->office->name }}"
 >
-    <div class="flex flex-col space-y-6 sm:space-y-8" x-data="{ activeCompetencies: [], activeCandidateName: '', showSkillsModal: false }">
+    @php
+        $casedSkillsMap = \App\Models\AssessmentItem::active()
+            ->get(['competency_text'])
+            ->mapWithKeys(fn($item) => [strtolower(trim($item->competency_text)) => $item->competency_text])
+            ->toArray();
+    @endphp
+    <div class="flex flex-col space-y-6 sm:space-y-8" x-data="{ activeCompetencies: [], activeCandidateName: '', showSkillsModal: false, casedSkills: @js($casedSkillsMap) }">
         {{-- HEADER --}}
         <x-page-header
             title="Office Placement"
@@ -169,7 +175,7 @@
                     <template x-for="skill in activeCompetencies" :key="skill.skill">
                         <div class="p-5 rounded-[22px] bg-gray-50/50 dark:bg-gray-800/20 border border-gray-100 dark:border-gray-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                             <div class="space-y-2">
-                                <h4 class="text-sm sm:text-[15px] font-bold text-gray-800 dark:text-gray-200 leading-relaxed normal-case" x-text="skill.skill"></h4>
+                                <h4 class="text-sm sm:text-[15px] font-bold text-gray-800 dark:text-gray-200 leading-relaxed normal-case" x-text="casedSkills[skill.skill.trim().toLowerCase()] || skill.skill"></h4>
                                 <div class="flex items-center gap-1.5 flex-wrap">
                                     <template x-if="skill.resume_match">
                                         <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 dark:bg-blue-950/40 text-blue-500 border border-blue-200/50 rounded-lg text-[10px] font-bold uppercase tracking-wider">
