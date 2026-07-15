@@ -102,10 +102,10 @@ class OfficeManagementController extends Controller
             $scheduleDays = $intern->schedule_assignment ?? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
             $dailyHours = $schoolSchedule ? $schoolSchedule->daily_hours ?? 8 : 8;
             
-            $holidaysAndSuspensions = \App\Models\SpecialDate::active()
+            $holidaysAndSuspensions = \App\Models\Schedule::where('school_name', $intern->school)
                 ->whereIn('type', ['holiday', 'suspension'])
                 ->pluck('date')
-                ->map(fn($d) => $d->format('Y-m-d'))
+                ->map(fn($d) => \Carbon\Carbon::parse($d)->format('Y-m-d'))
                 ->toArray();
                 
             $safetyCounter = 0;
