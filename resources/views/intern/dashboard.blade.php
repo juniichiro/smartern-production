@@ -507,7 +507,7 @@
                  x-transition:leave-end="opacity-0">
                 
                 <div @click.away="extensionModalOpen = false" 
-                     class="bg-white dark:bg-gray-900 w-full max-w-lg rounded-[30px] sm:rounded-[40px] shadow-2xl overflow-hidden border border-gray-100 dark:border-gray-800">
+                     class="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-[30px] sm:rounded-[40px] shadow-2xl overflow-hidden border border-gray-100 dark:border-gray-800">
                     
                     <div class="p-6 sm:p-8">
                         <div class="flex justify-between items-start mb-6">
