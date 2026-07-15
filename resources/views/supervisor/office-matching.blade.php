@@ -11,15 +11,15 @@
     <div class="flex flex-col space-y-6 sm:space-y-8">
         {{-- HEADER --}}
         <x-page-header
-            title="Intern Placement"
-            highlight="Recommendations"
-            subtitle="Top 5 candidates matching the requirements for {{ $office->name }}."
+            title="Office Placement"
+            highlight="Nominations"
+            subtitle="Review and request candidate assignments recommended for {{ $office->name }}."
             compact="true"
         />
 
         {{-- MAIN CARD CONTAINER --}}
         <x-card-container 
-            title="Top Candidate Matches" 
+            title="Recommended Candidates" 
             padding="p-6 sm:p-8"
         >
             @if($topMatches->isEmpty())
@@ -68,18 +68,18 @@
                                     {{-- Multi-Factor Badges --}}
                                     <div class="flex flex-wrap items-center gap-2 mt-3 pt-1">
                                         <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 dark:bg-blue-900/20 text-blue-600 border border-blue-100 dark:border-blue-900/30">
-                                            Degree Fit: {{ $degree }}%
+                                            Program Relevance: {{ $degree }}%
                                         </span>
                                         <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 border border-indigo-100 dark:border-indigo-900/30">
-                                            Certs Fit: {{ $cert }}%
+                                            Certification Match: {{ $cert }}%
                                         </span>
                                         @if($exp > 0)
                                             <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 border border-emerald-100 dark:border-emerald-900/30">
-                                                Exp Boost: {{ $exp }}%
+                                                Prior Experience: {{ $exp }}%
                                             </span>
                                         @endif
                                         <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gray-50 dark:bg-gray-800/80 text-gray-600 dark:text-gray-400 border border-gray-100 dark:border-gray-700/80">
-                                            Confidence: {{ $match->confidence }}
+                                            Match Quality: {{ $match->confidence }}
                                         </span>
                                     </div>
                                 </div>
@@ -87,7 +87,7 @@
 
                             {{-- CENTER: Triangulated Overlaps Preview --}}
                             <div class="flex-1 lg:max-w-md text-left space-y-2">
-                                <span class="text-[10px] font-extrabold uppercase tracking-wider text-gray-400 dark:text-gray-500">Matched Competencies</span>
+                                <span class="text-[10px] font-extrabold uppercase tracking-wider text-gray-400 dark:text-gray-500">Verified Competencies</span>
                                 <div class="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto custom-scrollbar pr-1">
                                     @php
                                         $matchedSkills = collect($skills)->filter(fn($s) => $s['resume_match'] || $s['interview_match'])->take(3);
@@ -114,13 +114,13 @@
                                 @if($match->requested_by_supervisor)
                                     <div class="flex items-center gap-2 px-6 py-3.5 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 border border-emerald-100 dark:border-emerald-900/30 rounded-2xl text-xs font-extrabold uppercase tracking-wider shadow-sm select-none">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><polyline points="20 6 9 17 4 12"/></svg>
-                                        Requested Nomination
+                                        Assignment Requested
                                     </div>
                                 @else
                                     <form action="{{ route('supervisor.office-matching.request', $match->id) }}" method="POST">
                                         @csrf
                                         <button type="submit" class="w-full sm:w-auto px-6 py-3.5 bg-[#0B5694] hover:bg-[#09477b] dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/50 active:scale-[0.98]">
-                                            Nominate Intern
+                                            Request Assignment
                                         </button>
                                     </form>
                                 @endif
