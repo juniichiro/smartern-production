@@ -103,6 +103,8 @@ class InternDetail extends Model
                 ->exists();
 
             if (!$alreadyNotified
+                && $intern->required_hours !== null
+                && $intern->required_hours > 0
                 && $intern->hours_rendered >= $intern->required_hours
                 && !$intern->certificate
             ) {

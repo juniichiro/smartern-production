@@ -246,6 +246,7 @@ class AccountController extends Controller
                         'emergency_contact' => $data[11] ?? '',
                         'emergency_contact_number' => $data[12] ?? '',
                         'course' => 'N/A',
+                        'required_hours' => 480,
                         'hours_rendered' => 0,
                     ]));
                 } elseif ($role->name === 'supervisor' || $roleId == UserRole::HEAD_SUPERVISOR->value) {
@@ -483,6 +484,7 @@ class AccountController extends Controller
                     'gender_other_specify' => $applicant->gender_other_specify ?? '',
                     'emergency_contact' => $applicant->emergency_contact ?? '',
                     'course' => 'N/A',
+                    'required_hours' => 480,
                     'hours_rendered' => 0,
                 ]);
                 
