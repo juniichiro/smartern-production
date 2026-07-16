@@ -67,6 +67,11 @@ class OnboardingController extends Controller
 
         $fullName = trim($request->first_name.' '.($request->middle_name ? $request->middle_name.' ' : '').$request->last_name);
         $applicantId = User::generateDisplayId(\App\Enums\UserRole::INTERN);
+        while (OnboardingApplicant::where('applicant_id', $applicantId)->exists()) {
+            $year = now()->format('Y');
+            $numericPart = (int) substr($applicantId, strlen($year));
+            $applicantId = $year . ($numericPart + 1);
+        }
 
         // Save to Database
         $applicant = OnboardingApplicant::create([
