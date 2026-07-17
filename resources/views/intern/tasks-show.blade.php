@@ -40,7 +40,7 @@
                 <div class="bg-white dark:bg-gray-900 rounded-[35px] shadow-sm border border-gray-200 dark:border-gray-800 p-6 lg:p-12">
                     <div class="flex justify-between items-start mb-4">
                         <p class="text-xs font-bold text-[#0B5694] dark:text-blue-400 uppercase tracking-[0.3em]">Task Description</p>
-                        <p class="text-[10px] font-bold text-gray-400 dark:text-gray-600 uppercase italic">ID: # TSK-{{ str_pad($task->id, four, 'zero', STR_PAD_LEFT) }}</p>
+                        <p class="text-[10px] font-bold text-gray-400 dark:text-gray-600 uppercase italic">ID: # TSK-{{ str_pad($task->id, 4, '0', STR_PAD_LEFT) }}</p>
                     </div>
                     <h2 class="text-2xl md:text-4xl font-extrabold text-gray-800 dark:text-gray-100 tracking-normal mb-8">{{ $task->title }}</h2>
                     
