@@ -43,6 +43,21 @@ class OnboardingController extends Controller
 
     public function store(StoreOnboardingRequest $request)
     {
+        // Check if the applicant was rejected within the last 2 months
+        $twoMonthsAgo = now()->subMonths(2);
+        $isRejected = \App\Models\RejectedApplicant::where(function ($q) use ($request) {
+                $q->where('email', $request->email)
+                  ->orWhere('phone_number', $request->phone_number);
+            })
+            ->where('rejected_at', '>=', $twoMonthsAgo)
+            ->exists();
+
+        if ($isRejected) {
+            return back()->withErrors([
+                'email' => 'Your application cannot be processed at this time. Re-application is restricted for 2 months following a rejection.'
+            ])->withInput();
+        }
+
         $resumePath = null;
 
         // Prepare Skill Data

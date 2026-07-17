@@ -192,7 +192,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Onboarding Management
         Route::get('/onboarding', [OnboardingManagementController::class, 'index'])->name('onboarding.index');
         Route::get('/onboarding/export', [OnboardingManagementController::class, 'exportForMatching'])->name('onboarding.export');
-        Route::delete('/onboarding/clear', [OnboardingManagementController::class, 'clear'])->name('onboarding.clear');
+        Route::post('/onboarding/{applicant}/reject', [OnboardingManagementController::class, 'reject'])->name('onboarding.reject');
 
         // Intern Management
         Route::get('/interns', [InternManagementController::class, 'index'])->name('interns');

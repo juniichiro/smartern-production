@@ -18,7 +18,12 @@ class OnboardingManagementController extends Controller
         // Fetch Applicants (Paginated)
         $applicants = OnboardingApplicant::latest()->paginate(10);
  
-        $mappedApplicants = $applicants->getCollection()->map(function ($app) {
+        // Fetch Confirmed applicant names once to optimize database query
+        $confirmedNames = \App\Models\MatchResult::where('is_confirmed', 1)
+            ->pluck('applicant_name')
+            ->toArray();
+
+        $mappedApplicants = $applicants->getCollection()->map(function ($app) use ($confirmedNames) {
             $techList = [];
             foreach ($app->tech_skills as $skill => $score) {
                 $techList[] = "$skill ($score)";
@@ -41,6 +46,7 @@ class OnboardingManagementController extends Controller
                 'tech_list' => $techList,
                 'soft_list' => $softList,
                 'resume_path' => $app->resume_path,
+                'is_pending' => !in_array($app->full_name, $confirmedNames),
             ];
         });
 
@@ -128,14 +134,91 @@ class OnboardingManagementController extends Controller
         return response()->stream($callback, 200, $headers);
     }
 
-    public function clear()
+    public function reject(\Illuminate\Http\Request $request, OnboardingApplicant $applicant)
     {
-        OnboardingApplicant::query()->delete();
+        // 1. Confirm applicant is pending
+        $isConfirmed = \App\Models\MatchResult::where('applicant_name', $applicant->full_name)
+            ->where('is_confirmed', 1)
+            ->exists();
+ 
+        if ($isConfirmed) {
+            return back()->with('error', 'Cannot reject an applicant who has already been matched and confirmed.');
+        }
+ 
+        // 2. Document the rejection
+        \App\Models\RejectedApplicant::create([
+            'full_name' => $applicant->full_name,
+            'email' => $applicant->email,
+            'phone_number' => $applicant->phone_number,
+            'rejected_at' => now(),
+            'reason' => $request->input('reason', 'Rejected by Head Supervisor'),
+        ]);
+ 
+        // 3. Delete from onboarding queue
+        $applicant->delete();
+ 
+        // 4. Regenerate legacy CSV for compatibility
+        $this->regenerateCsv();
+ 
+        return back()->with('success', 'Applicant has been rejected and documented.');
+    }
 
-        if (Storage::exists($this->csvPath)) {
-            Storage::delete($this->csvPath);
+    private function regenerateCsv()
+    {
+        $path = Storage::path($this->csvPath);
+        $dir = dirname($path);
+
+        if (! is_dir($dir)) {
+            mkdir($dir, 0775, true);
         }
 
-        return back()->with('success', 'Onboarding queue cleared.');
+        $applicants = OnboardingApplicant::all();
+
+        if ($applicants->isEmpty()) {
+            if (Storage::exists($this->csvPath)) {
+                Storage::delete($this->csvPath);
+            }
+            return;
+        }
+
+        $handle = fopen($path, 'w');
+        fputcsv($handle, [
+            'student_id',
+            'full_name',
+            'university',
+            'email',
+            'tech_skills',
+            'soft_skills',
+            'first_name',
+            'middle_name',
+            'last_name',
+            'gender',
+            'gender_other_specify',
+            'phone_number',
+            'profile_picture',
+            'emergency_contact',
+            'emergency_contact_number',
+        ]);
+
+        foreach ($applicants as $app) {
+            fputcsv($handle, [
+                $app->applicant_id,
+                $app->full_name,
+                $app->university,
+                $app->email,
+                is_array($app->tech_skills) ? json_encode($app->tech_skills) : $app->tech_skills,
+                is_array($app->soft_skills) ? json_encode($app->soft_skills) : $app->soft_skills,
+                $app->first_name,
+                $app->middle_name,
+                $app->last_name,
+                $app->gender,
+                $app->gender_other_specify,
+                $app->phone_number,
+                $app->profile_picture,
+                $app->emergency_contact,
+                $app->emergency_contact_number,
+            ]);
+        }
+        fclose($handle);
     }
 }

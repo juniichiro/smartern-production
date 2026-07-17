@@ -40,15 +40,7 @@
 
                 {{-- APPLICANT ACTIONS --}}
                 <div x-show="activeTab === 'applicants'" x-cloak class="flex items-center gap-3">
-                    @if(count($applicants) > 0)
-                        <form action="{{ route('head-supervisor.onboarding.clear') }}" method="POST" onsubmit="return confirm('Are you sure? This will clear the entire registry.')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/50 p-3 rounded-xl hover:bg-rose-100 transition active:scale-95" title="Clear Registry">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-                            </button>
-                        </form>
-                    @endif
+
 
                     <a href="{{ route('head-supervisor.onboarding.export') }}" class="flex items-center justify-center gap-3 bg-[#0B5694] dark:bg-blue-600 text-white px-8 py-3.5 rounded-xl font-bold text-[10px] uppercase tracking-wider shadow-lg hover:scale-[1.02] active:scale-95 transition-all">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -89,7 +81,8 @@
                                         <th class="px-8 py-5">Application ID</th>
                                         <th class="px-8 py-5">Intern Candidate</th>
                                         <th class="px-8 py-5">Institutional Affiliate</th>
-                                        <th class="px-8 py-5 text-right">Skills Meta</th>
+                                        <th class="px-8 py-5">Skills Meta</th>
+                                        <th class="px-8 py-5 text-right">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
@@ -115,15 +108,31 @@
                                             <td class="px-8 py-6 whitespace-nowrap">
                                                 <span class="text-[12px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest italic leading-none truncate max-w-[150px] sm:max-w-[200px] inline-block" title="{{ $applicant['school'] }}">{{ $applicant['school'] }}</span>
                                             </td>
-                                            <td class="px-8 py-6 text-right whitespace-nowrap">
-                                                <div class="text-[11px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-tighter truncate max-w-[180px] ml-auto" title="{{ implode(', ', $applicant['tech_list']) }}">
+                                            <td class="px-8 py-6 whitespace-nowrap">
+                                                <div class="text-[11px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-tighter truncate max-w-[180px]" title="{{ implode(', ', $applicant['tech_list']) }}">
                                                     {{ implode(', ', array_slice($applicant['tech_list'], 0, 2)) }}{{ count($applicant['tech_list']) > 2 ? ' + ' . (count($applicant['tech_list']) - 2) . ' more' : '' }}
+                                                </div>
+                                            </td>
+                                            <td class="px-8 py-6 text-right whitespace-nowrap">
+                                                <div class="flex items-center justify-end gap-2">
+                                                    @if($applicant['is_pending'])
+                                                        <form action="{{ route('head-supervisor.onboarding.reject', $applicant['route_key']) }}" method="POST" onsubmit="return confirm('Are you sure you want to reject this applicant? This will reject them and block re-application for 2 months.')">
+                                                            @csrf
+                                                            <input type="hidden" name="reason" value="Rejected during live onboarding intake review">
+                                                            <button type="submit" class="inline-flex items-center gap-1.5 px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/20 dark:hover:bg-rose-900/30 dark:text-rose-400 rounded-xl text-xs font-bold transition active:scale-95 border border-rose-100 dark:border-rose-900/20">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                                                                Reject
+                                                            </button>
+                                                        </form>
+                                                    @else
+                                                        <span class="text-[10px] font-bold text-green-600 bg-green-50 dark:bg-green-950/20 dark:text-green-400 border border-green-100 dark:border-green-900/20 px-3 py-1.5 rounded-xl uppercase tracking-wider">Matched</span>
+                                                    @endif
                                                 </div>
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="4" class="py-32"><x-empty-state title="Onboarding queue is currently clear" compact="true" /></td>
+                                            <td colspan="5" class="py-32"><x-empty-state title="Onboarding queue is currently clear" compact="true" /></td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -164,15 +173,32 @@
                                     @endif
                                 </div>
 
-                                <div class="mt-auto">
-                                    @if(!empty($applicant['resume_path']))
-                                     <button @click="openResume('{{ route('head-supervisor.matching.resume', $applicant['route_key']) }}')" class="w-full flex items-center justify-center gap-2 py-3 bg-[#0B5694]/10 dark:bg-blue-500/10 hover:bg-[#0B5694] hover:text-white border border-[#0B5694]/25 dark:border-blue-500/25 text-[#0B5694] dark:text-blue-400 rounded-2xl text-[10px] font-black uppercase tracking-wider transition active:scale-[0.97] min-h-[48px] shadow-sm">
-                                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
-                                             Preview Resume
-                                         </button>
-                                    @else
-                                        <div class="py-3 text-center text-[9px] text-gray-300 dark:text-gray-700 font-bold uppercase tracking-wider italic">No Resume Attached</div>
-                                    @endif
+                                 <div class="mt-auto space-y-2">
+                                    <div class="grid grid-cols-2 gap-2">
+                                        @if(!empty($applicant['resume_path']))
+                                         <button @click="openResume('{{ route('head-supervisor.matching.resume', $applicant['route_key']) }}')" class="w-full flex items-center justify-center gap-2 py-3 bg-[#0B5694]/10 dark:bg-blue-500/10 hover:bg-[#0B5694] hover:text-white border border-[#0B5694]/25 dark:border-blue-500/25 text-[#0B5694] dark:text-blue-400 rounded-2xl text-[10px] font-black uppercase tracking-wider transition active:scale-[0.97] shadow-sm">
+                                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                                 Resume
+                                             </button>
+                                        @else
+                                            <div class="py-3 text-center text-[9px] text-gray-300 dark:text-gray-700 font-bold uppercase tracking-wider italic">No Resume</div>
+                                        @endif
+
+                                        @if($applicant['is_pending'])
+                                            <form action="{{ route('head-supervisor.onboarding.reject', $applicant['route_key']) }}" method="POST" onsubmit="return confirm('Are you sure you want to reject this applicant? This will reject them and block re-application for 2 months.')" class="w-full">
+                                                @csrf
+                                                <input type="hidden" name="reason" value="Rejected during live onboarding intake review">
+                                                <button type="submit" class="w-full flex items-center justify-center gap-1.5 py-3 bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/20 dark:hover:bg-rose-900/30 dark:text-rose-400 rounded-2xl text-[10px] font-black uppercase tracking-wider transition active:scale-[0.97] border border-rose-100 dark:border-rose-900/20 shadow-sm">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                                                    Reject
+                                                </button>
+                                            </form>
+                                        @else
+                                            <div class="w-full flex items-center justify-center py-3 bg-green-50 dark:bg-green-950/20 text-green-600 dark:text-green-400 border border-green-100 dark:border-green-900/20 rounded-2xl text-[10px] font-black uppercase tracking-wider">
+                                                Matched
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -214,6 +240,23 @@
                                     @endforeach
                                     @if(count($applicant['tech_list']) > 2)
                                         <span class="text-[7px] font-black text-[#0B5694] dark:text-blue-400">+{{ count($applicant['tech_list']) - 2 }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between border-t border-gray-50 dark:border-gray-800 px-4 py-3 bg-gray-50/50 dark:bg-gray-900/50">
+                                <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Status:</span>
+                                <div>
+                                    @if($applicant['is_pending'])
+                                        <form action="{{ route('head-supervisor.onboarding.reject', $applicant['route_key']) }}" method="POST" onsubmit="return confirm('Are you sure you want to reject this applicant? This will reject them and block re-application for 2 months.')">
+                                            @csrf
+                                            <input type="hidden" name="reason" value="Rejected during live onboarding intake review">
+                                            <button type="submit" class="inline-flex items-center gap-1 px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/20 dark:hover:bg-rose-900/30 dark:text-rose-400 rounded-xl text-[9px] font-black uppercase tracking-wider transition active:scale-95 border border-rose-100 dark:border-rose-900/20 shadow-sm">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                                                Reject
+                                            </button>
+                                        </form>
+                                    @else
+                                        <span class="text-[9px] font-bold text-green-600 bg-green-50 dark:bg-green-950/20 dark:text-green-400 border border-green-100 dark:border-green-900/20 px-2.5 py-1 rounded-xl uppercase tracking-wider">Matched</span>
                                     @endif
                                 </div>
                             </div>
