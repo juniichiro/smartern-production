@@ -385,5 +385,21 @@ class UserSeeder extends Seeder
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);
+
+        // Intern eighteen to twenty-seven - MFA Disabled
+        for ($i = 18; $i <= 27; $i++) {
+            $displayId = '2026500' . $i;
+            User::create([
+                'role_id' => UserRole::INTERN,
+                'display_id' => $displayId,
+                'public_id' => hash('sha256', $displayId),
+                'email' => 'intern' . $i . '@smartern.com',
+                'password' => Hash::make('password'),
+                'google2fa_secret' => null,
+                'google2fa_enabled' => false,
+                'failed_attempts' => 0,
+                'is_first_login' => false,
+            ]);
+        }
     }
 }

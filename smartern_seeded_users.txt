@@ -172,3 +172,63 @@ Display ID: 202650017
 Name: Cris Valdez
 School: FEU-TECH | Department: Human Resources (HR)
 Hours Rendered: 148 (Close to Finish) | MFA: Disabled
+
+Email: intern18@smartern.com
+Display ID: 202650018
+Name: John One
+School: DLSU | Department: Information and Communication Technology (ICT) Unit
+Hours Rendered: 10 | MFA: Disabled
+
+Email: intern19@smartern.com
+Display ID: 202650019
+Name: Jane Two
+School: UST | Department: Human Resource Management Unit (HRMU)
+Hours Rendered: 149 (Close to Finish) | MFA: Disabled
+
+Email: intern20@smartern.com
+Display ID: 202650020
+Name: Bob Three
+School: UP | Department: Budget & GSIS LOAN & Remittance Units
+Hours Rendered: 95 | MFA: Disabled
+
+Email: intern21@smartern.com
+Display ID: 202650021
+Name: Alice Four
+School: FEU-TECH | Department: Records Unit
+Hours Rendered: 238 (Close to Finish) | MFA: Disabled
+
+Email: intern22@smartern.com
+Display ID: 202650022
+Name: Charlie Five
+School: DLSU | Department: Information and Communication Technology (ICT) Unit
+Hours Rendered: 198 (Close to Finish) | MFA: Disabled
+
+Email: intern23@smartern.com
+Display ID: 202650023
+Name: Daisy Six
+School: UST | Department: Human Resource Management Unit (HRMU)
+Hours Rendered: 50 | MFA: Disabled
+
+Email: intern24@smartern.com
+Display ID: 202650024
+Name: Frank Seven
+School: UP | Department: Budget & GSIS LOAN & Remittance Units
+Hours Rendered: 295 (Close to Finish) | MFA: Disabled
+
+Email: intern25@smartern.com
+Display ID: 202650025
+Name: Grace Eight
+School: FEU-TECH | Department: Records Unit
+Hours Rendered: 80 | MFA: Disabled
+
+Email: intern26@smartern.com
+Display ID: 202650026
+Name: Henry Nine
+School: DLSU | Department: Information and Communication Technology (ICT) Unit
+Hours Rendered: 120 | MFA: Disabled
+
+Email: intern27@smartern.com
+Display ID: 202650027
+Name: Ivy Ten
+School: UST | Department: Human Resource Management Unit (HRMU)
+Hours Rendered: 147 (Close to Finish) | MFA: Disabled
