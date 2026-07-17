@@ -400,16 +400,16 @@ class UserSeeder extends Seeder
 
         // Intern eighteen to twenty-seven - MFA Disabled
         $extraInterns = [
-            '202650018' => 'justin.perez@smartern.com',
-            '202650019' => 'leila.pascual@smartern.com',
-            '202650020' => 'mark.mendoza@smartern.com',
-            '202650021' => 'sophia.lopez@smartern.com',
-            '202650022' => 'christian.castillo@smartern.com',
-            '202650023' => 'dianne.rivera@smartern.com',
-            '202650024' => 'francis.santos@smartern.com',
-            '202650025' => 'giselle.bernardo@smartern.com',
-            '202650026' => 'harvey.cruz@smartern.com',
-            '202650027' => 'isabel.delrosario@smartern.com',
+            '202650018' => 'jperez@smartern.com',
+            '202650019' => 'lpascual@smartern.com',
+            '202650020' => 'mmendoza@smartern.com',
+            '202650021' => 'slopez@smartern.com',
+            '202650022' => 'ccastillo@smartern.com',
+            '202650023' => 'drivera@smartern.com',
+            '202650024' => 'fsantos@smartern.com',
+            '202650025' => 'gbernardo@smartern.com',
+            '202650026' => 'hcruz@smartern.com',
+            '202650027' => 'idelrosario@smartern.com',
         ];
 
         foreach ($extraInterns as $displayId => $email) {

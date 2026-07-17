@@ -249,7 +249,7 @@ class InternDetailSeeder extends Seeder
                 'end_date' => '2026-08-31',
             ],
             [
-                'email' => 'justin.perez@smartern.com',
+                'email' => 'jperez@smartern.com',
                 'office_id' => 1,
                 'first_name' => 'Justin',
                 'last_name' => 'Perez',
@@ -263,7 +263,7 @@ class InternDetailSeeder extends Seeder
                 'end_date' => '2026-08-31',
             ],
             [
-                'email' => 'leila.pascual@smartern.com',
+                'email' => 'lpascual@smartern.com',
                 'office_id' => 5, // CID
                 'first_name' => 'Leila',
                 'last_name' => 'Pascual',
@@ -277,7 +277,7 @@ class InternDetailSeeder extends Seeder
                 'end_date' => '2026-08-31',
             ],
             [
-                'email' => 'mark.mendoza@smartern.com',
+                'email' => 'mmendoza@smartern.com',
                 'office_id' => 6, // SGOD
                 'first_name' => 'Mark',
                 'last_name' => 'Mendoza',
@@ -291,7 +291,7 @@ class InternDetailSeeder extends Seeder
                 'end_date' => '2026-08-31',
             ],
             [
-                'email' => 'sophia.lopez@smartern.com',
+                'email' => 'slopez@smartern.com',
                 'office_id' => 4,
                 'first_name' => 'Sophia',
                 'last_name' => 'Lopez',
@@ -305,7 +305,7 @@ class InternDetailSeeder extends Seeder
                 'end_date' => '2026-08-31',
             ],
             [
-                'email' => 'christian.castillo@smartern.com',
+                'email' => 'ccastillo@smartern.com',
                 'office_id' => 1,
                 'first_name' => 'Christian',
                 'last_name' => 'Castillo',
@@ -319,7 +319,7 @@ class InternDetailSeeder extends Seeder
                 'end_date' => '2026-08-31',
             ],
             [
-                'email' => 'dianne.rivera@smartern.com',
+                'email' => 'drivera@smartern.com',
                 'office_id' => 5, // CID
                 'first_name' => 'Dianne',
                 'last_name' => 'Rivera',
@@ -333,7 +333,7 @@ class InternDetailSeeder extends Seeder
                 'end_date' => '2026-08-31',
             ],
             [
-                'email' => 'francis.santos@smartern.com',
+                'email' => 'fsantos@smartern.com',
                 'office_id' => 6, // SGOD
                 'first_name' => 'Francis',
                 'last_name' => 'Santos',
@@ -347,7 +347,7 @@ class InternDetailSeeder extends Seeder
                 'end_date' => '2026-08-31',
             ],
             [
-                'email' => 'giselle.bernardo@smartern.com',
+                'email' => 'gbernardo@smartern.com',
                 'office_id' => 4,
                 'first_name' => 'Giselle',
                 'last_name' => 'Bernardo',
@@ -361,7 +361,7 @@ class InternDetailSeeder extends Seeder
                 'end_date' => '2026-08-31',
             ],
             [
-                'email' => 'harvey.cruz@smartern.com',
+                'email' => 'hcruz@smartern.com',
                 'office_id' => 1,
                 'first_name' => 'Harvey',
                 'last_name' => 'Cruz',
@@ -375,7 +375,7 @@ class InternDetailSeeder extends Seeder
                 'end_date' => '2026-08-31',
             ],
             [
-                'email' => 'isabel.delrosario@smartern.com',
+                'email' => 'idelrosario@smartern.com',
                 'office_id' => 5, // CID
                 'first_name' => 'Isabel',
                 'last_name' => 'Del Rosario',

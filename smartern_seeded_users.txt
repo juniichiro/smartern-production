@@ -178,61 +178,61 @@ Name: Cris Valdez
 School: FEU-TECH | Department: Human Resources (HR)
 Hours Rendered: 148 (Close to Finish) | MFA: Disabled
 
-Email: justin.perez@smartern.com
+Email: jperez@smartern.com
 Display ID: 202650018
 Name: Justin Perez
 School: DLSU | Department: Information and Communication Technology (ICT) Unit
 Hours Rendered: 10 | MFA: Disabled
 
-Email: leila.pascual@smartern.com
+Email: lpascual@smartern.com
 Display ID: 202650019
 Name: Leila Pascual
 School: UST | Department: Curriculum Implementation Division (CID)
 Hours Rendered: 149 (Close to Finish) | MFA: Disabled
 
-Email: mark.mendoza@smartern.com
+Email: mmendoza@smartern.com
 Display ID: 202650020
 Name: Mark Mendoza
 School: UP | Department: School Governance and Operations Division (SGOD)
 Hours Rendered: 95 | MFA: Disabled
 
-Email: sophia.lopez@smartern.com
+Email: slopez@smartern.com
 Display ID: 202650021
 Name: Sophia Lopez
 School: FEU-TECH | Department: Records Unit
 Hours Rendered: 238 (Close to Finish) | MFA: Disabled
 
-Email: christian.castillo@smartern.com
+Email: ccastillo@smartern.com
 Display ID: 202650022
 Name: Christian Castillo
 School: DLSU | Department: Information and Communication Technology (ICT) Unit
 Hours Rendered: 198 (Close to Finish) | MFA: Disabled
 
-Email: dianne.rivera@smartern.com
+Email: drivera@smartern.com
 Display ID: 202650023
 Name: Dianne Rivera
 School: UST | Department: Curriculum Implementation Division (CID)
 Hours Rendered: 50 | MFA: Disabled
 
-Email: francis.santos@smartern.com
+Email: fsantos@smartern.com
 Display ID: 202650024
 Name: Francis Santos
 School: UP | Department: School Governance and Operations Division (SGOD)
 Hours Rendered: 295 (Close to Finish) | MFA: Disabled
 
-Email: giselle.bernardo@smartern.com
+Email: gbernardo@smartern.com
 Display ID: 202650025
 Name: Giselle Bernardo
 School: FEU-TECH | Department: Records Unit
 Hours Rendered: 80 | MFA: Disabled
 
-Email: harvey.cruz@smartern.com
+Email: hcruz@smartern.com
 Display ID: 202650026
 Name: Harvey Cruz
 School: DLSU | Department: Information and Communication Technology (ICT) Unit
 Hours Rendered: 120 | MFA: Disabled
 
-Email: isabel.delrosario@smartern.com
+Email: idelrosario@smartern.com
 Display ID: 202650027
 Name: Isabel Del Rosario
 School: UST | Department: Curriculum Implementation Division (CID)
