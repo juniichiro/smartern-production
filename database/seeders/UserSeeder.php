@@ -52,7 +52,7 @@ class UserSeeder extends Seeder
             'is_first_login' => false,
         ]);
 
-        // HEAD SUPERVISORS (MFA mix)
+        // HEAD SUPERVISOR (Original - Email MFA Enabled)
         User::create([
             'role_id' => UserRole::HEAD_SUPERVISOR,
             'display_id' => '2026201',
@@ -61,18 +61,6 @@ class UserSeeder extends Seeder
             'password' => Hash::make('password'),
             'google2fa_secret' => null,
             'google2fa_enabled' => true, // Email MFA Enabled
-            'failed_attempts' => 0,
-            'is_first_login' => false,
-        ]);
-
-        User::create([
-            'role_id' => UserRole::HEAD_SUPERVISOR,
-            'display_id' => '2026202',
-            'public_id' => hash('sha256', '2026202'),
-            'email' => 'assistant_hs@smartern.com',
-            'password' => Hash::make('password'),
-            'google2fa_secret' => null,
-            'google2fa_enabled' => false, // MFA Disabled
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);

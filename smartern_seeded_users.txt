@@ -15,17 +15,12 @@ Display ID: 2026102
 Role: Administrator | MFA: Disabled (Personal Test Account)
 
 
-2. HEAD SUPERVISORS
+2. HEAD SUPERVISOR (MFA Enabled by Default)
 -----------------------------------------
 Email: malin@smartern.com
 Display ID: 2026201
 Name: Michelle Malin
 Department: Human Resources (HR Head) | MFA: Email
-
-Email: assistant_hs@smartern.com
-Display ID: 2026202
-Name: Assistant Head Supervisor
-Department: Human Resources (HR) | MFA: Disabled
 
 
 3. SUPERVISORS
