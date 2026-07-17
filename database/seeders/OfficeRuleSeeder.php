@@ -11,160 +11,342 @@ class OfficeRuleSeeder extends Seeder
 {
     public function run(): void
     {
-        // Clear existing rules to avoid duplicates or legacy strings
+        // Clear existing rules to avoid duplicates
         DB::table('office_rules')->truncate();
 
-        // Fetch dynamic items to use as rules for the various offices
-        $spreadsheet = AssessmentItem::where('competency_text', 'like', '%spreadsheet%')->first();
-        $programming = AssessmentItem::where('competency_text', 'like', '%programming%')->first();
-        $troubleshoot = AssessmentItem::where('competency_text', 'like', '%troubleshooting%')->first();
-        $cloud = AssessmentItem::where('competency_text', 'like', '%cloud storage%')->first();
-
-        $communication = AssessmentItem::where('competency_text', 'like', '%Communicating ideas%')->first();
-        $reports = AssessmentItem::where('competency_text', 'like', '%Preparing clear and accurate reports%')->first();
-        $confidentiality = AssessmentItem::where('competency_text', 'like', '%confidential or sensitive%')->first();
-        $scheduling = AssessmentItem::where('competency_text', 'like', '%scheduling meetings%')->first();
-
-        $dataEntry = AssessmentItem::where('competency_text', 'like', '%data encoding%')->first();
-        $analyzingData = AssessmentItem::where('competency_text', 'like', '%Analyzing data%')->first();
-        $attentionDetail = AssessmentItem::where('competency_text', 'like', '%attention to detail%')->first();
-
-        $organizingDocs = AssessmentItem::where('competency_text', 'like', '%Organizing office documents%')->first();
-        $filingArchiving = AssessmentItem::where('competency_text', 'like', '%Filing and archiving%')->first();
-        $correspondence = AssessmentItem::where('competency_text', 'like', '%correspondence%')->first();
-        $wordProcessing = AssessmentItem::where('competency_text', 'like', '%word processing%')->first();
-
-        $rules = [
-            // ICT Department (Office ID
-            [
-                'office_id' => 1,
-                'item' => $spreadsheet,
-                'priority' => 5, // Highly Required
+        // Priority lookup map based on production settings
+        $officeRulesData = [
+            1 => [ // ICT Unit
+                'word processing' => 5,
+                'spreadsheet' => 4,
+                'presentations' => 4,
+                'data encoding' => 5,
+                'cloud storage' => 4,
+                'email' => 5,
+                'troubleshooting' => 5,
+                'programming' => 4,
+                'retrieving relevant' => 5,
+                'video conferencing' => 4,
+                'Organizing office documents' => 4,
+                'Filing and archiving' => 4,
+                'Preparing clear' => 5,
+                'Managing and updating' => 5,
+                'confidential' => 5,
+                'scheduling' => 3,
+                'attention to detail' => 4,
+                'procedures' => 5,
+                'administrative' => 4,
+                'correspondence' => 5,
+                'Analyzing data' => 5,
+                'Identifying problems' => 5,
+                'Proposing logical' => 4,
+                'basic research' => 5,
+                'Interpreting' => 4,
+                'patterns' => 4,
+                'cross-checking' => 4,
+                'presenting information' => 5,
+                'sound logical' => 4,
+                'Learning' => 5,
+                'discussion' => 5,
+                'reports or messages' => 5,
+                'Listening' => 5,
+                'Collaborating' => 5,
+                'professionalism' => 5,
+                'clients' => 5,
+                'Participating' => 5,
+                'Offering' => 5,
+                'misunderstandings' => 5,
+                'communication style' => 5,
+                'initiative' => 5,
+                'Managing time' => 5,
+                'reliability' => 5,
+                'cooperative' => 5,
+                'feedback' => 5,
+                'Respecting' => 5,
+                'data privacy' => 5,
+                'willingness' => 5,
+                'punctuality' => 5,
+                'integrity' => 5,
             ],
-            [
-                'office_id' => 1,
-                'item' => $programming,
-                'priority' => 5, // Highly Required
+            2 => [ // HRMU
+                'word processing' => 5,
+                'spreadsheet' => 5,
+                'presentations' => 4,
+                'data encoding' => 5,
+                'cloud storage' => 5,
+                'email' => 4,
+                'troubleshooting' => 5,
+                'programming' => 5,
+                'retrieving relevant' => 5,
+                'video conferencing' => 4,
+                'Organizing office documents' => 5,
+                'Filing and archiving' => 5,
+                'Preparing clear' => 5,
+                'Managing and updating' => 5,
+                'confidential' => 5,
+                'scheduling' => 3,
+                'attention to detail' => 5,
+                'procedures' => 5,
+                'administrative' => 5,
+                'correspondence' => 3,
+                'Analyzing data' => 5,
+                'Identifying problems' => 4,
+                'Proposing logical' => 5,
+                'basic research' => 4,
+                'Interpreting' => 5,
+                'patterns' => 4,
+                'cross-checking' => 4,
+                'presenting information' => 5,
+                'sound logical' => 5,
+                'Learning' => 5,
+                'discussion' => 4,
+                'reports or messages' => 3,
+                'Listening' => 5,
+                'Collaborating' => 5,
+                'professionalism' => 5,
+                'clients' => 5,
+                'Participating' => 3,
+                'Offering' => 3,
+                'misunderstandings' => 4,
+                'communication style' => 4,
+                'initiative' => 5,
+                'Managing time' => 5,
+                'reliability' => 5,
+                'cooperative' => 5,
+                'feedback' => 5,
+                'Respecting' => 5,
+                'data privacy' => 5,
+                'willingness' => 5,
+                'punctuality' => 5,
+                'integrity' => 5,
             ],
-            [
-                'office_id' => 1,
-                'item' => $troubleshoot,
-                'priority' => 4, // Important
+            3 => [ // Budget & GSIS
+                'word processing' => 5,
+                'spreadsheet' => 5,
+                'presentations' => 5,
+                'data encoding' => 5,
+                'cloud storage' => 5,
+                'email' => 5,
+                'troubleshooting' => 4,
+                'programming' => 5,
+                'retrieving relevant' => 5,
+                'video conferencing' => 5,
+                'Organizing office documents' => 5,
+                'Filing and archiving' => 5,
+                'Preparing clear' => 5,
+                'Managing and updating' => 5,
+                'confidential' => 5,
+                'scheduling' => 3,
+                'attention to detail' => 5,
+                'procedures' => 5,
+                'administrative' => 4,
+                'correspondence' => 3,
+                'Analyzing data' => 5,
+                'Identifying problems' => 4,
+                'Proposing logical' => 4,
+                'basic research' => 4,
+                'Interpreting' => 3,
+                'patterns' => 3,
+                'cross-checking' => 3,
+                'presenting information' => 4,
+                'sound logical' => 4,
+                'Learning' => 5,
+                'discussion' => 4,
+                'reports or messages' => 4,
+                'Listening' => 4,
+                'Collaborating' => 4,
+                'professionalism' => 4,
+                'clients' => 4,
+                'Participating' => 4,
+                'Offering' => 4,
+                'misunderstandings' => 4,
+                'communication style' => 4,
+                'initiative' => 4,
+                'Managing time' => 4,
+                'reliability' => 5,
+                'cooperative' => 4,
+                'feedback' => 4,
+                'Respecting' => 4,
+                'data privacy' => 5,
+                'willingness' => 4,
+                'punctuality' => 5,
+                'integrity' => 5,
             ],
-            [
-                'office_id' => 1,
-                'item' => $cloud,
-                'priority' => 3, // Moderately Important
+            4 => [ // Records Unit
+                'word processing' => 4,
+                'spreadsheet' => 4,
+                'presentations' => 2,
+                'data encoding' => 5,
+                'cloud storage' => 5,
+                'email' => 4,
+                'troubleshooting' => 4,
+                'programming' => 3,
+                'retrieving relevant' => 3,
+                'video conferencing' => 2,
+                'Organizing office documents' => 5,
+                'Filing and archiving' => 5,
+                'Preparing clear' => 4,
+                'Managing and updating' => 4,
+                'confidential' => 4,
+                'scheduling' => 2,
+                'attention to detail' => 5,
+                'procedures' => 5,
+                'administrative' => 5,
+                'correspondence' => 3,
+                'Analyzing data' => 3,
+                'Identifying problems' => 3,
+                'Proposing logical' => 3,
+                'basic research' => 3,
+                'Interpreting' => 3,
+                'patterns' => 3,
+                'cross-checking' => 3,
+                'presenting information' => 3,
+                'sound logical' => 3,
+                'Learning' => 3,
+                'discussion' => 3,
+                'reports or messages' => 3,
+                'Listening' => 4,
+                'Collaborating' => 4,
+                'professionalism' => 4,
+                'clients' => 5,
+                'Participating' => 3,
+                'Offering' => 3,
+                'misunderstandings' => 3,
+                'communication style' => 3,
+                'initiative' => 5,
+                'Managing time' => 4,
+                'reliability' => 4,
+                'cooperative' => 5,
+                'feedback' => 4,
+                'Respecting' => 5,
+                'data privacy' => 5,
+                'willingness' => 5,
+                'punctuality' => 5,
+                'integrity' => 5,
             ],
-
-            // Human Resources (Office ID
-            [
-                'office_id' => 2,
-                'item' => $communication,
-                'priority' => 5,
+            5 => [ // CID
+                'word processing' => 5,
+                'spreadsheet' => 5,
+                'presentations' => 3,
+                'data encoding' => 5,
+                'cloud storage' => 5,
+                'email' => 5,
+                'troubleshooting' => 2,
+                'retrieving relevant' => 5,
+                'video conferencing' => 5,
+                'Organizing office documents' => 5,
+                'Filing and archiving' => 5,
+                'Preparing clear' => 4,
+                'Managing and updating' => 5,
+                'confidential' => 5,
+                'scheduling' => 5,
+                'attention to detail' => 5,
+                'procedures' => 4,
+                'administrative' => 5,
+                'correspondence' => 4,
+                'Analyzing data' => 3,
+                'Identifying problems' => 4,
+                'Proposing logical' => 3,
+                'basic research' => 3,
+                'Interpreting' => 3,
+                'patterns' => 3,
+                'cross-checking' => 3,
+                'presenting information' => 4,
+                'sound logical' => 3,
+                'Learning' => 4,
+                'discussion' => 4,
+                'reports or messages' => 4,
+                'Listening' => 5,
+                'Collaborating' => 5,
+                'professionalism' => 5,
+                'clients' => 5,
+                'Participating' => 4,
+                'Offering' => 3,
+                'misunderstandings' => 4,
+                'communication style' => 4,
+                'initiative' => 5,
+                'Managing time' => 5,
+                'reliability' => 5,
+                'cooperative' => 5,
+                'feedback' => 5,
+                'Respecting' => 5,
+                'data privacy' => 4,
+                'willingness' => 4,
+                'punctuality' => 5,
+                'integrity' => 5,
             ],
-            [
-                'office_id' => 2,
-                'item' => $reports,
-                'priority' => 4,
-            ],
-            [
-                'office_id' => 2,
-                'item' => $confidentiality,
-                'priority' => 5,
-            ],
-            [
-                'office_id' => 2,
-                'item' => $scheduling,
-                'priority' => 3,
-            ],
-
-            // Finance & Accounting (Office ID
-            [
-                'office_id' => 3,
-                'item' => $spreadsheet,
-                'priority' => 5,
-            ],
-            [
-                'office_id' => 3,
-                'item' => $dataEntry,
-                'priority' => 4,
-            ],
-            [
-                'office_id' => 3,
-                'item' => $analyzingData,
-                'priority' => 5,
-            ],
-            [
-                'office_id' => 3,
-                'item' => $attentionDetail,
-                'priority' => 4,
-            ],
-
-            // Administrative Services (Office ID 4)
-            [
-                'office_id' => 4,
-                'item' => $organizingDocs,
-                'priority' => 5,
-            ],
-            [
-                'office_id' => 4,
-                'item' => $filingArchiving,
-                'priority' => 4,
-            ],
-            [
-                'office_id' => 4,
-                'item' => $correspondence,
-                'priority' => 5,
-            ],
-            [
-                'office_id' => 4,
-                'item' => $wordProcessing,
-                'priority' => 4,
-            ],
-
-            // Curriculum Implementation Division (Office ID 5)
-            [
-                'office_id' => 5,
-                'item' => $organizingDocs,
-                'priority' => 5,
-            ],
-            [
-                'office_id' => 5,
-                'item' => $reports,
-                'priority' => 5,
-            ],
-            [
-                'office_id' => 5,
-                'item' => $communication,
-                'priority' => 4,
-            ],
-
-            // School Governance and Operations Division (Office ID 6)
-            [
-                'office_id' => 6,
-                'item' => $spreadsheet,
-                'priority' => 4,
-            ],
-            [
-                'office_id' => 6,
-                'item' => $scheduling,
-                'priority' => 4,
-            ],
-            [
-                'office_id' => 6,
-                'item' => $dataEntry,
-                'priority' => 5,
-            ],
+            6 => [ // SGOD
+                'word processing' => 5,
+                'spreadsheet' => 5,
+                'presentations' => 3,
+                'data encoding' => 5,
+                'cloud storage' => 5,
+                'email' => 5,
+                'troubleshooting' => 2,
+                'retrieving relevant' => 4,
+                'video conferencing' => 4,
+                'Organizing office documents' => 5,
+                'Filing and archiving' => 5,
+                'Preparing clear' => 4,
+                'Managing and updating' => 5,
+                'confidential' => 5,
+                'scheduling' => 5,
+                'attention to detail' => 5,
+                'procedures' => 5,
+                'administrative' => 5,
+                'correspondence' => 4,
+                'Analyzing data' => 3,
+                'Identifying problems' => 4,
+                'Proposing logical' => 3,
+                'basic research' => 3,
+                'Interpreting' => 3,
+                'patterns' => 3,
+                'cross-checking' => 3,
+                'presenting information' => 4,
+                'sound logical' => 3,
+                'Learning' => 4,
+                'discussion' => 4,
+                'reports or messages' => 4,
+                'Listening' => 5,
+                'Collaborating' => 5,
+                'professionalism' => 5,
+                'clients' => 5,
+                'Participating' => 4,
+                'Offering' => 3,
+                'misunderstandings' => 4,
+                'communication style' => 4,
+                'initiative' => 5,
+                'Managing time' => 5,
+                'reliability' => 5,
+                'cooperative' => 5,
+                'feedback' => 5,
+                'Respecting' => 5,
+                'data privacy' => 4,
+                'willingness' => 4,
+                'punctuality' => 5,
+                'integrity' => 5,
+            ]
         ];
 
-        foreach ($rules as $rule) {
-            if ($rule['item']) {
+        // Fetch all assessment items
+        $items = AssessmentItem::all();
+
+        foreach ($officeRulesData as $officeId => $rulesMap) {
+            foreach ($items as $item) {
+                $priority = 1; // Default fallback priority
+                foreach ($rulesMap as $keyword => $value) {
+                    if (str_contains(strtolower($item->competency_text), strtolower($keyword))) {
+                        $priority = $value;
+                        break;
+                    }
+                }
+
+                // Create the rule
                 OfficeRule::create([
-                    'office_id' => $rule['office_id'],
-                    'require_rule' => trim(explode('.', $rule['item']->category)[1] ?? 'Skill'),
-                    'rule_value' => $rule['item']->competency_text,
-                    'priority' => $rule['priority'],
+                    'office_id' => $officeId,
+                    'require_rule' => trim(explode('.', $item->category)[1] ?? $item->category),
+                    'rule_value' => $item->competency_text,
+                    'priority' => $priority,
                 ]);
             }
         }
