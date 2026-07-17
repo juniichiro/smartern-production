@@ -42,15 +42,11 @@ class AppServiceProvider extends ServiceProvider
         // Optimized View Composer for Notifications
         // Reverted to '*' to ensure compatibility with all views containing the sidebar
         view()->composer('*', function ($view) {
-            static $notifications = null;
-
             if (Auth::check()) {
-                if ($notifications === null) {
-                    $notifications = Notification::where('recipient_id', Auth::id())
-                        ->latest()
-                        ->limit(10)
-                        ->get();
-                }
+                $notifications = Notification::where('recipient_id', Auth::id())
+                    ->latest()
+                    ->limit(10)
+                    ->get();
                 $view->with('notifications', $notifications);
             } else {
                 $view->with('notifications', collect());
