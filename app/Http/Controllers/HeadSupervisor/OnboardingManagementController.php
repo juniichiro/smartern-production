@@ -63,7 +63,10 @@ class OnboardingManagementController extends Controller
                 return $office;
             });
 
-        return view('head-supervisor.onboarding.index', compact('applicants', 'offices'));
+        // Fetch Documented Rejections
+        $rejectedApplicants = \App\Models\RejectedApplicant::latest()->paginate(10, ['*'], 'rejections_page');
+ 
+        return view('head-supervisor.onboarding.index', compact('applicants', 'offices', 'rejectedApplicants'));
     }
 
     public function exportForMatching()

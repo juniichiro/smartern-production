@@ -36,6 +36,11 @@
                             class="px-6 py-2.5 rounded-[18px] text-[11px] font-bold uppercase tracking-wider transition-all duration-300">
                         Offices
                     </button>
+                    <button @click="activeTab = 'rejections'" 
+                            :class="activeTab === 'rejections' ? 'bg-white dark:bg-gray-800 text-[#0B5694] dark:text-blue-400 shadow-sm' : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'"
+                            class="px-6 py-2.5 rounded-[18px] text-[11px] font-bold uppercase tracking-wider transition-all duration-300">
+                        Rejections
+                    </button>
                 </div>
 
                 {{-- APPLICANT ACTIONS --}}
@@ -271,6 +276,99 @@
                     {{-- Pagination Links --}}
                     <div class="mt-8 flex justify-end">
                         {{ $applicants->links('vendor.pagination.tailwind-custom') }}
+                    </div>
+                </x-table-container>
+            </div>
+        </template>
+
+        {{-- Rejected Applicants Section --}}
+        <template x-if="activeTab === 'rejections'">
+            <div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <x-table-container title="Rejected Applicants Archive" subtitle="Documented rejections (2-month re-application block active)">
+                    {{-- DESKTOP TABLE (lg+) --}}
+                    <div class="hidden lg:block border border-gray-100 dark:border-gray-800 rounded-3xl overflow-hidden shadow-inner bg-white dark:bg-gray-900/50">
+                        <div class="overflow-x-auto custom-scrollbar">
+                            <table class="w-full text-left border-collapse">
+                                <thead class="bg-gray-50 dark:bg-gray-800/50 text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest border-b border-gray-100 dark:border-gray-800">
+                                    <tr>
+                                        <th class="px-8 py-5">Candidate Name</th>
+                                        <th class="px-8 py-5">Contact Details</th>
+                                        <th class="px-8 py-5">Rejection Timestamp</th>
+                                        <th class="px-8 py-5">Reason</th>
+                                        <th class="px-8 py-5 text-right">Block Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
+                                    @forelse($rejectedApplicants as $rejected)
+                                        <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition group">
+                                            <td class="px-8 py-6 whitespace-nowrap">
+                                                <p class="text-sm font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight">{{ $rejected->full_name }}</p>
+                                            </td>
+                                            <td class="px-8 py-6 whitespace-nowrap">
+                                                <p class="text-xs text-gray-500 dark:text-gray-400 font-bold">{{ $rejected->email }}</p>
+                                                <p class="text-[11px] text-gray-400 dark:text-gray-500 font-bold mt-1">{{ $rejected->phone_number }}</p>
+                                            </td>
+                                            <td class="px-8 py-6 whitespace-nowrap">
+                                                <span class="text-xs font-bold text-gray-500 dark:text-gray-400">{{ $rejected->rejected_at->format('M d, Y h:i A') }}</span>
+                                            </td>
+                                            <td class="px-8 py-6">
+                                                <p class="text-xs text-gray-600 dark:text-gray-400 font-medium leading-normal max-w-xs truncate" title="{{ $rejected->reason }}">{{ $rejected->reason ?? 'N/A' }}</p>
+                                            </td>
+                                            <td class="px-8 py-6 text-right whitespace-nowrap">
+                                                @php
+                                                    $isBlocked = $rejected->rejected_at->gt(now()->subMonths(2));
+                                                @endphp
+                                                @if($isBlocked)
+                                                    <span class="text-[10px] font-bold text-rose-600 bg-rose-50 dark:bg-rose-950/20 dark:text-rose-400 border border-rose-100 dark:border-rose-900/20 px-3 py-1.5 rounded-xl uppercase tracking-wider">Blocked ({{ now()->diffInDays($rejected->rejected_at->addMonths(2)) }}d left)</span>
+                                                @else
+                                                    <span class="text-[10px] font-bold text-gray-500 bg-gray-50 dark:bg-gray-950/20 dark:text-gray-400 border border-gray-100 dark:border-gray-800 px-3 py-1.5 rounded-xl uppercase tracking-wider">Expired</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5" class="py-32"><x-empty-state title="No rejected applicants in archive" compact="true" /></td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    {{-- MOBILE/TABLET CARD LAYOUT (< lg) --}}
+                    <div class="block lg:hidden space-y-4">
+                        @forelse($rejectedApplicants as $rejected)
+                            <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-5 space-y-4">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <p class="text-sm font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight">{{ $rejected->full_name }}</p>
+                                        <p class="text-xs text-gray-400 dark:text-gray-500 font-bold mt-1">{{ $rejected->email }} • {{ $rejected->phone_number }}</p>
+                                    </div>
+                                    @php
+                                        $isBlocked = $rejected->rejected_at->gt(now()->subMonths(2));
+                                    @endphp
+                                    @if($isBlocked)
+                                        <span class="text-[9px] font-bold text-rose-600 bg-rose-50 dark:bg-rose-950/20 dark:text-rose-400 border border-rose-100 dark:border-rose-900/20 px-2.5 py-1 rounded-full uppercase tracking-wider">Blocked ({{ now()->diffInDays($rejected->rejected_at->addMonths(2)) }}d)</span>
+                                    @else
+                                        <span class="text-[9px] font-bold text-gray-500 bg-gray-50 dark:bg-gray-950/20 dark:text-gray-400 border border-gray-100 dark:border-gray-800 px-2.5 py-1 rounded-full uppercase tracking-wider">Expired</span>
+                                    @endif
+                                </div>
+                                <div class="bg-gray-50 dark:bg-gray-950 p-4 rounded-xl border border-gray-100 dark:border-gray-800 text-xs space-y-2">
+                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-wider">Rejection Details</p>
+                                    <p class="text-gray-600 dark:text-gray-400 font-medium leading-relaxed">{{ $rejected->reason ?? 'No reason provided.' }}</p>
+                                    <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold pt-1 border-t border-gray-200/50 dark:border-gray-800/50">Rejected on: {{ $rejected->rejected_at->format('M d, Y h:i A') }}</p>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="py-16 text-center">
+                                <x-empty-state title="No rejected applicants in archive" compact="true" />
+                            </div>
+                        @endforelse
+                    </div>
+
+                    {{-- Pagination Links --}}
+                    <div class="mt-8 flex justify-end">
+                        {{ $rejectedApplicants->appends(request()->except('rejections_page'))->links('vendor.pagination.tailwind-custom') }}
                     </div>
                 </x-table-container>
             </div>
@@ -525,6 +623,7 @@ document.addEventListener('alpine:init', () => {
             // Check for hash in URL to set initial tab
             const hash = window.location.hash.replace('#', '');
             if (hash === 'offices') this.activeTab = 'offices';
+            if (hash === 'rejections' || window.location.search.includes('rejections_page')) this.activeTab = 'rejections';
             
             setTimeout(() => {
                 this.loading = false;
