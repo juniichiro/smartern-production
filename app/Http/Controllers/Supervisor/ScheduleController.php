@@ -148,7 +148,7 @@ class ScheduleController extends Controller
         if ($validated['status'] === 'approved') {
             $internDetail = $absence->intern->internDetails;
             if ($internDetail && $internDetail->school) {
-                $coordinators = \App\Models\SchoolCoordinatorDetail::where('school', $internDetail->school)->get();
+                $coordinators = \App\Models\SchoolCoordinatorDetail::getCoordinatorsForSchool($internDetail->school);
                 $internName = $internDetail->full_name ?? $absence->intern->name;
                 $requestTypeLabel = $absence->type === 'early_leave' ? 'Early Leave' : 'Absence';
                 

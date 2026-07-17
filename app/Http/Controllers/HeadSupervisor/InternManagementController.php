@@ -266,7 +266,7 @@ class InternManagementController extends Controller
 
                 // Notify School Coordinators if approved
                 if ($status === 'approved' && $intern->school) {
-                    $coordinators = \App\Models\SchoolCoordinatorDetail::where('school', $intern->school)->get();
+                    $coordinators = \App\Models\SchoolCoordinatorDetail::getCoordinatorsForSchool($intern->school);
                     foreach ($coordinators as $coord) {
                         NotificationController::send(
                             $coord->user_id,
