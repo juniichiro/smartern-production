@@ -43,6 +43,7 @@ Route::get('/onboarding', [OnboardingController::class, 'create'])->name('onboar
 Route::post('/onboarding', [OnboardingController::class, 'store'])->middleware('throttle:5,1')->name('onboarding.store');
 Route::post('/onboarding/parse-resume', [OnboardingController::class, 'parseResume'])->middleware('throttle:5,1')->name('onboarding.parse');
 Route::get('/onboarding/universities', [OnboardingController::class, 'getUniversities'])->name('onboarding.universities');
+Route::post('/onboarding/check-rejection', [OnboardingController::class, 'checkRejection'])->name('onboarding.check-rejection');
 Route::get('/privacy-policy', [OnboardingController::class, 'privacyPolicy'])->name('privacy-policy');
 
 // Public QR Scan Routes

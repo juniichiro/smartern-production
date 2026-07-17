@@ -228,7 +228,7 @@
                                         <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">First Name <span class="text-rose-500">*</span></label>
                                         <input type="text" name="first_name" required x-model="formData.first_name" 
                                                @input="validateField('first_name')"
-                                               @blur="validateField('first_name')"
+                                               @blur="validateField('first_name'); checkRejectionStatus()"
                                                :class="errors['first_name'] ? 'border-rose-500 focus:border-rose-500 ring-4 ring-rose-500/5' : 'border-gray-100 dark:border-gray-800 focus:border-blue-500/20'"
                                                class="w-full bg-gray-50 dark:bg-gray-800 border-2 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 focus:ring-4 focus:ring-blue-500/5 transition-all outline-none">
                                         <p x-show="errors['first_name']" x-text="errors['first_name']" class="text-[9px] font-black text-rose-500 uppercase tracking-widest mt-1 ml-1 animate-in fade-in slide-in-from-top-1"></p>
@@ -237,7 +237,7 @@
                                         <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Middle Name</label>
                                         <input type="text" name="middle_name" x-model="formData.middle_name" 
                                                @input="validateField('middle_name')"
-                                               @blur="validateField('middle_name')"
+                                               @blur="validateField('middle_name'); checkRejectionStatus()"
                                                :class="errors['middle_name'] ? 'border-rose-500 focus:border-rose-500 ring-4 ring-rose-500/5' : 'border-gray-100 dark:border-gray-800 focus:border-blue-500/20'"
                                                class="w-full bg-gray-50 dark:bg-gray-800 border-2 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 focus:ring-4 focus:ring-blue-500/5 transition-all outline-none">
                                         <p x-show="errors['middle_name']" x-text="errors['middle_name']" class="text-[9px] font-black text-rose-500 uppercase tracking-widest mt-1 ml-1 animate-in fade-in slide-in-from-top-1"></p>
@@ -246,7 +246,7 @@
                                         <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Last Name <span class="text-rose-500">*</span></label>
                                         <input type="text" name="last_name" required x-model="formData.last_name"
                                                @input="validateField('last_name')"
-                                               @blur="validateField('last_name')"
+                                               @blur="validateField('last_name'); checkRejectionStatus()"
                                                :class="errors['last_name'] ? 'border-rose-500 focus:border-rose-500 ring-4 ring-rose-500/5' : 'border-gray-100 dark:border-gray-800 focus:border-blue-500/20'"
                                                class="w-full bg-gray-50 dark:bg-gray-800 border-2 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 focus:ring-4 focus:ring-blue-500/5 transition-all outline-none">
                                         <p x-show="errors['last_name']" x-text="errors['last_name']" class="text-[9px] font-black text-rose-500 uppercase tracking-widest mt-1 ml-1 animate-in fade-in slide-in-from-top-1"></p>
@@ -256,7 +256,7 @@
                                     <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Email Address <span class="text-rose-500">*</span></label>
                                     <input type="email" name="email" required x-model="formData.email"
                                            @input="validateField('email')"
-                                           @blur="validateField('email')"
+                                           @blur="validateField('email'); checkRejectionStatus()"
                                            :class="errors['email'] ? 'border-rose-500 focus:border-rose-500 ring-4 ring-rose-500/5' : 'border-gray-100 dark:border-gray-800 focus:border-blue-500/20'"
                                            class="w-full bg-gray-50 dark:bg-gray-800 border-2 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 focus:ring-4 focus:ring-blue-500/5 transition-all outline-none">
                                     <p x-show="errors['email']" x-text="errors['email']" class="text-[9px] font-black text-rose-500 uppercase tracking-widest mt-1 ml-1 animate-in fade-in slide-in-from-top-1"></p>
@@ -283,7 +283,7 @@
                                     <p x-show="errors['gender_other_specify']" x-text="errors['gender_other_specify']" class="text-[9px] font-black text-rose-500 uppercase tracking-widest mt-1 ml-1 animate-in fade-in slide-in-from-top-1"></p>
                                 </div>
                             </div>
-
+ 
                             <div class="space-y-2">
                                 <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Academic Institution <span class="text-rose-500">*</span></label>
                                 <div class="relative" @click.away="isUniDropdownOpen = false">
@@ -305,12 +305,12 @@
                                     </div>
                                 </div>
                             </div>
-
+ 
                             <div class="space-y-2">
                                 <label class="text-[11px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest ml-1">Contact Number <span class="text-rose-500">*</span></label>
                                 <input type="text" name="phone_number" required x-model="formData.phone_number"
                                        @input="validateField('phone_number')"
-                                       @blur="validateField('phone_number')"
+                                       @blur="validateField('phone_number'); checkRejectionStatus()"
                                        :class="errors['phone_number'] ? 'border-rose-500 focus:border-rose-500 ring-4 ring-rose-500/5' : 'border-gray-100 dark:border-gray-800 focus:border-blue-500/20'"
                                        class="w-full bg-gray-50 dark:bg-gray-800 border-2 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 focus:ring-4 focus:ring-blue-500/5 transition-all outline-none">
                                 <p x-show="errors['phone_number']" x-text="errors['phone_number']" class="text-[9px] font-black text-rose-500 uppercase tracking-widest mt-1 ml-1 animate-in fade-in slide-in-from-top-1"></p>
@@ -342,10 +342,14 @@
                     {{-- Dynamic Competency Assessment Form --}}
                     <div class="space-y-12" id="skills-assessment-section">
                         {{-- Personal Details Gate --}}
-                        <div x-show="hasPersonalDetailsErrors" class="bg-amber-50 dark:bg-amber-900/10 border-2 border-amber-200 dark:border-amber-800 rounded-[24px] xs:rounded-[32px] sm:rounded-[40px] p-8 sm:p-12 text-center space-y-4">
-                            <h3 class="text-base sm:text-lg font-black text-amber-800 dark:text-amber-300 uppercase tracking-wider">Complete Your Profile First</h3>
-                            <p class="text-xs sm:text-sm text-amber-600 dark:text-amber-400 font-medium max-w-md mx-auto">
-                                Please fill out all required personal details above before proceeding to the competency self-assessment.
+                        <div x-show="hasPersonalDetailsErrors" class="rounded-[24px] xs:rounded-[32px] sm:rounded-[40px] p-8 sm:p-12 text-center space-y-4 border-2"
+                             :class="isRejectedApplicant ? 'bg-rose-50 dark:bg-rose-900/10 border-rose-200 dark:border-rose-800' : 'bg-amber-50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-800'">
+                            <h3 class="text-base sm:text-lg font-black uppercase tracking-wider"
+                                :class="isRejectedApplicant ? 'text-rose-800 dark:text-rose-300' : 'text-amber-800 dark:text-amber-300'"
+                                x-text="isRejectedApplicant ? 'Application Cannot Be Processed' : 'Complete Your Profile First'"></h3>
+                            <p class="text-xs sm:text-sm font-medium max-w-md mx-auto"
+                               :class="isRejectedApplicant ? 'text-rose-600 dark:text-rose-400' : 'text-amber-600 dark:text-amber-400'"
+                               x-text="isRejectedApplicant ? 'Re-application is restricted for 2 months following a rejection.' : 'Please fill out all required personal details above before proceeding to the competency self-assessment.'">
                             </p>
                         </div>
                         <!-- Simplified Progress & Assessment Title -->
@@ -793,6 +797,7 @@
             showPrivacyModal: false,
             hasScrolledToBottom: false,
             privacyAcknowledged: savedState && savedState.privacyAcknowledged ? true : false,
+            isRejectedApplicant: false,
             formData: {
                 first_name: savedState && savedState.formData && savedState.formData.first_name !== undefined ? savedState.formData.first_name : @js(old('first_name', '')),
                 middle_name: savedState && savedState.formData && savedState.formData.middle_name !== undefined ? savedState.formData.middle_name : @js(old('middle_name', '')),
@@ -1121,6 +1126,39 @@
                     this.errors[f] = false;
                 }
             },
+            async checkRejectionStatus() {
+                const fields = ['first_name', 'last_name', 'email', 'phone_number'];
+                const hasValue = fields.some(f => this.formData[f] && this.formData[f].trim() !== '');
+                if (!hasValue) return;
+
+                try {
+                    const response = await fetch('{{ route("onboarding.check-rejection") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            first_name: this.formData.first_name,
+                            middle_name: this.formData.middle_name,
+                            last_name: this.formData.last_name,
+                            email: this.formData.email,
+                            phone_number: this.formData.phone_number
+                        })
+                    });
+                    const data = await response.json();
+                    this.isRejectedApplicant = data.is_rejected;
+                    if (data.is_rejected) {
+                        this.errors['email'] = data.message;
+                    } else {
+                        if (this.errors['email'] && this.errors['email'].includes('restricted')) {
+                            this.errors['email'] = false;
+                        }
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            },
             validatePersonalDetailsOnly() {
                 const fields = [
                     'first_name', 'last_name', 'email', 'school', 
@@ -1136,6 +1174,7 @@
                 }
             },
             get hasPersonalDetailsErrors() {
+                if (this.isRejectedApplicant) return true;
                 const fields = ['first_name', 'last_name', 'email', 'school', 'phone_number', 'emergency_contact', 'emergency_contact_number'];
                 for (const f of fields) {
                     const val = this.formData[f];

@@ -378,4 +378,29 @@ class OnboardingController extends Controller
 
         return $formatted;
     }
+
+    public function checkRejection(\Illuminate\Http\Request $request)
+    {
+        $twoMonthsAgo = now()->subMonths(2);
+        $fullName = trim($request->first_name.' '.($request->middle_name ? $request->middle_name.' ' : '').$request->last_name);
+        
+        $isRejected = \App\Models\RejectedApplicant::where(function ($q) use ($request, $fullName) {
+                if ($request->email) {
+                    $q->where('email', $request->email);
+                }
+                if ($request->phone_number) {
+                    $q->orWhere('phone_number', $request->phone_number);
+                }
+                if (!empty($fullName) && $fullName !== '') {
+                    $q->orWhere('full_name', $fullName);
+                }
+            })
+            ->where('rejected_at', '>=', $twoMonthsAgo)
+            ->exists();
+
+        return response()->json([
+            'is_rejected' => $isRejected,
+            'message' => $isRejected ? 'Your application cannot be processed at this time. Re-application is restricted for 2 months following a rejection.' : null
+        ]);
+    }
 }
