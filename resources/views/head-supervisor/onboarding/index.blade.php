@@ -319,7 +319,7 @@
                                                     $isBlocked = $rejected->rejected_at->gt(now()->subMonths(2));
                                                 @endphp
                                                 @if($isBlocked)
-                                                    <span class="text-[10px] font-bold text-rose-600 bg-rose-50 dark:bg-rose-950/20 dark:text-rose-400 border border-rose-100 dark:border-rose-900/20 px-3 py-1.5 rounded-xl uppercase tracking-wider">Blocked ({{ now()->diffInDays($rejected->rejected_at->addMonths(2)) }}d left)</span>
+                                                    <span class="text-[10px] font-bold text-rose-600 bg-rose-50 dark:bg-rose-950/20 dark:text-rose-400 border border-rose-100 dark:border-rose-900/20 px-3 py-1.5 rounded-xl uppercase tracking-wider">Blocked ({{ (int) ceil(now()->diffInHours($rejected->rejected_at->addMonths(2)) / 24) }} days left)</span>
                                                 @else
                                                     <span class="text-[10px] font-bold text-gray-500 bg-gray-50 dark:bg-gray-950/20 dark:text-gray-400 border border-gray-100 dark:border-gray-800 px-3 py-1.5 rounded-xl uppercase tracking-wider">Expired</span>
                                                 @endif
@@ -348,7 +348,7 @@
                                         $isBlocked = $rejected->rejected_at->gt(now()->subMonths(2));
                                     @endphp
                                     @if($isBlocked)
-                                        <span class="text-[9px] font-bold text-rose-600 bg-rose-50 dark:bg-rose-950/20 dark:text-rose-400 border border-rose-100 dark:border-rose-900/20 px-2.5 py-1 rounded-full uppercase tracking-wider">Blocked ({{ now()->diffInDays($rejected->rejected_at->addMonths(2)) }}d)</span>
+                                        <span class="text-[9px] font-bold text-rose-600 bg-rose-50 dark:bg-rose-950/20 dark:text-rose-400 border border-rose-100 dark:border-rose-900/20 px-2.5 py-1 rounded-full uppercase tracking-wider">Blocked ({{ (int) ceil(now()->diffInHours($rejected->rejected_at->addMonths(2)) / 24) }} days)</span>
                                     @else
                                         <span class="text-[9px] font-bold text-gray-500 bg-gray-50 dark:bg-gray-950/20 dark:text-gray-400 border border-gray-100 dark:border-gray-800 px-2.5 py-1 rounded-full uppercase tracking-wider">Expired</span>
                                     @endif
