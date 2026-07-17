@@ -144,6 +144,26 @@ class ScheduleController extends Controller
             }
         }
 
+        // Notify School Coordinators if approved
+        if ($validated['status'] === 'approved') {
+            $internDetail = $absence->intern->internDetails;
+            if ($internDetail && $internDetail->school) {
+                $coordinators = \App\Models\SchoolCoordinatorDetail::where('school', $internDetail->school)->get();
+                $internName = $internDetail->full_name ?? $absence->intern->name;
+                $requestTypeLabel = $absence->type === 'early_leave' ? 'Early Leave' : 'Absence';
+                
+                foreach ($coordinators as $coord) {
+                    NotificationController::send(
+                        $coord->user_id,
+                        $requestTypeLabel . ' Request Approved',
+                        'system',
+                        "The {$requestTypeLabel} request for intern {$internName} ({$internDetail->school}) on " . $absence->date->format('M d, Y') . " has been approved.",
+                        route('coordinator.interns')
+                    );
+                }
+            }
+        }
+
         return back()->with('success', "Absence request {$statusLabel}.");
     }
 }

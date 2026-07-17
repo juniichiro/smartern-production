@@ -264,6 +264,20 @@ class InternManagementController extends Controller
                     true
                 );
 
+                // Notify School Coordinators if approved
+                if ($status === 'approved' && $intern->school) {
+                    $coordinators = \App\Models\SchoolCoordinatorDetail::where('school', $intern->school)->get();
+                    foreach ($coordinators as $coord) {
+                        NotificationController::send(
+                            $coord->user_id,
+                            'Intern Extension Approved',
+                            'system',
+                            "The expected internship completion date for {$intern->first_name} {$intern->last_name} ({$intern->school}) has been extended to " . $extension->new_end_date->format('M d, Y') . ".",
+                            route('coordinator.interns')
+                        );
+                    }
+                }
+
                 $supervisors = $intern->office?->supervisorDetails;
                 if ($supervisors) {
                     $supType = $status === 'approved' ? 'Extension Approved' : 'Extension Rejected';
