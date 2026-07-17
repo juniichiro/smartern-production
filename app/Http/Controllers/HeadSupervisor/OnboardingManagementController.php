@@ -155,10 +155,19 @@ class OnboardingManagementController extends Controller
             'reason' => $request->input('reason', 'Rejected by Head Supervisor'),
         ]);
  
-        // 3. Delete from onboarding queue
+        // 3. Send rejection email notification
+        try {
+            \Illuminate\Support\Facades\Mail::to($applicant->email)->send(
+                new \App\Mail\OnboardingApplicationRejectedMail($applicant->full_name, $request->input('reason', 'Rejected during live onboarding intake review'))
+            );
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to send onboarding rejection email: '.$e->getMessage());
+        }
+ 
+        // 4. Delete from onboarding queue
         $applicant->delete();
  
-        // 4. Regenerate legacy CSV for compatibility
+        // 5. Regenerate legacy CSV for compatibility
         try {
             $this->regenerateCsv();
         } catch (\Exception $e) {
