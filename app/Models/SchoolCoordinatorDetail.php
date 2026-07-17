@@ -67,10 +67,11 @@ class SchoolCoordinatorDetail extends Model
             return self::whereIn('school', $matchedAbbrs)->get();
         }
 
-        // 3. Fallback: loose substring matching (e.g., UP inside University of the Philippines)
-        return self::where(function ($q) use ($schoolName) {
-            $q->where('school', 'like', "%{$schoolName}%")
-              ->orWhereRaw('? LIKE CONCAT("%", school, "%")', [$schoolName]);
+        // 3. Fallback: loose normalized substring matching (e.g., remove spaces and hyphens)
+        $normalizedSchoolName = str_replace([' ', '-'], '', strtolower($schoolName));
+        return self::where(function ($q) use ($normalizedSchoolName) {
+            $q->whereRaw('LOWER(REPLACE(REPLACE(school, " ", ""), "-", "")) LIKE ?', ["%{$normalizedSchoolName}%"])
+              ->orWhereRaw('? LIKE LOWER(CONCAT("%", REPLACE(REPLACE(school, " ", ""), "-", ""), "%"))', [$normalizedSchoolName]);
         })->get();
     }
 }
