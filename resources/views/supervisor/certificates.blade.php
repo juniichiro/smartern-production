@@ -223,7 +223,7 @@
 
         {{-- Blind Supervisor Feedback Modal --}}
         <div x-show="showFeedbackModal" 
-             class="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
+             class="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto"
              x-cloak>
             {{-- Backdrop --}}
             <div class="fixed inset-0 bg-gray-900/60 dark:bg-black/70 backdrop-blur-md transition-opacity" 
