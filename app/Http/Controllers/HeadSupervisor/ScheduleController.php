@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\HeadSupervisor;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\NotificationController;
 use App\Models\AbsenceRequest;
 use App\Models\InternDetail;
 use App\Models\OnboardingApplicant;
@@ -121,14 +122,53 @@ class ScheduleController extends Controller
             'supervisor_remarks' => 'nullable|string|max:1000',
         ]);
 
+        $reviewer = Auth::user();
+        $statusLabel = $validated['status'] === 'approved' ? 'approved' : 'rejected';
+
         $absence->update([
             'status' => $validated['status'],
             'supervisor_remarks' => $validated['supervisor_remarks'],
-            'reviewed_by' => Auth::id(),
+            'reviewed_by' => $reviewer->id,
             'reviewed_at' => now(),
         ]);
 
-        $statusLabel = $validated['status'] === 'approved' ? 'approved' : 'rejected';
+        // Notify Intern
+        $intern = $absence->intern;
+        if ($intern) {
+            $requestTypeLabel = $absence->type === 'early_leave' ? 'Early Leave' : 'Absence';
+            $type = $validated['status'] === 'approved' ? $requestTypeLabel . ' Approved' : $requestTypeLabel . ' Rejected';
+            $message = $validated['status'] === 'approved'
+                ? "Your {$requestTypeLabel} request for " . $absence->date->format('M d, Y') . " has been approved."
+                : "Your {$requestTypeLabel} request for " . $absence->date->format('M d, Y') . " has been rejected.";
+            NotificationController::send(
+                $intern->id,
+                $type,
+                'system',
+                $message,
+                route('intern.schedule.index'),
+                true
+            );
+        }
+
+        // Notify School Coordinators if approved
+        if ($validated['status'] === 'approved') {
+            $internDetail = $absence->intern->internDetails;
+            if ($internDetail && $internDetail->school) {
+                $coordinators = \App\Models\SchoolCoordinatorDetail::getCoordinatorsForSchool($internDetail->school);
+                $internName = $internDetail->full_name ?? $absence->intern->name;
+                $requestTypeLabel = $absence->type === 'early_leave' ? 'Early Leave' : 'Absence';
+                
+                foreach ($coordinators as $coord) {
+                    NotificationController::send(
+                        $coord->user_id,
+                        $requestTypeLabel . ' Request Approved',
+                        'system',
+                        "The {$requestTypeLabel} request for intern {$internName} ({$internDetail->school}) on " . $absence->date->format('M d, Y') . " has been approved.",
+                        route('coordinator.interns')
+                    );
+                }
+            }
+        }
 
         return back()->with('success', "Absence request {$statusLabel}.");
     }
