@@ -523,6 +523,7 @@ class AttendanceService
     public function getInternStatus($userId)
     {
         $user = User::with('internDetails.office')->findOrFail($userId);
+        $intern = $user->internDetails;
         $effectiveSchedule = $this->getEffectiveSchedule($user, now());
 
         $todayRecord = Attendance::where('intern_id', $userId)
