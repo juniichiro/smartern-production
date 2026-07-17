@@ -15,8 +15,9 @@ class OnboardingManagementController extends Controller
 
     public function index()
     {
-        // Fetch Applicants (Paginated)
-        $applicants = OnboardingApplicant::latest()->paginate(10);
+        $applicants = OnboardingApplicant::orderByRaw('(SELECT COUNT(*) FROM match_results WHERE match_results.applicant_name = onboarding_applicants.full_name AND match_results.is_confirmed = 1) ASC')
+            ->orderBy('onboarding_applicants.created_at', 'desc')
+            ->paginate(10);
  
         // Fetch Confirmed applicant names once to optimize database query
         $confirmedNames = \App\Models\MatchResult::where('is_confirmed', 1)
