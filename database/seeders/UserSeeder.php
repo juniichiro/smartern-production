@@ -121,7 +121,7 @@ class UserSeeder extends Seeder
             'email' => 'sgod_super@smartern.com',
             'password' => Hash::make('password'),
             'google2fa_secret' => null,
-            'google2fa_enabled' => false, // MFA Disabled
+            'google2fa_enabled' => true, // Email MFA Enabled
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);
@@ -170,7 +170,7 @@ class UserSeeder extends Seeder
             'email' => 'up_coord@smartern.com',
             'password' => Hash::make('password'),
             'google2fa_secret' => null,
-            'google2fa_enabled' => false, // MFA Disabled
+            'google2fa_enabled' => true, // Email MFA Enabled
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);
@@ -425,5 +425,30 @@ class UserSeeder extends Seeder
                 'is_first_login' => false,
             ]);
         }
+
+        // Enforce: leave only one user per role with MFA disabled, and enable Email OTP (MFA) for everyone else (except Admins)
+        // 1. Supervisors: Only 'admin_super@smartern.com' has it disabled.
+        User::where('role_id', UserRole::SUPERVISOR)
+            ->where('email', '!=', 'admin_super@smartern.com')
+            ->update(['google2fa_enabled' => true]);
+        User::where('role_id', UserRole::SUPERVISOR)
+            ->where('email', 'admin_super@smartern.com')
+            ->update(['google2fa_enabled' => false]);
+
+        // 2. School Coordinators: Only 'ust_coord@smartern.com' has it disabled.
+        User::where('role_id', UserRole::SCHOOL_COORDINATOR)
+            ->where('email', '!=', 'ust_coord@smartern.com')
+            ->update(['google2fa_enabled' => true]);
+        User::where('role_id', UserRole::SCHOOL_COORDINATOR)
+            ->where('email', 'ust_coord@smartern.com')
+            ->update(['google2fa_enabled' => false]);
+
+        // 3. Interns: Only 'tcvalera@smartern.com' has it disabled.
+        User::where('role_id', UserRole::INTERN)
+            ->where('email', '!=', 'tcvalera@smartern.com')
+            ->update(['google2fa_enabled' => true]);
+        User::where('role_id', UserRole::INTERN)
+            ->where('email', 'tcvalera@smartern.com')
+            ->update(['google2fa_enabled' => false]);
     }
 }

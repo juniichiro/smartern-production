@@ -48,7 +48,7 @@ Department: Curriculum Implementation Division (CID) | MFA: Email
 Email: sgod_super@smartern.com
 Display ID: 20263005
 Name: Henry Governance
-Department: School Governance and Operations Division (SGOD) | MFA: Disabled
+Department: School Governance and Operations Division (SGOD) | MFA: Email
 
 
 4. SCHOOL COORDINATORS
@@ -71,7 +71,7 @@ School: UST | MFA: Disabled
 Email: up_coord@smartern.com
 Display ID: 20264004
 Name: Fidel Ramos
-School: UP | MFA: Disabled
+School: UP | MFA: Email
 
 
 5. INTERNS (1 MFA-Enabled Intern Per Department)
@@ -98,142 +98,142 @@ Email: hanni.phambb4@gmail.com
 Display ID: 202650004
 Name: Hanni Pham
 School: FEU-TECH | Department: Human Resources (HR)
-Hours Rendered: 480 | MFA: Disabled
+Hours Rendered: 480 | MFA: Email
 
 Email: john.doe@smartern.com
 Display ID: 202650005
 Name: John Doe
 School: DLSU | Department: Finance & Accounting
-Hours Rendered: 120 | MFA: Email (Finance rep)
+Hours Rendered: 120 | MFA: Email
 
 Email: jane.smith@smartern.com
 Display ID: 202650006
 Name: Jane Smith
 School: UST | Department: Finance & Accounting
-Hours Rendered: 240 | MFA: Disabled
+Hours Rendered: 240 | MFA: Email
 
 Email: mark.santos@smartern.com
 Display ID: 202650007
 Name: Mark Santos
 School: UP | Department: Administrative Services
-Hours Rendered: 80 | MFA: Email (Admin rep)
+Hours Rendered: 80 | MFA: Email
 
 Email: sophia.lee@smartern.com
 Display ID: 202650008
 Name: Sophia Lee
 School: DLSU | Department: ICT Department
-Hours Rendered: 400 | MFA: Disabled
+Hours Rendered: 400 | MFA: Email
 
 Email: chloe.lim@smartern.com
 Display ID: 202650009
 Name: Chloe Lim
 School: UST | Department: Human Resources (HR) [Office Max Capacity filled]
-Hours Rendered: 150 | MFA: Disabled
+Hours Rendered: 150 | MFA: Email
 
 Email: david.tan@smartern.com
 Display ID: 202650010
 Name: David Tan
 School: UP | Department: Human Resources (HR) [Office Max Capacity filled]
-Hours Rendered: 200 | MFA: Disabled
+Hours Rendered: 200 | MFA: Email
 
 Email: leah.diaz@smartern.com
 Display ID: 202650011
 Name: Leah Diaz
 School: FEU-TECH | Department: ICT Department
-Hours Rendered: 60 | MFA: Disabled
+Hours Rendered: 60 | MFA: Email
 
 Email: james.lim@smartern.com
 Display ID: 202650012
 Name: James Lim
 School: DLSU | Department: Human Resources (HR)
-Hours Rendered: 90 | MFA: Disabled
+Hours Rendered: 90 | MFA: Email
 
 Email: carlos.reyes@smartern.com
 Display ID: 202650013
 Name: Carlos Reyes
 School: UST | Department: Finance & Accounting
-Hours Rendered: 120 | MFA: Disabled
+Hours Rendered: 120 | MFA: Email
 
 Email: maria.santos@smartern.com
 Display ID: 202650014
 Name: Maria Santos
 School: UP | Department: Administrative Services
-Hours Rendered: 40 | MFA: Disabled
+Hours Rendered: 40 | MFA: Email
 
 Email: alex.tan@smartern.com
 Display ID: 202650015
 Name: Alex Tan
 School: DLSU | Department: ICT Department
-Hours Rendered: 196 (Close to Finish) | MFA: Disabled
+Hours Rendered: 196 (Close to Finish) | MFA: Email
 
 Email: bea.gomez@smartern.com
 Display ID: 202650016
 Name: Bea Gomez
 School: UST | Department: Finance & Accounting
-Hours Rendered: 292 (Close to Finish) | MFA: Disabled
+Hours Rendered: 292 (Close to Finish) | MFA: Email
 
 Email: cris.valdez@smartern.com
 Display ID: 202650017
 Name: Cris Valdez
 School: FEU-TECH | Department: Human Resources (HR)
-Hours Rendered: 148 (Close to Finish) | MFA: Disabled
+Hours Rendered: 148 (Close to Finish) | MFA: Email
 
 Email: jperez@smartern.com
 Display ID: 202650018
 Name: Justin Perez
 School: DLSU | Department: Information and Communication Technology (ICT) Unit
-Hours Rendered: 10 | MFA: Disabled
+Hours Rendered: 10 | MFA: Email
 
 Email: lpascual@smartern.com
 Display ID: 202650019
 Name: Leila Pascual
 School: UST | Department: Curriculum Implementation Division (CID)
-Hours Rendered: 149 (Close to Finish) | MFA: Disabled
+Hours Rendered: 149 (Close to Finish) | MFA: Email
 
 Email: mmendoza@smartern.com
 Display ID: 202650020
 Name: Mark Mendoza
 School: UP | Department: School Governance and Operations Division (SGOD)
-Hours Rendered: 95 | MFA: Disabled
+Hours Rendered: 95 | MFA: Email
 
 Email: slopez@smartern.com
 Display ID: 202650021
 Name: Sophia Lopez
 School: FEU-TECH | Department: Records Unit
-Hours Rendered: 238 (Close to Finish) | MFA: Disabled
+Hours Rendered: 238 (Close to Finish) | MFA: Email
 
 Email: ccastillo@smartern.com
 Display ID: 202650022
 Name: Christian Castillo
 School: DLSU | Department: Information and Communication Technology (ICT) Unit
-Hours Rendered: 198 (Close to Finish) | MFA: Disabled
+Hours Rendered: 198 (Close to Finish) | MFA: Email
 
 Email: drivera@smartern.com
 Display ID: 202650023
 Name: Dianne Rivera
 School: UST | Department: Curriculum Implementation Division (CID)
-Hours Rendered: 50 | MFA: Disabled
+Hours Rendered: 50 | MFA: Email
 
 Email: fsantos@smartern.com
 Display ID: 202650024
 Name: Francis Santos
 School: UP | Department: School Governance and Operations Division (SGOD)
-Hours Rendered: 295 (Close to Finish) | MFA: Disabled
+Hours Rendered: 295 (Close to Finish) | MFA: Email
 
 Email: gbernardo@smartern.com
 Display ID: 202650025
 Name: Giselle Bernardo
 School: FEU-TECH | Department: Records Unit
-Hours Rendered: 80 | MFA: Disabled
+Hours Rendered: 80 | MFA: Email
 
 Email: hcruz@smartern.com
 Display ID: 202650026
 Name: Harvey Cruz
 School: DLSU | Department: Information and Communication Technology (ICT) Unit
-Hours Rendered: 120 | MFA: Disabled
+Hours Rendered: 120 | MFA: Email
 
 Email: idelrosario@smartern.com
 Display ID: 202650027
 Name: Isabel Del Rosario
 School: UST | Department: Curriculum Implementation Division (CID)
-Hours Rendered: 147 (Close to Finish) | MFA: Disabled
+Hours Rendered: 147 (Close to Finish) | MFA: Email
