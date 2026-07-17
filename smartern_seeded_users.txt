@@ -1,0 +1,174 @@
+=========================================
+SmarTern Seeded Users Credentials List
+=========================================
+All accounts use the default password: password
+=========================================
+
+1. ADMINS
+-----------------------------------------
+Email: admin@smartern.com
+Display ID: 2026101
+Role: Administrator | MFA: Email
+
+Email: britosranieljohn@gmail.com
+Display ID: 2026102
+Role: Administrator | MFA: Disabled (Personal Test Account)
+
+
+2. HEAD SUPERVISORS
+-----------------------------------------
+Email: malin@smartern.com
+Display ID: 2026201
+Name: Michelle Malin
+Department: Human Resources (HR Head) | MFA: Email
+
+Email: assistant_hs@smartern.com
+Display ID: 2026202
+Name: Assistant Head Supervisor
+Department: Human Resources (HR) | MFA: Disabled
+
+
+3. SUPERVISORS
+-----------------------------------------
+Email: supervisor@smartern.com
+Display ID: 20263001
+Name: Sample Supervisor
+Department: ICT Department | MFA: Email
+
+Email: finance_super@smartern.com
+Display ID: 20263002
+Name: Albert Finney
+Department: Finance & Accounting | MFA: Email
+
+Email: admin_super@smartern.com
+Display ID: 20263003
+Name: Sarah Admin
+Department: Administrative Services | MFA: Disabled
+
+
+4. SCHOOL COORDINATORS
+-----------------------------------------
+Email: sagsagat@smartern.com
+Display ID: 20264001
+Name: Mar Eli Sagsagat
+School: FEU-TECH | MFA: Email
+
+Email: dlsu_coord@smartern.com
+Display ID: 20264002
+Name: Maria Santos
+School: DLSU | MFA: Email
+
+Email: ust_coord@smartern.com
+Display ID: 20264003
+Name: Dominic de Guzman
+School: UST | MFA: Disabled
+
+Email: up_coord@smartern.com
+Display ID: 20264004
+Name: Fidel Ramos
+School: UP | MFA: Disabled
+
+
+5. INTERNS (1 MFA-Enabled Intern Per Department)
+-----------------------------------------
+Email: raagustin@smartern.com
+Display ID: 202650001
+Name: Ren Ren Agustin
+School: FEU-TECH | Department: ICT Department
+Hours Rendered: 0 (Default Active) | MFA: Email (ICT rep)
+
+Email: rtbritos@smartern.com
+Display ID: 202650002
+Name: Raniel John Britos
+School: FEU-TECH | Department: Human Resources (HR)
+Hours Rendered: 150 | MFA: Email (HR rep)
+
+Email: tcvalera@smartern.com
+Display ID: 202650003
+Name: Tamiyah Gale Valera
+School: FEU-TECH | Department: Human Resources (HR)
+Hours Rendered: 480 | MFA: Disabled
+
+Email: hanni.phambb4@gmail.com
+Display ID: 202650004
+Name: Hanni Pham
+School: FEU-TECH | Department: Human Resources (HR)
+Hours Rendered: 480 | MFA: Disabled
+
+Email: john.doe@smartern.com
+Display ID: 202650005
+Name: John Doe
+School: DLSU | Department: Finance & Accounting
+Hours Rendered: 120 | MFA: Email (Finance rep)
+
+Email: jane.smith@smartern.com
+Display ID: 202650006
+Name: Jane Smith
+School: UST | Department: Finance & Accounting
+Hours Rendered: 240 | MFA: Disabled
+
+Email: mark.santos@smartern.com
+Display ID: 202650007
+Name: Mark Santos
+School: UP | Department: Administrative Services
+Hours Rendered: 80 | MFA: Email (Admin rep)
+
+Email: sophia.lee@smartern.com
+Display ID: 202650008
+Name: Sophia Lee
+School: DLSU | Department: ICT Department
+Hours Rendered: 400 | MFA: Disabled
+
+Email: chloe.lim@smartern.com
+Display ID: 202650009
+Name: Chloe Lim
+School: UST | Department: Human Resources (HR) [Office Max Capacity filled]
+Hours Rendered: 150 | MFA: Disabled
+
+Email: david.tan@smartern.com
+Display ID: 202650010
+Name: David Tan
+School: UP | Department: Human Resources (HR) [Office Max Capacity filled]
+Hours Rendered: 200 | MFA: Disabled
+
+Email: leah.diaz@smartern.com
+Display ID: 202650011
+Name: Leah Diaz
+School: FEU-TECH | Department: ICT Department
+Hours Rendered: 60 | MFA: Disabled
+
+Email: james.lim@smartern.com
+Display ID: 202650012
+Name: James Lim
+School: DLSU | Department: Human Resources (HR)
+Hours Rendered: 90 | MFA: Disabled
+
+Email: carlos.reyes@smartern.com
+Display ID: 202650013
+Name: Carlos Reyes
+School: UST | Department: Finance & Accounting
+Hours Rendered: 120 | MFA: Disabled
+
+Email: maria.santos@smartern.com
+Display ID: 202650014
+Name: Maria Santos
+School: UP | Department: Administrative Services
+Hours Rendered: 40 | MFA: Disabled
+
+Email: alex.tan@smartern.com
+Display ID: 202650015
+Name: Alex Tan
+School: DLSU | Department: ICT Department
+Hours Rendered: 196 (Close to Finish) | MFA: Disabled
+
+Email: bea.gomez@smartern.com
+Display ID: 202650016
+Name: Bea Gomez
+School: UST | Department: Finance & Accounting
+Hours Rendered: 292 (Close to Finish) | MFA: Disabled
+
+Email: cris.valdez@smartern.com
+Display ID: 202650017
+Name: Cris Valdez
+School: FEU-TECH | Department: Human Resources (HR)
+Hours Rendered: 148 (Close to Finish) | MFA: Disabled

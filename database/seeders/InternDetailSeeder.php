@@ -206,6 +206,48 @@ class InternDetailSeeder extends Seeder
                 'start_date' => '2026-06-01',
                 'end_date' => '2026-08-31',
             ],
+            [
+                'email' => 'alex.tan@smartern.com',
+                'office_id' => 1, // ICT
+                'first_name' => 'Alex',
+                'last_name' => 'Tan',
+                'course' => 'Computer Science',
+                'school' => 'DLSU',
+                'gender' => 'Male',
+                'phone_number' => '09123456796',
+                'hours_rendered' => 196, // Close to 200
+                'required_hours' => 200,
+                'start_date' => '2026-06-01',
+                'end_date' => '2026-08-31',
+            ],
+            [
+                'email' => 'bea.gomez@smartern.com',
+                'office_id' => 3, // Finance
+                'first_name' => 'Bea',
+                'last_name' => 'Gomez',
+                'course' => 'Accountancy',
+                'school' => 'UST',
+                'gender' => 'Female',
+                'phone_number' => '09123456797',
+                'hours_rendered' => 292, // Close to 300
+                'required_hours' => 300,
+                'start_date' => '2026-06-01',
+                'end_date' => '2026-08-31',
+            ],
+            [
+                'email' => 'cris.valdez@smartern.com',
+                'office_id' => 2, // HR
+                'first_name' => 'Cris',
+                'last_name' => 'Valdez',
+                'course' => 'Psychology',
+                'school' => 'FEU-TECH',
+                'gender' => 'Male',
+                'phone_number' => '09123456798',
+                'hours_rendered' => 148, // Close to 150
+                'required_hours' => 150,
+                'start_date' => '2026-06-01',
+                'end_date' => '2026-08-31',
+            ],
         ];
 
         foreach ($interns as $data) {

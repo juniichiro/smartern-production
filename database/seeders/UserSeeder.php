@@ -47,12 +47,12 @@ class UserSeeder extends Seeder
             'email' => 'britosranieljohn@gmail.com',
             'password' => Hash::make('password'),
             'google2fa_secret' => null,
-            'google2fa_enabled' => true, // Email MFA Enabled
+            'google2fa_enabled' => false, // MFA Disabled
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);
 
-        // HEAD SUPERVISOR (Original - Email MFA Enabled)
+        // HEAD SUPERVISORS (MFA mix)
         User::create([
             'role_id' => UserRole::HEAD_SUPERVISOR,
             'display_id' => '2026201',
@@ -65,7 +65,19 @@ class UserSeeder extends Seeder
             'is_first_login' => false,
         ]);
 
-        // SUPERVISORS (All Email MFA Enabled)
+        User::create([
+            'role_id' => UserRole::HEAD_SUPERVISOR,
+            'display_id' => '2026202',
+            'public_id' => hash('sha256', '2026202'),
+            'email' => 'assistant_hs@smartern.com',
+            'password' => Hash::make('password'),
+            'google2fa_secret' => null,
+            'google2fa_enabled' => false, // MFA Disabled
+            'failed_attempts' => 0,
+            'is_first_login' => false,
+        ]);
+
+        // SUPERVISORS (MFA mix)
         User::create([
             'role_id' => UserRole::SUPERVISOR,
             'display_id' => '20263001',
@@ -97,12 +109,12 @@ class UserSeeder extends Seeder
             'email' => 'admin_super@smartern.com',
             'password' => Hash::make('password'),
             'google2fa_secret' => null,
-            'google2fa_enabled' => true, // Email MFA Enabled
+            'google2fa_enabled' => false, // MFA Disabled
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);
 
-        // SCHOOL COORDINATORS (All Email MFA Enabled)
+        // SCHOOL COORDINATORS (MFA mix)
         User::create([
             'role_id' => UserRole::SCHOOL_COORDINATOR,
             'display_id' => '20264001',
@@ -134,7 +146,7 @@ class UserSeeder extends Seeder
             'email' => 'ust_coord@smartern.com',
             'password' => Hash::make('password'),
             'google2fa_secret' => null,
-            'google2fa_enabled' => true, // Email MFA Enabled
+            'google2fa_enabled' => false, // MFA Disabled
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);
@@ -146,7 +158,7 @@ class UserSeeder extends Seeder
             'email' => 'up_coord@smartern.com',
             'password' => Hash::make('password'),
             'google2fa_secret' => null,
-            'google2fa_enabled' => true, // Email MFA Enabled
+            'google2fa_enabled' => false, // MFA Disabled
             'failed_attempts' => 0,
             'is_first_login' => false,
         ]);
@@ -328,6 +340,45 @@ class UserSeeder extends Seeder
             'display_id' => '202650014',
             'public_id' => hash('sha256', '202650014'),
             'email' => 'maria.santos@smartern.com',
+            'password' => Hash::make('password'),
+            'google2fa_secret' => null,
+            'google2fa_enabled' => false,
+            'failed_attempts' => 0,
+            'is_first_login' => false,
+        ]);
+
+        // Intern fifteen (Office ICT) - MFA Disabled
+        User::create([
+            'role_id' => UserRole::INTERN,
+            'display_id' => '202650015',
+            'public_id' => hash('sha256', '202650015'),
+            'email' => 'alex.tan@smartern.com',
+            'password' => Hash::make('password'),
+            'google2fa_secret' => null,
+            'google2fa_enabled' => false,
+            'failed_attempts' => 0,
+            'is_first_login' => false,
+        ]);
+
+        // Intern sixteen (Office Finance) - MFA Disabled
+        User::create([
+            'role_id' => UserRole::INTERN,
+            'display_id' => '202650016',
+            'public_id' => hash('sha256', '202650016'),
+            'email' => 'bea.gomez@smartern.com',
+            'password' => Hash::make('password'),
+            'google2fa_secret' => null,
+            'google2fa_enabled' => false,
+            'failed_attempts' => 0,
+            'is_first_login' => false,
+        ]);
+
+        // Intern seventeen (Office HR) - MFA Disabled
+        User::create([
+            'role_id' => UserRole::INTERN,
+            'display_id' => '202650017',
+            'public_id' => hash('sha256', '202650017'),
+            'email' => 'cris.valdez@smartern.com',
             'password' => Hash::make('password'),
             'google2fa_secret' => null,
             'google2fa_enabled' => false,

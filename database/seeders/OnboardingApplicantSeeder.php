@@ -132,7 +132,18 @@ class OnboardingApplicantSeeder extends Seeder
             ],
         ];
 
+        $year = now()->format('Y');
+        $highestUser = \App\Models\User::withoutGlobalScopes()
+            ->where('role_id', \App\Enums\UserRole::INTERN->value ?? \App\Enums\UserRole::INTERN)
+            ->where('display_id', 'like', "{$year}%")
+            ->orderBy('display_id', 'desc')
+            ->first();
+        $highestDisplayId = $highestUser ? (int)$highestUser->display_id : 202650000;
+
         foreach ($applicants as $applicant) {
+            $highestDisplayId++;
+            $applicant['applicant_id'] = (string)$highestDisplayId;
+
             $techSkills = [];
             $softSkills = [];
 
