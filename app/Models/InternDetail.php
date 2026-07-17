@@ -116,6 +116,34 @@ class InternDetail extends Model
                     route('intern.certificates.index'),
                     true
                 );
+
+                // Notify respective supervisors of the intern's office
+                $supervisors = $intern->office?->supervisorDetails;
+                if ($supervisors) {
+                    foreach ($supervisors as $supervisor) {
+                        NotificationController::send(
+                            $supervisor->user_id,
+                            'Intern Hours Completed',
+                            'system',
+                            "Intern {$intern->first_name} {$intern->last_name} has completed their required hours. Please review and endorse their certificate.",
+                            route('supervisor.certificates.index')
+                        );
+                    }
+                }
+
+                // Notify coordinators of the intern's school
+                if ($intern->school) {
+                    $coordinators = \App\Models\SchoolCoordinatorDetail::getCoordinatorsForSchool($intern->school);
+                    foreach ($coordinators as $coord) {
+                        NotificationController::send(
+                            $coord->user_id,
+                            'Intern Hours Completed',
+                            'system',
+                            "Intern {$intern->first_name} {$intern->last_name} ({$intern->school}) has completed their required hours and is awaiting endorsement.",
+                            route('coordinator.interns')
+                        );
+                    }
+                }
             }
         });
     }
