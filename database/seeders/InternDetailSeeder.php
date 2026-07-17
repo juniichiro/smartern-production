@@ -264,7 +264,7 @@ class InternDetailSeeder extends Seeder
             ],
             [
                 'email' => 'intern19@smartern.com',
-                'office_id' => 2,
+                'office_id' => 5, // CID
                 'first_name' => 'Jane',
                 'last_name' => 'Two',
                 'course' => 'Psychology',
@@ -278,7 +278,7 @@ class InternDetailSeeder extends Seeder
             ],
             [
                 'email' => 'intern20@smartern.com',
-                'office_id' => 3,
+                'office_id' => 6, // SGOD
                 'first_name' => 'Bob',
                 'last_name' => 'Three',
                 'course' => 'Business Administration',
@@ -320,7 +320,7 @@ class InternDetailSeeder extends Seeder
             ],
             [
                 'email' => 'intern23@smartern.com',
-                'office_id' => 2,
+                'office_id' => 5, // CID
                 'first_name' => 'Daisy',
                 'last_name' => 'Six',
                 'course' => 'Human Resource Management',
@@ -334,7 +334,7 @@ class InternDetailSeeder extends Seeder
             ],
             [
                 'email' => 'intern24@smartern.com',
-                'office_id' => 3,
+                'office_id' => 6, // SGOD
                 'first_name' => 'Frank',
                 'last_name' => 'Seven',
                 'course' => 'Accountancy',
@@ -376,7 +376,7 @@ class InternDetailSeeder extends Seeder
             ],
             [
                 'email' => 'intern27@smartern.com',
-                'office_id' => 2,
+                'office_id' => 5, // CID
                 'first_name' => 'Ivy',
                 'last_name' => 'Ten',
                 'course' => 'Psychology',

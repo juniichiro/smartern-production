@@ -101,7 +101,7 @@ class OfficeRuleSeeder extends Seeder
                 'priority' => 4,
             ],
 
-            // Administrative Services (Office ID
+            // Administrative Services (Office ID 4)
             [
                 'office_id' => 4,
                 'item' => $organizingDocs,
@@ -121,6 +121,40 @@ class OfficeRuleSeeder extends Seeder
                 'office_id' => 4,
                 'item' => $wordProcessing,
                 'priority' => 4,
+            ],
+
+            // Curriculum Implementation Division (Office ID 5)
+            [
+                'office_id' => 5,
+                'item' => $organizingDocs,
+                'priority' => 5,
+            ],
+            [
+                'office_id' => 5,
+                'item' => $reports,
+                'priority' => 5,
+            ],
+            [
+                'office_id' => 5,
+                'item' => $communication,
+                'priority' => 4,
+            ],
+
+            // School Governance and Operations Division (Office ID 6)
+            [
+                'office_id' => 6,
+                'item' => $spreadsheet,
+                'priority' => 4,
+            ],
+            [
+                'office_id' => 6,
+                'item' => $scheduling,
+                'priority' => 4,
+            ],
+            [
+                'office_id' => 6,
+                'item' => $dataEntry,
+                'priority' => 5,
             ],
         ];
 

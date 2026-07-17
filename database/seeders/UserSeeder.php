@@ -114,6 +114,30 @@ class UserSeeder extends Seeder
             'is_first_login' => false,
         ]);
 
+        User::create([
+            'role_id' => UserRole::SUPERVISOR,
+            'display_id' => '20263004',
+            'public_id' => hash('sha256', '20263004'),
+            'email' => 'cid_super@smartern.com',
+            'password' => Hash::make('password'),
+            'google2fa_secret' => null,
+            'google2fa_enabled' => true, // Email MFA Enabled
+            'failed_attempts' => 0,
+            'is_first_login' => false,
+        ]);
+
+        User::create([
+            'role_id' => UserRole::SUPERVISOR,
+            'display_id' => '20263005',
+            'public_id' => hash('sha256', '20263005'),
+            'email' => 'sgod_super@smartern.com',
+            'password' => Hash::make('password'),
+            'google2fa_secret' => null,
+            'google2fa_enabled' => false, // MFA Disabled
+            'failed_attempts' => 0,
+            'is_first_login' => false,
+        ]);
+
         // SCHOOL COORDINATORS (MFA mix)
         User::create([
             'role_id' => UserRole::SCHOOL_COORDINATOR,

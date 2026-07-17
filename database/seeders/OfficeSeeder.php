@@ -61,6 +61,30 @@ class OfficeSeeder extends Seeder
                 'radius_meters' => 100,
                 'intern_limit' => 10,
             ],
+            [
+                'id' => 5,
+                'name' => 'Curriculum Implementation Division (CID)',
+                'location_data' => json_encode([
+                    'building' => 'Main Building',
+                    'floor' => '1st Floor',
+                ]),
+                'latitude' => 14.61504850,
+                'longitude' => 121.01059830,
+                'radius_meters' => 100,
+                'intern_limit' => 5,
+            ],
+            [
+                'id' => 6,
+                'name' => 'School Governance and Operations Division (SGOD)',
+                'location_data' => json_encode([
+                    'building' => 'Main Building',
+                    'floor' => '2nd Floor',
+                ]),
+                'latitude' => 14.61504850,
+                'longitude' => 121.01059830,
+                'radius_meters' => 100,
+                'intern_limit' => 5,
+            ],
         ]);
     }
 }

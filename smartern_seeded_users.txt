@@ -45,6 +45,16 @@ Display ID: 20263003
 Name: Sarah Admin
 Department: Administrative Services | MFA: Disabled
 
+Email: cid_super@smartern.com
+Display ID: 20263004
+Name: Grace Curriculum
+Department: Curriculum Implementation Division (CID) | MFA: Email
+
+Email: sgod_super@smartern.com
+Display ID: 20263005
+Name: Henry Governance
+Department: School Governance and Operations Division (SGOD) | MFA: Disabled
+
 
 4. SCHOOL COORDINATORS
 -----------------------------------------
