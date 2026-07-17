@@ -251,8 +251,8 @@ class InternDetailSeeder extends Seeder
             [
                 'email' => 'intern18@smartern.com',
                 'office_id' => 1,
-                'first_name' => 'John',
-                'last_name' => 'One',
+                'first_name' => 'Justin',
+                'last_name' => 'Perez',
                 'course' => 'Information Technology',
                 'school' => 'DLSU',
                 'gender' => 'Male',
@@ -265,8 +265,8 @@ class InternDetailSeeder extends Seeder
             [
                 'email' => 'intern19@smartern.com',
                 'office_id' => 5, // CID
-                'first_name' => 'Jane',
-                'last_name' => 'Two',
+                'first_name' => 'Leila',
+                'last_name' => 'Pascual',
                 'course' => 'Psychology',
                 'school' => 'UST',
                 'gender' => 'Female',
@@ -279,8 +279,8 @@ class InternDetailSeeder extends Seeder
             [
                 'email' => 'intern20@smartern.com',
                 'office_id' => 6, // SGOD
-                'first_name' => 'Bob',
-                'last_name' => 'Three',
+                'first_name' => 'Mark',
+                'last_name' => 'Mendoza',
                 'course' => 'Business Administration',
                 'school' => 'UP',
                 'gender' => 'Male',
@@ -293,8 +293,8 @@ class InternDetailSeeder extends Seeder
             [
                 'email' => 'intern21@smartern.com',
                 'office_id' => 4,
-                'first_name' => 'Alice',
-                'last_name' => 'Four',
+                'first_name' => 'Sophia',
+                'last_name' => 'Lopez',
                 'course' => 'Public Administration',
                 'school' => 'FEU-TECH',
                 'gender' => 'Female',
@@ -307,8 +307,8 @@ class InternDetailSeeder extends Seeder
             [
                 'email' => 'intern22@smartern.com',
                 'office_id' => 1,
-                'first_name' => 'Charlie',
-                'last_name' => 'Five',
+                'first_name' => 'Christian',
+                'last_name' => 'Castillo',
                 'course' => 'Computer Science',
                 'school' => 'DLSU',
                 'gender' => 'Male',
@@ -321,8 +321,8 @@ class InternDetailSeeder extends Seeder
             [
                 'email' => 'intern23@smartern.com',
                 'office_id' => 5, // CID
-                'first_name' => 'Daisy',
-                'last_name' => 'Six',
+                'first_name' => 'Dianne',
+                'last_name' => 'Rivera',
                 'course' => 'Human Resource Management',
                 'school' => 'UST',
                 'gender' => 'Female',
@@ -335,8 +335,8 @@ class InternDetailSeeder extends Seeder
             [
                 'email' => 'intern24@smartern.com',
                 'office_id' => 6, // SGOD
-                'first_name' => 'Frank',
-                'last_name' => 'Seven',
+                'first_name' => 'Francis',
+                'last_name' => 'Santos',
                 'course' => 'Accountancy',
                 'school' => 'UP',
                 'gender' => 'Male',
@@ -349,8 +349,8 @@ class InternDetailSeeder extends Seeder
             [
                 'email' => 'intern25@smartern.com',
                 'office_id' => 4,
-                'first_name' => 'Grace',
-                'last_name' => 'Eight',
+                'first_name' => 'Giselle',
+                'last_name' => 'Bernardo',
                 'course' => 'Public Administration',
                 'school' => 'FEU-TECH',
                 'gender' => 'Female',
@@ -363,8 +363,8 @@ class InternDetailSeeder extends Seeder
             [
                 'email' => 'intern26@smartern.com',
                 'office_id' => 1,
-                'first_name' => 'Henry',
-                'last_name' => 'Nine',
+                'first_name' => 'Harvey',
+                'last_name' => 'Cruz',
                 'course' => 'Computer Science',
                 'school' => 'DLSU',
                 'gender' => 'Male',
@@ -377,8 +377,8 @@ class InternDetailSeeder extends Seeder
             [
                 'email' => 'intern27@smartern.com',
                 'office_id' => 5, // CID
-                'first_name' => 'Ivy',
-                'last_name' => 'Ten',
+                'first_name' => 'Isabel',
+                'last_name' => 'Del Rosario',
                 'course' => 'Psychology',
                 'school' => 'UST',
                 'gender' => 'Female',
