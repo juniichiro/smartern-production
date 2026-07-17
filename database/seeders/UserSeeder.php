@@ -399,13 +399,25 @@ class UserSeeder extends Seeder
         ]);
 
         // Intern eighteen to twenty-seven - MFA Disabled
-        for ($i = 18; $i <= 27; $i++) {
-            $displayId = '2026500' . $i;
+        $extraInterns = [
+            '202650018' => 'justin.perez@smartern.com',
+            '202650019' => 'leila.pascual@smartern.com',
+            '202650020' => 'mark.mendoza@smartern.com',
+            '202650021' => 'sophia.lopez@smartern.com',
+            '202650022' => 'christian.castillo@smartern.com',
+            '202650023' => 'dianne.rivera@smartern.com',
+            '202650024' => 'francis.santos@smartern.com',
+            '202650025' => 'giselle.bernardo@smartern.com',
+            '202650026' => 'harvey.cruz@smartern.com',
+            '202650027' => 'isabel.delrosario@smartern.com',
+        ];
+
+        foreach ($extraInterns as $displayId => $email) {
             User::create([
                 'role_id' => UserRole::INTERN,
                 'display_id' => $displayId,
                 'public_id' => hash('sha256', $displayId),
-                'email' => 'intern' . $i . '@smartern.com',
+                'email' => $email,
                 'password' => Hash::make('password'),
                 'google2fa_secret' => null,
                 'google2fa_enabled' => false,
