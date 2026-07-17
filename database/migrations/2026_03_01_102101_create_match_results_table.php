@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('confidence')->default('Low');
             $table->string('status');
             $table->boolean('is_confirmed')->default(false);
+            $table->boolean('requested_by_supervisor')->default(false);
             $table->text('breakdown')->nullable();
             $table->timestamps();
         });
