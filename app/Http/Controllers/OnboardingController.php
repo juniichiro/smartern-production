@@ -45,9 +45,11 @@ class OnboardingController extends Controller
     {
         // Check if the applicant was rejected within the last 2 months
         $twoMonthsAgo = now()->subMonths(2);
-        $isRejected = \App\Models\RejectedApplicant::where(function ($q) use ($request) {
+        $fullName = trim($request->first_name.' '.($request->middle_name ? $request->middle_name.' ' : '').$request->last_name);
+        $isRejected = \App\Models\RejectedApplicant::where(function ($q) use ($request, $fullName) {
                 $q->where('email', $request->email)
-                  ->orWhere('phone_number', $request->phone_number);
+                  ->orWhere('phone_number', $request->phone_number)
+                  ->orWhere('full_name', $fullName);
             })
             ->where('rejected_at', '>=', $twoMonthsAgo)
             ->exists();
