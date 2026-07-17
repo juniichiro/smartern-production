@@ -159,7 +159,11 @@ class OnboardingManagementController extends Controller
         $applicant->delete();
  
         // 4. Regenerate legacy CSV for compatibility
-        $this->regenerateCsv();
+        try {
+            $this->regenerateCsv();
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to update legacy onboarding CSV on rejection: '.$e->getMessage());
+        }
  
         return back()->with('success', 'Applicant has been rejected and documented.');
     }
