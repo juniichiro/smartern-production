@@ -612,7 +612,7 @@
                         </p>
                         <label class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2 block">Reason for Rejection</label>
                         <textarea name="reason" x-model="rejectReason" required rows="3"
-                                  class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-205 dark:border-gray-800 rounded-2xl px-5 py-4 text-xs font-bold text-gray-700 dark:text-gray-300 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#0B5694] dark:focus:ring-blue-600"></textarea>
+                                  class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl px-5 py-4 text-xs font-bold text-gray-700 dark:text-gray-300 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#0B5694] dark:focus:ring-blue-600"></textarea>
                     </div>
 
                     <div class="flex gap-3">
