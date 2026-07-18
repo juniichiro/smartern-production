@@ -121,7 +121,7 @@
                                             <td class="px-8 py-6 text-right whitespace-nowrap">
                                                 <div class="flex items-center justify-end gap-2">
                                                     @if($applicant['is_pending'])
-                                                        <button type="button" @click="rejectOpen = true; rejectApplicantName = '{{ addslashes($applicant['name']) }}'; rejectApplicantUrl = '{{ route('head-supervisor.onboarding.reject', $applicant['route_key']) }}';" class="inline-flex items-center gap-1.5 px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/20 dark:hover:bg-rose-900/30 dark:text-rose-400 rounded-xl text-xs font-bold transition active:scale-95 border border-rose-100 dark:border-rose-900/20">
+                                                        <button type="button" @click="openReject('{{ addslashes($applicant['name']) }}', '{{ route('head-supervisor.onboarding.reject', $applicant['route_key']) }}')" class="inline-flex items-center gap-1.5 px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/20 dark:hover:bg-rose-900/30 dark:text-rose-400 rounded-xl text-xs font-bold transition active:scale-95 border border-rose-100 dark:border-rose-900/20">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                                                             Reject
                                                         </button>
@@ -186,7 +186,7 @@
                                         @endif
 
                                         @if($applicant['is_pending'])
-                                            <button type="button" @click="rejectOpen = true; rejectApplicantName = '{{ addslashes($applicant['name']) }}'; rejectApplicantUrl = '{{ route('head-supervisor.onboarding.reject', $applicant['route_key']) }}';" class="w-full flex items-center justify-center gap-1.5 py-3 bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/20 dark:hover:bg-rose-900/30 dark:text-rose-400 rounded-2xl text-[10px] font-black uppercase tracking-wider transition active:scale-[0.97] border border-rose-100 dark:border-rose-900/20 shadow-sm">
+                                            <button type="button" @click="openReject('{{ addslashes($applicant['name']) }}', '{{ route('head-supervisor.onboarding.reject', $applicant['route_key']) }}')" class="w-full flex items-center justify-center gap-1.5 py-3 bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/20 dark:hover:bg-rose-900/30 dark:text-rose-400 rounded-2xl text-[10px] font-black uppercase tracking-wider transition active:scale-[0.97] border border-rose-100 dark:border-rose-900/20 shadow-sm">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                                                 Reject
                                             </button>
@@ -244,7 +244,7 @@
                                 <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Status:</span>
                                 <div>
                                     @if($applicant['is_pending'])
-                                        <button type="button" @click="rejectOpen = true; rejectApplicantName = '{{ addslashes($applicant['name']) }}'; rejectApplicantUrl = '{{ route('head-supervisor.onboarding.reject', $applicant['route_key']) }}';" class="inline-flex items-center gap-1 px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/20 dark:hover:bg-rose-900/30 dark:text-rose-400 rounded-xl text-[9px] font-black uppercase tracking-wider transition active:scale-95 border border-rose-100 dark:border-rose-900/20 shadow-sm">
+                                        <button type="button" @click="openReject('{{ addslashes($applicant['name']) }}', '{{ route('head-supervisor.onboarding.reject', $applicant['route_key']) }}')" class="inline-flex items-center gap-1 px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/20 dark:hover:bg-rose-900/30 dark:text-rose-400 rounded-xl text-[9px] font-black uppercase tracking-wider transition active:scale-95 border border-rose-100 dark:border-rose-900/20 shadow-sm">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                                             Reject
                                         </button>
@@ -665,6 +665,13 @@ document.addEventListener('alpine:init', () => {
         openResume(url) {
             this.resumeUrl = url;
             this.showResumePreview = true;
+        },
+
+        openReject(name, url) {
+            this.rejectApplicantName = name;
+            this.rejectApplicantUrl = url;
+            this.rejectReason = 'Rejected during live onboarding intake review';
+            this.rejectOpen = true;
         },
 
         async reverseGeocode(lat, lng) {
