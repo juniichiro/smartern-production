@@ -140,7 +140,7 @@ class InternDetail extends Model
                             'Intern Hours Completed',
                             'system',
                             "{$intern->first_name} {$intern->last_name} ({$intern->school}) has completed their required hours and is awaiting endorsement.",
-                            route('coordinator.interns')
+                            null
                         );
                     }
                 }
