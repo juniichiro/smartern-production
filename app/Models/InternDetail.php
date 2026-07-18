@@ -125,7 +125,7 @@ class InternDetail extends Model
                             $supervisor->user_id,
                             'Intern Hours Completed',
                             'system',
-                            "Intern {$intern->first_name} {$intern->last_name} has completed their required hours. Please review and endorse their certificate.",
+                            "{$intern->first_name} {$intern->last_name} has completed their required hours. Please review and endorse their certificate.",
                             route('supervisor.certificates.index')
                         );
                     }
@@ -139,7 +139,7 @@ class InternDetail extends Model
                             $coord->user_id,
                             'Intern Hours Completed',
                             'system',
-                            "Intern {$intern->first_name} {$intern->last_name} ({$intern->school}) has completed their required hours and is awaiting endorsement.",
+                            "{$intern->first_name} {$intern->last_name} ({$intern->school}) has completed their required hours and is awaiting endorsement.",
                             route('coordinator.interns')
                         );
                     }

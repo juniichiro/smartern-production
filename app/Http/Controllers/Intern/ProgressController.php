@@ -305,12 +305,11 @@ class ProgressController extends Controller
 
             $this->auditService->log('Task Submitted', "Task: '{$task->title}' submitted for review");
 
-            // NOTIFICATION: Direct link for the supervisor to review the submission
             $notification = NotificationController::send(
                 $task->supervisor_id,
                 'Intern Submission',
                 'task',
-                'Intern '.Auth::user()->internDetails->first_name." has submitted work for '{$task->title}' and it is ready for review.",
+                Auth::user()->internDetails->first_name." has submitted work for '{$task->title}' and it is ready for review.",
                 route('supervisor.tasks.show', $task),
                 false // isExternal
             );

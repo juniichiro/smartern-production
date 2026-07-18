@@ -256,7 +256,7 @@ class ScheduleController extends Controller
                     $hs->id,
                     'Date Extension Requested',
                     'system',
-                    "Intern {$intern->first_name} {$intern->last_name} has requested a date extension to " . \Carbon\Carbon::parse($request->input('new_end_date'))->format('M d, Y') . ".",
+                    "{$intern->first_name} {$intern->last_name} has requested a date extension to " . \Carbon\Carbon::parse($request->input('new_end_date'))->format('M d, Y') . ".",
                     route('head-supervisor.interns.show', $intern->user->getRouteKey())
                 );
             }

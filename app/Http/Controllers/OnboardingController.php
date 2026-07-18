@@ -166,7 +166,7 @@ class OnboardingController extends Controller
                         $supervisor->id,
                         'New Applicant',
                         'system',
-                        "Intern {$fullName} has submitted a new application and resume for your review.",
+                        "{$fullName} has submitted a new application and resume for your review.",
                         route('head-supervisor.onboarding.index')
                     );
                 }
