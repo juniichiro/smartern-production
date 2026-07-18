@@ -58,19 +58,6 @@
             margin-bottom: 24px;
             color: #4b5563;
         }
-        .reason-box {
-            background-color: #fff1f2;
-            border-left: 4px solid #f43f5e;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 24px;
-        }
-        .reason-text {
-            font-size: 14px;
-            color: #be123c;
-            margin: 0;
-            font-weight: 500;
-        }
         .footer {
             background-color: #f9fafb;
             padding: 24px 32px;
@@ -91,13 +78,6 @@
             <h2>Hello {{ $applicantName }},</h2>
             <p>Thank you for your interest in the SmarTern Internship Program. We appreciate the time and effort you put into submitting your application.</p>
             <p>After careful review of your application materials and qualifications, we regret to inform you that we are unable to proceed with your onboarding at this time.</p>
-            
-            @if($reason)
-                <div class="reason-box">
-                    <p style="font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #9f1239; margin: 0 0 4px 0;">Reason for Update</p>
-                    <p class="reason-text">{{ $reason }}</p>
-                </div>
-            @endif
 
             <p>Please note that according to our onboarding registry policies, you may submit a new application after 2 months. We wish you all the best in your future academic and professional endeavors.</p>
         </div>
