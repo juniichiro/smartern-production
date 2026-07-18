@@ -586,8 +586,6 @@
             </div>
         </div>
 
-        </div>
-
         {{-- REJECTION CONFIRMATION MODAL --}}
         <div x-show="rejectOpen" 
              class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm"
