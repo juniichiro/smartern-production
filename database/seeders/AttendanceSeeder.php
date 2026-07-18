@@ -23,13 +23,19 @@ class AttendanceSeeder extends Seeder
             // hours per day
             $daysToSeed = ceil($hours / 8);
             
-            $currentDate = Carbon::now()->subDays(2); // Generate backwards starting from 2 days ago
+            $currentDate = Carbon::parse($intern->start_date); // Generate forward starting from start_date
             $seededCount = 0;
+            $maxEndDate = Carbon::now()->subDays(2); // Keep logs a few days behind today
 
             while ($seededCount < $daysToSeed) {
+                // If we reach the maximum end date, stop seeding
+                if ($currentDate->greaterThanOrEqualTo($maxEndDate)) {
+                    break;
+                }
+
                 // Skip weekends
                 if ($currentDate->isWeekend()) {
-                    $currentDate->subDay();
+                    $currentDate->addDay();
                     continue;
                 }
 
@@ -49,7 +55,7 @@ class AttendanceSeeder extends Seeder
                 ]);
 
                 $seededCount++;
-                $currentDate->subDay();
+                $currentDate->addDay();
             }
         }
     }
