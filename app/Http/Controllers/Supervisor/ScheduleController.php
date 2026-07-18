@@ -157,7 +157,7 @@ class ScheduleController extends Controller
                         $coord->user_id,
                         $requestTypeLabel . ' Request Approved',
                         'system',
-                        "The {$requestTypeLabel} request for intern {$internName} ({$internDetail->school}) on " . $absence->date->format('M d, Y') . " has been approved.",
+                        "The {$requestTypeLabel} request for intern {$internName} on " . $absence->date->format('M d, Y') . " has been approved.",
                         route('coordinator.schedule.index')
                     );
                 }

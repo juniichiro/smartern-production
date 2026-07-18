@@ -272,7 +272,7 @@ class InternManagementController extends Controller
                             $coord->user_id,
                             'Intern Extension Approved',
                             'system',
-                            "The expected internship completion date for {$intern->first_name} {$intern->last_name} ({$intern->school}) has been extended to " . $extension->new_end_date->format('M d, Y') . ".",
+                            "The expected internship completion date for {$intern->first_name} {$intern->last_name} has been extended to " . $extension->new_end_date->format('M d, Y') . ".",
                             route('coordinator.interns')
                         );
                     }
