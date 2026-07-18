@@ -153,19 +153,36 @@ class ScheduleController extends Controller
         // Notify School Coordinators if approved
         if ($validated['status'] === 'approved') {
             $internDetail = $absence->intern->internDetails;
-            if ($internDetail && $internDetail->school) {
-                $coordinators = \App\Models\SchoolCoordinatorDetail::getCoordinatorsForSchool($internDetail->school);
+            if ($internDetail) {
                 $internName = $internDetail->full_name ?? $absence->intern->name;
                 $requestTypeLabel = $absence->type === 'early_leave' ? 'Early Leave' : 'Absence';
-                
-                foreach ($coordinators as $coord) {
-                    NotificationController::send(
-                        $coord->user_id,
-                        $requestTypeLabel . ' Request Approved',
-                        'system',
-                        "The {$requestTypeLabel} request for intern {$internName} on " . $absence->date->format('M d, Y') . " has been approved.",
-                        route('coordinator.schedule.index')
-                    );
+
+                // Notify Coordinators
+                if ($internDetail->school) {
+                    $coordinators = \App\Models\SchoolCoordinatorDetail::getCoordinatorsForSchool($internDetail->school);
+                    foreach ($coordinators as $coord) {
+                        NotificationController::send(
+                            $coord->user_id,
+                            $requestTypeLabel . ' Request Approved',
+                            'system',
+                            "The {$requestTypeLabel} request for intern {$internName} on " . $absence->date->format('M d, Y') . " has been approved.",
+                            route('coordinator.schedule.index')
+                        );
+                    }
+                }
+
+                // Notify Supervisors
+                $supervisors = $internDetail->office?->supervisorDetails;
+                if ($supervisors) {
+                    foreach ($supervisors as $supervisor) {
+                        NotificationController::send(
+                            $supervisor->user_id,
+                            $requestTypeLabel . ' Request Approved',
+                            'system',
+                            "The {$requestTypeLabel} request for intern {$internName} on " . $absence->date->format('M d, Y') . " has been approved.",
+                            route('supervisor.schedule.index')
+                        );
+                    }
                 }
             }
         }
