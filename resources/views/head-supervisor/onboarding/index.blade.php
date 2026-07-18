@@ -591,22 +591,22 @@
              class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm"
              x-cloak
              @keydown.escape.window="rejectOpen = false">
-            <div class="bg-white dark:bg-gray-900 w-full max-w-md sm:max-w-lg md:max-w-xl mx-4 rounded-[25px] sm:rounded-[30px] shadow-2xl p-6 sm:p-8 border border-gray-100 dark:border-gray-800 transition-all cursor-default" @click.away="rejectOpen = false">
-                <div class="mb-6">
-                    <h3 class="text-lg sm:text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Reject Applicant</h3>
-                    <p class="text-xs text-gray-400 dark:text-gray-500 font-medium tracking-tight">Confirm application rejection</p>
+            <div class="bg-white dark:bg-gray-900 w-full max-w-md sm:max-w-lg md:max-w-xl mx-4 rounded-[25px] sm:rounded-[30px] shadow-2xl p-10 sm:p-14 border border-gray-100 dark:border-gray-800 transition-all cursor-default min-h-[350px] flex flex-col justify-between" @click.away="rejectOpen = false">
+                <div class="mb-8">
+                    <h3 class="text-xl sm:text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Reject Applicant</h3>
+                    <p class="text-xs sm:text-sm text-gray-400 dark:text-gray-500 font-medium tracking-tight mt-1">Confirm application rejection</p>
                 </div>
 
-                <form :action="rejectApplicantUrl" method="POST" class="space-y-6">
+                <form :action="rejectApplicantUrl" method="POST" class="space-y-10 flex-1 flex flex-col justify-between">
                     @csrf
                     <input type="hidden" name="reason" value="Rejected during live onboarding intake review">
-                    <div>
+                    <div class="flex-1 flex items-center">
                         <p class="text-xs sm:text-sm font-bold text-gray-650 dark:text-gray-400 leading-relaxed">
                             Are you sure you want to reject <span class="font-black text-[#0B5694] dark:text-blue-400 uppercase" x-text="rejectApplicantName"></span>? This will reject their application and block them from re-applying for 2 months.
                         </p>
                     </div>
 
-                    <div class="flex gap-3">
+                    <div class="flex gap-4 pt-4">
                         <button type="submit" class="flex-1 px-4 py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold text-[10px] uppercase tracking-wider rounded-xl transition active:scale-95 shadow-lg shadow-rose-600/10 cursor-pointer text-center">
                             Reject Applicant
                         </button>
