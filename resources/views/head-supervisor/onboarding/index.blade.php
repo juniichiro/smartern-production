@@ -591,7 +591,7 @@
              class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm"
              x-cloak
              @keydown.escape.window="rejectOpen = false">
-            <div class="bg-white dark:bg-gray-900 w-full max-w-md mx-4 rounded-[25px] sm:rounded-[30px] shadow-2xl p-6 sm:p-8 border border-gray-100 dark:border-gray-800 transition-all cursor-default" @click.away="rejectOpen = false">
+            <div class="bg-white dark:bg-gray-900 w-full max-w-md sm:max-w-lg md:max-w-xl mx-4 rounded-[25px] sm:rounded-[30px] shadow-2xl p-6 sm:p-8 border border-gray-100 dark:border-gray-800 transition-all cursor-default" @click.away="rejectOpen = false">
                 <div class="flex items-center gap-4 mb-6">
                     <div class="p-3 bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 rounded-2xl shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
@@ -604,20 +604,18 @@
 
                 <form :action="rejectApplicantUrl" method="POST" class="space-y-6">
                     @csrf
+                    <input type="hidden" name="reason" value="Rejected during live onboarding intake review">
                     <div>
-                        <p class="text-xs font-bold text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
-                            Are you sure you want to reject <span class="font-black text-gray-800 dark:text-white uppercase" x-text="rejectApplicantName"></span>? This will block their re-application for 2 months.
+                        <p class="text-xs sm:text-sm font-bold text-gray-650 dark:text-gray-400 leading-relaxed">
+                            Are you sure you want to reject <span class="font-black text-[#0B5694] dark:text-blue-400 uppercase" x-text="rejectApplicantName"></span>? This will reject their application and block them from re-applying for 2 months.
                         </p>
-                        <label class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2 block">Reason for Rejection</label>
-                        <textarea name="reason" x-model="rejectReason" required rows="3"
-                                  class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl px-5 py-4 text-xs font-bold text-gray-700 dark:text-gray-300 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#0B5694] dark:focus:ring-blue-600"></textarea>
                     </div>
 
                     <div class="flex gap-3">
                         <button type="submit" class="flex-1 px-4 py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold text-[10px] uppercase tracking-wider rounded-xl transition active:scale-95 shadow-lg shadow-rose-600/10 cursor-pointer text-center">
                             Reject Applicant
                         </button>
-                        <button type="button" @click="rejectOpen = false" class="px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 font-bold text-[10px] uppercase tracking-wider rounded-xl hover:bg-gray-50 dark:hover:bg-gray-850 transition active:scale-95 cursor-pointer text-center">
+                        <button type="button" @click="rejectOpen = false" class="px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-650 dark:text-gray-300 font-bold text-[10px] uppercase tracking-wider rounded-xl hover:bg-gray-50 dark:hover:bg-gray-850 transition active:scale-95 cursor-pointer text-center">
                             Cancel
                         </button>
                     </div>
@@ -641,7 +639,6 @@ document.addEventListener('alpine:init', () => {
         rejectOpen: false,
         rejectApplicantName: '',
         rejectApplicantUrl: '',
-        rejectReason: 'Rejected during live onboarding intake review',
         editOffice: {id: '', name: ''},
         deleteOffice: {id: '', name: ''},
         geofenceOffice: {latitude: '', longitude: '', radius_meters: 100, address: 'Fetching address...'},
@@ -668,7 +665,6 @@ document.addEventListener('alpine:init', () => {
         openReject(name, url) {
             this.rejectApplicantName = name;
             this.rejectApplicantUrl = url;
-            this.rejectReason = 'Rejected during live onboarding intake review';
             this.rejectOpen = true;
         },
 
