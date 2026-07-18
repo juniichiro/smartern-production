@@ -592,14 +592,9 @@
              x-cloak
              @keydown.escape.window="rejectOpen = false">
             <div class="bg-white dark:bg-gray-900 w-full max-w-md sm:max-w-lg md:max-w-xl mx-4 rounded-[25px] sm:rounded-[30px] shadow-2xl p-6 sm:p-8 border border-gray-100 dark:border-gray-800 transition-all cursor-default" @click.away="rejectOpen = false">
-                <div class="flex items-center gap-4 mb-6">
-                    <div class="p-3 bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 rounded-2xl shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                    </div>
-                    <div>
-                        <h3 class="text-lg sm:text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Reject Applicant</h3>
-                        <p class="text-xs text-gray-400 dark:text-gray-500 font-medium tracking-tight">Confirm application rejection</p>
-                    </div>
+                <div class="mb-6">
+                    <h3 class="text-lg sm:text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Reject Applicant</h3>
+                    <p class="text-xs text-gray-400 dark:text-gray-500 font-medium tracking-tight">Confirm application rejection</p>
                 </div>
 
                 <form :action="rejectApplicantUrl" method="POST" class="space-y-6">
