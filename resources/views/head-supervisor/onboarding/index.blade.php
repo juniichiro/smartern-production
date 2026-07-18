@@ -121,14 +121,10 @@
                                             <td class="px-8 py-6 text-right whitespace-nowrap">
                                                 <div class="flex items-center justify-end gap-2">
                                                     @if($applicant['is_pending'])
-                                                        <form action="{{ route('head-supervisor.onboarding.reject', $applicant['route_key']) }}" method="POST" onsubmit="return confirm('Are you sure you want to reject this applicant? This will reject them and block re-application for 2 months.')">
-                                                            @csrf
-                                                            <input type="hidden" name="reason" value="Rejected during live onboarding intake review">
-                                                            <button type="submit" class="inline-flex items-center gap-1.5 px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/20 dark:hover:bg-rose-900/30 dark:text-rose-400 rounded-xl text-xs font-bold transition active:scale-95 border border-rose-100 dark:border-rose-900/20">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                                                                Reject
-                                                            </button>
-                                                        </form>
+                                                        <button type="button" @click="rejectOpen = true; rejectApplicantName = '{{ addslashes($applicant['name']) }}'; rejectApplicantUrl = '{{ route('head-supervisor.onboarding.reject', $applicant['route_key']) }}';" class="inline-flex items-center gap-1.5 px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/20 dark:hover:bg-rose-900/30 dark:text-rose-400 rounded-xl text-xs font-bold transition active:scale-95 border border-rose-100 dark:border-rose-900/20">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                                                            Reject
+                                                        </button>
                                                     @else
                                                         <span class="text-[10px] font-bold text-green-600 bg-green-50 dark:bg-green-950/20 dark:text-green-400 border border-green-100 dark:border-green-900/20 px-3 py-1.5 rounded-xl uppercase tracking-wider">Matched</span>
                                                     @endif
@@ -190,14 +186,10 @@
                                         @endif
 
                                         @if($applicant['is_pending'])
-                                            <form action="{{ route('head-supervisor.onboarding.reject', $applicant['route_key']) }}" method="POST" onsubmit="return confirm('Are you sure you want to reject this applicant? This will reject them and block re-application for 2 months.')" class="w-full">
-                                                @csrf
-                                                <input type="hidden" name="reason" value="Rejected during live onboarding intake review">
-                                                <button type="submit" class="w-full flex items-center justify-center gap-1.5 py-3 bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/20 dark:hover:bg-rose-900/30 dark:text-rose-400 rounded-2xl text-[10px] font-black uppercase tracking-wider transition active:scale-[0.97] border border-rose-100 dark:border-rose-900/20 shadow-sm">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                                                    Reject
-                                                </button>
-                                            </form>
+                                            <button type="button" @click="rejectOpen = true; rejectApplicantName = '{{ addslashes($applicant['name']) }}'; rejectApplicantUrl = '{{ route('head-supervisor.onboarding.reject', $applicant['route_key']) }}';" class="w-full flex items-center justify-center gap-1.5 py-3 bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/20 dark:hover:bg-rose-900/30 dark:text-rose-400 rounded-2xl text-[10px] font-black uppercase tracking-wider transition active:scale-[0.97] border border-rose-100 dark:border-rose-900/20 shadow-sm">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                                                Reject
+                                            </button>
                                         @else
                                             <div class="w-full flex items-center justify-center py-3 bg-green-50 dark:bg-green-950/20 text-green-600 dark:text-green-400 border border-green-100 dark:border-green-900/20 rounded-2xl text-[10px] font-black uppercase tracking-wider">
                                                 Matched
@@ -252,14 +244,10 @@
                                 <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Status:</span>
                                 <div>
                                     @if($applicant['is_pending'])
-                                        <form action="{{ route('head-supervisor.onboarding.reject', $applicant['route_key']) }}" method="POST" onsubmit="return confirm('Are you sure you want to reject this applicant? This will reject them and block re-application for 2 months.')">
-                                            @csrf
-                                            <input type="hidden" name="reason" value="Rejected during live onboarding intake review">
-                                            <button type="submit" class="inline-flex items-center gap-1 px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/20 dark:hover:bg-rose-900/30 dark:text-rose-400 rounded-xl text-[9px] font-black uppercase tracking-wider transition active:scale-95 border border-rose-100 dark:border-rose-900/20 shadow-sm">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                                                Reject
-                                            </button>
-                                        </form>
+                                        <button type="button" @click="rejectOpen = true; rejectApplicantName = '{{ addslashes($applicant['name']) }}'; rejectApplicantUrl = '{{ route('head-supervisor.onboarding.reject', $applicant['route_key']) }}';" class="inline-flex items-center gap-1 px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/20 dark:hover:bg-rose-900/30 dark:text-rose-400 rounded-xl text-[9px] font-black uppercase tracking-wider transition active:scale-95 border border-rose-100 dark:border-rose-900/20 shadow-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                                            Reject
+                                        </button>
                                     @else
                                         <span class="text-[9px] font-bold text-green-600 bg-green-50 dark:bg-green-950/20 dark:text-green-400 border border-green-100 dark:border-green-900/20 px-2.5 py-1 rounded-xl uppercase tracking-wider">Matched</span>
                                     @endif
@@ -598,6 +586,46 @@
             </div>
         </div>
 
+        </div>
+
+        {{-- REJECTION CONFIRMATION MODAL --}}
+        <div x-show="rejectOpen" 
+             class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm"
+             x-cloak
+             @keydown.escape.window="rejectOpen = false">
+            <div class="bg-white dark:bg-gray-900 w-full max-w-md mx-4 rounded-[25px] sm:rounded-[30px] shadow-2xl p-6 sm:p-8 border border-gray-100 dark:border-gray-800 transition-all cursor-default" @click.away="rejectOpen = false">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="p-3 bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 rounded-2xl shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg sm:text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Reject Applicant</h3>
+                        <p class="text-xs text-gray-400 dark:text-gray-500 font-medium tracking-tight">Confirm application rejection</p>
+                    </div>
+                </div>
+
+                <form :action="rejectApplicantUrl" method="POST" class="space-y-6">
+                    @csrf
+                    <div>
+                        <p class="text-xs font-bold text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
+                            Are you sure you want to reject <span class="font-black text-gray-800 dark:text-white uppercase" x-text="rejectApplicantName"></span>? This will block their re-application for 2 months.
+                        </p>
+                        <label class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2 block">Reason for Rejection</label>
+                        <textarea name="reason" x-model="rejectReason" required rows="3"
+                                  class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-205 dark:border-gray-800 rounded-2xl px-5 py-4 text-xs font-bold text-gray-700 dark:text-gray-300 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#0B5694] dark:focus:ring-blue-600"></textarea>
+                    </div>
+
+                    <div class="flex gap-3">
+                        <button type="submit" class="flex-1 px-4 py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold text-[10px] uppercase tracking-wider rounded-xl transition active:scale-95 shadow-lg shadow-rose-600/10 cursor-pointer text-center">
+                            Reject Applicant
+                        </button>
+                        <button type="button" @click="rejectOpen = false" class="px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 font-bold text-[10px] uppercase tracking-wider rounded-xl hover:bg-gray-50 dark:hover:bg-gray-850 transition active:scale-95 cursor-pointer text-center">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </x-page-layout>
 
@@ -612,6 +640,10 @@ document.addEventListener('alpine:init', () => {
         editOfficeOpen: false, 
         deleteOfficeOpen: false,
         geofenceOfficeOpen: false,
+        rejectOpen: false,
+        rejectApplicantName: '',
+        rejectApplicantUrl: '',
+        rejectReason: 'Rejected during live onboarding intake review',
         editOffice: {id: '', name: ''},
         deleteOffice: {id: '', name: ''},
         geofenceOffice: {latitude: '', longitude: '', radius_meters: 100, address: 'Fetching address...'},
