@@ -289,7 +289,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 // Document Templates (Accessible without login for locked-out users)
-Route::get('/templates', [TemplateController::class, 'index'])->name('templates.index');
-Route::get('/templates/download/{type}', [TemplateController::class, 'download'])->name('templates.download');
+Route::get('/document-templates', [TemplateController::class, 'index'])->name('templates.index');
+Route::get('/document-templates/download/{type}', [TemplateController::class, 'download'])->name('templates.download');
 
 require __DIR__.'/auth.php';
