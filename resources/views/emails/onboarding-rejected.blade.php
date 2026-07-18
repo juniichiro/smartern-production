@@ -23,19 +23,19 @@
             border: 1px solid #e5e7eb;
         }
         .header {
-            background: linear-gradient(135deg, #be123c 0%, #f43f5e 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
             padding: 32px;
             text-align: center;
         }
         .header h1 {
             color: #ffffff;
-            font-size: 26px;
+            font-size: 28px;
             font-weight: 800;
             margin: 0;
             letter-spacing: -0.025em;
         }
         .header p {
-            color: #ffe4e6;
+            color: #dbeafe;
             font-size: 14px;
             margin-top: 8px;
             margin-bottom: 0;
@@ -50,7 +50,7 @@
             font-weight: 700;
             margin-top: 0;
             margin-bottom: 16px;
-            color: #be123c;
+            color: #1e3a8a;
         }
         .content p {
             font-size: 15px;
@@ -65,9 +65,6 @@
             border-radius: 8px;
             margin-bottom: 24px;
         }
-        .reason-title {
-            font-[11px] font-black uppercase tracking-wider text-[#9f1239] mb-1;
-        }
         .reason-text {
             font-size: 14px;
             color: #be123c;
@@ -78,21 +75,17 @@
             background-color: #f9fafb;
             padding: 24px 32px;
             text-align: center;
-            border-t: 1px solid #f3f4f6;
-        }
-        .footer p {
-            font-size: 12px;
+            border-top: 1px solid #f3f4f6;
+            font-size: 13px;
             color: #9ca3af;
-            margin: 0;
-            font-weight: 500;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Application Status Update</h1>
-            <p>SmarTern Intern Onboarding Portal</p>
+            <h1>SmarTern</h1>
+            <p>Secure Internship Management System</p>
         </div>
         <div class="content">
             <h2>Hello {{ $applicantName }},</h2>
@@ -109,7 +102,25 @@
             <p>Please note that according to our onboarding registry policies, you may submit a new application after 2 months. We wish you all the best in your future academic and professional endeavors.</p>
         </div>
         <div class="footer">
-            <p>&copy; {{ date('Y') }} SmarTern. All rights reserved.</p>
+            @php
+                $logoPath = public_path('images/blue-smartern.png');
+                $logoExists = file_exists($logoPath);
+            @endphp
+            <table border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto 16px auto; border-collapse: collapse;">
+                <tr>
+                    <td style="padding-right: 8px; vertical-align: middle;">
+                        @if($logoExists)
+                            <img src="{{ $message->embedData(file_get_contents($logoPath), 'smartern.png', 'image/png') }}" alt="" style="height: 24px; width: auto; display: block;">
+                        @else
+                            <img src="{{ env('AWS_URL') ? env('AWS_URL') . '/images/blue-smartern.png' : asset('images/blue-smartern.png') }}" alt="" style="height: 24px; width: auto; display: block;">
+                        @endif
+                    </td>
+                    <td style="font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 800; color: #1e3a8a; vertical-align: middle; line-height: 24px; letter-spacing: -0.01em;">
+                        SmarTern
+                    </td>
+                </tr>
+            </table>
+            &copy; {{ date('Y') }} SmarTern. All rights reserved. SDO Quezon City.
         </div>
     </div>
 </body>
