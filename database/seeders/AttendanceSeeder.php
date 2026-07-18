@@ -22,23 +22,18 @@ class AttendanceSeeder extends Seeder
 
             // hours per day
             $daysToSeed = ceil($hours / 8);
-            $startDate = Carbon::now()->subDays($daysToSeed + 5);
+            
+            $currentDate = Carbon::now()->subDays(2); // Generate backwards starting from 2 days ago
+            $seededCount = 0;
 
-            for ($i = 0; $i < $daysToSeed; $i++) {
-                $currentDate = $startDate->copy()->addDays($i);
-
+            while ($seededCount < $daysToSeed) {
                 // Skip weekends
                 if ($currentDate->isWeekend()) {
-                    $daysToSeed++; // Push forward to ensure we meet hours
+                    $currentDate->subDay();
                     continue;
                 }
 
-                // Skip today or future dates to leave today open for testing
-                if ($currentDate->greaterThanOrEqualTo(Carbon::today())) {
-                    continue;
-                }
-
-                // Randomize clock in/out slightly around zero AM and zero PM
+                // Randomize clock in/out slightly around standard hours
                 $clockIn = $currentDate->copy()->hour(8)->minute(rand(0, 15))->second(rand(0, 59));
                 $clockOut = $currentDate->copy()->hour(17)->minute(rand(0, 10))->second(rand(0, 59));
 
@@ -52,6 +47,9 @@ class AttendanceSeeder extends Seeder
                     'status' => 'on_time',
                     'remarks' => 'Completed 8 hours render.',
                 ]);
+
+                $seededCount++;
+                $currentDate->subDay();
             }
         }
     }
