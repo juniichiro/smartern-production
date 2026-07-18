@@ -283,7 +283,7 @@ class AttendanceService
             }
             $startDate = $dates->isNotEmpty() ? $dates->min() : now()->subDays(30)->startOfDay();
         }
-        $endDate = $customEndDate ?? now()->startOfDay();
+        $endDate = $customEndDate ? ($customEndDate->greaterThan(now()->startOfDay()) ? now()->startOfDay() : $customEndDate) : now()->startOfDay();
 
         // If official start is in the future, we return an empty collection to signify work hasn't started
         if ($officialStart && $officialStart->greaterThan($endDate)) {
