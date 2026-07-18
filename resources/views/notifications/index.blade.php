@@ -107,8 +107,8 @@
                     @endphp
 
                     <div class="flex items-stretch gap-2.5 sm:gap-4 group">
-                        <div @click="handleNotificationClick('{{ $notifId }}', '{{ csrf_token() }}')" 
-                             class="flex-1 flex gap-3 xs:gap-5 items-start p-4 xs:p-6 md:p-8 border rounded-[20px] xs:rounded-[30px] transition-all duration-300 cursor-pointer select-none active:scale-[0.99] {{ $cardBgClass }}">
+                        <div @click="{{ $notif->target_url ? "handleNotificationClick('{$notifId}', '".csrf_token()."')" : '' }}" 
+                             class="flex-1 flex gap-3 xs:gap-5 items-start p-4 xs:p-6 md:p-8 border rounded-[20px] xs:rounded-[30px] transition-all duration-300 {{ $notif->target_url ? 'cursor-pointer select-none active:scale-[0.99]' : '' }} {{ $cardBgClass }}">
                             
                             {{-- Category Icon --}}
                             <div class="p-2.5 xs:p-3.5 rounded-xl xs:rounded-2xl border shrink-0 {{ $iconClass }}">

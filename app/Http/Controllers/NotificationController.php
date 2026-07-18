@@ -61,12 +61,15 @@ class NotificationController extends Controller
         if (request()->wantsJson()) {
             return response()->json([
                 'success' => true,
-                'redirect_url' => $notification->target_url ?? route('intern.progress'),
+                'redirect_url' => $notification->target_url,
             ]);
         }
 
         // Fallback for non-AJAX requests
-        return redirect($notification->target_url ?? route('intern.progress'));
+        if ($notification->target_url) {
+            return redirect($notification->target_url);
+        }
+        return back();
     }
 
     /**

@@ -122,9 +122,10 @@
                         <div class="h-[1px] w-full bg-gray-50 dark:bg-gray-800/50"></div>
                     </div>
 
-                    <template x-for="notif in items" :key="notif.id">
-                        <div @click="handleNotificationClick(notif.id, '{{ csrf_token() }}')" 
-                             class="flex gap-4 items-start group relative cursor-pointer transition-all active:scale-95">
+                     <template x-for="notif in items" :key="notif.id">
+                         <div @click="notif.target_url && handleNotificationClick(notif.id, '{{ csrf_token() }}')" 
+                              :class="notif.target_url ? 'cursor-pointer' : 'cursor-default'"
+                              class="flex gap-4 items-start group relative transition-all">
                             
                             <div x-show="!allRead && !notif.is_read" class="absolute -left-3 top-5 w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]"></div>
 
@@ -152,7 +153,7 @@
                                     <p class="text-[10px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-wider truncate" x-text="notif.category === 'task' ? 'Task Assignment' : (notif.category === 'announcement' ? 'Office Announcement' : (notif.category === 'system' ? 'System Alert' : 'Update'))"></p>
                                     <span class="text-[10px] text-gray-400 dark:text-gray-400 font-bold uppercase whitespace-nowrap" x-text="notif.time_ago"></span>
                                 </div>
-                                <p class="text-[14px] font-bold text-gray-800 dark:text-gray-100 leading-tight group-hover:text-[#0B5694] dark:group-hover:text-blue-400 transition-colors" x-text="notif.message">
+                                <p class="text-[14px] font-bold text-gray-800 dark:text-gray-100 leading-tight transition-colors" :class="notif.target_url ? 'group-hover:text-[#0B5694] dark:group-hover:text-blue-400' : ''" x-text="notif.message">
                                 </p>
                             </div>
                         </div>
