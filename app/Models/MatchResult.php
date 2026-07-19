@@ -19,6 +19,11 @@ class MatchResult extends Model
         'requested_by_supervisor',
     ];
 
+    protected $casts = [
+        'is_confirmed' => 'boolean',
+        'requested_by_supervisor' => 'boolean',
+    ];
+
     /**
      * Get the office associated with this match result
      */

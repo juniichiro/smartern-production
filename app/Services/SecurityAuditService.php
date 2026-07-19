@@ -54,8 +54,8 @@ class SecurityAuditService
         // Create the log entry (Instant)
         $log = AuditLog::create([
             'user_id' => $userId,
-            'action' => $action,
-            'resource' => $resource,
+            'action' => \Illuminate\Support\Str::limit($action, 100, ''),
+            'resource' => \Illuminate\Support\Str::limit($resource, 65000, ''),
             'ip_address' => $this->request->ip(),
             'user_agent' => $this->request->userAgent(),
             'anomaly_score' => null,
