@@ -2,68 +2,112 @@
 
 namespace App\Http\Controllers\Intern;
 
-use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Models\Announcement;
 use App\Models\Attendance;
+use App\Models\InternExtension;
+use App\Models\Schedule;
 use App\Models\Task;
+use App\Services\InternAttendanceStateService;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
+    public function __construct(
+        protected InternAttendanceStateService $attendanceStateService
+    ) {}
+
     public function index()
     {
         $user = Auth::user();
         $intern = $user->internDetails;
+        $now = now()->timezone('Asia/Manila');
+        $todayDateFormatted = $now->format('l, F j');
 
-        // If intern details are missing or no office is assigned, we should handle this gracefully
-        // For now, we'll provide defaults to avoid crashing
+        // Handle case where profile is incomplete or unassigned gracefully
         if (! $intern || ! $intern->office_id) {
             return view('intern.dashboard', [
+                'user' => $user,
+                'intern' => $intern,
+                'todayDate' => $todayDateFormatted,
                 'rendered' => 0,
                 'totalRequired' => $intern ? ($intern->required_hours ?? 480) : 480,
                 'percentage' => 0,
-                'pendingTasksCount' => 0,
+                'remaining' => $intern ? ($intern->required_hours ?? 480) : 480,
+                'thisWeekHours' => 0,
+                'paceEstimate' => null,
+                'attendanceState' => [
+                    'state' => 'unavailable',
+                    'headline' => 'Attendance unavailable',
+                    'subtext' => ! $intern ? 'Please complete your intern profile first.' : 'Waiting for department assignment.',
+                    'duration' => null,
+                    'clock_in_formatted' => null,
+                    'clock_out_formatted' => null,
+                    'clock_in_epoch_ms' => 0,
+                    'server_now_epoch_ms' => $now->getTimestamp() * 1000,
+                    'elapsed_seconds' => 0,
+                    'button_label' => null,
+                    'button_action' => null,
+                    'button_url' => null,
+                    'can_scan' => false,
+                    'status_pill' => ['label' => 'Profile incomplete', 'color' => 'slate'],
+                ],
                 'logs' => collect([]),
-                'deadlines' => collect([]),
-                'activeTask' => null,
+                'todoTasks' => collect([]),
+                'submittedTasks' => collect([]),
+                'verifiedTasks' => collect([]),
                 'announcements' => collect([]),
                 'notifications' => collect([]),
-                'attendanceStatus' => 'TIME IN',
-                'attendanceSub' => ! $intern ? 'Complete your profile first' : 'Waiting for office assignment',
-                'attendanceColor' => 'text-gray-400',
+                'schoolSchedule' => null,
+                'holidaysAndSuspensions' => [],
+                'pendingExtension' => null,
+                'hasApprovedExtension' => false,
             ]);
         }
 
-        // Calculate Hours
-        $totalRequired = $intern->required_hours ?? $intern->office->total_hours_required ?? 480;
-        $rendered = $intern->hours_rendered ?? 0;
-        $percentage = $totalRequired > 0 ? round(($rendered / $totalRequired) * 100) : 0;
+        // 1. Calculate Hours & Progress Metrics
+        $totalRequired = (float) ($intern->required_hours ?? $intern->office->total_hours_required ?? 480);
+        $rendered = (float) ($intern->hours_rendered ?? 0);
+        $percentage = $totalRequired > 0 ? ($rendered / $totalRequired) * 100 : 0;
+        $remaining = (float) max(0, $totalRequired - $rendered);
 
-        // Count Pending Tasks (Tasks not yet completed)
-        $pendingTasksCount = Task::where('intern_id', $user->id)
-            ->whereIn('status', ['pending', 'revision'])
-            ->count();
+        // 2. Weekly Hours & Pace Estimate
+        $thisWeekHours = $this->attendanceStateService->calculateWeeklyHours($user);
+        $paceEstimate = $this->attendanceStateService->calculatePaceEstimate($user, $rendered, $totalRequired);
 
-        // Fetch Recent Logs (Attendance)
+        // 3. State-Aware Attendance Card
+        $attendanceState = $this->attendanceStateService->resolveState($user);
+
+        // 4. Recent Attendance Logs (Last 5, newest first)
         $logs = Attendance::where('intern_id', $user->id)
-            ->latest()
+            ->orderBy('clock_in', 'desc')
             ->take(5)
             ->get();
 
-        // Fetch Tasks for the Tabbed Queue
-        $deadlines = Task::where('intern_id', $user->id)
+        // 5. Tasks for the Tabbed Queue (With overdue sorting first in To-Do)
+        $allTasks = Task::where('intern_id', $user->id)
             ->with(['supervisor.supervisorDetails', 'submissions'])
             ->orderBy('due_date', 'asc')
             ->get();
 
-        // Fetch Most Urgent Active Task
-        $activeTask = Task::where('intern_id', $user->id)
-            ->whereIn('status', ['pending', 'revision'])
-            ->orderBy('due_date', 'asc')
-            ->first();
+        $todoTasks = $allTasks->filter(function ($t) {
+            return $t->status->value === 'revision' || ($t->status->value === 'pending' && $t->submissions->count() === 0);
+        })->sortBy(function ($t) use ($now) {
+            $dueDate = $t->due_date ? Carbon::parse($t->due_date)->timezone('Asia/Manila') : null;
+            $isOverdue = ($dueDate && $dueDate->isPast()) ? 0 : 1;
+            return sprintf('%d_%s', $isOverdue, $dueDate ? $dueDate->toIso8601String() : '9999-12-31');
+        })->values();
 
-        // Fetch Recent Announcements (last
+        $submittedTasks = $allTasks->filter(function ($t) {
+            return $t->status->value === 'pending' && $t->submissions->count() > 0;
+        })->values();
+
+        $verifiedTasks = $allTasks->filter(function ($t) {
+            return $t->status->value === 'completed';
+        })->values();
+
+        // 6. Recent Office Announcements (Scoped to intern's office, latest 3)
         $officeId = $intern->office_id;
         $announcements = Announcement::where(function ($query) use ($officeId) {
             $query->where('office_id', $officeId)
@@ -74,72 +118,49 @@ class DashboardController extends Controller
             ->take(3)
             ->get();
 
-        // Attendance Status
-        $todayRecord = Attendance::where('intern_id', $user->id)
-            ->whereDate('clock_in', now()->toDateString())
-            ->whereNull('clock_out')
-            ->first();
-
-        $completedToday = Attendance::where('intern_id', $user->id)
-            ->whereDate('clock_in', now()->toDateString())
-            ->whereNotNull('clock_out')
-            ->exists();
-
-        $attendanceStatus = 'TIME IN';
-        $attendanceSub = 'Scan QR Code';
-        $attendanceColor = 'text-gray-800 dark:text-gray-100';
-
-        if ($todayRecord) {
-            $attendanceStatus = 'TIME OUT';
-            $attendanceSub = 'Ready to Clock Out';
-            $attendanceColor = 'text-orange-500 dark:text-orange-400';
-        } elseif ($completedToday) {
-            $attendanceStatus = 'LOGGED';
-            $attendanceSub = '8 Hours Earned';
-            $attendanceColor = 'text-emerald-500 dark:text-emerald-400';
-        }
-
-        // Fetch official school schedule and holidays for timeline
+        // 7. Official School Schedule & Holidays for Timeline / Projections
         $schoolSchedule = null;
         $holidaysAndSuspensions = [];
         if ($intern->school) {
-            $schoolSchedule = \App\Models\Schedule::where('type', 'school_default')
+            $schoolSchedule = Schedule::where('type', 'school_default')
                 ->where('school_name', $intern->school)
                 ->first();
 
-            $holidaysAndSuspensions = \App\Models\Schedule::where('school_name', $intern->school)
+            $holidaysAndSuspensions = Schedule::where('school_name', $intern->school)
                 ->whereIn('type', ['holiday', 'suspension'])
                 ->pluck('date')
-                ->map(fn($d) => \Carbon\Carbon::parse($d)->format('Y-m-d'))
+                ->map(fn($d) => Carbon::parse($d)->format('Y-m-d'))
                 ->toArray();
         }
 
-        // Fetch any existing pending extension request
-        $pendingExtension = \App\Models\InternExtension::where('intern_detail_id', $intern->id)
+        // 8. Extension Requests
+        $pendingExtension = InternExtension::where('intern_detail_id', $intern->id)
             ->where('status', 'pending')
             ->first();
 
-        $hasApprovedExtension = \App\Models\InternExtension::where('intern_detail_id', $intern->id)
+        $hasApprovedExtension = InternExtension::where('intern_detail_id', $intern->id)
             ->where('status', 'approved')
             ->exists();
 
-        // Notifications (assuming you have a system or empty collection)
         $notifications = collect([]);
 
         return view('intern.dashboard', compact(
+            'user',
             'intern',
+            'todayDateFormatted',
             'rendered',
             'totalRequired',
             'percentage',
-            'pendingTasksCount',
+            'remaining',
+            'thisWeekHours',
+            'paceEstimate',
+            'attendanceState',
             'logs',
-            'deadlines',
-            'activeTask',
+            'todoTasks',
+            'submittedTasks',
+            'verifiedTasks',
             'announcements',
             'notifications',
-            'attendanceStatus',
-            'attendanceSub',
-            'attendanceColor',
             'schoolSchedule',
             'holidaysAndSuspensions',
             'pendingExtension',

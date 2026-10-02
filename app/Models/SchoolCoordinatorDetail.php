@@ -70,8 +70,13 @@ class SchoolCoordinatorDetail extends Model
         // 3. Fallback: loose normalized substring matching (e.g., remove spaces and hyphens)
         $normalizedSchoolName = str_replace([' ', '-'], '', strtolower($schoolName));
         return self::where(function ($q) use ($normalizedSchoolName) {
+            $isSqlite = \Illuminate\Support\Facades\DB::connection()->getDriverName() === 'sqlite';
+            $concatExpr = $isSqlite
+                ? "('%' || LOWER(REPLACE(REPLACE(school, ' ', ''), '-', '')) || '%')"
+                : "LOWER(CONCAT('%', REPLACE(REPLACE(school, ' ', ''), '-', ''), '%'))";
+
             $q->whereRaw('LOWER(REPLACE(REPLACE(school, " ", ""), "-", "")) LIKE ?', ["%{$normalizedSchoolName}%"])
-              ->orWhereRaw('? LIKE LOWER(CONCAT("%", REPLACE(REPLACE(school, " ", ""), "-", ""), "%"))', [$normalizedSchoolName]);
+              ->orWhereRaw("? LIKE {$concatExpr}", [$normalizedSchoolName]);
         })->get();
     }
 }

@@ -1,558 +1,875 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard')
+@section('title', 'Intern Dashboard - SmarTern')
 
 @section('content')
 <x-page-layout 
     portalType="Intern" 
-    userName="{{ Auth::user()->internDetails->first_name }}" 
-    userRole="{{ Auth::user()->internDetails->office->name }}"
+    userName="{{ $intern->first_name ?? Auth::user()->email }}" 
+    userRole="{{ $intern->office->name ?? 'Intern' }}"
 >
-    <div x-data="internDashboardManager({{ Auth::id() }})" class="flex flex-col flex-1">
-        {{-- HEADER --}}
-        <x-page-header
-            title="Welcome back,"
-            highlight="{{ Auth::user()->internDetails->first_name }}"
-            subtitle="Training Metrics & Office Overview"
-        />
+    <div 
+        x-data="internDashboardManager({{ Auth::id() }})" 
+        class="flex flex-col flex-1 min-h-0 w-full"
+    >
+        {{-- ========================================================================= --}}
+        {{-- 1. PAGE HEADER                                                            --}}
+        {{-- ========================================================================= --}}
+        <header class="mb-6 shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-left">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
+                    Welcome back, <span class="text-[#0B5694] dark:text-blue-400">{{ $intern->first_name ?? 'Intern' }}</span>
+                </h1>
+                <p class="text-xs sm:text-sm font-medium text-slate-500 dark:text-gray-400 mt-0.5">
+                    {{ $todayDateFormatted }}
+                </p>
+            </div>
+        </header>
 
-        {{-- SKELETON LOADING VIEW --}}
+        {{-- ========================================================================= --}}
+        {{-- 2. EXTENSION ALERT BANNER (If Approaching End Date or Incomplete)          --}}
+        {{-- ========================================================================= --}}
         @php
-            $historySkeletonCount = $logs->isEmpty() ? 1 : min($logs->count(), 5);
-            $taskSkeletonCount = $deadlines->isEmpty() ? 1 : min($deadlines->count(), 3);
+            $incomplete = ($remaining > 0);
+            $endDateObj = $intern && $intern->end_date ? \Carbon\Carbon::parse($intern->end_date)->startOfDay() : null;
+            $daysUntilEnd = $endDateObj ? (int) ceil(now()->startOfDay()->diffInDays($endDateObj, false)) : 999;
+            $showExtensionNotice = $incomplete && ($daysUntilEnd <= 7);
         @endphp
 
-        <div x-show="loading" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="flex flex-col flex-1">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-10">
-                <x-card-container class="lg:col-span-8 h-[380px]" padding="p-12">
-                    <x-skeleton type="text" class="w-1/4 mb-10" />
-                    <div class="flex items-end justify-between mb-16">
-                        <x-skeleton type="text" class="h-16 w-1/3" />
-                        <x-skeleton type="text" class="h-10 w-1/4" />
+        @if($showExtensionNotice)
+            <div class="mb-6 p-4 sm:p-5 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/70 dark:border-amber-900/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-left">
+                <div class="flex items-start gap-3.5">
+                    <div class="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 mt-0.5">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                     </div>
-                    <x-skeleton type="text" class="h-5 w-full" />
-                </x-card-container>
-                <div class="col-span-1 lg:col-span-4 flex flex-col gap-6">
-                    <x-skeleton type="block" class="h-[180px]" />
-                    <x-card-container class="h-[246px]" padding="p-0">
-                        <x-skeleton type="list" :rows="2" class="p-6" />
-                    </x-card-container>
-                </div>
-            </div>
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:h-[320px] mb-8">
-                <div class="col-span-1 lg:col-span-7 h-full">
-                    <x-card-container class="h-full" padding="p-8">
-                        <x-skeleton type="list" :rows="$taskSkeletonCount" />
-                    </x-card-container>
-                </div>
-                <div class="col-span-1 lg:col-span-5 h-full">
-                    <x-card-container class="h-full" padding="p-8">
-                        <x-skeleton type="list" rows="3" />
-                    </x-card-container>
-                </div>
-            </div>
-        </div>
-
-        {{-- ACTUAL CONTENT VIEW --}}
-        <div x-show="!loading" x-cloak 
-             x-data="{
-                requiredHours: {{ $totalRequired }},
-                scheduleDays: @js($intern->schedule_assignment ?? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']),
-                startDate: '{{ ($intern->start_date ?? ($schoolSchedule->start_date ?? null)) ? ($intern->start_date ?? $schoolSchedule->start_date)->format('Y-m-d') : '' }}',
-                endDate: '{{ $intern->end_date ? $intern->end_date->format('Y-m-d') : '' }}',
-                renderedHours: {{ $rendered }},
-                dailyHours: {{ $schoolSchedule ? $schoolSchedule->daily_hours ?? 8 : 8 }},
-                holidays: @js($holidaysAndSuspensions ?? []),
-                extensionModalOpen: false,
-                extensionDate: '',
-                extensionReason: '',
-                
-                get targetEndDate() {
-                    if (!this.startDate || !this.requiredHours || this.requiredHours <= 0 || !this.scheduleDays.length) {
-                        return 'N/A';
-                    }
-                    
-                    let hoursLeft = this.requiredHours;
-                    let currentDate = new Date(this.startDate);
-                    
-                    let safetyCounter = 0;
-                    const maxIterations = 365 * 5; 
-                    
-                    while (hoursLeft > 0 && safetyCounter < maxIterations) {
-                        safetyCounter++;
-                        
-                        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-                        const currentDayName = dayNames[currentDate.getDay()];
-                        
-                        const yyyy = currentDate.getFullYear();
-                        const mm = String(currentDate.getMonth() + 1).padStart(2, '0');
-                        const dd = String(currentDate.getDate()).padStart(2, '0');
-                        const dateStr = `${yyyy}-${mm}-${dd}`;
-                        
-                        const isReportingDay = this.scheduleDays.includes(currentDayName);
-                        const isNonWorkingDay = this.holidays.includes(dateStr);
-                        
-                        if (isReportingDay && !isNonWorkingDay) {
-                            hoursLeft -= this.dailyHours;
-                        }
-                        
-                        if (hoursLeft > 0) {
-                            currentDate.setDate(currentDate.getDate() + 1);
-                        }
-                    }
-                    
-                    const options = { year: 'numeric', month: 'short', day: 'numeric' };
-                    return currentDate.toLocaleDateString('en-US', options).toUpperCase();
-                },
-
-                get projectedEndDate() {
-                    let hoursLeft = Math.max(0, this.requiredHours - this.renderedHours);
-                    if (hoursLeft <= 0) {
-                        return 'COMPLETED';
-                    }
-                    let currentDate = new Date();
-                    currentDate.setHours(0, 0, 0, 0);
-                    
-                    let safetyCounter = 0;
-                    const maxIterations = 365 * 5;
-                    
-                    while (hoursLeft > 0 && safetyCounter < maxIterations) {
-                        safetyCounter++;
-                        
-                        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-                        const currentDayName = dayNames[currentDate.getDay()];
-                        
-                        const yyyy = currentDate.getFullYear();
-                        const mm = String(currentDate.getMonth() + 1).padStart(2, '0');
-                        const dd = String(currentDate.getDate()).padStart(2, '0');
-                        const dateStr = `${yyyy}-${mm}-${dd}`;
-                        
-                        const isReportingDay = this.scheduleDays.includes(currentDayName);
-                        const isNonWorkingDay = this.holidays.includes(dateStr);
-                        
-                        if (isReportingDay && !isNonWorkingDay) {
-                            hoursLeft -= this.dailyHours;
-                        }
-                        
-                        if (hoursLeft > 0) {
-                            currentDate.setDate(currentDate.getDate() + 1);
-                        }
-                    }
-                    
-                    const options = { year: 'numeric', month: 'short', day: 'numeric' };
-                    return currentDate.toLocaleDateString('en-US', options).toUpperCase();
-                },
-
-                get projectedEndDateISO() {
-                    let hoursLeft = Math.max(0, this.requiredHours - this.renderedHours);
-                    if (hoursLeft <= 0) return '';
-                    let currentDate = new Date();
-                    currentDate.setHours(0, 0, 0, 0);
-                    let safetyCounter = 0;
-                    const maxIterations = 365 * 5;
-                    while (hoursLeft > 0 && safetyCounter < maxIterations) {
-                        safetyCounter++;
-                        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-                        const currentDayName = dayNames[currentDate.getDay()];
-                        const yyyy = currentDate.getFullYear();
-                        const mm = String(currentDate.getMonth() + 1).padStart(2, '0');
-                        const dd = String(currentDate.getDate()).padStart(2, '0');
-                        const dateStr = `${yyyy}-${mm}-${dd}`;
-                        const isReportingDay = this.scheduleDays.includes(currentDayName);
-                        const isNonWorkingDay = this.holidays.includes(dateStr);
-                        if (isReportingDay && !isNonWorkingDay) {
-                            hoursLeft -= this.dailyHours;
-                        }
-                        if (hoursLeft > 0) {
-                            currentDate.setDate(currentDate.getDate() + 1);
-                        }
-                    }
-                    const yyyy = currentDate.getFullYear();
-                    const mm = String(currentDate.getMonth() + 1).padStart(2, '0');
-                    const dd = String(currentDate.getDate()).padStart(2, '0');
-                    return `${yyyy}-${mm}-${dd}`;
-                },
-
-                get isProjectedOverdue() {
-                    let referenceEndDate = this.endDate || (this.targetEndDate !== 'N/A' ? this.targetEndDate : null);
-                    if (!referenceEndDate) return false;
-                    
-                    let projDateStr = this.projectedEndDate;
-                    if (projDateStr === 'N/A' || projDateStr === 'COMPLETED') return false;
-                    
-                    let projDate = new Date(projDateStr);
-                    let officialEndDate = new Date(referenceEndDate);
-                    
-                    return projDate.getTime() > officialEndDate.getTime();
-                },
-
-                get daysUntilEndDate() {
-                    let referenceEndDate = this.endDate || (this.targetEndDate !== 'N/A' ? this.targetEndDate : null);
-                    if (!referenceEndDate) return 999;
-                    let diffTime = new Date(referenceEndDate).getTime() - new Date().getTime();
-                    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                },
-
-                get showExtensionBanner() {
-                    let incomplete = this.requiredHours - this.renderedHours > 0;
-                    return incomplete && (this.isProjectedOverdue || this.daysUntilEndDate <= 7);
-                }
-             }"
-             x-transition:enter="transition ease-out duration-500 delay-200" 
-             x-transition:enter-start="opacity-0 translate-y-4" 
-             x-transition:enter-end="opacity-100 translate-y-0" 
-             class="flex flex-col flex-1"
-        >
-            {{-- ALERT BANNER FOR EXTENSIONS --}}
-            <template x-if="showExtensionBanner">
-                <div class="mb-8 p-6 bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/50 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
-                    <div class="flex items-center gap-4 text-left">
-                        <div class="w-12 h-12 bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 rounded-2xl flex items-center justify-center flex-shrink-0">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                        </div>
-                        <div>
-                            <h4 class="text-sm font-black text-rose-800 dark:text-rose-400 uppercase tracking-tight">Extension Required</h4>
-                            <p class="text-xs text-rose-600 dark:text-rose-300 font-bold mt-1">
-                                <span x-show="isProjectedOverdue">You are currently projected to complete on <span class="font-black" x-text="projectedEndDate"></span>, which is past your Expected End Date.</span>
-                                <span x-show="!isProjectedOverdue">Your internship expected end date is in <span x-text="daysUntilEndDate"></span> days but you still have incomplete hours.</span>
-                            </p>
-                        </div>
+                    <div>
+                        <h4 class="text-xs sm:text-sm font-bold text-amber-900 dark:text-amber-200">
+                            Internship End Date Approaching
+                        </h4>
+                        <p class="text-xs font-medium text-amber-800/80 dark:text-amber-300/80 mt-0.5 leading-relaxed">
+                            @if($daysUntilEnd < 0)
+                                Your expected completion date passed {{ abs($daysUntilEnd) }} days ago and you still have {{ (int) $remaining }} hours remaining.
+                            @elseif($daysUntilEnd === 0)
+                                Today is your expected completion date, with {{ (int) $remaining }} hours remaining.
+                            @else
+                                You have {{ $daysUntilEnd }} days remaining until your target end date, with {{ (int) $remaining }} hours left to render.
+                            @endif
+                        </p>
                     </div>
+                </div>
+
+                <div class="shrink-0 self-start sm:self-auto">
                     @if($hasApprovedExtension)
-                        <span class="px-5 py-3 bg-rose-100 dark:bg-rose-950/40 text-rose-700 dark:text-rose-455 text-xs font-black uppercase tracking-wider rounded-xl border border-rose-200 dark:border-rose-900/50">
-                            Max Extensions Reached
+                        <span class="inline-flex items-center px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-200">
+                            Extension Approved
                         </span>
                     @elseif($pendingExtension)
-                        <span class="px-5 py-3 bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 text-xs font-black uppercase tracking-wider rounded-xl border border-amber-200 dark:border-amber-900/50">
-                            Extension Pending Approval
+                        <span class="inline-flex items-center px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-200">
+                            Extension Pending Review
                         </span>
                     @else
-                        <button @click="extensionModalOpen = true; extensionDate = projectedEndDateISO;" class="px-6 py-3.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-black uppercase tracking-wider rounded-2xl transition active:scale-95 shadow-md shadow-rose-500/10 cursor-pointer">
+                        <button 
+                            type="button" 
+                            @click="extensionModalOpen = true" 
+                            class="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-amber-600 hover:bg-amber-700 transition-colors shadow-xs cursor-pointer min-h-[38px]"
+                        >
                             Request Extension
                         </button>
                     @endif
                 </div>
-            </template>
+            </div>
+        @endif
 
-            {{-- ROW 1: ENLARGED PROGRESS CARD --}}
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-10">
-            {{-- LARGE PROGRESS CARD --}}
-            <x-card-container class="lg:col-span-8 h-full relative overflow-hidden group hover:shadow-blue-500/5" padding="p-8 md:p-12">
-                <div class="absolute top-0 right-0 w-64 h-64 bg-blue-50/30 dark:bg-blue-900/5 rounded-bl-full -z-0 transition-transform group-hover:scale-110"></div>
-                
-                <div class="relative z-10 h-full flex flex-col justify-center">
-                    <div>
-                        <p class="text-[11px] font-bold text-[#0B5694] dark:text-blue-400 uppercase tracking-wider mb-14">Internship Progress ({{ $totalRequired }} Hours)</p>
-                        
-                        <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
-                            <div>
-                                <h3 class="text-6xl md:text-7xl font-extrabold text-gray-900 dark:text-white tracking-normal leading-none">
-                                    {{ round($rendered) }}<span class="text-2xl md:text-3xl text-gray-300 dark:text-gray-700 ml-4 font-bold tracking-wider">HRS</span>
-                                </h3>
-                                <p class="text-sm font-bold text-gray-400 dark:text-gray-500 mt-2 uppercase tracking-wider">Total Hours Rendered</p>
-                            </div>
-                            <div class="text-left md:text-right">
-                                @php $remaining = max(0, $totalRequired - round($rendered)); @endphp
-                                <h4 class="text-3xl font-extrabold text-[#0B5694] dark:text-blue-400 tracking-normal leading-none">
-                                    {{ $remaining }}<span class="text-sm text-gray-400 ml-3 uppercase tracking-wider">To Go</span>
-                                </h4>
-                                <p class="text-[11px] font-bold text-emerald-500 dark:text-emerald-400 mt-2 uppercase tracking-wider">{{ round($percentage) }}% Complete</p>
-                            </div>
-                        </div>
-                    </div>
+        {{-- ========================================================================= --}}
+        {{-- 3. UNIFIED 12-COLUMN DASHBOARD GRID                                       --}}
+        {{-- ========================================================================= --}}
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start w-full">
 
-                    {{-- PROGRESS BAR --}}
-                    <div x-ignore class="w-full bg-gray-100 dark:bg-gray-850 h-5 rounded-full overflow-hidden border border-gray-200 dark:border-gray-700/50 shadow-inner">
-                        <div class="h-full rounded-full" 
-                             style="width: {{ round($percentage) }}% !important; background: linear-gradient(to right, #0B5694, #60a5fa) !important;">
-                        </div>
-                    </div>
-                </div>
-            </x-card-container>
-
-            {{-- QUICK ATTENDANCE & HISTORY STACK --}}
-            <div class="col-span-1 lg:col-span-4 flex flex-col gap-6">
-                <a href="{{ route('intern.attendance') }}" class="flex-1 min-h-[180px] bg-[#0B5694] dark:bg-blue-600 rounded-[35px] p-8 text-white relative overflow-hidden group hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md dark:shadow-none flex flex-col justify-center text-left">
-                    <svg class="absolute -bottom-4 -right-4 w-32 h-32 text-white/10 group-hover:rotate-12 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path d="M12 4v1m6 1.4l-.8.7M20 12h-1M18 18.6l-.7-.8M12 20v-1M6.4 18.6l.8-.7M4 12h1M6.4 5.4l-.7.8"/></svg>
-                    <p class="text-[11px] font-bold uppercase tracking-wider opacity-60 mb-8">Daily Attendance</p>
-                    <h3 class="text-3xl font-extrabold tracking-normal mb-2 leading-none uppercase">{{ $attendanceStatus }}</h3>
-                            <p class="text-xs font-bold opacity-80 uppercase tracking-wider">{{ $attendanceSub }}</p>
-                </a>
-
-                {{-- Recent Logs --}}
-                <x-card-container 
-                    class="h-[246px] shrink-0"
-                    title="History"
-                    padding="p-0"
+            {{-- ===================================================================== --}}
+            {{-- ROW 1A: ATTENDANCE CARD (4 COLS DESKTOP, FIRST ON MOBILE)            --}}
+            {{-- ===================================================================== --}}
+            <div 
+                class="lg:col-span-4 w-full"
+                role="region" 
+                aria-label="Today's attendance status"
+            >
+                <div 
+                    x-data="attendanceTimer({
+                        state: '{{ $attendanceState['state'] }}',
+                        clockInEpochMs: {{ $attendanceState['clock_in_epoch_ms'] }},
+                        serverNowEpochMs: {{ $attendanceState['server_now_epoch_ms'] }},
+                        initialElapsedFormatted: '{{ $attendanceState['elapsed_formatted'] ?? '0h 00m' }}'
+                    })"
+                    x-init="init()"
+                    class="rounded-3xl border border-slate-200/80 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 sm:p-6 shadow-xs flex flex-col justify-between min-h-[220px] text-left transition-all relative overflow-hidden"
                 >
-                    <x-slot name="headerAction">
-                        <a href="{{ route('intern.attendance') }}" class="text-[10px] font-bold text-[#0B5694] dark:text-blue-400 uppercase hover:underline tracking-wider">View All</a>
-                    </x-slot>
-                    <div class="divide-y divide-gray-50 dark:divide-gray-800 overflow-y-auto custom-scrollbar h-[170px]">
-                        @forelse($logs as $log)
-                        <div class="px-8 py-5 flex justify-between items-center hover:bg-gray-50/30 dark:hover:bg-gray-800/20 transition-colors">
+                    {{-- Card Header --}}
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-gray-800/80">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full {{ $attendanceState['state'] === 'timed_in' ? 'bg-[#0B5694] dark:bg-blue-400 animate-pulse' : ($attendanceState['state'] === 'day_complete' ? 'bg-emerald-500' : 'bg-slate-400') }}"></span>
+                            <h2 class="text-sm font-bold text-slate-900 dark:text-white tracking-tight">
+                                Today
+                            </h2>
+                        </div>
+
+                        {{-- Status Pill --}}
+                        <span 
+                            class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border
+                            {{ $attendanceState['status_pill']['color'] === 'emerald' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border-emerald-200/60 dark:border-emerald-800/40' : '' }}
+                            {{ $attendanceState['status_pill']['color'] === 'blue' ? 'bg-blue-50 text-[#0B5694] dark:bg-blue-950/40 dark:text-blue-400 border-blue-200/60 dark:border-blue-800/40' : '' }}
+                            {{ $attendanceState['status_pill']['color'] === 'slate' ? 'bg-slate-100 text-slate-600 dark:bg-gray-800 dark:text-gray-300 border-slate-200/80 dark:border-gray-700' : '' }}
+                            "
+                        >
+                            {{ $attendanceState['status_pill']['label'] }}
+                        </span>
+                    </div>
+
+                    {{-- Card Body --}}
+                    <div class="my-4 space-y-3">
+                        {{-- STATE 1: TIMED IN --}}
+                        @if($attendanceState['state'] === 'timed_in')
                             <div>
-                                <p class="text-[13px] font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider">{{ $log->clock_in->format('M d, Y') }}</p>
-                                <p class="text-[11px] text-gray-400 font-bold uppercase tracking-wider mt-0.5 leading-none">
-                                    {{ $log->clock_in->format('h:i A') }} — {{ $log->clock_out ? $log->clock_out->format('h:i A') : 'Active' }}
+                                <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white leading-tight">
+                                    {{ $attendanceState['headline'] }}
+                                </h3>
+                                <p class="text-xs font-medium text-slate-500 dark:text-gray-400 mt-0.5">
+                                    Active shift in progress
                                 </p>
                             </div>
 
-                            @php
-                                $status = 'on-time';
-                                if ($log->status === 'absent') $status = 'absent';
-                                elseif ($log->status === 'late') $status = 'late';
-                                elseif ($log->status === 'excused') $status = 'excused';
-                                elseif (!$log->clock_out) $status = 'active';
+                            {{-- Elapsed Timer Box --}}
+                            <div class="p-3 rounded-2xl bg-blue-50/60 dark:bg-blue-950/30 border border-blue-200/60 dark:border-blue-900/40 flex items-center justify-between">
+                                <span class="text-xs font-semibold text-slate-600 dark:text-gray-300">Elapsed time</span>
+                                <span 
+                                    class="font-mono text-base font-extrabold text-[#0B5694] dark:text-blue-400 tracking-wider" 
+                                    x-text="elapsedFormatted"
+                                    aria-label="Elapsed shift time"
+                                >
+                                    {{ $attendanceState['elapsed_formatted'] ?? '0h 00m' }}
+                                </span>
+                            </div>
 
-                                $statusConfig = match($status) {
-                                    'late' => ['label' => 'Late', 'class' => 'text-orange-500 bg-orange-50 dark:bg-orange-950/30 border-orange-100 dark:border-orange-900/50'],
-                                    'absent' => ['label' => 'Absent', 'class' => 'text-rose-500 bg-rose-50 dark:bg-rose-950/30 border-rose-100 dark:border-rose-900/50'],
-                                    'excused' => ['label' => 'Excused', 'class' => 'text-blue-500 bg-blue-50 dark:bg-blue-950/30 border-blue-100 dark:border-blue-900/50'],
-                                    'active' => ['label' => 'Active', 'class' => 'text-blue-400 bg-gray-50 dark:bg-gray-800 border-gray-100 dark:border-gray-700'],
-                                    default => ['label' => 'On-Time', 'class' => 'text-emerald-500 bg-emerald-50 dark:bg-emerald-950/30 border-emerald-100 dark:border-emerald-900/50'],
-                                };
-                            @endphp
+                        {{-- STATE 2: DAY COMPLETE --}}
+                        @elseif($attendanceState['state'] === 'day_complete')
+                            <div>
+                                <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white leading-tight">
+                                    {{ $attendanceState['headline'] }}
+                                </h3>
+                                <p class="text-xs font-medium text-slate-500 dark:text-gray-400 mt-0.5">
+                                    {{ $attendanceState['subtext'] }}
+                                </p>
+                            </div>
 
-                            <span class="text-[9px] font-bold {{ $statusConfig['class'] }} border px-3 py-1 rounded-full uppercase tracking-wider">
-                                {{ $statusConfig['label'] }}
+                            <div class="p-3 rounded-2xl bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-200/60 dark:border-emerald-900/40 flex items-center gap-2.5 text-xs font-semibold text-emerald-800 dark:text-emerald-300">
+                                <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                <span>Shift completed. Great job today!</span>
+                            </div>
+
+                        {{-- STATE 3: UNAVAILABLE --}}
+                        @elseif($attendanceState['state'] === 'unavailable')
+                            <div>
+                                <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white leading-tight">
+                                    {{ $attendanceState['headline'] }}
+                                </h3>
+                                <p class="text-xs font-medium text-slate-500 dark:text-gray-400 mt-1 leading-relaxed">
+                                    {{ $attendanceState['subtext'] }}
+                                </p>
+                            </div>
+
+                        {{-- STATE 4: NOT TIMED IN --}}
+                        @else
+                            <div>
+                                <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white leading-tight">
+                                    {{ $attendanceState['headline'] }}
+                                </h3>
+                                <p class="text-xs font-medium text-slate-500 dark:text-gray-400 mt-0.5">
+                                    Ready to record your training session for today.
+                                </p>
+                            </div>
+                        @endif
+                    </div>
+
+                    {{-- Card Action Button (Full width on mobile, >= 48px) --}}
+                    <div class="pt-2">
+                        @if($attendanceState['state'] === 'not_timed_in')
+                            <a 
+                                href="{{ route('intern.attendance') }}" 
+                                class="w-full min-h-[48px] px-4 py-3 rounded-xl bg-[#0B5694] hover:bg-[#084577] dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-2.5 transition-all shadow-xs active:scale-98 cursor-pointer text-center"
+                            >
+                                {{-- Distinct QR Code Icon --}}
+                                <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+                                    <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+                                    <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+                                    <rect x="14" y="14" width="3" height="3" rx="0.5"/>
+                                    <path d="M21 14v1a2 2 0 0 1-2 2h-1"/>
+                                    <path d="M14 21h7"/>
+                                </svg>
+                                <span>Time in</span>
+                            </a>
+                        @elseif($attendanceState['state'] === 'timed_in')
+                            <a 
+                                href="{{ route('intern.attendance') }}" 
+                                class="w-full min-h-[48px] px-4 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-2.5 transition-all shadow-xs active:scale-98 cursor-pointer text-center"
+                            >
+                                <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                                    <polyline points="16 17 21 12 16 7"/>
+                                    <line x1="21" y1="12" x2="9" y2="12"/>
+                                </svg>
+                                <span>Time out</span>
+                            </a>
+                        @elseif($attendanceState['state'] === 'unavailable')
+                            <button 
+                                type="button" 
+                                disabled 
+                                class="w-full min-h-[48px] px-4 py-3 rounded-xl bg-slate-100 dark:bg-gray-800 text-slate-400 dark:text-gray-500 font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-not-allowed text-center border border-slate-200/60 dark:border-gray-700/60"
+                            >
+                                <span>Time in unavailable</span>
+                            </button>
+                        @else
+                            {{-- Day Complete: Secondary view details link --}}
+                            <a 
+                                href="{{ route('intern.attendance') }}" 
+                                class="w-full min-h-[44px] px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-gray-800 hover:bg-slate-100 dark:hover:bg-gray-750 text-slate-700 dark:text-gray-200 border border-slate-200/80 dark:border-gray-700 font-semibold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer text-center"
+                            >
+                                <span>View attendance history</span>
+                            </a>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            {{-- ===================================================================== --}}
+            {{-- ROW 1B: COMPACT INTERNSHIP PROGRESS CARD (8 COLS DESKTOP)            --}}
+            {{-- ===================================================================== --}}
+            <div class="lg:col-span-8 w-full">
+                <div class="rounded-3xl border border-slate-200/80 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 sm:p-6 shadow-xs flex flex-col justify-between min-h-[220px] sm:min-h-[235px] text-left transition-all">
+                    {{-- Card Top Header --}}
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-gray-800/80">
+                        <div class="flex items-center gap-2">
+                            <h2 class="text-sm font-bold text-slate-900 dark:text-white tracking-tight">
+                                Internship progress
+                            </h2>
+                            <span class="text-xs font-medium text-slate-400 dark:text-gray-400">
+                                ({{ (int) $totalRequired }} hrs target)
                             </span>
                         </div>
-                        @empty
-                            <x-empty-state title="No logs recorded" compact="true" />
-                        @endforelse
+
+                        {{-- Completion Pill or Certificate Link --}}
+                        @if($percentage >= 100)
+                            <a 
+                                href="{{ route('intern.certificates.index') }}" 
+                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40 hover:bg-emerald-100 transition-colors"
+                            >
+                                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                <span>Requirement complete · View Certificate</span>
+                            </a>
+                        @else
+                            <span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                                {{ min(100, round($percentage)) }}% complete
+                            </span>
+                        @endif
                     </div>
-                </x-card-container>
-            </div>
-        </div>
 
-        {{-- ROW 2: FIXED HEIGHT SCROLLING --}}
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:h-[320px] mb-8 shrink-0">
-            @php
-                $todoTasks = $deadlines->filter(fn($t) => $t->status->value === 'revision' || ($t->status->value === 'pending' && $t->submissions->count() === 0));
-                $submittedTasks = $deadlines->filter(fn($t) => $t->status->value === 'pending' && $t->submissions->count() > 0);
-                $verifiedTasks = $deadlines->filter(fn($t) => $t->status->value === 'completed');
-            @endphp
-            {{-- DEADLINES COLUMN --}}
-            <div class="col-span-1 lg:col-span-7 h-full flex flex-col min-h-[320px] lg:min-h-0" x-data="{ activeTab: 'todo' }">
-                <x-card-container 
-                    title="My Tasks"
-                    padding="p-6 lg:p-8"
-                    class="h-full"
-                >
-                    <x-slot name="headerAction">
-                        <nav class="flex items-center gap-1 p-1 bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl w-fit border border-gray-100 dark:border-gray-800 shrink-0">
-                            <button @click="activeTab = 'todo'" 
-                                    :class="activeTab === 'todo' ? 'bg-white dark:bg-gray-700 text-[#0B5694] dark:text-blue-400 shadow-sm border-gray-100 dark:border-gray-600' : 'text-gray-400 dark:text-slate-500 border-transparent hover:text-gray-600 dark:hover:text-gray-300'" 
-                                    class="px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all whitespace-nowrap active:scale-95 flex items-center gap-1.5">
-                                Pending
-                                <span class="px-1.5 py-0.5 rounded-md text-[8px] bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 font-bold">{{ $todoTasks->count() }}</span>
-                            </button>
-                            <button @click="activeTab = 'submitted'" 
-                                    :class="activeTab === 'submitted' ? 'bg-white dark:bg-gray-700 text-[#0B5694] dark:text-blue-400 shadow-sm border-gray-100 dark:border-gray-600' : 'text-gray-400 dark:text-slate-500 border-transparent hover:text-gray-600 dark:hover:text-gray-300'" 
-                                    class="px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all whitespace-nowrap active:scale-95 flex items-center gap-1.5">
-                                Submitted
-                                <span class="px-1.5 py-0.5 rounded-md text-[8px] bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-bold">{{ $submittedTasks->count() }}</span>
-                            </button>
-                            <button @click="activeTab = 'verified'" 
-                                    :class="activeTab === 'verified' ? 'bg-white dark:bg-gray-700 text-[#0B5694] dark:text-blue-400 shadow-sm border-gray-100 dark:border-gray-600' : 'text-gray-400 dark:text-slate-500 border-transparent hover:text-gray-600 dark:hover:text-gray-300'" 
-                                    class="px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all whitespace-nowrap active:scale-95 flex items-center gap-1.5">
-                                Verified
-                                <span class="px-1.5 py-0.5 rounded-md text-[8px] bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 font-bold">{{ $verifiedTasks->count() }}</span>
-                            </button>
-                        </nav>
-                    </x-slot>
-                    
-                    <div class="relative flex-1 min-h-0 h-[210px] overflow-y-auto custom-scrollbar pr-2">
-                        <!-- To-Do Tab Content -->
-                        <div x-show="activeTab === 'todo'" x-transition class="space-y-4">
-                            @forelse($todoTasks as $task)
-                                @php
-                                    $dueDate = \Carbon\Carbon::parse($task->due_date);
-                                    $isDueToday = $dueDate->isToday();
-                                    $isOverdue = $dueDate->isPast() && $task->status->value !== 'completed';
-                                    $isUrgent = $isDueToday || $isOverdue;
-                                @endphp
-                                <a href="{{ route('intern.tasks.show', $task) }}" class="flex items-center gap-6 p-5 rounded-[30px] border border-gray-100 dark:border-gray-800 bg-gray-50/30 dark:bg-gray-800/10 hover:border-[#0B5694]/20 hover:bg-white dark:hover:bg-gray-800/30 transition-all group/deadline hover:shadow-lg">
-                                    <div class="w-14 h-14 shrink-0 rounded-2xl flex flex-col items-center justify-center {{ $isUrgent ? 'bg-rose-50 dark:bg-rose-900/20 text-rose-500 border-rose-100' : 'bg-blue-50 dark:bg-blue-900/20 text-blue-500 border-blue-100' }} border dark:border-gray-800 shadow-sm transition-transform group-hover/deadline:scale-110">
-                                        <span class="text-[10px] font-bold uppercase leading-none mb-0.5 tracking-wider">{{ $dueDate->format('M') }}</span>
-                                        <span class="text-lg font-black leading-none tracking-tight">{{ $dueDate->format('d') }}</span>
-                                    </div>
-                                    <div class="flex-1 min-w-0 text-left">
-                                        <div class="flex items-center gap-3">
-                                            <h6 class="text-[15px] font-bold text-gray-800 dark:text-gray-100 group-hover/deadline:text-[#0B5694] dark:group-hover/deadline:text-blue-400 transition-colors truncate uppercase tracking-normal leading-tight truncate">{{ $task->title }}</h6>
-                                            @if($isOverdue)
-                                                <span class="px-2.5 py-0.5 bg-rose-50 dark:bg-rose-950/30 text-rose-500 border border-rose-100 dark:border-rose-900/50 rounded-full text-[9px] font-bold uppercase tracking-wider animate-pulse shrink-0">Overdue</span>
-                                            @elseif($isDueToday)
-                                                <span class="px-2.5 py-0.5 bg-orange-50 dark:bg-orange-950/30 text-orange-500 border border-orange-100 dark:border-orange-900/50 rounded-full text-[9px] font-bold uppercase tracking-wider animate-pulse shrink-0">Due Today</span>
-                                            @elseif($task->status->value === 'revision')
-                                                <span class="px-2.5 py-0.5 bg-yellow-50 dark:bg-yellow-950/30 text-yellow-600 border border-yellow-100 dark:border-yellow-900/50 rounded-full text-[9px] font-bold uppercase tracking-wider shrink-0">Revision</span>
-                                            @endif
-                                        </div>
-                                        <p class="text-[12px] text-gray-400 font-bold uppercase tracking-wider mt-1 truncate">
-                                            {{ $task->supervisor->supervisorDetails->first_name ?? 'Supervisor' }} • Due at {{ $dueDate->format('h:i A') }}
-                                        </p>
-                                    </div>
-                                </a>
-                            @empty
-                                <div class="flex flex-col items-center justify-center h-full py-10 text-center">
-                                    <div class="w-12 h-12 rounded-2xl bg-orange-50/50 dark:bg-orange-950/10 flex items-center justify-center mb-3 text-orange-400 dark:text-orange-500 animate-pulse">
-                                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                    </div>
-                                    <p class="text-xs font-bold uppercase tracking-wider text-gray-300 dark:text-gray-600">No pending tasks</p>
-                                </div>
-                            @endforelse
+                    {{-- Hero Metrics Row --}}
+                    <div class="my-4 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                        <div>
+                            <div class="flex items-baseline">
+                                <span class="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                                    {{ round($rendered) }}
+                                </span>
+                                <span class="text-lg sm:text-xl font-bold text-slate-400 dark:text-gray-400 ml-2">
+                                    HRS
+                                </span>
+                            </div>
+                            <span class="block text-xs font-medium text-slate-500 dark:text-gray-400 mt-1">
+                                Total hours rendered
+                            </span>
                         </div>
 
-                        <!-- Submitted Tab Content -->
-                        <div x-show="activeTab === 'submitted'" x-transition class="space-y-4">
-                            @forelse($submittedTasks as $task)
-                                @php
-                                    $dueDate = \Carbon\Carbon::parse($task->due_date);
-                                @endphp
-                                <a href="{{ route('intern.tasks.show', $task) }}" class="flex items-center gap-6 p-5 rounded-[30px] border border-gray-100 dark:border-gray-800 bg-gray-50/30 dark:bg-gray-800/10 hover:border-[#0B5694]/20 hover:bg-white dark:hover:bg-gray-800/30 transition-all group/deadline hover:shadow-lg">
-                                    <div class="w-14 h-14 shrink-0 rounded-2xl flex flex-col items-center justify-center bg-blue-50 dark:bg-blue-900/20 text-blue-500 border border-blue-100 dark:border-gray-800 shadow-sm transition-transform group-hover/deadline:scale-110">
-                                        <span class="text-[10px] font-bold uppercase leading-none mb-0.5 tracking-wider">{{ $dueDate->format('M') }}</span>
-                                        <span class="text-lg font-black leading-none tracking-tight">{{ $dueDate->format('d') }}</span>
-                                    </div>
-                                    <div class="flex-1 min-w-0 text-left">
-                                        <div class="flex items-center gap-3">
-                                            <h6 class="text-[15px] font-bold text-gray-800 dark:text-gray-100 group-hover/deadline:text-[#0B5694] dark:group-hover/deadline:text-blue-400 transition-colors truncate uppercase tracking-normal leading-tight truncate">{{ $task->title }}</h6>
-                                            <span class="px-2.5 py-0.5 bg-blue-50 dark:bg-blue-950/30 text-blue-500 border border-blue-100 dark:border-blue-900/50 rounded-full text-[9px] font-bold uppercase tracking-wider shrink-0">Submitted</span>
-                                        </div>
-                                        <p class="text-[12px] text-gray-400 font-bold uppercase tracking-wider mt-1 truncate">
-                                            Waiting for review • Submitted {{ $task->submissions->last() ? $task->submissions->last()->created_at->diffForHumans() : '' }}
-                                        </p>
-                                    </div>
-                                </a>
-                            @empty
-                                <div class="flex flex-col items-center justify-center h-full py-10 text-center">
-                                    <div class="w-12 h-12 rounded-2xl bg-blue-50/50 dark:bg-blue-950/10 flex items-center justify-center mb-3 text-blue-400 dark:text-blue-500">
-                                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                    </div>
-                                    <p class="text-xs font-bold uppercase tracking-wider text-gray-300 dark:text-gray-600">No submitted tasks</p>
-                                </div>
-                            @endforelse
-                        </div>
-
-                        <!-- Verified Tab Content -->
-                        <div x-show="activeTab === 'verified'" x-transition class="space-y-4">
-                            @forelse($verifiedTasks as $task)
-                                @php
-                                    $dueDate = \Carbon\Carbon::parse($task->due_date);
-                                @endphp
-                                <a href="{{ route('intern.tasks.show', $task) }}" class="flex items-center gap-6 p-5 rounded-[30px] border border-gray-100 dark:border-gray-800 bg-gray-50/30 dark:bg-gray-800/10 hover:border-[#0B5694]/20 hover:bg-white dark:hover:bg-gray-800/30 transition-all group/deadline hover:shadow-lg">
-                                    <div class="w-14 h-14 shrink-0 rounded-2xl flex flex-col items-center justify-center bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 border border-emerald-100 dark:border-gray-800 shadow-sm transition-transform group-hover/deadline:scale-110">
-                                        <span class="text-[10px] font-bold uppercase leading-none mb-0.5 tracking-wider">{{ $dueDate->format('M') }}</span>
-                                        <span class="text-lg font-black leading-none tracking-tight">{{ $dueDate->format('d') }}</span>
-                                    </div>
-                                    <div class="flex-1 min-w-0 text-left">
-                                        <div class="flex items-center gap-3">
-                                            <h6 class="text-[15px] font-bold text-gray-800 dark:text-gray-100 group-hover/deadline:text-[#0B5694] dark:group-hover/deadline:text-blue-400 transition-colors truncate uppercase tracking-normal leading-tight truncate">{{ $task->title }}</h6>
-                                            <span class="px-2.5 py-0.5 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-500 border border-emerald-100 dark:border-emerald-900/50 rounded-full text-[9px] font-bold uppercase tracking-wider shrink-0">Verified</span>
-                                        </div>
-                                        <p class="text-[12px] text-gray-400 font-bold uppercase tracking-wider mt-1 truncate">
-                                            Completed successfully • Approved by {{ $task->supervisor->supervisorDetails->first_name ?? 'Supervisor' }}
-                                        </p>
-                                    </div>
-                                </a>
-                            @empty
-                                <div class="flex flex-col items-center justify-center h-full py-10 text-center">
-                                    <div class="w-12 h-12 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/10 flex items-center justify-center mb-3 text-emerald-400 dark:text-emerald-500">
-                                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                    </div>
-                                    <p class="text-xs font-bold uppercase tracking-wider text-gray-300 dark:text-gray-600">No verified tasks</p>
-                                </div>
-                            @endforelse
+                        <div class="sm:text-right">
+                            <div class="flex items-baseline sm:justify-end">
+                                <span class="text-2xl sm:text-3xl font-extrabold text-[#0B5694] dark:text-blue-400 tracking-tight">
+                                    {{ (int) $remaining }}
+                                </span>
+                                <span class="text-xs font-bold text-slate-400 dark:text-gray-400 uppercase ml-2 tracking-wider">
+                                    To Go
+                                </span>
+                            </div>
+                            <span class="block text-xs font-medium text-slate-500 dark:text-gray-400 mt-1">
+                                Remaining to reach target
+                            </span>
                         </div>
                     </div>
-                </x-card-container>
-            </div>
 
-            {{-- ANNOUNCEMENTS COLUMN --}}
-            <div class="col-span-1 lg:col-span-5 h-full flex flex-col min-h-[320px] lg:min-h-0">
-                <x-card-container 
-                    title="Office Announcements"
-                    headerActionLink="{{ route('intern.announcements') }}"
-                    headerActionText="Access Feed"
-                    padding="p-6 lg:p-8"
-                    class="h-full"
-                >
-                    <div class="space-y-4 overflow-y-auto custom-scrollbar pr-4 flex-1 min-h-0 h-[210px]">
-                        @forelse($announcements as $ann)
-                        <div class="flex gap-5 group cursor-pointer items-start py-2 border-b border-gray-50 dark:border-gray-800/50 last:border-0" onclick="window.location.href='{{ route('intern.announcements.show', $ann) }}'">
-                            <x-avatar :user="$ann->user" size="12" border="1" circular="true" textSize="xs" />
-                            <div class="min-w-0">
-                                <h6 class="text-[14px] font-bold text-gray-800 dark:text-gray-100 group-hover:text-[#0B5694] transition-colors uppercase leading-tight truncate tracking-normal">{{ $ann->title }}</h6>
-                                <p class="text-[12px] text-gray-400 dark:text-gray-500 line-clamp-2 mt-1 leading-relaxed font-medium">
-                                    {{ Str::limit(strip_tags($ann->content), 120) }}
-                                </p>
-                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-2">
-                                    {{ $ann->created_at->diffForHumans() }}
-                                </p>
-                            </div>
+                    {{-- Progress Bar with Milestone Ticks --}}
+                    <div class="space-y-1.5 pt-1">
+                        <div 
+                            role="progressbar" 
+                            aria-valuenow="{{ min(100, round($percentage)) }}" 
+                            aria-valuemin="0" 
+                            aria-valuemax="100" 
+                            aria-label="Internship progress: {{ min(100, round($percentage)) }}% complete"
+                            class="w-full bg-slate-100 dark:bg-gray-800 h-3 rounded-full overflow-hidden relative"
+                        >
+                            <div 
+                                class="h-full rounded-full bg-[#0B5694] dark:bg-blue-500 transition-all duration-500" 
+                                style="width: {{ min(100, round($percentage)) }}%;"
+                            ></div>
                         </div>
-                        @empty
-                            <x-empty-state title="No Announcements" compact="true" />
-                        @endforelse
+
+                        {{-- Milestone Labels (25 / 50 / 75 / 100%) --}}
+                        <div class="flex justify-between text-[10px] font-semibold text-slate-400 dark:text-gray-400 px-0.5 select-none" aria-hidden="true">
+                            <span>0%</span>
+                            <span>25%</span>
+                            <span>50%</span>
+                            <span>75%</span>
+                            <span>100%</span>
+                        </div>
                     </div>
-                </x-card-container>
-            </div>
 
-            {{-- Extension Request Modal --}}
-            <div x-show="extensionModalOpen" 
-                 class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-gray-900/60 dark:bg-black/80 backdrop-blur-sm" 
-                 x-cloak
-                 x-transition:enter="transition ease-out duration-300"
-                 x-transition:enter-start="opacity-0"
-                 x-transition:enter-end="opacity-100"
-                 x-transition:leave="transition ease-in duration-200"
-                 x-transition:leave-start="opacity-100"
-                 x-transition:leave-end="opacity-0">
-                
-                <div @click.away="extensionModalOpen = false" 
-                     class="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-[30px] sm:rounded-[40px] shadow-2xl overflow-hidden border border-gray-100 dark:border-gray-800">
-                    
-                    <div class="p-8 sm:p-12">
-                        <div class="flex justify-between items-start mb-8">
-                            <div>
-                                <p class="text-xs sm:text-sm font-black text-rose-500 uppercase tracking-[0.2em] mb-1.5">Request extension</p>
-                                <h3 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase">Extend Internship Period</h3>
-                            </div>
-                            <button @click="extensionModalOpen = false" class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                            </button>
+                    {{-- Secondary Aggregate Line --}}
+                    <div class="pt-3 border-t border-slate-100 dark:border-gray-800/80 flex flex-wrap items-center justify-between text-xs text-slate-500 dark:text-gray-400 gap-2">
+                        <div class="flex items-center gap-1.5">
+                            <span>This week:</span>
+                            <span class="font-bold text-slate-700 dark:text-gray-200">{{ $thisWeekHours }} hrs</span>
+                            @if($paceEstimate)
+                                <span class="text-slate-300 dark:text-gray-600">·</span>
+                                <span class="text-slate-500 dark:text-gray-400">{{ $paceEstimate }}</span>
+                            @endif
                         </div>
-        
-                        <form action="{{ route('intern.schedule.extension.store') }}" method="POST" class="space-y-8">
-                            @csrf
-                            
-                            <div class="space-y-3 text-left">
-                                <span class="text-xs sm:text-sm font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Proposed End Date</span>
-                                <input type="date" name="new_end_date" x-model="extensionDate" required
-                                    class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 rounded-2xl text-sm font-semibold text-gray-800 dark:text-gray-100 focus:ring-[#0B5694]/20 focus:border-[#0B5694] transition">
-                                <span class="text-xs sm:text-sm text-gray-450 dark:text-gray-400 block mt-1.5">Recommended base date on remaining hours: <span class="font-black text-[#0B5694] dark:text-blue-400" x-text="projectedEndDate"></span></span>
-                            </div>
 
-                            <div class="space-y-3 text-left">
-                                <span class="text-xs sm:text-sm font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Reason for Extension</span>
-                                <textarea name="reason" x-model="extensionReason" required rows="4" placeholder="Briefly describe the reason for the extension request (e.g. Absences, schedule conflicts...)"
-                                    class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 rounded-2xl text-sm font-semibold text-gray-800 dark:text-gray-100 focus:ring-[#0B5694]/20 focus:border-[#0B5694] transition resize-none"></textarea>
-                            </div>
-                            
-                            <div class="pt-6 flex flex-col sm:flex-row gap-4">
-                                <button @click="extensionModalOpen = false" type="button" class="w-full sm:w-auto px-8 py-4 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-750 transition active:scale-95 text-center cursor-pointer">
-                                    Cancel
-                                </button>
-                                <button type="submit" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white py-4 px-8 rounded-xl text-sm font-bold uppercase tracking-wider transition active:scale-95 shadow-md shadow-rose-500/10 cursor-pointer text-center">
-                                    Submit Request
-                                </button>
-                            </div>
-                        </form>
+                        @if($rendered == 0)
+                            <span class="text-[11px] text-slate-400 dark:text-gray-500">
+                                Your hours will update after your first logged shift.
+                            </span>
+                        @endif
                     </div>
                 </div>
+            </div>
+
+            {{-- ===================================================================== --}}
+            {{-- ROW 2A: MY TASKS PANEL (6 COLS DESKTOP)                              --}}
+            {{-- ===================================================================== --}}
+            <div 
+                class="lg:col-span-6 w-full"
+                x-data="{ activeTab: 'pending' }"
+            >
+                <div class="rounded-3xl border border-slate-200/80 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 sm:p-6 shadow-xs text-left min-h-[300px] flex flex-col justify-between">
+                    {{-- Header with Title & View All --}}
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-gray-800/80 gap-3">
+                        <div class="flex items-center gap-2">
+                            <h2 class="text-sm font-bold text-slate-900 dark:text-white tracking-tight">
+                                My tasks
+                            </h2>
+                        </div>
+                        <a 
+                            href="{{ route('intern.progress') }}" 
+                            class="text-xs font-semibold text-[#0B5694] dark:text-blue-400 hover:underline cursor-pointer"
+                        >
+                            View all
+                        </a>
+                    </div>
+
+                    {{-- Inline Segmented Control Tabs --}}
+                    <div 
+                        role="tablist" 
+                        class="grid grid-cols-3 gap-1 p-1 bg-slate-100 dark:bg-gray-850 rounded-xl my-3"
+                    >
+                        <button 
+                            type="button" 
+                            role="tab"
+                            :aria-selected="activeTab === 'pending'"
+                            @click="activeTab = 'pending'"
+                            class="py-1.5 px-2 rounded-lg text-xs font-semibold text-center transition-all cursor-pointer min-h-[36px] flex items-center justify-center gap-1.5"
+                            :class="activeTab === 'pending' ? 'bg-white dark:bg-gray-700 text-[#0B5694] dark:text-white shadow-xs' : 'text-slate-600 dark:text-gray-400'"
+                        >
+                            <span>Pending</span>
+                            <span class="px-1.5 py-0.2 rounded-md text-[10px] font-bold bg-slate-200/60 dark:bg-gray-800">
+                                {{ $todoTasks->count() }}
+                            </span>
+                        </button>
+                        <button 
+                            type="button" 
+                            role="tab"
+                            :aria-selected="activeTab === 'submitted'"
+                            @click="activeTab = 'submitted'"
+                            class="py-1.5 px-2 rounded-lg text-xs font-semibold text-center transition-all cursor-pointer min-h-[36px] flex items-center justify-center gap-1.5"
+                            :class="activeTab === 'submitted' ? 'bg-white dark:bg-gray-700 text-[#0B5694] dark:text-white shadow-xs' : 'text-slate-600 dark:text-gray-400'"
+                        >
+                            <span>Submitted</span>
+                            <span class="px-1.5 py-0.2 rounded-md text-[10px] font-bold bg-slate-200/60 dark:bg-gray-800">
+                                {{ $submittedTasks->count() }}
+                            </span>
+                        </button>
+                        <button 
+                            type="button" 
+                            role="tab"
+                            :aria-selected="activeTab === 'verified'"
+                            @click="activeTab = 'verified'"
+                            class="py-1.5 px-2 rounded-lg text-xs font-semibold text-center transition-all cursor-pointer min-h-[36px] flex items-center justify-center gap-1.5"
+                            :class="activeTab === 'verified' ? 'bg-white dark:bg-gray-700 text-[#0B5694] dark:text-white shadow-xs' : 'text-slate-600 dark:text-gray-400'"
+                        >
+                            <span>Verified</span>
+                            <span class="px-1.5 py-0.2 rounded-md text-[10px] font-bold bg-slate-200/60 dark:bg-gray-800">
+                                {{ $verifiedTasks->count() }}
+                            </span>
+                        </button>
+                    </div>
+
+                    {{-- Tasks Tab Panels --}}
+                    <div class="space-y-2 flex-1 min-h-[160px]">
+                        {{-- 1. PENDING TAB --}}
+                        <div x-show="activeTab === 'pending'" class="space-y-2">
+                            @forelse($todoTasks->take(5) as $task)
+                                @php
+                                    $dueDate = $task->due_date ? \Carbon\Carbon::parse($task->due_date)->timezone('Asia/Manila') : null;
+                                    $isOverdue = $dueDate && $dueDate->isPast();
+                                    $isDueToday = $dueDate && $dueDate->isToday();
+                                @endphp
+                                <div class="p-3 sm:p-3.5 rounded-2xl border border-slate-200/70 dark:border-gray-800/80 bg-slate-50/50 dark:bg-gray-850/50 flex items-center justify-between gap-3 hover:border-slate-300 dark:hover:border-gray-700 transition-colors">
+                                    <div class="min-w-0 flex-1">
+                                        <div class="flex items-center gap-2">
+                                            <h4 class="text-xs sm:text-sm font-bold text-slate-800 dark:text-gray-100 truncate" title="{{ e($task->title) }}">
+                                                {{ $task->title }}
+                                            </h4>
+                                            @if($isOverdue)
+                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-400 border border-red-200/60 dark:border-red-900/50 shrink-0">
+                                                    Overdue
+                                                </span>
+                                            @elseif($isDueToday)
+                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 border border-amber-200/60 dark:border-amber-900/50 shrink-0">
+                                                    Due today
+                                                </span>
+                                            @elseif($task->status->value === 'revision')
+                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-orange-50 text-orange-700 dark:bg-orange-950/40 dark:text-orange-400 border border-orange-200/60 dark:border-orange-900/50 shrink-0">
+                                                    Revision
+                                                </span>
+                                            @endif
+                                        </div>
+                                        <p class="text-[11px] font-medium text-slate-500 dark:text-gray-400 mt-0.5 truncate">
+                                            {{ $dueDate ? 'Due ' . $dueDate->format('M j, g:i A') : 'No deadline' }} · Assigned by {{ $task->supervisor->supervisorDetails->first_name ?? 'Supervisor' }}
+                                        </p>
+                                    </div>
+
+                                    <a 
+                                        href="{{ route('intern.tasks.show', $task->route_key ?? $task->id) }}" 
+                                        class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-gray-800 hover:bg-slate-50 dark:hover:bg-gray-700 text-slate-700 dark:text-gray-200 border border-slate-200 dark:border-gray-700 transition-colors shrink-0 cursor-pointer min-h-[34px] flex items-center"
+                                    >
+                                        View
+                                    </a>
+                                </div>
+                            @empty
+                                <div class="py-8 text-center flex flex-col items-center justify-center">
+                                    <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-gray-800 text-slate-400 dark:text-gray-500 flex items-center justify-center mb-2">
+                                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                    </div>
+                                    <p class="text-xs font-semibold text-slate-500 dark:text-gray-400">
+                                        No pending tasks. You're all caught up!
+                                    </p>
+                                </div>
+                            @endforelse
+                        </div>
+
+                        {{-- 2. SUBMITTED TAB --}}
+                        <div x-show="activeTab === 'submitted'" class="space-y-2">
+                            @forelse($submittedTasks->take(5) as $task)
+                                <div class="p-3 sm:p-3.5 rounded-2xl border border-slate-200/70 dark:border-gray-800/80 bg-slate-50/50 dark:bg-gray-850/50 flex items-center justify-between gap-3 hover:border-slate-300 dark:hover:border-gray-700 transition-colors">
+                                    <div class="min-w-0 flex-1">
+                                        <div class="flex items-center gap-2">
+                                            <h4 class="text-xs sm:text-sm font-bold text-slate-800 dark:text-gray-100 truncate" title="{{ e($task->title) }}">
+                                                {{ $task->title }}
+                                            </h4>
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-[#0B5694] dark:bg-blue-950/40 dark:text-blue-400 border border-blue-200/60 dark:border-blue-900/50 shrink-0">
+                                                In review
+                                            </span>
+                                        </div>
+                                        <p class="text-[11px] font-medium text-slate-500 dark:text-gray-400 mt-0.5 truncate">
+                                            Waiting for supervisor verification
+                                        </p>
+                                    </div>
+
+                                    <a 
+                                        href="{{ route('intern.tasks.show', $task->route_key ?? $task->id) }}" 
+                                        class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-gray-800 hover:bg-slate-50 dark:hover:bg-gray-700 text-slate-700 dark:text-gray-200 border border-slate-200 dark:border-gray-700 transition-colors shrink-0 cursor-pointer min-h-[34px] flex items-center"
+                                    >
+                                        View
+                                    </a>
+                                </div>
+                            @empty
+                                <div class="py-8 text-center flex flex-col items-center justify-center">
+                                    <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-gray-800 text-slate-400 dark:text-gray-500 flex items-center justify-center mb-2">
+                                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    </div>
+                                    <p class="text-xs font-semibold text-slate-500 dark:text-gray-400">
+                                        No tasks waiting for supervisor review.
+                                    </p>
+                                </div>
+                            @endforelse
+                        </div>
+
+                        {{-- 3. VERIFIED TAB --}}
+                        <div x-show="activeTab === 'verified'" class="space-y-2">
+                            @forelse($verifiedTasks->take(5) as $task)
+                                <div class="p-3 sm:p-3.5 rounded-2xl border border-slate-200/70 dark:border-gray-800/80 bg-slate-50/50 dark:bg-gray-850/50 flex items-center justify-between gap-3 hover:border-slate-300 dark:hover:border-gray-700 transition-colors">
+                                    <div class="min-w-0 flex-1">
+                                        <div class="flex items-center gap-2">
+                                            <h4 class="text-xs sm:text-sm font-bold text-slate-800 dark:text-gray-100 truncate" title="{{ e($task->title) }}">
+                                                {{ $task->title }}
+                                            </h4>
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/50 shrink-0">
+                                                Verified
+                                            </span>
+                                        </div>
+                                        <p class="text-[11px] font-medium text-slate-500 dark:text-gray-400 mt-0.5 truncate">
+                                            Approved by {{ $task->supervisor->supervisorDetails->first_name ?? 'Supervisor' }}
+                                        </p>
+                                    </div>
+
+                                    <a 
+                                        href="{{ route('intern.tasks.show', $task->route_key ?? $task->id) }}" 
+                                        class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-gray-800 hover:bg-slate-50 dark:hover:bg-gray-700 text-slate-700 dark:text-gray-200 border border-slate-200 dark:border-gray-700 transition-colors shrink-0 cursor-pointer min-h-[34px] flex items-center"
+                                    >
+                                        View
+                                    </a>
+                                </div>
+                            @empty
+                                <div class="py-8 text-center flex flex-col items-center justify-center">
+                                    <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-gray-800 text-slate-400 dark:text-gray-500 flex items-center justify-center mb-2">
+                                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                                    </div>
+                                    <p class="text-xs font-semibold text-slate-500 dark:text-gray-400">
+                                        No verified tasks yet.
+                                    </p>
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- ===================================================================== --}}
+            {{-- ROW 2B: OFFICE ANNOUNCEMENTS (6 COLS DESKTOP)                         --}}
+            {{-- ===================================================================== --}}
+            <div class="lg:col-span-6 w-full">
+                <div class="rounded-3xl border border-slate-200/80 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 sm:p-6 shadow-xs text-left min-h-[300px] flex flex-col justify-between">
+                    {{-- Header with Title & View All --}}
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-gray-800/80 gap-3">
+                        <div class="flex items-center gap-2">
+                            <h2 class="text-sm font-bold text-slate-900 dark:text-white tracking-tight">
+                                Office announcements
+                            </h2>
+                        </div>
+                        <a 
+                            href="{{ route('intern.announcements') }}" 
+                            class="text-xs font-semibold text-[#0B5694] dark:text-blue-400 hover:underline cursor-pointer"
+                        >
+                            View all
+                        </a>
+                    </div>
+
+                    {{-- Announcements List (Latest 3) --}}
+                    <div class="space-y-3 my-3 flex-1 min-h-[160px]">
+                        @forelse($announcements as $ann)
+                            <a 
+                                href="{{ route('intern.announcements.show', $ann->route_key ?? $ann->id) }}" 
+                                class="p-3 sm:p-3.5 rounded-2xl border border-slate-200/70 dark:border-gray-800/80 bg-slate-50/50 dark:bg-gray-850/50 flex items-start gap-3 hover:border-slate-300 dark:hover:border-gray-700 transition-colors block group cursor-pointer"
+                            >
+                                <x-avatar :user="$ann->user" size="9" circular="true" textSize="xs" class="shrink-0 mt-0.5" />
+                                <div class="min-w-0 flex-1">
+                                    <h4 
+                                        class="text-xs sm:text-sm font-bold text-slate-800 dark:text-gray-100 group-hover:text-[#0B5694] dark:group-hover:text-blue-400 transition-colors line-clamp-2" 
+                                        title="{{ e($ann->title) }}"
+                                    >
+                                        {{ $ann->title }}
+                                    </h4>
+                                    <p class="text-[11px] font-medium text-slate-500 dark:text-gray-400 line-clamp-1 mt-0.5">
+                                        {{ Str::limit(strip_tags($ann->content), 100) }}
+                                    </p>
+                                    <p class="text-[10px] font-semibold text-slate-400 dark:text-gray-500 mt-1">
+                                        {{ $ann->created_at->diffForHumans() }}
+                                    </p>
+                                </div>
+                            </a>
+                        @empty
+                            <div class="py-10 text-center flex flex-col items-center justify-center">
+                                <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-gray-800 text-slate-400 dark:text-gray-500 flex items-center justify-center mb-2">
+                                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                                </div>
+                                <p class="text-xs font-semibold text-slate-500 dark:text-gray-400">
+                                    No announcements yet.
+                                </p>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+
+            {{-- ===================================================================== --}}
+            {{-- ROW 3: RECENT ATTENDANCE PANEL (12 COLS DESKTOP, FULL WIDTH)         --}}
+            {{-- ===================================================================== --}}
+            <div class="lg:col-span-12 w-full">
+                <div class="rounded-3xl border border-slate-200/80 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 sm:p-6 shadow-xs text-left">
+                    {{-- Header with Title & View All --}}
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-gray-800/80 gap-3">
+                        <div class="flex items-center gap-2">
+                            <h2 class="text-sm font-bold text-slate-900 dark:text-white tracking-tight">
+                                Recent attendance
+                            </h2>
+                            <span class="text-xs font-medium text-slate-400 dark:text-gray-500">
+                                (Last 5 sessions)
+                            </span>
+                        </div>
+                        <a 
+                            href="{{ route('intern.attendance') }}" 
+                            class="text-xs font-semibold text-[#0B5694] dark:text-blue-400 hover:underline cursor-pointer"
+                        >
+                            View all
+                        </a>
+                    </div>
+
+                    {{-- Logs List or Honest Empty State --}}
+                    <div class="mt-3">
+                        @if($logs->isNotEmpty())
+                            {{-- Desktop Table View (>= 640px) --}}
+                            <div class="hidden sm:block overflow-x-auto">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="border-b border-slate-100 dark:border-gray-800/80 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-gray-500">
+                                            <th class="py-2.5 px-3">Date</th>
+                                            <th class="py-2.5 px-3">Time in</th>
+                                            <th class="py-2.5 px-3">Time out</th>
+                                            <th class="py-2.5 px-3">Shift duration</th>
+                                            <th class="py-2.5 px-3 text-right">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100/70 dark:divide-gray-800/60 text-xs">
+                                        @foreach($logs as $log)
+                                            @php
+                                                $in = $log->clock_in ? \Carbon\Carbon::parse($log->clock_in)->timezone('Asia/Manila') : null;
+                                                $out = $log->clock_out ? \Carbon\Carbon::parse($log->clock_out)->timezone('Asia/Manila') : null;
+                                                
+                                                $durationText = '—';
+                                                if ($in && $out) {
+                                                    $diffMin = $in->diffInMinutes($out);
+                                                    if ($diffMin > 300) {
+                                                        $diffMin = max(0, $diffMin - 60);
+                                                    }
+                                                    $h = floor($diffMin / 60);
+                                                    $m = $diffMin % 60;
+                                                    $durationText = sprintf('%dh %02dm', $h, $m);
+                                                } elseif ($in && !$out) {
+                                                    $durationText = 'In progress';
+                                                }
+
+                                                $status = $log->status ?? 'on_time';
+                                            @endphp
+                                            <tr class="hover:bg-slate-50/60 dark:hover:bg-gray-850/50 transition-colors">
+                                                <td class="py-3 px-3 font-semibold text-slate-800 dark:text-gray-100">
+                                                    {{ $in ? $in->format('M j, Y') : '—' }}
+                                                </td>
+                                                <td class="py-3 px-3 font-medium text-slate-600 dark:text-gray-300">
+                                                    {{ $in ? $in->format('g:i A') : '—' }}
+                                                </td>
+                                                <td class="py-3 px-3 font-medium text-slate-600 dark:text-gray-300">
+                                                    {{ $out ? $out->format('g:i A') : ($in ? 'Active' : '—') }}
+                                                </td>
+                                                <td class="py-3 px-3 font-medium text-slate-600 dark:text-gray-300 font-mono">
+                                                    {{ $durationText }}
+                                                </td>
+                                                <td class="py-3 px-3 text-right">
+                                                    <span 
+                                                        class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider
+                                                        {{ $status === 'on_time' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200/60' : '' }}
+                                                        {{ $status === 'late' ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 border border-amber-200/60' : '' }}
+                                                        {{ $status === 'excused' ? 'bg-blue-50 text-[#0B5694] dark:bg-blue-950/40 dark:text-blue-400 border border-blue-200/60' : '' }}
+                                                        {{ $status === 'absent' ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-400 border border-rose-200/60' : '' }}
+                                                        {{ $status === 'incomplete' ? 'bg-slate-100 text-slate-700 dark:bg-gray-800 dark:text-gray-300 border border-slate-200' : '' }}
+                                                        "
+                                                    >
+                                                        {{ str_replace('_', ' ', $status) }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {{-- Mobile Card View (< 640px) --}}
+                            <div class="sm:hidden space-y-2.5">
+                                @foreach($logs as $log)
+                                    @php
+                                        $in = $log->clock_in ? \Carbon\Carbon::parse($log->clock_in)->timezone('Asia/Manila') : null;
+                                        $out = $log->clock_out ? \Carbon\Carbon::parse($log->clock_out)->timezone('Asia/Manila') : null;
+                                        $status = $log->status ?? 'on_time';
+                                    @endphp
+                                    <div class="p-3.5 rounded-2xl border border-slate-200/70 dark:border-gray-800/80 bg-slate-50/50 dark:bg-gray-850/50 flex items-center justify-between gap-3">
+                                        <div>
+                                            <h4 class="text-xs font-bold text-slate-800 dark:text-gray-100">
+                                                {{ $in ? $in->format('M j, Y') : '—' }}
+                                            </h4>
+                                            <p class="text-[11px] font-medium text-slate-500 dark:text-gray-400 mt-0.5">
+                                                {{ $in ? $in->format('g:i A') : '—' }} — {{ $out ? $out->format('g:i A') : ($in ? 'Active' : '—') }}
+                                            </p>
+                                        </div>
+                                        <span 
+                                            class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider
+                                            {{ $status === 'on_time' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200/60' : 'bg-slate-100 text-slate-700 dark:bg-gray-800 dark:text-gray-300' }}
+                                            "
+                                        >
+                                            {{ str_replace('_', ' ', $status) }}
+                                        </span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            {{-- Step 0 Honest Empty State --}}
+                            <div class="py-8 sm:py-10 text-center flex flex-col items-center justify-center max-w-md mx-auto">
+                                <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-gray-800 text-slate-400 dark:text-gray-500 flex items-center justify-center mb-3">
+                                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                </div>
+                                <h4 class="text-sm font-bold text-slate-800 dark:text-gray-200">
+                                    No attendance recorded yet
+                                </h4>
+                                @if($rendered > 0)
+                                    <p class="text-xs font-medium text-slate-500 dark:text-gray-400 mt-1 leading-relaxed">
+                                        Your cumulative total of {{ round($rendered) }} hours includes hours credited directly to your profile or completed assignments without individual shift logs.
+                                    </p>
+                                @else
+                                    <p class="text-xs font-medium text-slate-500 dark:text-gray-400 mt-1">
+                                        Your daily shift logs will appear here after your first time in.
+                                    </p>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        {{-- ========================================================================= --}}
+        {{-- 4. EXTENSION REQUEST MODAL                                                --}}
+        {{-- ========================================================================= --}}
+        <div 
+            x-show="extensionModalOpen" 
+            class="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/60 dark:bg-black/75 backdrop-blur-sm" 
+            x-cloak
+            x-transition:enter="transition ease-out duration-250"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+        >
+            <div 
+                @click.away="extensionModalOpen = false" 
+                class="bg-white dark:bg-gray-900 w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border border-slate-200/80 dark:border-gray-800 p-6 sm:p-8 text-left"
+            >
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <span class="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">Internship Schedule</span>
+                        <h3 class="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight mt-0.5">Request Date Extension</h3>
+                    </div>
+                    <button 
+                        type="button" 
+                        @click="extensionModalOpen = false" 
+                        class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-gray-300 rounded-xl transition-colors cursor-pointer"
+                        aria-label="Close dialog"
+                    >
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                </div>
+
+                <form action="{{ route('intern.schedule.extension.store') }}" method="POST" class="space-y-4">
+                    @csrf
+                    
+                    <div class="space-y-1.5">
+                        <label for="new_end_date" class="text-xs font-bold text-slate-700 dark:text-gray-300">Proposed End Date</label>
+                        <input 
+                            type="date" 
+                            id="new_end_date" 
+                            name="new_end_date" 
+                            required
+                            class="w-full px-4 py-2.5 bg-slate-50 dark:bg-gray-800 border border-slate-300 dark:border-gray-700 rounded-xl text-xs sm:text-sm font-semibold text-slate-800 dark:text-gray-100 focus:ring-1 focus:ring-[#0B5694] focus:border-[#0B5694]"
+                        >
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label for="reason" class="text-xs font-bold text-slate-700 dark:text-gray-300">Reason for Extension</label>
+                        <textarea 
+                            id="reason" 
+                            name="reason" 
+                            required 
+                            rows="3" 
+                            placeholder="Describe why you need an extension (e.g. absences, suspension makeup, schedule adjustments...)"
+                            class="w-full px-4 py-2.5 bg-slate-50 dark:bg-gray-800 border border-slate-300 dark:border-gray-700 rounded-xl text-xs sm:text-sm font-medium text-slate-800 dark:text-gray-100 focus:ring-1 focus:ring-[#0B5694] focus:border-[#0B5694] resize-none"
+                        ></textarea>
+                    </div>
+
+                    <div class="pt-4 flex items-center justify-end gap-3 border-t border-slate-100 dark:border-gray-800">
+                        <button 
+                            type="button" 
+                            @click="extensionModalOpen = false" 
+                            class="px-4 py-2.5 bg-slate-100 dark:bg-gray-800 text-slate-700 dark:text-gray-300 rounded-xl text-xs font-semibold hover:bg-slate-200 transition-colors cursor-pointer min-h-[38px]"
+                        >
+                            Cancel
+                        </button>
+                        <button 
+                            type="submit" 
+                            class="px-5 py-2.5 bg-[#0B5694] hover:bg-[#084577] text-white rounded-xl text-xs font-semibold transition-all shadow-xs cursor-pointer min-h-[38px]"
+                        >
+                            Submit Request
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </x-page-layout>
+
+<script>
+function attendanceTimer(config) {
+    return {
+        state: config.state,
+        clockInEpochMs: config.clockInEpochMs,
+        serverNowEpochMs: config.serverNowEpochMs,
+        clientStartPerfMs: performance.now(),
+        elapsedFormatted: config.initialElapsedFormatted || '0h 00m',
+        timerInterval: null,
+
+        init() {
+            if (this.state === 'timed_in' && this.clockInEpochMs > 0) {
+                this.updateTick();
+                this.timerInterval = setInterval(() => {
+                    this.updateTick();
+                }, 1000);
+
+                // Pause timer when tab is hidden, resume when visible
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden) {
+                        if (this.timerInterval) clearInterval(this.timerInterval);
+                    } else {
+                        this.updateTick();
+                        this.timerInterval = setInterval(() => {
+                            this.updateTick();
+                        }, 1000);
+                    }
+                });
+            }
+        },
+
+        updateTick() {
+            // Absolute elapsed time computed from server baseline + monotonic local performance
+            const elapsedMs = (this.serverNowEpochMs - this.clockInEpochMs) + (performance.now() - this.clientStartPerfMs);
+            const totalSeconds = Math.max(0, Math.floor(elapsedMs / 1000));
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            this.elapsedFormatted = `${hours}h ${minutes < 10 ? '0' : ''}${minutes}m`;
+        }
+    };
+}
+</script>
 @endsection
