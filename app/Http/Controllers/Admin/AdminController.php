@@ -37,11 +37,15 @@ class AdminController extends Controller
 
         // Share the consolidated counts cache with the Security Monitor
         $secStats = Cache::remember('security_monitor_counts', 120, function () {
-            return AuditLog::selectRaw('
-                COUNT(CASE WHEN anomaly_score <= 0.5 THEN 1 END) as normal,
-                COUNT(CASE WHEN anomaly_score > 0.5 AND anomaly_score <= 0.7 THEN 1 END) as warning,
-                COUNT(CASE WHEN anomaly_score > 0.7 THEN 1 END) as critical
-            ')->first();
+            $crit = (float) config('security.thresholds.critical', 0.70);
+            $warn = (float) config('security.thresholds.warning', 0.50);
+
+            return AuditLog::selectRaw("
+                COUNT(CASE WHEN anomaly_score <= {$warn} THEN 1 END) as normal,
+                COUNT(CASE WHEN anomaly_score > {$warn} AND anomaly_score <= {$crit} THEN 1 END) as warning,
+                COUNT(CASE WHEN anomaly_score > {$crit} THEN 1 END) as critical,
+                COUNT(*) as total
+            ")->first();
         });
         $flaggedLogins = $secStats->critical;
 
@@ -59,9 +63,9 @@ class AdminController extends Controller
             ->limit(3)
             ->get();
 
-        // High Risk Anomalies (Score > zero
+        // High Risk Anomalies
         $highRiskAnomalies = AuditLog::with(['user', 'internDetails', 'supervisorDetails'])
-            ->where('anomaly_score', '>', 0.7)
+            ->where('anomaly_score', '>', config('security.thresholds.critical', 0.70))
             ->latest('timestamp')
             ->get()
             ->filter(function ($log) {

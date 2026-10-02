@@ -19,52 +19,106 @@ class SecurityController extends Controller
 {
     public function index(Request $request)
     {
+        $warn = (float) config('security.thresholds.warning', 0.50);
+        $crit = (float) config('security.thresholds.critical', 0.70);
+
         // Consolidate counts into a single query and cache for two minutes
-        $stats = Cache::remember('security_monitor_counts', 120, function () {
-            return AuditLog::selectRaw('
-                COUNT(CASE WHEN anomaly_score <= 0.5 THEN 1 END) as normal,
-                COUNT(CASE WHEN anomaly_score > 0.5 AND anomaly_score <= 0.7 THEN 1 END) as warning,
-                COUNT(CASE WHEN anomaly_score > 0.7 THEN 1 END) as critical
-            ')->first();
+        $stats = Cache::remember('security_monitor_counts', 120, function () use ($warn, $crit) {
+            return AuditLog::selectRaw("
+                COUNT(CASE WHEN anomaly_score <= {$warn} THEN 1 END) as normal,
+                COUNT(CASE WHEN anomaly_score > {$warn} AND anomaly_score <= {$crit} THEN 1 END) as warning,
+                COUNT(CASE WHEN anomaly_score > {$crit} THEN 1 END) as critical,
+                COUNT(*) as total
+            ")->first();
         });
 
-        $normalCount = $stats->normal;
-        $warningCount = $stats->warning;
-        $criticalCount = $stats->critical;
+        $normalCount = (int) ($stats->normal ?? 0);
+        $warningCount = (int) ($stats->warning ?? 0);
+        $criticalCount = (int) ($stats->critical ?? 0);
+        $totalCount = (int) ($stats->total ?? ($normalCount + $warningCount + $criticalCount));
 
         $query = AuditLog::with(['user', 'internDetails', 'supervisorDetails']);
 
-        // Filtering Logic
-        if ($request->filled('type')) {
-            switch ($request->type) {
-                case 'auth':
-                    $query->whereIn('action', [
-                        'Authentication', 'Failed Authentication',
-                        'Login', 'Failed Login',
-                        'MFA Enabled', 'MFA Disabled', 'MFA Setup Started',
-                    ]);
-                    break;
-                case 'onboarding':
-                    $query->whereIn('action', ['Applicant Evaluation', 'Intern Matched', 'Matching Results Cleared', 'Intern Endorsed']);
-                    break;
-                case 'tasks':
-                    $query->where(function ($q) {
-                        $q->where('action', 'like', '%Task%')
-                            ->orWhere('action', 'like', '%Submission%');
-                    });
-                    break;
-                case 'admin':
-                    $query->where(function ($q) {
-                        $q->where('action', 'like', '%User%')
-                            ->orWhere('action', 'like', '%Backup%')
-                            ->orWhere('action', 'like', '%Export%')
-                            ->orWhere('action', 'like', '%Configuration%');
-                    });
-                    break;
-            }
+        // Whitelist Status Filter
+        $status = $request->query('status');
+        if (in_array($status, ['critical', 'warning', 'normal'], true)) {
+            $query->severity($status);
+        } else {
+            $status = null;
         }
 
-        $securityLogs = $query->latest('timestamp')->paginate(10);
+        // Whitelist Activity Type Filter
+        $type = $request->query('type');
+        if ($type) {
+            match ($type) {
+                'auth' => $query->whereIn('action', [
+                    'Authentication', 'Failed Authentication',
+                    'Login', 'Failed Login',
+                    'MFA Enabled', 'MFA Disabled', 'MFA Setup Started',
+                ]),
+                'onboarding' => $query->whereIn('action', ['Applicant Evaluation', 'Intern Matched', 'Matching Results Cleared', 'Intern Endorsed']),
+                'tasks' => $query->where(function ($q) {
+                    $q->where('action', 'like', '%Task%')
+                        ->orWhere('action', 'like', '%Submission%');
+                }),
+                'admin' => $query->where(function ($q) {
+                    $q->where('action', 'like', '%User%')
+                        ->orWhere('action', 'like', '%Backup%')
+                        ->orWhere('action', 'like', '%Export%')
+                        ->orWhere('action', 'like', '%Configuration%');
+                }),
+                default => null,
+            };
+        }
+
+        // Whitelist Date Range Filter
+        $dateRange = $request->query('date');
+        if ($dateRange) {
+            match ($dateRange) {
+                'today' => $query->where('timestamp', '>=', now()->startOfDay()),
+                '7d' => $query->where('timestamp', '>=', now()->subDays(7)),
+                '30d' => $query->where('timestamp', '>=', now()->subDays(30)),
+                default => null,
+            };
+        }
+
+        // Sanitized Search Input (user name, email, IP, description/action)
+        $search = $request->filled('search') ? \Illuminate\Support\Str::limit(trim($request->input('search')), 100) : null;
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('ip_address', 'like', "%{$search}%")
+                    ->orWhere('resource', 'like', "%{$search}%")
+                    ->orWhere('action', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($uq) use ($search) {
+                        $uq->where('email', 'like', "%{$search}%");
+                    })
+                    ->orWhereHas('internDetails', function ($dq) use ($search) {
+                        $dq->where('first_name', 'like', "%{$search}%")
+                            ->orWhere('last_name', 'like', "%{$search}%");
+                    })
+                    ->orWhereHas('supervisorDetails', function ($dq) use ($search) {
+                        $dq->where('first_name', 'like', "%{$search}%")
+                            ->orWhere('last_name', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        // Triage-First Sorting: Default Severity Descending -> Score Descending -> Newest
+        $sort = $request->query('sort', 'severity_desc');
+        match ($sort) {
+            'newest' => $query->orderByDesc('timestamp'),
+            'oldest' => $query->orderBy('timestamp'),
+            'highest_score' => $query->orderByDesc('anomaly_score')->orderByDesc('timestamp'),
+            default => $query->orderByRaw("
+                CASE 
+                    WHEN anomaly_score > {$crit} THEN 1 
+                    WHEN anomaly_score > {$warn} THEN 2 
+                    ELSE 3 
+                END ASC
+            ")->orderByDesc('anomaly_score')->orderByDesc('timestamp'),
+        };
+
+        $securityLogs = $query->paginate(10)->withQueryString();
 
         // Calculate anomaly counts and twenty-four hour persistence for these users (Feng & Zhang,
         $userIds = $securityLogs->pluck('user_id')->filter()->unique();
@@ -186,8 +240,9 @@ class SecurityController extends Controller
         }
 
         return view('admin.security-monitor', compact(
-            'normalCount', 'warningCount', 'criticalCount', 'securityLogs', 'userMetrics',
-            'unifiedLogs', 'targetUsers', 'targetLogs', 'recentUserLogs'
+            'normalCount', 'warningCount', 'criticalCount', 'totalCount', 'securityLogs', 'userMetrics',
+            'unifiedLogs', 'targetUsers', 'targetLogs', 'recentUserLogs',
+            'status', 'type', 'dateRange', 'sort', 'search', 'warn', 'crit'
         ));
     }
 
@@ -238,6 +293,11 @@ class SecurityController extends Controller
 
         $query = AuditLog::with(['user', 'internDetails', 'supervisorDetails']);
 
+        // Status Filter
+        if ($request->filled('status') && in_array($request->status, ['critical', 'warning', 'normal'], true)) {
+            $query->severity($request->status);
+        }
+
         // Filtering Logic (same as index method)
         if ($request->filled('type')) {
             switch ($request->type) {
@@ -266,6 +326,29 @@ class SecurityController extends Controller
                     });
                     break;
             }
+        }
+
+        // Date filter
+        if ($request->filled('date')) {
+            match ($request->date) {
+                'today' => $query->where('timestamp', '>=', now()->startOfDay()),
+                '7d' => $query->where('timestamp', '>=', now()->subDays(7)),
+                '30d' => $query->where('timestamp', '>=', now()->subDays(30)),
+                default => null,
+            };
+        }
+
+        // Search filter
+        if ($request->filled('search')) {
+            $search = \Illuminate\Support\Str::limit(trim($request->input('search')), 100);
+            $query->where(function ($q) use ($search) {
+                $q->where('ip_address', 'like', "%{$search}%")
+                    ->orWhere('resource', 'like', "%{$search}%")
+                    ->orWhere('action', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($uq) use ($search) {
+                        $uq->where('email', 'like', "%{$search}%");
+                    });
+            });
         }
 
         // Limit to the latest five hundred records to prevent memory exhaustion and keep PDF generation fast

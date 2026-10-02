@@ -90,4 +90,38 @@ class AuditLog extends Model
     {
         return $this->belongsTo(SupervisorDetail::class, 'user_id', 'user_id');
     }
+
+    /**
+     * Get the anomaly severity classification based on configured thresholds.
+     */
+    public function getSeverityAttribute(): string
+    {
+        $score = (float) ($this->anomaly_score ?? 0);
+        $crit = (float) config('security.thresholds.critical', 0.70);
+        $warn = (float) config('security.thresholds.warning', 0.50);
+
+        if ($score > $crit) {
+            return 'critical';
+        }
+        if ($score > $warn) {
+            return 'warning';
+        }
+        return 'normal';
+    }
+
+    /**
+     * Scope query to a specific anomaly severity.
+     */
+    public function scopeSeverity($query, string $severity)
+    {
+        $crit = (float) config('security.thresholds.critical', 0.70);
+        $warn = (float) config('security.thresholds.warning', 0.50);
+
+        return match ($severity) {
+            'critical' => $query->where('anomaly_score', '>', $crit),
+            'warning' => $query->where('anomaly_score', '>', $warn)->where('anomaly_score', '<=', $crit),
+            'normal' => $query->where('anomaly_score', '<=', $warn),
+            default => $query,
+        };
+    }
 }
