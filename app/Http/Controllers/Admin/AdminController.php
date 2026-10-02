@@ -10,6 +10,7 @@ use App\Models\Certificate;
 use App\Models\Office;
 use App\Models\SystemBackup;
 use App\Models\User;
+use App\Services\BackupHealthService;
 use App\Services\GeocodingService;
 use App\Services\SecurityAuditService;
 use Illuminate\Http\Request;
@@ -18,10 +19,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use PragmaRX\Google2FALaravel\Google2FA;
-use ZipArchive;
-
 use Vinkla\Hashids\Facades\Hashids;
+use ZipArchive;
 
 class AdminController extends Controller
 {
@@ -72,8 +73,9 @@ class AdminController extends Controller
             ->get()
             ->filter(function ($log) {
                 $encodedLogId = Hashids::encode($log->log_id);
-                return !AuditLog::where('action', 'like', 'Evaluated Anomaly:%')
-                    ->where('resource', 'like', '%' . $encodedLogId . '%')
+
+                return ! AuditLog::where('action', 'like', 'Evaluated Anomaly:%')
+                    ->where('resource', 'like', '%'.$encodedLogId.'%')
                     ->exists();
             })
             ->take(5);
@@ -148,11 +150,56 @@ class AdminController extends Controller
         return $health;
     }
 
-    public function configuration()
+    public function configuration(Request $request, BackupHealthService $healthService)
     {
-        $backups = SystemBackup::with('admin')->latest()->paginate(10);
+        $validated = $request->validate([
+            'filter' => ['nullable', 'string', Rule::in(['all', 'auto', 'manual', 'failed'])],
+            'type' => ['nullable', 'string', Rule::in(['auto', 'manual'])],
+            'status' => ['nullable', 'string', Rule::in(['success', 'failed', 'in_progress'])],
+            'search' => ['nullable', 'string', 'max:64'],
+        ]);
 
-        return view('admin.configuration', compact('backups'));
+        $filter = $validated['filter'] ?? 'all';
+        $type = $validated['type'] ?? null;
+        $status = $validated['status'] ?? null;
+        $search = isset($validated['search']) ? trim($validated['search']) : null;
+
+        if ($filter === 'auto') {
+            $type = 'auto';
+        } elseif ($filter === 'manual') {
+            $type = 'manual';
+        } elseif ($filter === 'failed') {
+            $status = 'failed';
+        }
+
+        $query = SystemBackup::with('admin')->latest();
+
+        if ($type) {
+            $query->where('backup_type', $type);
+        }
+
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        if ($search !== null && $search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('sha256_hash', 'like', "{$search}%")
+                    ->orWhere('file_path', 'like', "%{$search}%");
+
+                if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $search)) {
+                    $q->orWhereDate('created_at', $search);
+                } else {
+                    $q->orWhereRaw('created_at LIKE ?', ["%{$search}%"]);
+                }
+            });
+        }
+
+        $backups = $query->paginate(10)->withQueryString();
+        $health = $healthService->getHealthState();
+        $counts = $healthService->getCounts();
+
+        return view('admin.configuration', compact('backups', 'health', 'counts', 'filter', 'type', 'status', 'search'));
     }
 
     public function offices(GeocodingService $geocodingService)

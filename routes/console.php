@@ -2,6 +2,8 @@
 
 use App\Models\Attendance;
 use App\Models\InternDetail;
+use App\Models\User;
+use App\Services\AttendanceService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -14,8 +16,9 @@ Artisan::command('inspire', function () {
 // Runs the ML script every minute in the background
 Schedule::command('app:recalculate-anomaly-scores')->everyMinute()->withoutOverlapping();
 
-// Automated Daily System Backup at zero PM (
-Schedule::command('backup:run --type=auto')->dailyAt('19:00');
+// Automated Daily System Backup
+$backupScheduleTime = config('backup.schedule.time', '19:00');
+Schedule::command('backup:run --type=auto')->dailyAt($backupScheduleTime);
 
 // Automated Daily Audit Log Archival and Pruning (retaining ninety days)
 Schedule::command('app:archive-audit-logs --days=90')->daily()->withoutOverlapping();
@@ -30,11 +33,11 @@ Artisan::command('app:mark-absent', function () {
     $absentCount = 0;
     $autoLogoutCount = 0;
 
-    $attendanceService = app(App\Services\AttendanceService::class);
+    $attendanceService = app(AttendanceService::class);
 
     foreach ($activeInterns as $intern) {
-        $user = App\Models\User::find($intern->user_id);
-        if (!$user) {
+        $user = User::find($intern->user_id);
+        if (! $user) {
             continue;
         }
 
@@ -50,7 +53,7 @@ Artisan::command('app:mark-absent', function () {
             ->first();
 
         $endTimeStr = $effectiveSchedule['end_time'] ?? '17:00:00';
-        $endTime = Carbon::parse($today . ' ' . $endTimeStr);
+        $endTime = Carbon::parse($today.' '.$endTimeStr);
         // minute grace period
         $endTimeWithGrace = $endTime->copy()->addMinutes(15);
 
