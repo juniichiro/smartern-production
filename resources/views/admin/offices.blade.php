@@ -19,7 +19,7 @@
             'latitude' => $office->latitude ? (float) $office->latitude : 14.6150485,
             'longitude' => $office->longitude ? (float) $office->longitude : 121.0105983,
             'radius_meters' => (int) ($office->radius_meters ?? 100),
-            'location_str' => $locationStr ?: 'DepEd Division Office',
+            'location_str' => $locationStr ?: 'Main Building',
             'interns_count' => $office->intern_details_count ?? 0,
             'supervisors_count' => $office->supervisor_details_count ?? 0,
             'cached_address' => $office->cached_address ?? null,
@@ -27,8 +27,13 @@
         ];
     });
 
-    $firstOfficeId = $offices->first()?->id ?? null;
-    $totalGeofences = $offices->whereNotNull('latitude')->whereNotNull('longitude')->count();
+    $firstOffice = $offices->first();
+    $divisionLat = $firstOffice?->latitude ? (float) $firstOffice->latitude : 14.6150485;
+    $divisionLng = $firstOffice?->longitude ? (float) $firstOffice->longitude : 121.0105983;
+    $divisionRadius = (int) ($firstOffice?->radius_meters ?? 100);
+    $divisionAddress = $firstOffice?->cached_address ?? null;
+    $totalInterns = $offices->sum('intern_details_count');
+    $totalSupervisors = $offices->sum('supervisor_details_count');
 @endphp
 
 <x-page-layout 
@@ -38,7 +43,13 @@
     fullHeight="true"
 >
     <div 
-        x-data="geofenceInspector(@js($officesJson), {{ $firstOfficeId ?: 'null' }})"
+        x-data="geofenceInspector(
+            @js($officesJson),
+            {{ $divisionLat }},
+            {{ $divisionLng }},
+            {{ $divisionRadius }},
+            @js($divisionAddress)
+        )"
         x-init="init()"
         class="flex flex-col flex-1 min-h-0 w-full"
     >
@@ -61,7 +72,7 @@
                     Geofence Overview
                 </h1>
                 <p class="text-xs sm:text-sm font-medium text-slate-500 dark:text-gray-400 mt-0.5">
-                    Office boundaries & positional verification · {{ $totalGeofences }} of {{ $offices->count() }} configured
+                    Unified Division Office boundary · Covers {{ $offices->count() }} internal units
                     @if($lastUpdatedLog)
                         · Refined {{ $lastUpdatedLog->timestamp->diffForHumans() }}
                     @endif
@@ -72,7 +83,7 @@
             <div class="flex items-center gap-3">
                 <button 
                     type="button" 
-                    @click="openEdit(selectedId)"
+                    @click="openEdit()"
                     class="h-10 sm:h-11 px-5 rounded-xl bg-[#0B5694] hover:bg-[#084577] dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-semibold text-xs sm:text-sm flex items-center gap-2 transition-all shadow-md shadow-blue-900/10 active:scale-95 cursor-pointer"
                     aria-haspopup="dialog"
                 >
@@ -80,7 +91,7 @@
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
                         <circle cx="12" cy="11" r="3"/>
                     </svg>
-                    <span>Update Geofence</span>
+                    <span>Update Division Geofence</span>
                 </button>
             </div>
         </header>
@@ -110,32 +121,24 @@
         {{-- MAIN TWO-REGION LAYOUT: Side Panel + Map --}}
         <div class="flex-1 min-h-[520px] flex flex-col lg:flex-row gap-5 lg:gap-6 relative overflow-hidden">
             
-            {{-- DESKTOP SIDE PANEL (Hidden on tablet/mobile where drawer or bottom sheet is used) --}}
+            {{-- DESKTOP SIDE PANEL --}}
             <aside 
                 class="hidden lg:flex w-[360px] xl:w-[400px] shrink-0 flex-col gap-4 overflow-y-auto pr-1 custom-scrollbar"
                 aria-label="Geofence details and office directory"
             >
-                {{-- 1. SELECTED GEOFENCE CARD --}}
+                {{-- 1. DIVISION GEOFENCE CARD (Unified Facility Boundary) --}}
                 <div class="p-5 rounded-[22px] bg-white dark:bg-gray-900 border border-slate-200/80 dark:border-gray-800 shadow-sm flex flex-col gap-4">
                     {{-- Card Header: Title & Status Pill --}}
                     <div class="flex items-start justify-between gap-3">
                         <div class="min-w-0">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400 block mb-0.5">Selected Office Geofence</span>
-                            <h2 class="text-base font-bold text-slate-900 dark:text-white leading-tight truncate" x-text="selectedOffice ? selectedOffice.name : 'Select an office'"></h2>
-                            <p class="text-xs text-slate-500 dark:text-gray-400 font-medium mt-0.5 truncate" x-text="selectedOffice ? selectedOffice.location_str : ''"></p>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400 block mb-0.5">Division Geofence Center</span>
+                            <h2 class="text-base font-bold text-slate-900 dark:text-white leading-tight">DepEd Division Office</h2>
+                            <p class="text-xs text-slate-500 dark:text-gray-400 font-medium mt-0.5">Unified perimeter for all {{ $offices->count() }} units</p>
                         </div>
-                        <template x-if="selectedOffice && selectedOffice.has_geofence">
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40 shrink-0">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                Active
-                            </span>
-                        </template>
-                        <template x-if="!selectedOffice || !selectedOffice.has_geofence">
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-100 dark:bg-gray-800 text-slate-600 dark:text-gray-400 border border-slate-200 dark:border-gray-700 shrink-0">
-                                <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-                                Unconfigured
-                            </span>
-                        </template>
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40 shrink-0">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            Active
+                        </span>
                     </div>
 
                     {{-- Address Display with Skeleton & Coordinates Fallback --}}
@@ -144,22 +147,22 @@
                             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-gray-500 block mb-0.5">Resolved Location</span>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-gray-500 block mb-0.5">Facility Location</span>
                             <template x-if="loadingAddress">
                                 <div class="space-y-1.5 py-1">
                                     <div class="h-3 bg-slate-200 dark:bg-gray-700 rounded-md animate-pulse w-5/6"></div>
                                     <div class="h-3 bg-slate-200 dark:bg-gray-700 rounded-md animate-pulse w-3/4"></div>
                                 </div>
                             </template>
-                            <template x-if="!loadingAddress && currentAddress">
-                                <p class="text-xs text-slate-800 dark:text-gray-200 font-medium leading-relaxed break-words" x-text="currentAddress"></p>
+                            <template x-if="!loadingAddress && divisionData.address">
+                                <p class="text-xs text-slate-800 dark:text-gray-200 font-medium leading-relaxed break-words" x-text="divisionData.address"></p>
                             </template>
-                            <template x-if="!loadingAddress && !currentAddress">
+                            <template x-if="!loadingAddress && !divisionData.address">
                                 <div>
-                                    <p class="text-xs font-mono font-semibold text-slate-700 dark:text-gray-300" x-text="selectedOffice ? (selectedOffice.latitude.toFixed(5) + ', ' + selectedOffice.longitude.toFixed(5)) : 'No coordinates'"></p>
+                                    <p class="text-xs font-mono font-semibold text-slate-700 dark:text-gray-300" x-text="divisionData.latitude.toFixed(5) + ', ' + divisionData.longitude.toFixed(5)"></p>
                                     <button 
                                         type="button" 
-                                        @click="fetchAddressForOffice(selectedOffice, true)"
+                                        @click="fetchDivisionAddress(true)"
                                         class="mt-1 text-[11px] font-medium text-[#0B5694] dark:text-blue-400 hover:underline flex items-center gap-1 cursor-pointer"
                                     >
                                         <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>
@@ -174,9 +177,9 @@
                     <div class="grid grid-cols-2 gap-2.5">
                         {{-- Radius --}}
                         <div class="p-3 rounded-xl bg-slate-50 dark:bg-gray-800/60 border border-slate-200/60 dark:border-gray-700/60">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-gray-500 block mb-0.5">Radius</span>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-gray-500 block mb-0.5">Perimeter Radius</span>
                             <div class="flex items-baseline gap-1.5">
-                                <span class="text-lg font-extrabold text-slate-900 dark:text-white" x-text="selectedOffice ? selectedOffice.radius_meters : 100"></span>
+                                <span class="text-lg font-extrabold text-slate-900 dark:text-white" x-text="divisionData.radius_meters"></span>
                                 <span class="text-xs font-medium text-slate-500 dark:text-gray-400">meters</span>
                             </div>
                         </div>
@@ -202,40 +205,41 @@
                             </div>
                             <span 
                                 class="text-[11px] font-mono font-bold text-slate-700 dark:text-gray-300 mt-1 truncate"
-                                x-text="selectedOffice ? (selectedOffice.latitude.toFixed(4) + ', ' + selectedOffice.longitude.toFixed(4)) : '—'"
+                                x-text="divisionData.latitude.toFixed(4) + ', ' + divisionData.longitude.toFixed(4)"
                             ></span>
                         </div>
                     </div>
 
                     {{-- Staffing Info & Actions --}}
                     <div class="pt-2 border-t border-slate-100 dark:border-gray-800 flex items-center justify-between gap-3 text-xs">
-                        <div class="flex items-center gap-3 text-slate-500 dark:text-gray-400">
+                        <div class="flex items-center gap-2 text-slate-500 dark:text-gray-400">
                             <span class="inline-flex items-center gap-1 font-medium">
                                 <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                                <span x-text="selectedOffice ? selectedOffice.interns_count : 0"></span> interns
+                                <span>{{ $totalInterns }} interns</span>
                             </span>
                             <span>·</span>
-                            <span class="font-medium" x-text="(selectedOffice ? selectedOffice.supervisors_count : 0) + ' supervisors'"></span>
+                            <span class="font-medium">{{ $totalSupervisors }} supervisors</span>
                         </div>
 
                         <button 
                             type="button" 
-                            @click="openEdit(selectedId)"
+                            @click="openEdit()"
                             class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-[#0B5694] dark:text-blue-400 bg-blue-50/80 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors flex items-center gap-1.5 cursor-pointer"
                         >
                             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-                            <span>Edit</span>
+                            <span>Edit Geofence</span>
                         </button>
                     </div>
                 </div>
 
-                {{-- 2. ALL GEOFENCES SEARCH & LIST --}}
+                {{-- 2. ALL OFFICES DIRECTORY (Housed in Facility) --}}
                 <div class="p-4 rounded-[22px] bg-white dark:bg-gray-900 border border-slate-200/80 dark:border-gray-800 shadow-sm flex flex-col gap-3">
                     <div class="flex items-center justify-between gap-2">
                         <div class="flex items-center gap-2">
-                            <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 dark:text-gray-300">Office Directory</h3>
+                            <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 dark:text-gray-300">Offices In Facility</h3>
                             <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-gray-800 text-slate-600 dark:text-gray-400" x-text="filteredOffices.length"></span>
                         </div>
+                        <span class="text-[10px] text-slate-400 font-medium">Single Premises</span>
                     </div>
 
                     {{-- Search Input --}}
@@ -246,9 +250,9 @@
                         <input 
                             type="text" 
                             x-model="searchQuery"
-                            placeholder="Filter offices or buildings..."
+                            placeholder="Filter internal units or floors..."
                             class="w-full pl-8 pr-7 py-2 rounded-xl text-xs font-medium bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-700 text-slate-900 dark:text-gray-100 placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0B5694]/20 focus:border-[#0B5694] transition-all"
-                            aria-label="Filter offices"
+                            aria-label="Filter internal units"
                         >
                         <template x-if="searchQuery">
                             <button 
@@ -262,49 +266,42 @@
                         </template>
                     </div>
 
-                    {{-- Office Rows List (Keyboard accessible listbox) --}}
+                    {{-- Office Rows List --}}
                     <div 
                         class="space-y-1.5 max-h-[280px] overflow-y-auto pr-0.5 custom-scrollbar" 
                         role="listbox" 
-                        aria-label="Offices list"
-                        tabindex="0"
-                        @keydown.down.prevent="selectNextOffice()"
-                        @keydown.up.prevent="selectPreviousOffice()"
+                        aria-label="Internal offices list"
                     >
-                        <template x-for="(office, idx) in filteredOffices" :key="office.id">
+                        <template x-for="office in filteredOffices" :key="office.id">
                             <div 
                                 @click="selectOffice(office.id)"
-                                :class="selectedId === office.id 
+                                :class="selectedOfficeId === office.id 
                                     ? 'bg-blue-50/70 dark:bg-blue-950/40 border-[#0B5694] dark:border-blue-500 ring-1 ring-[#0B5694]/20' 
                                     : 'bg-slate-50/70 dark:bg-gray-800/40 hover:bg-slate-100/70 dark:hover:bg-gray-800/80 border-slate-200/60 dark:border-gray-700/60'"
                                 class="p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-3 text-left focus:outline-none"
                                 role="option"
-                                :aria-selected="selectedId === office.id"
-                                :id="'office-row-' + office.id"
+                                :aria-selected="selectedOfficeId === office.id"
                             >
                                 <div class="min-w-0 flex-1">
                                     <div class="flex items-center gap-1.5 mb-0.5">
-                                        <span 
-                                            class="w-1.5 h-1.5 rounded-full shrink-0"
-                                            :class="office.has_geofence ? 'bg-emerald-500' : 'bg-slate-400'"
-                                        ></span>
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
                                         <h4 
                                             class="text-xs font-bold truncate"
-                                            :class="selectedId === office.id ? 'text-[#0B5694] dark:text-blue-400' : 'text-slate-800 dark:text-gray-200'"
+                                            :class="selectedOfficeId === office.id ? 'text-[#0B5694] dark:text-blue-400' : 'text-slate-800 dark:text-gray-200'"
                                             x-text="office.name"
                                         ></h4>
                                     </div>
                                     <p class="text-[11px] text-slate-500 dark:text-gray-400 font-medium truncate" x-text="office.location_str"></p>
                                 </div>
-                                <div class="shrink-0 flex items-center gap-2">
-                                    <span class="px-2 py-0.5 rounded-md text-[10px] font-mono font-semibold bg-white dark:bg-gray-900 border border-slate-200/80 dark:border-gray-700 text-slate-600 dark:text-gray-400" x-text="office.radius_meters + 'm'"></span>
+                                <div class="shrink-0 flex items-center gap-1.5 text-[10px] font-semibold text-slate-500 dark:text-gray-400">
+                                    <span x-text="office.interns_count + ' interns'"></span>
                                 </div>
                             </div>
                         </template>
 
                         <template x-if="filteredOffices.length === 0">
                             <div class="p-4 text-center text-xs text-slate-400 dark:text-gray-500 font-medium">
-                                No offices match your search.
+                                No units match your search.
                             </div>
                         </template>
                     </div>
@@ -348,33 +345,22 @@
                 id="map-region-container"
                 class="flex-1 min-h-[380px] lg:min-h-0 h-full rounded-[24px] sm:rounded-[28px] overflow-hidden border border-slate-200/80 dark:border-gray-800 bg-slate-100 dark:bg-gray-900 relative shadow-sm"
                 role="region"
-                aria-label="Interactive geofence map"
+                aria-label="Interactive division geofence map"
             >
                 {{-- Leaflet Map Element --}}
                 <div id="main-map" class="w-full h-full z-0"></div>
 
-                {{-- FLOATING MAP CONTROLS (Recenter, Fit All, Fullscreen) --}}
+                {{-- FLOATING MAP CONTROLS (Recenter, Fullscreen) --}}
                 <div class="absolute top-4 right-4 z-[400] flex flex-col gap-2">
                     {{-- Recenter Button --}}
                     <button 
                         type="button" 
                         @click="recenter()"
                         class="w-10 h-10 rounded-xl bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border border-slate-200/80 dark:border-gray-800 text-slate-700 dark:text-gray-200 shadow-md flex items-center justify-center hover:bg-slate-50 dark:hover:bg-gray-800 hover:text-[#0B5694] dark:hover:text-blue-400 transition-all active:scale-95 cursor-pointer"
-                        title="Recenter on selected office"
+                        title="Recenter on division premises"
                         aria-label="Recenter map"
                     >
                         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg>
-                    </button>
-
-                    {{-- Fit All Geofences Button --}}
-                    <button 
-                        type="button" 
-                        @click="fitAll()"
-                        class="w-10 h-10 rounded-xl bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border border-slate-200/80 dark:border-gray-800 text-slate-700 dark:text-gray-200 shadow-md flex items-center justify-center hover:bg-slate-50 dark:hover:bg-gray-800 hover:text-[#0B5694] dark:hover:text-blue-400 transition-all active:scale-95 cursor-pointer"
-                        title="Fit all geofences in view"
-                        aria-label="Fit all geofences"
-                    >
-                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
                     </button>
 
                     {{-- Fullscreen Toggle --}}
@@ -400,10 +386,10 @@
                         type="button" 
                         @click="mobileDrawerOpen = true"
                         class="px-4 py-2 rounded-xl bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border border-slate-200/80 dark:border-gray-800 text-slate-800 dark:text-white text-xs font-bold shadow-lg flex items-center gap-2 hover:bg-slate-50 active:scale-95 transition-all cursor-pointer"
-                        aria-label="Open office inspector drawer"
+                        aria-label="Open division geofence drawer"
                     >
                         <svg class="w-4 h-4 text-[#0B5694] dark:text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                        <span class="truncate max-w-[160px]" x-text="selectedOffice ? selectedOffice.name : 'Offices'"></span>
+                        <span>Division Geofence</span>
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                     </button>
                 </div>
@@ -427,7 +413,7 @@
             </main>
         </div>
 
-        {{-- MOBILE & TABLET DRAWER (Slides from left on screens < 1024px) --}}
+        {{-- MOBILE & TABLET DRAWER (Screens < 1024px) --}}
         <div 
             x-show="mobileDrawerOpen" 
             x-cloak
@@ -462,7 +448,7 @@
                 @keydown.escape.window="mobileDrawerOpen = false"
             >
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-gray-800">
-                    <h2 id="drawer-title" class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">Geofence Inspector</h2>
+                    <h2 id="drawer-title" class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">Division Geofence</h2>
                     <button 
                         type="button" 
                         @click="mobileDrawerOpen = false"
@@ -473,21 +459,21 @@
                     </button>
                 </div>
 
-                {{-- Selected Office Card for Drawer --}}
+                {{-- Division Card for Drawer --}}
                 <div class="p-4 rounded-2xl bg-slate-50 dark:bg-gray-800 border border-slate-200/80 dark:border-gray-700 space-y-3">
                     <div class="flex items-start justify-between gap-2">
                         <div>
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400">Selected Office</span>
-                            <h3 class="text-sm font-bold text-slate-900 dark:text-white" x-text="selectedOffice ? selectedOffice.name : ''"></h3>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-[#0B5694] dark:text-blue-400">Division Perimeter</span>
+                            <h3 class="text-sm font-bold text-slate-900 dark:text-white">DepEd Division Office</h3>
                         </div>
                         <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200">Active</span>
                     </div>
-                    <p class="text-xs text-slate-600 dark:text-gray-300 font-medium" x-text="currentAddress || (selectedOffice ? selectedOffice.latitude.toFixed(5) + ', ' + selectedOffice.longitude.toFixed(5) : '')"></p>
+                    <p class="text-xs text-slate-600 dark:text-gray-300 font-medium" x-text="divisionData.address || (divisionData.latitude.toFixed(5) + ', ' + divisionData.longitude.toFixed(5))"></p>
                     <div class="flex items-center justify-between text-xs pt-2 border-t border-slate-200 dark:border-gray-700">
-                        <span class="font-bold text-slate-700 dark:text-gray-300" x-text="'Radius: ' + (selectedOffice ? selectedOffice.radius_meters : 100) + 'm'"></span>
+                        <span class="font-bold text-slate-700 dark:text-gray-300" x-text="'Radius: ' + divisionData.radius_meters + 'm'"></span>
                         <button 
                             type="button" 
-                            @click="mobileDrawerOpen = false; openEdit(selectedId)"
+                            @click="mobileDrawerOpen = false; openEdit()"
                             class="px-3 py-1 rounded-lg bg-[#0B5694] text-white text-xs font-semibold cursor-pointer"
                         >
                             Edit
@@ -497,20 +483,20 @@
 
                 {{-- Directory List for Drawer --}}
                 <div class="space-y-2 flex-1">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">All Offices</span>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Offices In Facility</span>
                     <div class="space-y-1.5">
                         <template x-for="office in filteredOffices" :key="'drawer-' + office.id">
                             <button 
                                 type="button" 
                                 @click="selectOffice(office.id); mobileDrawerOpen = false"
                                 class="w-full p-3 rounded-xl border text-left flex items-center justify-between gap-2 transition-all cursor-pointer"
-                                :class="selectedId === office.id ? 'bg-blue-50 dark:bg-blue-950/40 border-[#0B5694]' : 'bg-slate-50 dark:bg-gray-800 border-slate-200 dark:border-gray-700'"
+                                :class="selectedOfficeId === office.id ? 'bg-blue-50 dark:bg-blue-950/40 border-[#0B5694]' : 'bg-slate-50 dark:bg-gray-800 border-slate-200 dark:border-gray-700'"
                             >
                                 <div class="min-w-0 flex-1">
                                     <h4 class="text-xs font-bold text-slate-800 dark:text-gray-200 truncate" x-text="office.name"></h4>
                                     <span class="text-[10px] text-slate-400 truncate block" x-text="office.location_str"></span>
                                 </div>
-                                <span class="text-[10px] font-mono font-bold text-slate-500" x-text="office.radius_meters + 'm'"></span>
+                                <span class="text-[10px] font-semibold text-slate-500" x-text="office.interns_count + ' interns'"></span>
                             </button>
                         </template>
                     </div>
@@ -519,8 +505,8 @@
         </div>
 
         {{-- ========================================================================= --}}
-        {{-- EDIT SLIDE-OVER (Desktop right slide-over ~460px / Mobile full-screen sheet) --}}
-        {{-- Preserves exact endpoint, authorization, and validation rules --}}
+        {{-- EDIT SLIDE-OVER (Unified Division Geofence Boundary)                      --}}
+        {{-- All offices belong to one facility: editing updates the shared boundary   --}}
         {{-- ========================================================================= --}}
         <div 
             x-show="editOpen" 
@@ -563,10 +549,10 @@
                         </div>
                         <div>
                             <h2 id="edit-slideover-title" class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white leading-tight">
-                                Edit Geofence
+                                Edit Division Geofence
                             </h2>
                             <p class="text-xs text-slate-500 dark:text-gray-400 font-medium mt-0.5">
-                                Refine positional verification boundaries
+                                Positional boundary for Division Office building
                             </p>
                         </div>
                     </div>
@@ -583,24 +569,10 @@
                 {{-- Slide-over Body: Scrollable Form --}}
                 <div class="flex-1 overflow-y-auto p-5 sm:p-6 space-y-5 custom-scrollbar">
                     
-                    {{-- Target Scope Selector --}}
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-400 dark:text-gray-500 uppercase tracking-wider block mb-2">
-                            Target Office Scope
-                        </label>
-                        <select 
-                            x-model="editTargetId" 
-                            @change="changeEditTarget()"
-                            class="w-full bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-xl px-4 py-3 text-xs sm:text-sm font-semibold text-slate-800 dark:text-gray-200 focus:ring-2 focus:ring-[#0B5694] dark:focus:ring-blue-400 focus:outline-none transition-all shadow-sm"
-                        >
-                            <option value="">Apply to All Offices (Global Default)</option>
-                            <template x-for="off in offices" :key="'target-' + off.id">
-                                <option :value="off.id" x-text="off.name"></option>
-                            </template>
-                        </select>
-                        <p class="text-[11px] text-slate-400 dark:text-gray-500 mt-1 font-medium">
-                            <span x-text="editTargetId ? 'Updating boundary specifically for this office.' : 'This will overwrite latitude, longitude, and radius for all offices.'"></span>
-                        </p>
+                    {{-- Shared Facility Info Banner --}}
+                    <div class="p-3.5 rounded-xl bg-blue-50/70 dark:bg-blue-950/30 border border-blue-200/60 dark:border-blue-900/40 flex items-start gap-2.5 text-xs text-blue-900 dark:text-blue-300">
+                        <svg class="w-4 h-4 text-[#0B5694] dark:text-blue-400 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                        <span>All {{ $offices->count() }} offices are located in this single division facility. Updating the coordinates or radius refines the verification perimeter across all internal units.</span>
                     </div>
 
                     {{-- Address Search with Server-Side Autocomplete --}}
@@ -614,7 +586,7 @@
                                 x-model="editSearchQuery"
                                 @input.debounce.400ms="executeSearchLocation()"
                                 @keydown.enter.prevent="executeSearchLocation()"
-                                placeholder="Type place name or address..."
+                                placeholder="Search building, street, or city..."
                                 class="w-full bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-xl pl-4 pr-10 py-3 text-xs sm:text-sm font-medium text-slate-800 dark:text-gray-200 focus:ring-2 focus:ring-[#0B5694] outline-none transition-all"
                             >
                             <div class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
@@ -650,7 +622,7 @@
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <label class="text-[10px] font-bold text-slate-400 dark:text-gray-500 uppercase tracking-wider block">
-                                Boundary Position (Drag marker to move)
+                                Perimeter Center (Drag marker to reposition)
                             </label>
                             <span class="text-[10px] text-blue-600 dark:text-blue-400 font-semibold">Live Preview</span>
                         </div>
@@ -659,11 +631,11 @@
                         </div>
                         <p class="text-[11px] text-slate-400 dark:text-gray-500 mt-1 font-medium flex items-center gap-1">
                             <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                            <span>Click anywhere on the map or drag the pin to update coordinates.</span>
+                            <span>Click on map or drag the center pin to adjust division coordinates.</span>
                         </p>
                     </div>
 
-                    {{-- Form with Real Action & CSRF --}}
+                    {{-- Form targeting global update --}}
                     <form 
                         id="geofence-update-form" 
                         action="{{ route('admin.offices.geofence.update') }}" 
@@ -672,9 +644,6 @@
                     >
                         @csrf
                         @method('PUT')
-
-                        {{-- Hidden inputs --}}
-                        <input type="hidden" name="office_id" :value="editTargetId">
 
                         {{-- Radius Slider Paired with Numeric Input (min: 10, max: 5000) --}}
                         <div class="p-4 rounded-2xl bg-slate-50 dark:bg-gray-800/80 border border-slate-200/80 dark:border-gray-700 space-y-3">
@@ -772,7 +741,7 @@
             </div>
         </div>
 
-        {{-- CONFIRMATION MODAL (Step 2 before saving) --}}
+        {{-- CONFIRMATION MODAL --}}
         <div 
             x-show="showConfirmationModal" 
             x-cloak
@@ -796,10 +765,10 @@
 
                 <div>
                     <h3 id="confirm-modal-title" class="text-lg font-extrabold text-slate-900 dark:text-white">
-                        Confirm Geofence Update
+                        Confirm Division Geofence Update
                     </h3>
                     <p class="text-xs text-slate-500 dark:text-gray-400 mt-1 leading-relaxed">
-                        Please review the proposed boundary modifications before applying them to the system.
+                        This update applies to the entire Division Office building and affects attendance verification for all {{ $offices->count() }} internal units.
                     </p>
                 </div>
 
@@ -807,7 +776,7 @@
                 <div class="p-4 rounded-xl bg-slate-50 dark:bg-gray-800/80 border border-slate-200/80 dark:border-gray-700 space-y-2.5 text-xs">
                     <div class="flex items-center justify-between">
                         <span class="text-slate-400 font-medium">Scope:</span>
-                        <span class="font-bold text-slate-800 dark:text-gray-200" x-text="editTargetId ? (selectedOffice ? selectedOffice.name : 'Selected Office') : 'All Offices (Global Scope)'"></span>
+                        <span class="font-bold text-slate-800 dark:text-gray-200">Division Office Premises (All Units)</span>
                     </div>
                     <div class="flex items-center justify-between">
                         <span class="text-slate-400 font-medium">Radius:</span>
@@ -847,10 +816,10 @@
 
 {{-- SCRIPT: Alpine Component & Interactive Leaflet Handler --}}
 <script>
-function geofenceInspector(initialOffices, defaultSelectedId) {
+function geofenceInspector(initialOffices, divisionLat, divisionLng, divisionRadius, initialAddress) {
     return {
         offices: initialOffices,
-        selectedId: defaultSelectedId || (initialOffices.length > 0 ? initialOffices[0].id : null),
+        selectedOfficeId: initialOffices.length > 0 ? initialOffices[0].id : null,
         searchQuery: '',
         loadingAddress: false,
         copiedCoords: false,
@@ -859,16 +828,22 @@ function geofenceInspector(initialOffices, defaultSelectedId) {
         showTouchHint: false,
         touchHintTimer: null,
 
+        // Division Geofence Center (Unified boundary)
+        divisionData: {
+            latitude: divisionLat || 14.6150485,
+            longitude: divisionLng || 121.0105983,
+            radius_meters: divisionRadius || 100,
+            address: initialAddress || null,
+        },
+
         // Leaflet Map objects
         mainMap: null,
-        markers: {},
-        circles: {},
-        radiusTooltips: {},
+        divisionCircle: null,
+        divisionMarker: null,
 
         // Edit slide-over state
         editOpen: false,
         showConfirmationModal: false,
-        editTargetId: '',
         editMap: null,
         editMarker: null,
         editCircle: null,
@@ -883,11 +858,7 @@ function geofenceInspector(initialOffices, defaultSelectedId) {
         },
 
         get selectedOffice() {
-            return this.offices.find(o => o.id === this.selectedId) || this.offices[0] || null;
-        },
-
-        get currentAddress() {
-            return this.selectedOffice ? this.selectedOffice.cached_address : null;
+            return this.offices.find(o => o.id === this.selectedOfficeId) || this.offices[0] || null;
         },
 
         get filteredOffices() {
@@ -902,12 +873,11 @@ function geofenceInspector(initialOffices, defaultSelectedId) {
         init() {
             this.$nextTick(() => {
                 this.initMainMap();
-                if (this.selectedOffice) {
-                    this.fetchAddressForOffice(this.selectedOffice);
+                if (!this.divisionData.address) {
+                    this.fetchDivisionAddress();
                 }
             });
 
-            // Handle browser resize & fullscreen changes
             window.addEventListener('resize', () => {
                 if (this.mainMap) {
                     this.mainMap.invalidateSize();
@@ -928,176 +898,95 @@ function geofenceInspector(initialOffices, defaultSelectedId) {
                 return;
             }
 
-            const defaultLat = this.selectedOffice ? this.selectedOffice.latitude : 14.6150485;
-            const defaultLng = this.selectedOffice ? this.selectedOffice.longitude : 121.0105983;
+            const lat = this.divisionData.latitude;
+            const lng = this.divisionData.longitude;
+            const rad = this.divisionData.radius_meters;
 
-            // Initialize map with non-scroll trapping configuration
             this.mainMap = L.map('main-map', {
-                center: [defaultLat, defaultLng],
+                center: [lat, lng],
                 zoom: 17,
-                scrollWheelZoom: false, // Prevent scroll hijacking on desktop
+                scrollWheelZoom: false,
                 touchZoom: true,
                 zoomControl: true,
             });
 
-            // OpenStreetMap tile layer
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors',
                 maxZoom: 19,
             }).addTo(this.mainMap);
 
-            // Enable desktop wheel zooming on map focus
             this.mainMap.on('focus', () => { this.mainMap.scrollWheelZoom.enable(); });
             this.mainMap.on('blur', () => { this.mainMap.scrollWheelZoom.disable(); });
 
-            // Setup touch detection for 2-finger panning hint
+            // Touch scroll-trap prevention
             const mapEl = document.getElementById('main-map');
             if (mapEl) {
                 mapEl.addEventListener('touchstart', (e) => {
                     if (e.touches.length === 1) {
-                        // User touched with one finger; show subtle hint if they start dragging
                         this.triggerTouchHint();
                     }
                 }, { passive: true });
             }
 
-            // Draw offices
-            this.renderOfficeLayers();
+            // Draw single unified division circle
+            this.divisionCircle = L.circle([lat, lng], {
+                radius: rad,
+                color: '#0B5694',
+                weight: 2.5,
+                opacity: 0.9,
+                fillColor: '#0B5694',
+                fillOpacity: 0.18,
+            }).addTo(this.mainMap);
 
-            // Fit bounds initially
-            const active = this.offices.filter(o => o.has_geofence);
-            if (active.length > 0) {
-                const group = new L.featureGroup(active.map(o => this.circles[o.id] || L.marker([o.latitude, o.longitude])));
-                this.mainMap.fitBounds(group.getBounds().pad(0.15));
-            }
+            this.divisionCircle.bindTooltip(`${rad}m`, {
+                permanent: false,
+                direction: 'top',
+                className: 'geofence-radius-tooltip',
+            });
+
+            // Center marker
+            this.divisionMarker = L.marker([lat, lng]).addTo(this.mainMap);
+            this.divisionMarker.bindPopup(`<b>DepEd Division Office</b><br><span style="font-size:11px;color:#666">Houses ${this.offices.length} internal administrative units</span><br><b>Radius:</b> ${rad}m`);
+
+            this.mainMap.fitBounds(this.divisionCircle.getBounds().pad(0.2));
 
             setTimeout(() => {
                 if (this.mainMap) this.mainMap.invalidateSize();
             }, 300);
         },
 
-        renderOfficeLayers() {
-            this.offices.forEach(office => {
-                if (!office.latitude || !office.longitude) return;
-
-                const isSelected = (office.id === this.selectedId);
-
-                // Leaflet Circle with refined Brand Blue styling
-                const circle = L.circle([office.latitude, office.longitude], {
-                    radius: office.radius_meters,
-                    color: '#0B5694',
-                    weight: isSelected ? 3 : 1.5,
-                    opacity: isSelected ? 0.95 : 0.6,
-                    fillColor: '#0B5694',
-                    fillOpacity: isSelected ? 0.22 : 0.12,
-                }).addTo(this.mainMap);
-
-                // Radius Tooltip on circle
-                circle.bindTooltip(`${office.radius_meters}m`, {
-                    permanent: false,
-                    direction: 'top',
-                    className: 'geofence-radius-tooltip',
-                });
-
-                // Center Marker
-                const marker = L.marker([office.latitude, office.longitude]).addTo(this.mainMap);
-                marker.bindPopup(`<b>${office.name}</b><br><span style="font-size:11px;color:#666">${office.location_str}</span><br><b>Radius:</b> ${office.radius_meters}m`);
-
-                // Two-way interaction: clicking circle or marker selects row
-                const handleClick = () => {
-                    this.selectOffice(office.id);
-                    // Scroll row into view
-                    const rowEl = document.getElementById('office-row-' + office.id);
-                    if (rowEl) {
-                        rowEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                    }
-                };
-
-                circle.on('click', handleClick);
-                marker.on('click', handleClick);
-
-                this.circles[office.id] = circle;
-                this.markers[office.id] = marker;
-            });
-        },
-
         selectOffice(id) {
-            this.selectedId = id;
-            const office = this.selectedOffice;
-            if (!office || !this.mainMap) return;
-
-            // Highlight selected circle and mute others
-            this.offices.forEach(o => {
-                const c = this.circles[o.id];
-                if (c) {
-                    const isSel = (o.id === id);
-                    c.setStyle({
-                        weight: isSel ? 3 : 1.5,
-                        opacity: isSel ? 0.95 : 0.6,
-                        fillOpacity: isSel ? 0.22 : 0.12,
-                    });
-                    if (isSel) c.bringToFront();
-                }
-            });
-
-            // Fly map to office bounds
-            if (this.circles[id]) {
-                const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-                if (prefersReduced) {
-                    this.mainMap.fitBounds(this.circles[id].getBounds().pad(0.2));
-                } else {
-                    this.mainMap.flyToBounds(this.circles[id].getBounds().pad(0.2), {
-                        duration: 0.75,
-                        easeLinearity: 0.25,
-                    });
-                }
-            }
-
-            // Reverse-geocode address if needed
-            this.fetchAddressForOffice(office);
-        },
-
-        selectNextOffice() {
-            const list = this.filteredOffices;
-            const idx = list.findIndex(o => o.id === this.selectedId);
-            if (idx < list.length - 1) {
-                this.selectOffice(list[idx + 1].id);
+            this.selectedOfficeId = id;
+            const off = this.selectedOffice;
+            if (off && this.divisionMarker) {
+                this.divisionMarker.setPopupContent(`<b>${off.name}</b><br><span style="font-size:11px;color:#666">${off.location_str}</span><br><b>Division Boundary:</b> ${this.divisionData.radius_meters}m`);
+                this.divisionMarker.openPopup();
             }
         },
 
-        selectPreviousOffice() {
-            const list = this.filteredOffices;
-            const idx = list.findIndex(o => o.id === this.selectedId);
-            if (idx > 0) {
-                this.selectOffice(list[idx - 1].id);
-            }
-        },
-
-        async fetchAddressForOffice(office, force = false) {
-            if (!office || !office.latitude || !office.longitude) return;
-            if (office.cached_address && !force) return;
+        async fetchDivisionAddress(force = false) {
+            if (this.divisionData.address && !force) return;
 
             this.loadingAddress = true;
             try {
-                const response = await fetch(`/admin/geofence/reverse-geocode?latitude=${encodeURIComponent(office.latitude)}&longitude=${encodeURIComponent(office.longitude)}`, {
+                const response = await fetch(`/admin/geofence/reverse-geocode?latitude=${encodeURIComponent(this.divisionData.latitude)}&longitude=${encodeURIComponent(this.divisionData.longitude)}`, {
                     headers: { 'Accept': 'application/json' }
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    office.cached_address = data.address || null;
+                    this.divisionData.address = data.address || null;
                 } else {
-                    office.cached_address = null;
+                    this.divisionData.address = null;
                 }
             } catch (e) {
-                office.cached_address = null;
+                this.divisionData.address = null;
             } finally {
                 this.loadingAddress = false;
             }
         },
 
         copyCoordinates() {
-            if (!this.selectedOffice) return;
-            const text = `${this.selectedOffice.latitude.toFixed(5)}, ${this.selectedOffice.longitude.toFixed(5)}`;
+            const text = `${this.divisionData.latitude.toFixed(5)}, ${this.divisionData.longitude.toFixed(5)}`;
             navigator.clipboard.writeText(text).then(() => {
                 this.copiedCoords = true;
                 setTimeout(() => { this.copiedCoords = false; }, 2000);
@@ -1105,17 +994,8 @@ function geofenceInspector(initialOffices, defaultSelectedId) {
         },
 
         recenter() {
-            if (!this.selectedOffice || !this.mainMap) return;
-            this.mainMap.setView([this.selectedOffice.latitude, this.selectedOffice.longitude], 17);
-        },
-
-        fitAll() {
             if (!this.mainMap) return;
-            const active = this.offices.filter(o => o.has_geofence);
-            if (active.length > 0) {
-                const group = new L.featureGroup(active.map(o => this.circles[o.id] || L.marker([o.latitude, o.longitude])));
-                this.mainMap.fitBounds(group.getBounds().pad(0.15));
-            }
+            this.mainMap.setView([this.divisionData.latitude, this.divisionData.longitude], 17);
         },
 
         toggleFullscreen() {
@@ -1138,19 +1018,15 @@ function geofenceInspector(initialOffices, defaultSelectedId) {
         },
 
         // ==========================================
-        // EDIT SLIDE-OVER FLOW
+        // EDIT SLIDE-OVER FLOW (Division Geofence)
         // ==========================================
-        openEdit(targetOfficeId = null) {
-            this.editTargetId = targetOfficeId || (this.selectedOffice ? this.selectedOffice.id : '');
-            const target = this.offices.find(o => o.id == this.editTargetId) || this.selectedOffice || this.offices[0];
-
-            this.editForm.latitude = target ? target.latitude : 14.6150485;
-            this.editForm.longitude = target ? target.longitude : 121.0105983;
-            this.editForm.radius_meters = target ? target.radius_meters : 100;
+        openEdit() {
+            this.editForm.latitude = this.divisionData.latitude;
+            this.editForm.longitude = this.divisionData.longitude;
+            this.editForm.radius_meters = this.divisionData.radius_meters;
 
             // Save original state so Cancel can restore
             this.editOriginalData = {
-                targetId: this.editTargetId,
                 latitude: this.editForm.latitude,
                 longitude: this.editForm.longitude,
                 radius_meters: this.editForm.radius_meters,
@@ -1163,18 +1039,6 @@ function geofenceInspector(initialOffices, defaultSelectedId) {
             this.$nextTick(() => {
                 this.initEditMap();
             });
-        },
-
-        changeEditTarget() {
-            if (this.editTargetId) {
-                const target = this.offices.find(o => o.id == this.editTargetId);
-                if (target) {
-                    this.editForm.latitude = target.latitude;
-                    this.editForm.longitude = target.longitude;
-                    this.editForm.radius_meters = target.radius_meters;
-                    this.updateFromEditInputs();
-                }
-            }
         },
 
         initEditMap() {
@@ -1202,7 +1066,6 @@ function geofenceInspector(initialOffices, defaultSelectedId) {
                     weight: 2.5,
                 }).addTo(this.editMap);
 
-                // Dragging marker updates form and live circle
                 this.editMarker.on('dragend', (e) => {
                     const pos = e.target.getLatLng();
                     this.editForm.latitude = pos.lat.toFixed(8);
@@ -1211,7 +1074,6 @@ function geofenceInspector(initialOffices, defaultSelectedId) {
                     this.liveUpdateMainMap();
                 });
 
-                // Clicking anywhere on edit map moves marker
                 this.editMap.on('click', (e) => {
                     const pos = e.latlng;
                     this.editForm.latitude = pos.lat.toFixed(8);
@@ -1253,16 +1115,19 @@ function geofenceInspector(initialOffices, defaultSelectedId) {
         },
 
         liveUpdateMainMap() {
-            // Live update the selected circle on the main map
-            const targetId = this.editTargetId || this.selectedId;
-            const mainCircle = this.circles[targetId];
             const lat = parseFloat(this.editForm.latitude);
             const lng = parseFloat(this.editForm.longitude);
             const rad = parseInt(this.editForm.radius_meters);
 
-            if (mainCircle && !isNaN(lat) && !isNaN(lng) && !isNaN(rad)) {
-                mainCircle.setLatLng([lat, lng]);
-                mainCircle.setRadius(rad);
+            if (!isNaN(lat) && !isNaN(lng) && !isNaN(rad)) {
+                if (this.divisionCircle) {
+                    this.divisionCircle.setLatLng([lat, lng]);
+                    this.divisionCircle.setRadius(rad);
+                    this.divisionCircle.setTooltipContent(`${rad}m`);
+                }
+                if (this.divisionMarker) {
+                    this.divisionMarker.setLatLng([lat, lng]);
+                }
             }
         },
 
@@ -1301,13 +1166,18 @@ function geofenceInspector(initialOffices, defaultSelectedId) {
         },
 
         handleCancelEdit() {
-            // Restore original values on cancel
             if (this.editOriginalData && this.editOriginalData.latitude) {
-                const targetId = this.editOriginalData.targetId || this.selectedId;
-                const mainCircle = this.circles[targetId];
-                if (mainCircle) {
-                    mainCircle.setLatLng([this.editOriginalData.latitude, this.editOriginalData.longitude]);
-                    mainCircle.setRadius(this.editOriginalData.radius_meters);
+                const lat = this.editOriginalData.latitude;
+                const lng = this.editOriginalData.longitude;
+                const rad = this.editOriginalData.radius_meters;
+
+                if (this.divisionCircle) {
+                    this.divisionCircle.setLatLng([lat, lng]);
+                    this.divisionCircle.setRadius(rad);
+                    this.divisionCircle.setTooltipContent(`${rad}m`);
+                }
+                if (this.divisionMarker) {
+                    this.divisionMarker.setLatLng([lat, lng]);
                 }
             }
             this.editOpen = false;
