@@ -37,6 +37,14 @@ class SecurityAnalysisMiddleware
             }
         }
 
+        // Test user bypasses security loading animation
+        if ($user && $user->email === 'test@smartern.com') {
+            if (! session('security_analysis_run')) {
+                session(['security_analysis_run' => true]);
+            }
+            return $next($request);
+        }
+
         // Only apply to authenticated users and GET requests
         if (! $user || ! $request->isMethod('get')) {
             return $next($request);

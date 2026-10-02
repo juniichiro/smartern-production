@@ -24,6 +24,11 @@ class CheckSingleSession
         if (Auth::check()) {
             $user = Auth::user();
 
+            // Test user bypasses single session enforcement for multi-tab UI testing
+            if ($user->email === 'test@smartern.com') {
+                return $next($request);
+            }
+
             // If the user has MFA enabled but has not verified it in this session yet,
             // bypass single session checks to avoid invalidating the active session
             // until the new session is fully verified and authorized

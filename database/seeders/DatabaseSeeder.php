@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
             ScheduleSeeder::class, // Default, holiday, suspension schedules per school
             AbsenceRequestSeeder::class, // Absence and early leave requests + attendance updates
             AnnouncementSeeder::class, // Office-scoped announcements
+            TestUserSeeder::class, // Test account with multi-role access
         ]);
     }
 }

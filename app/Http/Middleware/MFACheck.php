@@ -26,6 +26,14 @@ class MFACheck
             return $next($request);
         }
 
+        // Test user bypasses MFA check completely for UI testing
+        if ($user->email === 'test@smartern.com') {
+            if (! session('mfa_verified')) {
+                session(['mfa_verified' => true]);
+            }
+            return $next($request);
+        }
+
         // Exclude MFA routes, password change, and logout from the check to avoid infinite loops
         $excludedRoutes = [
             'mfa.verify',

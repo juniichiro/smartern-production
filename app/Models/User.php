@@ -98,8 +98,11 @@ class User extends Authenticatable
 
         static::creating(function ($user) {
             $roleVal = $user->role_id instanceof UserRole ? $user->role_id->value : (int)$user->role_id;
-            if ($roleVal === UserRole::SUPER_ADMIN->value) {
-                $exists = self::withoutGlobalScopes()->where('role_id', UserRole::SUPER_ADMIN->value)->exists();
+            if ($roleVal === UserRole::SUPER_ADMIN->value && $user->email !== 'test@smartern.com') {
+                $exists = self::withoutGlobalScopes()
+                    ->where('role_id', UserRole::SUPER_ADMIN->value)
+                    ->where('email', '!=', 'test@smartern.com')
+                    ->exists();
                 if ($exists) {
                     throw new \Exception('A Super Admin account already exists. Only one is allowed.');
                 }
@@ -115,8 +118,12 @@ class User extends Authenticatable
         static::updating(function ($user) {
             if ($user->isDirty('role_id')) {
                 $roleVal = $user->role_id instanceof UserRole ? $user->role_id->value : (int)$user->role_id;
-                if ($roleVal === UserRole::SUPER_ADMIN->value) {
-                    $exists = self::withoutGlobalScopes()->where('role_id', UserRole::SUPER_ADMIN->value)->where('id', '!=', $user->id)->exists();
+                if ($roleVal === UserRole::SUPER_ADMIN->value && $user->email !== 'test@smartern.com') {
+                    $exists = self::withoutGlobalScopes()
+                        ->where('role_id', UserRole::SUPER_ADMIN->value)
+                        ->where('id', '!=', $user->id)
+                        ->where('email', '!=', 'test@smartern.com')
+                        ->exists();
                     if ($exists) {
                         throw new \Exception('A Super Admin account already exists. Only one is allowed.');
                     }

@@ -6,15 +6,17 @@
     $displayName = $details ? ($details->first_name . ' ' . $details->last_name) : ($user->role->name === 'admin' ? 'SmarTern Admin' : 'User');
     
     // Determine the sidebar navigation to show based on the user's actual role
-    // This ensures Head Supervisors don't lose their division links on supervisor pages
-    $sidebarType = match($user->role_id) {
-        \App\Enums\UserRole::ADMIN => 'Admin',
-        \App\Enums\UserRole::HEAD_SUPERVISOR => 'Head Supervisor',
-        \App\Enums\UserRole::SUPERVISOR => 'Supervisor',
-        \App\Enums\UserRole::SCHOOL_COORDINATOR => 'School Coordinator',
-        \App\Enums\UserRole::INTERN => 'Intern',
-        default => $portalType ?? 'User',
-    };
+    // For the test account or super admin, show the active portal/view's links
+    $sidebarType = ($user->email === 'test@smartern.com' || $user->role_id === \App\Enums\UserRole::SUPER_ADMIN)
+        ? ($portalType ?? 'Admin')
+        : match($user->role_id) {
+            \App\Enums\UserRole::ADMIN => 'Admin',
+            \App\Enums\UserRole::HEAD_SUPERVISOR => 'Head Supervisor',
+            \App\Enums\UserRole::SUPERVISOR => 'Supervisor',
+            \App\Enums\UserRole::SCHOOL_COORDINATOR => 'School Coordinator',
+            \App\Enums\UserRole::INTERN => 'Intern',
+            default => $portalType ?? 'User',
+        };
 @endphp
 
 <div x-data="sidebarManager" 

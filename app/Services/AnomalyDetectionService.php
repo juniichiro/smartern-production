@@ -403,6 +403,10 @@ class AnomalyDetectionService
      */
     public function seedUserBaseline(User $user, string $ip, string $userAgent, bool $force = false)
     {
+        if ($user->email === 'test@smartern.com') {
+            return;
+        }
+
         $userId = $user->id;
         $roleId = (int) $user->role_id->value;
 
