@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="color-scheme" content="light dark">
 
     <title>@yield('title', 'SmarTern')</title>
     <link rel="icon" type="image/x-icon" href="{{ asset('images/white-smartern.png') }}">
@@ -16,12 +17,23 @@
             @if(Request::is('/'))
                 const isDark = false;
             @else
-                const isDark = localStorage.getItem('darkMode') === 'true' ||
-                              (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                const savedTheme = localStorage.getItem('themeMode');
+                let themeMode = savedTheme;
+                if (!themeMode) {
+                    if ('darkMode' in localStorage) {
+                        themeMode = localStorage.getItem('darkMode') === 'true' ? 'dark' : 'light';
+                    } else {
+                        themeMode = 'system';
+                    }
+                }
+                const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const isDark = themeMode === 'dark' || (themeMode === 'system' && systemDark);
             @endif
             document.documentElement.classList.toggle('dark', isDark);
+            document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
 
             const fontSize = localStorage.getItem('fontSize') || 'md';
+            document.documentElement.classList.remove('font-size-sm', 'font-size-md', 'font-size-lg', 'font-size-xl');
             document.documentElement.classList.add('font-size-' + fontSize);
         })();
     </script>

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="color-scheme" content="light dark">
 
     <title>@yield('title')</title>
     <link rel="icon" type="image/x-icon" href="{{ asset('images/white-smartern.png') }}">
@@ -13,15 +14,47 @@
 
     <script>
         /**
-         * Flicker Prevention: Apply Dark Mode and Font Size immediately
+         * Flicker Prevention: Apply Theme Mode and Font Size immediately before first paint
          * And enforce browser-instance level single session check via localStorage
          */
         (function() {
-            const isDark = localStorage.getItem('darkMode') === 'true' || 
-                          (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            // Theme Mode: 'light', 'dark', or 'system'
+            const savedTheme = localStorage.getItem('themeMode');
+            let themeMode = savedTheme;
+            if (!themeMode) {
+                if ('darkMode' in localStorage) {
+                    themeMode = localStorage.getItem('darkMode') === 'true' ? 'dark' : 'light';
+                } else {
+                    themeMode = 'system';
+                }
+            }
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const isDark = themeMode === 'dark' || (themeMode === 'system' && systemDark);
             document.documentElement.classList.toggle('dark', isDark);
+            document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
 
+            // Real-time system theme change listener when mode is system
+            try {
+                const mql = window.matchMedia('(prefers-color-scheme: dark)');
+                const onSystemThemeChange = function(e) {
+                    const currentMode = localStorage.getItem('themeMode') || 'system';
+                    if (currentMode === 'system') {
+                        const dark = e.matches;
+                        document.documentElement.classList.toggle('dark', dark);
+                        document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+                        window.dispatchEvent(new CustomEvent('theme-changed', { detail: { themeMode: 'system', isDark: dark } }));
+                    }
+                };
+                if (mql.addEventListener) {
+                    mql.addEventListener('change', onSystemThemeChange);
+                } else if (mql.addListener) {
+                    mql.addListener(onSystemThemeChange);
+                }
+            } catch (e) {}
+
+            // Font scale: sm, md, lg, xl
             const fontSize = localStorage.getItem('fontSize') || 'md';
+            document.documentElement.classList.remove('font-size-sm', 'font-size-md', 'font-size-lg', 'font-size-xl');
             document.documentElement.classList.add('font-size-' + fontSize);
 
             // Client-side Unique Device / Browser Profile Binding
