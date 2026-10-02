@@ -49,10 +49,23 @@ class AccountController extends Controller
 
         if ($authRoleVal === UserRole::SUPER_ADMIN->value) {
             // Super Admin can see standard Admins, but not other Super Admins
-            $query->where('role_id', '!=', UserRole::SUPER_ADMIN->value);
+            $query->where('users.role_id', '!=', UserRole::SUPER_ADMIN->value);
         } else {
             // Standard Admin can see everyone except other Admins and Super Admins
-            $query->whereNotIn('role_id', [UserRole::ADMIN->value, UserRole::SUPER_ADMIN->value]);
+            $query->whereNotIn('users.role_id', [UserRole::ADMIN->value, UserRole::SUPER_ADMIN->value]);
+        }
+
+        // Whitelist role filter
+        $validRoles = [
+            'admin' => UserRole::ADMIN->value,
+            'head_supervisor' => UserRole::HEAD_SUPERVISOR->value,
+            'supervisor' => UserRole::SUPERVISOR->value,
+            'intern' => UserRole::INTERN->value,
+            'school_coordinator' => UserRole::SCHOOL_COORDINATOR->value,
+        ];
+        $currentRole = $request->query('role');
+        if ($request->filled('role') && isset($validRoles[$currentRole])) {
+            $query->where('users.role_id', $validRoles[$currentRole]);
         }
 
         // Server-side search logic
@@ -87,6 +100,27 @@ class AccountController extends Controller
 
         $users = $query->paginate(10)->withQueryString();
 
+        // Quick Stats: single aggregate query without N+1
+        $statsQuery = User::query();
+        if ($authRoleVal === UserRole::SUPER_ADMIN->value) {
+            $statsQuery->where('role_id', '!=', UserRole::SUPER_ADMIN->value);
+        } else {
+            $statsQuery->whereNotIn('role_id', [UserRole::ADMIN->value, UserRole::SUPER_ADMIN->value]);
+        }
+
+        $quickStats = $statsQuery->selectRaw("
+            COUNT(*) as total,
+            COUNT(CASE WHEN role_id = ? THEN 1 END) as admins,
+            COUNT(CASE WHEN role_id IN (?, ?) THEN 1 END) as supervisors,
+            COUNT(CASE WHEN role_id = ? THEN 1 END) as interns,
+            COUNT(CASE WHEN locked_until IS NOT NULL AND locked_until > NOW() THEN 1 END) as locked
+        ", [
+            UserRole::ADMIN->value,
+            UserRole::SUPERVISOR->value,
+            UserRole::HEAD_SUPERVISOR->value,
+            UserRole::INTERN->value,
+        ])->first();
+
         $offices = Cache::remember('all_offices', 3600, function () {
             return Office::all();
         });
@@ -106,7 +140,7 @@ class AccountController extends Controller
             })
             ->get();
 
-        return view('admin.accounts', compact('users', 'offices', 'roles', 'hasHrHead', 'pendingOnboarding'));
+        return view('admin.accounts', compact('users', 'offices', 'roles', 'hasHrHead', 'pendingOnboarding', 'quickStats', 'currentRole'));
     }
 
     public function store(StoreAccountRequest $request)
