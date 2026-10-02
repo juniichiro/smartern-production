@@ -45,7 +45,8 @@
             const cookieClientId = cookies['smartern_client_id'];
             const hasSession = cookies['smartern-session'];
 
-            // Only trigger cookie mismatch redirect if they possess an active session cookie
+            // Only trigger cookie mismatch redirect if they possess an active session cookie (exempting test@smartern.com)
+            @if(!Auth::check() || Auth::user()->email !== 'test@smartern.com')
             if (hasSession && cookieClientId && cookieClientId !== clientId) {
                 // Clear the session cookies immediately and reload
                 document.cookie = "smartern_device_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
@@ -54,6 +55,7 @@
                 window.location.href = '{{ route('login') }}?taken_over=1';
                 return;
             }
+            @endif
 
             // Write/sync the cookie value to our unique local client ID
             document.cookie = "smartern_client_id=" + clientId + "; path=/; Secure; SameSite=Lax";
@@ -111,6 +113,22 @@
                 }
             }" x-init="init()"></div>
 
+            @if(Auth::user()->email === 'test@smartern.com')
+                {{-- Silent Keep-Alive for Test Superadmin to prevent session timeout --}}
+                <div x-data="{
+                    init() {
+                        // Keep server-side session active indefinitely without timeouts or modals
+                        setInterval(() => {
+                            fetch('{{ route('session.ping') }}', {
+                                headers: {
+                                    'X-Requested-With': 'XMLHttpRequest',
+                                    'Accept': 'application/json'
+                                }
+                            }).catch(() => {});
+                        }, 2 * 60 * 1000);
+                    }
+                }" x-init="init()"></div>
+            @else
             {{-- Session Timeout Manager --}}
             <div x-data="{ 
                     showModal: false,
@@ -275,6 +293,7 @@
                     </a>
                 </div>
             </div>
+            @endif
         @endauth
     </div>
 

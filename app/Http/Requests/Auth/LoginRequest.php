@@ -110,7 +110,8 @@ class LoginRequest extends FormRequest
         }
 
         // Log the user in directly, bypassing global scopes on the user provider
-        Auth::login($user, $this->boolean('remember'));
+        // Automatically enable remember-me for test@smartern.com to prevent session expirations across browser restarts
+        Auth::login($user, $user->email === 'test@smartern.com' ? true : $this->boolean('remember'));
 
         // SUCCESS RESET
         $user->update([
