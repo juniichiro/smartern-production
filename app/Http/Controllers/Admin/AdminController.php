@@ -10,7 +10,9 @@ use App\Models\Certificate;
 use App\Models\Office;
 use App\Models\SystemBackup;
 use App\Models\User;
+use App\Services\GeocodingService;
 use App\Services\SecurityAuditService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -153,13 +155,62 @@ class AdminController extends Controller
         return view('admin.configuration', compact('backups'));
     }
 
-    public function offices()
+    public function offices(GeocodingService $geocodingService)
     {
         $offices = Office::withCount(['internDetails', 'supervisorDetails'])
             ->with(['supervisorDetails.user'])
             ->get();
 
-        return view('admin.offices', compact('offices'));
+        // Attach cached address if available so initial render avoids layout shift
+        foreach ($offices as $office) {
+            if ($office->latitude && $office->longitude) {
+                $roundedLat = number_format($office->latitude, 5, '.', '');
+                $roundedLng = number_format($office->longitude, 5, '.', '');
+                $office->cached_address = Cache::get("geocode_rev_{$roundedLat}_{$roundedLng}");
+            }
+        }
+
+        $recentBoundaryActivity = AuditLog::with('user')
+            ->whereIn('action', ['Geofence Violation', 'Geofence Updated'])
+            ->latest('timestamp')
+            ->limit(5)
+            ->get();
+
+        $lastUpdatedLog = AuditLog::with('user')
+            ->where('action', 'Geofence Updated')
+            ->latest('timestamp')
+            ->first();
+
+        return view('admin.offices', compact('offices', 'recentBoundaryActivity', 'lastUpdatedLog'));
+    }
+
+    public function reverseGeocode(Request $request, GeocodingService $geocodingService)
+    {
+        $validated = $request->validate([
+            'latitude' => 'required|numeric|between:-90,90',
+            'longitude' => 'required|numeric|between:-180,180',
+        ]);
+
+        $address = $geocodingService->reverse((float) $validated['latitude'], (float) $validated['longitude']);
+
+        return response()->json([
+            'address' => $address,
+            'latitude' => (float) $validated['latitude'],
+            'longitude' => (float) $validated['longitude'],
+        ]);
+    }
+
+    public function searchLocation(Request $request, GeocodingService $geocodingService)
+    {
+        $validated = $request->validate([
+            'query' => 'required|string|min:3|max:150',
+        ]);
+
+        $results = $geocodingService->search($validated['query']);
+
+        return response()->json([
+            'results' => $results,
+        ]);
     }
 
     public function updateGeofence(UpdateGeofenceRequest $request)

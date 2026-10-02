@@ -320,13 +320,13 @@ Alpine.data('geofenceManager', (officesData) => ({
     async fetchAddress(lat, lng) {
         this.geofenceData.address = 'Fetching address...';
         try {
-            const response = await fetch(`https:// nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`, {
-                headers: { 'User-Agent': 'SmarTern-IMS/1.0' }
+            const response = await fetch(`/admin/geofence/reverse-geocode?latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lng)}`, {
+                headers: { 'Accept': 'application/json' }
             });
             const data = await response.json();
-            this.geofenceData.address = data.display_name || 'Location name not found';
+            this.geofenceData.address = data.address || `${parseFloat(lat).toFixed(5)}, ${parseFloat(lng).toFixed(5)}`;
         } catch (error) {
-            this.geofenceData.address = 'Error fetching address';
+            this.geofenceData.address = `${parseFloat(lat).toFixed(5)}, ${parseFloat(lng).toFixed(5)}`;
             console.error('Geocoding error:', error);
         }
     },
@@ -429,12 +429,14 @@ Alpine.data('geofenceManager', (officesData) => ({
         if (!query || query.length < 3) return;
         this.isSearching = true;
         try {
-            const response = await fetch(`https:// nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=one`);
+            const response = await fetch(`/admin/geofence/search-location?query=${encodeURIComponent(query)}`, {
+                headers: { 'Accept': 'application/json' }
+            });
             const data = await response.json();
-            if (data.length > 0) {
-                const result = data[0];
-                this.geofenceData.latitude = parseFloat(result.lat).toFixed(8);
-                this.geofenceData.longitude = parseFloat(result.lon).toFixed(8);
+            if (data.results && data.results.length > 0) {
+                const result = data.results[0];
+                this.geofenceData.latitude = parseFloat(result.latitude).toFixed(8);
+                this.geofenceData.longitude = parseFloat(result.longitude).toFixed(8);
                 this.updateFromInputs();
             }
         } catch (error) {

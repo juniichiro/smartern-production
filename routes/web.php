@@ -127,6 +127,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/configuration', [AdminController::class, 'configuration'])->name('configuration');
         Route::get('/offices', [AdminController::class, 'offices'])->name('offices');
         Route::put('/geofence/update', [AdminController::class, 'updateGeofence'])->name('offices.geofence.update');
+        Route::get('/geofence/reverse-geocode', [AdminController::class, 'reverseGeocode'])->name('offices.geofence.reverse');
+        Route::get('/geofence/search-location', [AdminController::class, 'searchLocation'])->name('offices.geofence.search');
         Route::post('/configuration/backup', [AdminController::class, 'triggerManualBackup'])->name('backup.trigger');
         Route::post('/configuration/backup/upload', [AdminController::class, 'uploadSnapshot'])->name('backup.upload');
         Route::post('/configuration/backup/{backup}/restore', [AdminController::class, 'restoreSnapshot'])->name('backup.restore');

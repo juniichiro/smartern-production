@@ -43,4 +43,10 @@ return [
         'path' => env('PYTHON_PATH'),
     ],
 
+    'geocoding' => [
+        'base_url' => env('GEOCODING_BASE_URL', 'https://nominatim.openstreetmap.org'),
+        'user_agent' => env('GEOCODING_USER_AGENT', 'SmarTern-Admin/1.0 (smartern.edu; contact: admin@smartern.com)'),
+        'timeout' => (int) env('GEOCODING_TIMEOUT', 4),
+    ],
+
 ];
