@@ -15,85 +15,19 @@ use Illuminate\Support\Facades\Storage;
 
 class ScheduleController extends Controller
 {
-    public function index(AttendanceService $attendanceService)
+    public function index(Request $request, AttendanceService $attendanceService, \App\Services\ScheduleMonthBuilder $monthBuilder)
     {
         $user = Auth::user();
 
-        $portalType = 'Intern';
-        $userName = $user->internDetails->first_name ?? $user->name;
-        $userRole = $user->internDetails->office->name ?? 'Intern';
+        $data = $monthBuilder->build(
+            $user,
+            $request->query('month'),
+            $request->query('view'),
+            $request->query('date'),
+            $attendanceService
+        );
 
-        // Fetch API holidays for current, prev, and next year
-        $currentYear = now()->year;
-        $apiHolidays = collect();
-        for ($y = $currentYear - 1; $y <= $currentYear + 1; $y++) {
-            $apiHolidays = $apiHolidays->merge($attendanceService->getPhilippineHolidays($y));
-        }
-
-        $eventsByDate = [];
-
-        // Add API holidays
-        foreach ($apiHolidays as $dateStr => $holiday) {
-            $eventsByDate[$dateStr][] = [
-                'type' => 'holiday',
-                'description' => $holiday['description'],
-            ];
-        }
-
-        // Add database overrides (takes precedence/clears API holiday for the date)
-        $schedules = Schedule::whereNotNull('date')->orderBy('date', 'desc')->get();
-        foreach ($schedules as $item) {
-            $dateStr = $item->date->toDateString();
-            $eventsByDate[$dateStr] = [
-                [
-                    'id' => $item->getRouteKey(),
-                    'type' => $item->type,
-                    'description' => $item->description,
-                ],
-            ];
-        }
-
-        // Add Intern's tasks
-        $tasks = Task::where('intern_id', $user->id)->get();
-        foreach ($tasks as $task) {
-            $dateStr = $task->due_date->toDateString();
-
-            // Check if overdue: past due date AND not completed or submitted
-            $isOverdue = $task->due_date->isPast() &&
-                         $task->status !== TaskStatus::COMPLETED &&
-                         $task->status !== TaskStatus::SUBMITTED;
-
-            $eventsByDate[$dateStr][] = [
-                'id' => $task->getRouteKey(),
-                'type' => 'task',
-                'title' => $task->title,
-                'description' => $task->description,
-                'status' => $task->status->value ?? $task->status,
-                'is_overdue' => $isOverdue,
-            ];
-        }
-
-        // Add Absence Requests
-        $absences = AbsenceRequest::where('intern_id', $user->id)->get();
-        foreach ($absences as $absence) {
-            $dateStr = $absence->date->toDateString();
-            $eventsByDate[$dateStr][] = [
-                'id' => $absence->getRouteKey(),
-                'type' => 'absence_request', // Keep consistent key but add sub-type
-                'request_type' => $absence->type,
-                'reason' => $absence->reason,
-                'status' => $absence->status,
-                'remarks' => $absence->supervisor_remarks,
-                'has_attachment' => (bool) $absence->attachment_path,
-                'attachment_extension' => $absence->attachment_path ? strtolower(pathinfo($absence->attachment_path, PATHINFO_EXTENSION)) : null,
-            ];
-        }
-
-        $schedulesJson = json_encode($eventsByDate);
-        $scheduleAssignment = $user->internDetails->schedule_assignment ?? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-        $scheduleAssignmentJson = json_encode($scheduleAssignment);
-
-        return view('shared.schedule-read-only', compact('portalType', 'userName', 'userRole', 'schedulesJson', 'scheduleAssignmentJson'));
+        return view('intern.schedule', $data);
     }
 
     public function storeAbsenceRequest(Request $request)

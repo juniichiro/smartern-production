@@ -56,8 +56,8 @@ test('settings modal component renders with all required sections and design tok
     expect($html)->toContain('18px');
     expect($html)->toContain('20px');
 
-    // Live preview area
-    expect($html)->toContain('Live preview');
+    // Preview area (sentence case)
+    expect($html)->toContain('Preview');
     expect($html)->toContain('Alex Rivera');
     expect($html)->toContain('Active');
     expect($html)->toContain('View details');
@@ -72,6 +72,45 @@ test('settings modal component renders with all required sections and design tok
     expect($html)->toContain('Two-factor authentication');
     expect($html)->toContain('Authenticator application (TOTP)');
     expect($html)->toContain('Email verification (OTP)');
+});
+
+test('settings modal follow-up polish verifies sentence case copy, non-interactive preview, and layout tokens', function () {
+    $user = User::factory()->create([
+        'email' => 'test@smartern.com',
+        'role_id' => UserRole::ADMIN,
+    ]);
+
+    $this->actingAs($user);
+
+    $html = Blade::render('<x-settings-modal />');
+
+    // Redundant subtitle must be removed
+    expect($html)->not->toContain('Customize your appearance and text display scale.');
+
+    // Sentence case section labels and helpers
+    expect($html)->toContain('Choose how the portal looks.');
+    expect($html)->toContain('Changes text size across the portal.');
+
+    // Theme tooltip descriptions
+    expect($html)->toContain('title="Clean, high-contrast light theme"');
+    expect($html)->toContain('title="Easier on the eyes in low light"');
+    expect($html)->toContain('title="Matches your device\'s appearance"');
+
+    // Radio group accessibility & keyboard handling
+    expect($html)->toContain('handleThemeKeydown');
+    expect($html)->toContain('handleFontSizeKeydown');
+    expect($html)->toContain('role="radiogroup"');
+    expect($html)->toContain('role="radio"');
+
+    // Sample preview is non-interactive
+    expect($html)->toContain('aria-label="Sample preview"');
+    expect($html)->toContain('aria-disabled="true"');
+    expect($html)->toContain('pointer-events-none');
+
+    // Responsive structure and sticky footer tokens
+    expect($html)->toContain('canScrollDown');
+    expect($html)->toContain('safe-area-inset-bottom');
+    expect($html)->toContain('motion-reduce:transition-none');
 });
 
 test('settings trigger is present in sidebar for all signed-in user roles', function ($portalType) {
