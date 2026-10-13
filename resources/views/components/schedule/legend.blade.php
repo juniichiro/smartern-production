@@ -1,10 +1,9 @@
 <div 
-    x-show="currentView === 'month'" 
-    class="mt-4 p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-gray-900 border border-slate-200/80 dark:border-gray-800 shadow-xs flex flex-wrap items-center justify-between gap-3 text-xs text-slate-600 dark:text-slate-400"
+    class="px-3.5 sm:px-4 py-2 sm:py-2.5 bg-slate-50/70 dark:bg-gray-850/60 border-t border-slate-200/80 dark:border-gray-800 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 text-[11px] sm:text-xs text-slate-600 dark:text-slate-400 shrink-0"
     role="region"
     aria-label="Calendar legend"
 >
-    <div class="flex items-center gap-1.5 font-semibold text-slate-800 dark:text-slate-200 text-xs">
+    <div class="flex items-center gap-1.5 font-semibold text-slate-800 dark:text-slate-200 text-[11px] sm:text-xs shrink-0">
         <svg class="w-3.5 h-3.5 text-[#0B5694] dark:text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"/>
             <line x1="12" y1="16" x2="12" y2="12"/>
@@ -13,7 +12,7 @@
         <span>Legend:</span>
     </div>
 
-    <div class="flex items-center gap-3 sm:gap-5 flex-wrap">
+    <div class="flex items-center gap-2.5 sm:gap-4 flex-wrap">
         {{-- Holiday --}}
         <div class="flex items-center gap-1.5">
             <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></span>

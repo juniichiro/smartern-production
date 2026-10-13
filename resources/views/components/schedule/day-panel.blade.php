@@ -3,13 +3,13 @@
 ])
 
 <div 
-    class="rounded-3xl border border-slate-200/80 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 sm:p-6 shadow-xs flex flex-col justify-between text-left transition-all"
+    class="shrink-0 rounded-3xl border border-slate-200/80 dark:border-gray-800 bg-white dark:bg-gray-900 p-4 sm:p-5 shadow-xs flex flex-col justify-between text-left transition-all"
     role="region"
     aria-label="Selected date details"
 >
     <div>
         {{-- Header: Selected Date & Status Pill --}}
-        <div class="flex items-start justify-between gap-3 pb-4 border-b border-slate-100 dark:border-gray-800">
+        <div class="flex items-start justify-between gap-3 pb-3 border-b border-slate-100 dark:border-gray-800">
             <div>
                 <p class="text-[11px] font-bold text-[#0B5694] dark:text-blue-400 uppercase tracking-wider mb-0.5">
                     <span x-text="currentSelectedDay.is_today ? 'Today' : (currentSelectedDay.is_past ? 'Past date' : 'Selected date')">
@@ -45,16 +45,27 @@
             </span>
         </div>
 
-        {{-- Scheduled Hours Section (only when real schedule data exists) --}}
-        <template x-if="currentSelectedDay.scheduled_hours">
-            <div class="mt-4 p-3 rounded-2xl bg-slate-50 dark:bg-gray-850/50 border border-slate-200/60 dark:border-gray-800 flex items-center justify-between text-xs">
-                <span class="text-slate-500 dark:text-slate-400 font-medium">Scheduled shift</span>
+        {{-- Merged shift row & quiet status for regular workday (one compact block, no separate bordered box) --}}
+        <template x-if="currentSelectedDay.scheduled_hours && !currentSelectedDay.has_data">
+            <div class="mt-3 py-1">
+                <div class="flex items-center justify-between text-xs font-medium">
+                    <span class="text-slate-500 dark:text-slate-400">Scheduled shift</span>
+                    <span class="font-bold text-slate-800 dark:text-slate-200" x-text="currentSelectedDay.scheduled_hours"></span>
+                </div>
+                <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">Nothing else scheduled</p>
+            </div>
+        </template>
+
+        {{-- Shift row when other items (tasks, etc.) exist --}}
+        <template x-if="currentSelectedDay.scheduled_hours && currentSelectedDay.has_data">
+            <div class="mt-3 flex items-center justify-between text-xs py-1 font-medium">
+                <span class="text-slate-500 dark:text-slate-400">Scheduled shift</span>
                 <span class="font-bold text-slate-800 dark:text-slate-200" x-text="currentSelectedDay.scheduled_hours"></span>
             </div>
         </template>
 
         {{-- Contents Stack --}}
-        <div class="mt-4 space-y-3">
+        <div class="mt-2.5 space-y-2.5">
             {{-- 1. Holidays on this date --}}
             <template x-for="item in (currentSelectedDay.markers || []).filter(m => m.type === 'holiday')" :key="item.id || item.title">
                 <div class="p-3.5 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200/70 dark:border-emerald-900/50">
@@ -189,19 +200,15 @@
                 </div>
             </template>
 
-            {{-- 6. Quiet Empty State for regular day --}}
-            <template x-if="!currentSelectedDay.has_data">
-                <div class="py-6 px-4 rounded-2xl bg-slate-50/60 dark:bg-gray-850/30 border border-slate-200/50 dark:border-gray-800 text-center">
-                    <p class="text-xs font-medium text-slate-500 dark:text-slate-400 leading-relaxed">
-                        <span x-text="currentSelectedDay.is_weekend ? 'Weekend. Off duty.' : 'Regular workday. Nothing scheduled.'"></span>
-                    </p>
-                </div>
+            {{-- 6. Quiet Empty State when no scheduled hours and no events (e.g. weekend) --}}
+            <template x-if="!currentSelectedDay.scheduled_hours && !currentSelectedDay.has_data">
+                <p class="text-xs text-slate-400 dark:text-slate-500 py-1" x-text="currentSelectedDay.is_weekend ? 'Weekend. Off duty.' : 'Regular workday. Nothing scheduled.'"></p>
             </template>
         </div>
     </div>
 
     {{-- Bottom Action: Request Absence / Early Leave Button --}}
-    <div class="mt-5 pt-4 border-t border-slate-100 dark:border-gray-800">
+    <div class="mt-3.5 pt-3 border-t border-slate-100 dark:border-gray-800">
         <template x-if="currentSelectedDay.can_request_absence">
             <button 
                 type="button" 

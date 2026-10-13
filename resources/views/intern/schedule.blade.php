@@ -25,7 +25,7 @@
         {{-- ========================================================================= --}}
         {{-- 1. PAGE HEADER                                                            --}}
         {{-- ========================================================================= --}}
-        <header class="mb-5 sm:mb-6 shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-left">
+        <header class="mb-3.5 sm:mb-4 shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-left">
             <div>
                 {{-- Breadcrumb --}}
                 <div class="flex items-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">
@@ -48,14 +48,14 @@
 
         {{-- Session Flash Alerts --}}
         @if(session('success'))
-            <div class="mb-5 p-4 rounded-2xl bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/50 flex items-center gap-3 text-xs font-semibold">
+            <div class="mb-4 p-4 rounded-2xl bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/50 flex items-center gap-3 text-xs font-semibold">
                 <svg class="w-4 h-4 text-emerald-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                 <span>{{ session('success') }}</span>
             </div>
         @endif
 
         @if(session('error') || $errors->any())
-            <div class="mb-5 p-4 rounded-2xl bg-rose-50 text-rose-800 dark:bg-rose-950/40 dark:text-rose-300 border border-rose-200 dark:border-rose-800/50 flex items-start gap-3 text-xs font-semibold">
+            <div class="mb-4 p-4 rounded-2xl bg-rose-50 text-rose-800 dark:bg-rose-950/40 dark:text-rose-300 border border-rose-200 dark:border-rose-800/50 flex items-start gap-3 text-xs font-semibold">
                 <svg class="w-4 h-4 text-rose-600 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                 <div>
                     <div>{{ session('error') ?? 'Please check the following errors:' }}</div>
@@ -88,40 +88,38 @@
         {{-- ========================================================================= --}}
         {{-- 3. UNIFIED RESPONSIVE GRID (Calendar + Side Column)                       --}}
         {{-- ========================================================================= --}}
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start w-full">
-            
+        <div 
+            class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-stretch w-full min-h-0 {{ $currentView === 'month' ? 'lg:h-[calc(100dvh-13.5rem)] lg:min-h-[34.5rem]' : 'lg:min-h-[34.5rem]' }}"
+            :class="currentView === 'month' ? 'lg:h-[calc(100dvh-13.5rem)] lg:min-h-[34.5rem]' : 'lg:min-h-[34.5rem]'"
+        >
             {{-- CALENDAR COLUMN (8 COLS DESKTOP / 12 COLS TABLET & MOBILE) --}}
-            <div class="lg:col-span-7 xl:col-span-8 w-full min-w-0">
-                {{-- Month View Grid --}}
-                <div x-show="currentView === 'month'">
+            <div class="lg:col-span-7 xl:col-span-8 w-full min-w-0 lg:h-full lg:flex lg:flex-col min-h-0">
+                {{-- Month View Grid (includes legend inside as footer row) --}}
+                <div x-show="currentView === 'month'" class="w-full lg:h-full lg:flex lg:flex-col min-h-0">
                     <x-schedule.calendar-grid 
                         :monthTitle="$monthTitle"
                         :weeks="$weeks"
                         :selectedDateStr="$selectedDateStr"
                     />
-
-                    {{-- Compact Legend (under calendar, hidden in Agenda) --}}
-                    <x-schedule.legend />
                 </div>
 
                 {{-- Agenda View --}}
-                <x-schedule.agenda-view 
-                    :agendaDays="$agendaDays"
-                    :todayDateStr="$todayDateStr"
-                />
-
-                {{-- On Mobile/Tablet (<1024px), Upcoming List sits below the Calendar --}}
-                <div class="lg:hidden mt-6">
-                    <x-schedule.upcoming-list :upcomingItems="$upcomingItems" />
+                <div x-show="currentView === 'agenda'" class="w-full">
+                    <x-schedule.agenda-view 
+                        :agendaDays="$agendaDays"
+                        :todayDateStr="$todayDateStr"
+                    />
                 </div>
             </div>
 
-            {{-- SIDE COLUMN (4 COLS DESKTOP / HIDDEN ON MOBILE <640px AS BOTTOM SHEET) --}}
-            <div class="hidden lg:flex lg:col-span-5 xl:col-span-4 flex-col gap-6 w-full min-w-0 sticky top-6">
-                {{-- Selected Day Details Panel --}}
-                <x-schedule.day-panel :selectedDay="$selectedDay" />
+            {{-- SIDE COLUMN (4 COLS DESKTOP / STACKED ON TABLET 640-1023px / HIDDEN ON MOBILE <640px EXCEPT UPCOMING) --}}
+            <div class="mt-6 lg:mt-0 flex flex-col gap-4 sm:gap-5 lg:gap-4 lg:col-span-5 xl:col-span-4 w-full min-w-0 lg:h-full min-h-0">
+                {{-- Selected Day Details Panel (Visible on tablet & desktop; on mobile <640px opened via bottom-sheet) --}}
+                <div class="hidden sm:block shrink-0">
+                    <x-schedule.day-panel :selectedDay="$selectedDay" />
+                </div>
 
-                {{-- Upcoming 5 Items List --}}
+                {{-- Upcoming 5 Items List (takes remaining height on desktop, scrolls inside only) --}}
                 <x-schedule.upcoming-list :upcomingItems="$upcomingItems" />
             </div>
         </div>
@@ -210,8 +208,8 @@
                         window.history.pushState(null, '', newUrl);
                     }
 
-                    // On screens under 1024px, show bottom sheet
-                    if (window.innerWidth < 1024) {
+                    // On mobile screens under 640px, show bottom sheet
+                    if (window.innerWidth < 640) {
                         this.bottomSheetOpen = true;
                     }
                 },

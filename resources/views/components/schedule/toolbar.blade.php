@@ -10,9 +10,9 @@
     'pickerMonths' => [],
 ])
 
-<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
-    {{-- Left Row (or Row 1 on mobile): Month Title + Today + Picker Toggle --}}
-    <div class="flex items-center justify-between sm:justify-start gap-2 sm:gap-3 flex-wrap">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-center mb-3.5 sm:mb-4">
+    {{-- Left Row (or Row 1 on mobile): Month Title + Today + Picker Toggle (aligns with calendar panel) --}}
+    <div class="lg:col-span-7 xl:col-span-8 flex items-center justify-between sm:justify-start gap-2 sm:gap-3 flex-wrap">
         <div class="flex items-center gap-2">
             <h2 class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
                 {{ $monthTitle }}
@@ -92,16 +92,17 @@
         <button 
             type="button" 
             @click="goToToday()"
-            class="px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border cursor-pointer min-h-[2.25rem] flex items-center justify-center {{ $isTodaySelected ? 'opacity-50 cursor-not-allowed bg-slate-100 dark:bg-gray-800 text-slate-400 dark:text-gray-500 border-slate-200 dark:border-gray-700' : 'bg-white dark:bg-gray-900 text-slate-700 dark:text-slate-200 border-slate-200/80 dark:border-gray-800 hover:bg-slate-50 dark:hover:bg-gray-800/80 text-[#0B5694] dark:text-blue-400' }}"
+            class="px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border min-h-[2.25rem] flex items-center justify-center {{ $isTodaySelected ? 'bg-slate-100 dark:bg-gray-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-gray-700 cursor-default' : 'bg-white dark:bg-gray-900 text-[#0B5694] dark:text-blue-400 border-slate-200/80 dark:border-gray-800 hover:bg-slate-50 dark:hover:bg-gray-800/80 cursor-pointer shadow-xs' }}"
             {{ $isTodaySelected ? 'disabled' : '' }}
-            aria-label="Go to today"
+            aria-label="{{ $isTodaySelected ? 'Already viewing today' : 'Go to today' }}"
+            title="{{ $isTodaySelected ? 'Already viewing today' : 'Go to today' }}"
         >
             Today
         </button>
     </div>
 
-    {{-- Right Row (or Row 2 on mobile): Arrows + Segmented Control --}}
-    <div class="flex items-center justify-between sm:justify-end gap-2 sm:gap-3">
+    {{-- Right Row (or Row 2 on mobile): Arrows + Segmented Control (aligns with side column) --}}
+    <div class="lg:col-span-5 xl:col-span-4 flex items-center justify-between sm:justify-end gap-2 sm:gap-3">
         {{-- Previous / Next Month Arrows --}}
         <div class="flex items-center gap-1 bg-white dark:bg-gray-900 border border-slate-200/80 dark:border-gray-800 rounded-xl p-0.5 shadow-xs">
             <button 
