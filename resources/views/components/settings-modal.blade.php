@@ -11,7 +11,7 @@
     x-on:close-modal.window="if ($event.detail === 'system-settings-modal') closeModal()"
     x-on:keydown.escape.window="if (isOpen) closeModal()"
     x-on:keydown.tab="handleTabKey($event)"
-    class="fixed inset-0 z-[150] overflow-y-auto px-3 sm:px-4 py-4 sm:py-8 flex items-end sm:items-center justify-center"
+    class="fixed inset-0 z-[150] overflow-hidden p-0 sm:p-4 md:p-6 flex items-end sm:items-center justify-center"
     style="display: none;"
     role="dialog"
     aria-modal="true"
@@ -20,10 +20,10 @@
     {{-- Dimmed, blurred overlay backdrop --}}
     <div 
         x-show="isOpen"
-        x-transition:enter="ease-out duration-250"
+        x-transition:enter="ease-out duration-200 motion-reduce:transition-none"
         x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100"
-        x-transition:leave="ease-in duration-200"
+        x-transition:leave="ease-in duration-150 motion-reduce:transition-none"
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
         @click="closeModal()"
@@ -34,19 +34,19 @@
     {{-- Modal Card Container --}}
     <div 
         x-show="isOpen"
-        x-transition:enter="ease-out duration-250"
-        x-transition:enter-start="opacity-0 translate-y-6 sm:translate-y-0 sm:scale-95"
+        x-transition:enter="ease-out duration-200 motion-reduce:transition-none"
+        x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
         x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
-        x-transition:leave="ease-in duration-200"
+        x-transition:leave="ease-in duration-150 motion-reduce:transition-none"
         x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-        x-transition:leave-end="opacity-0 translate-y-6 sm:translate-y-0 sm:scale-95"
-        class="relative w-full max-w-4xl bg-white dark:bg-gray-900 rounded-t-[24px] sm:rounded-[24px] shadow-2xl border border-slate-200/80 dark:border-gray-800 flex flex-col sm:flex-row overflow-hidden max-h-[92vh] sm:max-h-[660px] text-left transform transition-all z-10"
+        x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+        class="relative w-full h-[100dvh] max-h-[100dvh] sm:h-[38.75rem] sm:max-h-[90vh] sm:max-h-[90dvh] sm:w-[90vw] lg:w-full lg:max-w-4xl bg-white dark:bg-gray-900 rounded-none sm:rounded-2xl shadow-2xl border-0 sm:border border-slate-200/80 dark:border-gray-800 flex flex-col sm:flex-row overflow-hidden text-left transform transition-all z-10"
         @click.stop
     >
         {{-- ========================================================================= --}}
         {{-- LEFT NAVIGATION PANEL (Desktop: >= 640px)                                  --}}
         {{-- ========================================================================= --}}
-        <aside class="hidden sm:flex sm:w-52 md:w-56 shrink-0 bg-slate-50/70 dark:bg-gray-950/50 border-r border-slate-200/80 dark:border-gray-800 flex-col justify-between p-5">
+        <aside class="hidden sm:flex sm:w-44 md:w-48 lg:w-56 shrink-0 bg-slate-50/70 dark:bg-gray-950/50 border-r border-slate-200/80 dark:border-gray-800 flex-col justify-between p-4 sm:p-5">
             <div class="space-y-5">
                 {{-- Header (Title only, no redundant subtitle) --}}
                 <div class="px-1">
@@ -72,10 +72,10 @@
                         aria-controls="panel-general"
                         :tabindex="activeTab === 'general' ? 0 : -1"
                         @click="activeTab = 'general'"
-                        class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all text-left min-h-[44px] cursor-pointer"
+                        class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs transition-all text-left min-h-[2.75rem] cursor-pointer outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0B5694] dark:focus-visible:ring-blue-400 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-950"
                         :class="activeTab === 'general' 
-                            ? 'bg-blue-50 text-[#0B5694] dark:bg-blue-950/40 dark:text-blue-400 border border-blue-200/60 dark:border-blue-800/40 shadow-xs' 
-                            : 'text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-gray-200 hover:bg-slate-100/70 dark:hover:bg-gray-850/60 border border-transparent'"
+                            ? 'bg-blue-50/80 text-[#0B5694] dark:bg-blue-950/40 dark:text-blue-400 font-semibold' 
+                            : 'text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-gray-200 hover:bg-slate-100/70 dark:hover:bg-gray-800/50 font-medium'"
                     >
                         <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="4" y1="21" x2="4" y2="14"/>
@@ -100,10 +100,10 @@
                         aria-controls="panel-security"
                         :tabindex="activeTab === 'security' ? 0 : -1"
                         @click="activeTab = 'security'"
-                        class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all text-left min-h-[44px] cursor-pointer"
+                        class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs transition-all text-left min-h-[2.75rem] cursor-pointer outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0B5694] dark:focus-visible:ring-blue-400 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-950"
                         :class="activeTab === 'security' 
-                            ? 'bg-blue-50 text-[#0B5694] dark:bg-blue-950/40 dark:text-blue-400 border border-blue-200/60 dark:border-blue-800/40 shadow-xs' 
-                            : 'text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-gray-200 hover:bg-slate-100/70 dark:hover:bg-gray-850/60 border border-transparent'"
+                            ? 'bg-blue-50/80 text-[#0B5694] dark:bg-blue-950/40 dark:text-blue-400 font-semibold' 
+                            : 'text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-gray-200 hover:bg-slate-100/70 dark:hover:bg-gray-800/50 font-medium'"
                     >
                         <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
@@ -115,7 +115,7 @@
             </div>
 
             {{-- Footer (SmarTern v1.0) --}}
-            <div class="pt-4 border-t border-slate-200/60 dark:border-gray-800/60 text-xs font-semibold text-slate-400 dark:text-gray-400 px-1">
+            <div class="pt-3 border-t border-slate-200/60 dark:border-gray-800/60 text-xs font-semibold text-slate-400 dark:text-gray-400 px-1">
                 SmarTern v1.0
             </div>
         </aside>
@@ -123,45 +123,52 @@
         {{-- ========================================================================= --}}
         {{-- TOP NAVIGATION STRIP (Mobile: < 640px)                                     --}}
         {{-- ========================================================================= --}}
-        <div class="sm:hidden shrink-0 bg-slate-50/80 dark:bg-gray-950/60 border-b border-slate-200/80 dark:border-gray-800 p-4 space-y-3">
-            <div class="flex items-center justify-between">
-                <h2 class="text-base font-bold text-slate-900 dark:text-white tracking-tight">
-                    Settings
-                </h2>
-                <button 
-                    type="button" 
-                    @click="closeModal()" 
-                    class="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-gray-200 hover:bg-slate-200/60 dark:hover:bg-gray-800 transition-colors cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center"
-                    aria-label="Close settings"
-                >
-                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                </button>
-            </div>
+        {{-- Mobile Fixed Header: Title + Close Button --}}
+        <div class="sm:hidden shrink-0 bg-white dark:bg-gray-900 border-b border-slate-200/80 dark:border-gray-800 px-4 py-3 pt-[max(0.75rem,env(safe-area-inset-top))] flex items-center justify-between z-10">
+            <h2 class="text-base font-bold text-slate-900 dark:text-white tracking-tight">
+                Settings
+            </h2>
+            <button 
+                type="button" 
+                @click="closeModal()" 
+                class="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-gray-200 hover:bg-slate-100 dark:hover:bg-gray-800 transition-colors cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0B5694] dark:focus-visible:ring-blue-400"
+                aria-label="Close settings"
+            >
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
 
-            {{-- Mobile Segmented Control Tab Strip --}}
+        {{-- Mobile Nav as Shared Segmented Control (Under Header) --}}
+        <div class="sm:hidden shrink-0 bg-slate-50/80 dark:bg-gray-950/60 border-b border-slate-200/80 dark:border-gray-800 p-2.5">
             <div 
                 role="tablist" 
-                class="grid grid-cols-2 gap-1 p-1 bg-slate-200/60 dark:bg-gray-850 rounded-xl"
-                @keydown.left.prevent="activeTab = 'general'"
-                @keydown.right.prevent="activeTab = 'security'"
+                class="grid grid-cols-2 gap-1 p-1 bg-slate-200/70 dark:bg-gray-800 rounded-xl"
+                @keydown.left.prevent="setMobileTab('general')"
+                @keydown.right.prevent="setMobileTab('security')"
             >
                 <button 
                     type="button" 
                     role="tab"
+                    id="mobile-tab-general"
                     :aria-selected="activeTab === 'general'"
+                    aria-controls="panel-general"
+                    :tabindex="activeTab === 'general' ? 0 : -1"
                     @click="activeTab = 'general'"
-                    class="py-2 px-3 rounded-lg text-xs font-semibold text-center transition-all cursor-pointer min-h-[38px]"
-                    :class="activeTab === 'general' ? 'bg-white dark:bg-gray-700 text-[#0B5694] dark:text-white shadow-xs' : 'text-slate-600 dark:text-gray-400'"
+                    class="py-2 px-3 rounded-lg text-xs font-semibold text-center transition-all cursor-pointer min-h-[44px] flex items-center justify-center outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0B5694] dark:focus-visible:ring-blue-400"
+                    :class="activeTab === 'general' ? 'bg-white dark:bg-gray-700 text-[#0B5694] dark:text-blue-400 shadow-xs' : 'text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white'"
                 >
                     General
                 </button>
                 <button 
                     type="button" 
                     role="tab"
+                    id="mobile-tab-security"
                     :aria-selected="activeTab === 'security'"
+                    aria-controls="panel-security"
+                    :tabindex="activeTab === 'security' ? 0 : -1"
                     @click="activeTab = 'security'"
-                    class="py-2 px-3 rounded-lg text-xs font-semibold text-center transition-all cursor-pointer min-h-[38px]"
-                    :class="activeTab === 'security' ? 'bg-white dark:bg-gray-700 text-[#0B5694] dark:text-white shadow-xs' : 'text-slate-600 dark:text-gray-400'"
+                    class="py-2 px-3 rounded-lg text-xs font-semibold text-center transition-all cursor-pointer min-h-[44px] flex items-center justify-center outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0B5694] dark:focus-visible:ring-blue-400"
+                    :class="activeTab === 'security' ? 'bg-white dark:bg-gray-700 text-[#0B5694] dark:text-blue-400 shadow-xs' : 'text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white'"
                 >
                     Security & MFA
                 </button>
@@ -172,18 +179,27 @@
         {{-- RIGHT CONTENT DISPLAY AREA (Scrollable, Internal)                         --}}
         {{-- ========================================================================= --}}
         <div class="flex-1 flex flex-col min-w-0 min-h-0 bg-white dark:bg-gray-900 relative">
-            {{-- Desktop Close Button --}}
-            <button 
-                type="button" 
-                @click="closeModal()" 
-                class="hidden sm:flex absolute top-4 right-4 z-20 p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-gray-200 hover:bg-slate-100 dark:hover:bg-gray-800 transition-colors cursor-pointer min-h-[40px] min-w-[40px] items-center justify-center"
-                aria-label="Close settings"
-            >
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
+            {{-- Desktop Fixed Header (Title + Close Button) --}}
+            <div class="hidden sm:flex shrink-0 items-center justify-between px-6 py-3.5 border-b border-slate-200/80 dark:border-gray-800 bg-white dark:bg-gray-900 z-10">
+                <h3 class="text-base font-bold text-slate-900 dark:text-white tracking-tight" x-text="activeTab === 'general' ? 'General' : 'Security & MFA'">
+                    General
+                </h3>
+                <button 
+                    type="button" 
+                    @click="closeModal()" 
+                    class="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-gray-200 hover:bg-slate-100 dark:hover:bg-gray-800 transition-colors cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0B5694] dark:focus-visible:ring-blue-400"
+                    aria-label="Close settings"
+                >
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
 
             {{-- Scrollable Tab Contents --}}
-            <div class="flex-1 overflow-y-auto p-5 sm:p-7 custom-scrollbar min-h-0">
+            <div 
+                x-ref="scrollBody"
+                @scroll.passive="checkScroll($el)"
+                class="flex-1 overflow-y-auto p-4 sm:p-6 custom-scrollbar min-h-0 relative"
+            >
                 {{-- ================================================================= --}}
                 {{-- TAB PANEL 1: GENERAL (Appearance & Text Scaling)                  --}}
                 {{-- ================================================================= --}}
@@ -192,144 +208,128 @@
                     role="tabpanel" 
                     id="panel-general" 
                     aria-labelledby="tab-general"
-                    class="space-y-6 sm:space-y-7"
+                    class="space-y-4 sm:space-y-5"
                 >
-                    {{-- Pane Header --}}
-                    <div>
-                        <h3 class="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
-                            General
-                        </h3>
-                        <p class="text-xs sm:text-sm font-medium text-slate-500 dark:text-gray-400 mt-0.5">
-                            Customize your appearance and text display scale.
-                        </p>
-                    </div>
-
                     {{-- 1. Theme Selection (3 Options: Light, Dark, System) --}}
-                    <div class="space-y-3">
+                    <div class="space-y-2">
                         <div>
-                            <span class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                            <h4 class="text-xs font-bold text-slate-900 dark:text-white">
                                 Theme
-                            </span>
-                            <p class="text-xs font-medium text-slate-500 dark:text-gray-400 mt-0.5">
-                                Select your preferred visual theme across the portal.
+                            </h4>
+                            <p class="text-xs text-slate-500 dark:text-gray-400">
+                                Choose how the portal looks.
                             </p>
                         </div>
 
                         {{-- 3 Selectable Theme Cards --}}
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" role="radiogroup" aria-label="Theme selection">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5" role="radiogroup" aria-label="Theme selection">
                             {{-- Light Card --}}
                             <div 
                                 role="radio"
+                                data-theme-value="light"
                                 :aria-checked="themeMode === 'light'"
-                                tabindex="0"
+                                :tabindex="themeMode === 'light' ? 0 : -1"
                                 @click="setThemeMode('light')"
-                                @keydown.space.prevent="setThemeMode('light')"
-                                @keydown.enter.prevent="setThemeMode('light')"
-                                class="relative rounded-2xl p-4 transition-all cursor-pointer min-h-[110px] flex flex-col justify-between select-none"
+                                @keydown="handleThemeKeydown($event, 'light')"
+                                title="Clean, high-contrast light theme"
+                                class="relative rounded-xl p-3 transition-all cursor-pointer min-h-[3rem] flex items-center justify-between select-none outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0B5694] dark:focus-visible:ring-blue-400 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900"
                                 :class="themeMode === 'light'
-                                    ? 'border-2 border-[#0B5694] dark:border-blue-500 bg-blue-50/50 dark:bg-blue-950/20 shadow-xs'
-                                    : 'border border-slate-200/90 dark:border-gray-800 bg-white dark:bg-gray-850 hover:border-slate-300 dark:hover:border-gray-700'"
+                                    ? 'border-2 border-[#0B5694] dark:border-blue-500 bg-blue-50/50 dark:bg-blue-950/25 shadow-xs'
+                                    : 'border border-slate-200/90 dark:border-gray-800 bg-white dark:bg-gray-850 hover:border-slate-300 dark:hover:border-gray-700 hover:bg-slate-50/70 dark:hover:bg-gray-800/50'"
                             >
-                                <div class="flex items-start justify-between gap-2">
-                                    <div class="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-900/40 flex items-center justify-center shrink-0">
-                                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <div class="w-7 h-7 rounded-lg bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-900/40 flex items-center justify-center shrink-0">
+                                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                                             <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
                                         </svg>
                                     </div>
-                                    <template x-if="themeMode === 'light'">
-                                        <div class="w-5 h-5 rounded-full bg-[#0B5694] dark:bg-blue-500 text-white flex items-center justify-center shrink-0">
-                                            <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                                        </div>
-                                    </template>
+                                    <span class="text-xs font-bold text-slate-900 dark:text-white truncate">Light</span>
                                 </div>
-                                <div class="mt-3">
-                                    <h4 class="text-xs font-bold text-slate-900 dark:text-white">Light</h4>
-                                    <p class="text-[11px] font-medium text-slate-500 dark:text-gray-400 mt-0.5 leading-snug">Clean, high-contrast light theme</p>
-                                </div>
+                                <template x-if="themeMode === 'light'">
+                                    <div class="w-4 h-4 rounded-full bg-[#0B5694] dark:bg-blue-500 text-white flex items-center justify-center shrink-0">
+                                        <svg class="w-2.5 h-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                    </div>
+                                </template>
                             </div>
 
                             {{-- Dark Card --}}
                             <div 
                                 role="radio"
+                                data-theme-value="dark"
                                 :aria-checked="themeMode === 'dark'"
-                                tabindex="0"
+                                :tabindex="themeMode === 'dark' ? 0 : -1"
                                 @click="setThemeMode('dark')"
-                                @keydown.space.prevent="setThemeMode('dark')"
-                                @keydown.enter.prevent="setThemeMode('dark')"
-                                class="relative rounded-2xl p-4 transition-all cursor-pointer min-h-[110px] flex flex-col justify-between select-none"
+                                @keydown="handleThemeKeydown($event, 'dark')"
+                                title="Easier on the eyes in low light"
+                                class="relative rounded-xl p-3 transition-all cursor-pointer min-h-[3rem] flex items-center justify-between select-none outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0B5694] dark:focus-visible:ring-blue-400 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900"
                                 :class="themeMode === 'dark'
-                                    ? 'border-2 border-[#0B5694] dark:border-blue-500 bg-blue-50/50 dark:bg-blue-950/20 shadow-xs'
-                                    : 'border border-slate-200/90 dark:border-gray-800 bg-white dark:bg-gray-850 hover:border-slate-300 dark:hover:border-gray-700'"
+                                    ? 'border-2 border-[#0B5694] dark:border-blue-500 bg-blue-50/50 dark:bg-blue-950/25 shadow-xs'
+                                    : 'border border-slate-200/90 dark:border-gray-800 bg-white dark:bg-gray-850 hover:border-slate-300 dark:hover:border-gray-700 hover:bg-slate-50/70 dark:hover:bg-gray-800/50'"
                             >
-                                <div class="flex items-start justify-between gap-2">
-                                    <div class="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-[#0B5694] dark:text-blue-400 border border-blue-200/60 dark:border-blue-900/40 flex items-center justify-center shrink-0">
-                                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <div class="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-[#0B5694] dark:text-blue-400 border border-blue-200/60 dark:border-blue-900/40 flex items-center justify-center shrink-0">
+                                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                                             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
                                         </svg>
                                     </div>
-                                    <template x-if="themeMode === 'dark'">
-                                        <div class="w-5 h-5 rounded-full bg-[#0B5694] dark:bg-blue-500 text-white flex items-center justify-center shrink-0">
-                                            <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                                        </div>
-                                    </template>
+                                    <span class="text-xs font-bold text-slate-900 dark:text-white truncate">Dark</span>
                                 </div>
-                                <div class="mt-3">
-                                    <h4 class="text-xs font-bold text-slate-900 dark:text-white">Dark</h4>
-                                    <p class="text-[11px] font-medium text-slate-500 dark:text-gray-400 mt-0.5 leading-snug">Easier on the eyes in low light</p>
-                                </div>
+                                <template x-if="themeMode === 'dark'">
+                                    <div class="w-4 h-4 rounded-full bg-[#0B5694] dark:bg-blue-500 text-white flex items-center justify-center shrink-0">
+                                        <svg class="w-2.5 h-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                    </div>
+                                </template>
                             </div>
 
                             {{-- System Card --}}
                             <div 
                                 role="radio"
+                                data-theme-value="system"
                                 :aria-checked="themeMode === 'system'"
-                                tabindex="0"
+                                :tabindex="themeMode === 'system' ? 0 : -1"
                                 @click="setThemeMode('system')"
-                                @keydown.space.prevent="setThemeMode('system')"
-                                @keydown.enter.prevent="setThemeMode('system')"
-                                class="relative rounded-2xl p-4 transition-all cursor-pointer min-h-[110px] flex flex-col justify-between select-none"
+                                @keydown="handleThemeKeydown($event, 'system')"
+                                title="Matches your device's appearance"
+                                class="relative rounded-xl p-3 transition-all cursor-pointer min-h-[3rem] flex items-center justify-between select-none outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0B5694] dark:focus-visible:ring-blue-400 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900"
                                 :class="themeMode === 'system'
-                                    ? 'border-2 border-[#0B5694] dark:border-blue-500 bg-blue-50/50 dark:bg-blue-950/20 shadow-xs'
-                                    : 'border border-slate-200/90 dark:border-gray-800 bg-white dark:bg-gray-850 hover:border-slate-300 dark:hover:border-gray-700'"
+                                    ? 'border-2 border-[#0B5694] dark:border-blue-500 bg-blue-50/50 dark:bg-blue-950/25 shadow-xs'
+                                    : 'border border-slate-200/90 dark:border-gray-800 bg-white dark:bg-gray-850 hover:border-slate-300 dark:hover:border-gray-700 hover:bg-slate-50/70 dark:hover:bg-gray-800/50'"
                             >
-                                <div class="flex items-start justify-between gap-2">
-                                    <div class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-gray-800 text-slate-600 dark:text-gray-300 border border-slate-200 dark:border-gray-700 flex items-center justify-center shrink-0">
-                                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <div class="w-7 h-7 rounded-lg bg-slate-100 dark:bg-gray-800 text-slate-600 dark:text-gray-300 border border-slate-200 dark:border-gray-700 flex items-center justify-center shrink-0">
+                                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                                             <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
                                             <line x1="8" y1="21" x2="16" y2="21"/>
                                             <line x1="12" y1="17" x2="12" y2="21"/>
                                         </svg>
                                     </div>
-                                    <template x-if="themeMode === 'system'">
-                                        <div class="w-5 h-5 rounded-full bg-[#0B5694] dark:bg-blue-500 text-white flex items-center justify-center shrink-0">
-                                            <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                                        </div>
-                                    </template>
-                                </div>
-                                <div class="mt-3">
-                                    <div class="flex items-center gap-1.5">
-                                        <h4 class="text-xs font-bold text-slate-900 dark:text-white">System</h4>
-                                        <span class="text-[10px] font-semibold text-slate-400 dark:text-gray-400" x-text="systemIsDark ? '(Dark)' : '(Light)'"></span>
+                                    <div class="flex items-center gap-1.5 min-w-0">
+                                        <span class="text-xs font-bold text-slate-900 dark:text-white truncate">System</span>
+                                        <span class="text-[10px] font-semibold text-slate-400 dark:text-gray-400 shrink-0" x-text="systemIsDark ? '(Dark)' : '(Light)'"></span>
                                     </div>
-                                    <p class="text-[11px] font-medium text-slate-500 dark:text-gray-400 mt-0.5 leading-snug">Matches your device's appearance</p>
                                 </div>
+                                <template x-if="themeMode === 'system'">
+                                    <div class="w-4 h-4 rounded-full bg-[#0B5694] dark:bg-blue-500 text-white flex items-center justify-center shrink-0">
+                                        <svg class="w-2.5 h-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                    </div>
+                                </template>
                             </div>
                         </div>
                     </div>
 
                     {{-- 2. Text Display Scale (4 Steps: Small, Medium, Large, Extra large) --}}
-                    <div class="space-y-3">
+                    <div class="space-y-2">
                         <div>
-                            <span class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-                                Text display scale
-                            </span>
-                            <p class="text-xs font-medium text-slate-500 dark:text-gray-400 mt-0.5">
-                                Adjust readable text sizing across all dashboard panels, forms, and dialogs.
+                            <h4 class="text-xs font-bold text-slate-900 dark:text-white">
+                                Text size
+                            </h4>
+                            <p class="text-xs text-slate-500 dark:text-gray-400">
+                                Changes text size across the portal.
                             </p>
                         </div>
 
-                        {{-- 4 Selectable Scale Cards --}}
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" role="radiogroup" aria-label="Text scale selection">
+                        {{-- 4 Selectable Scale Cards in 1 Row on Desktop, 2x2 on Mobile --}}
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" role="radiogroup" aria-label="Text scale selection">
                             @foreach([
                                 'sm' => ['title' => 'Small', 'size' => '14px', 'sampleClass' => 'text-xs'],
                                 'md' => ['title' => 'Medium', 'size' => '16px (Default)', 'sampleClass' => 'text-sm'],
@@ -338,129 +338,99 @@
                             ] as $key => $meta)
                                 <div 
                                     role="radio"
+                                    data-size-value="{{ $key }}"
                                     :aria-checked="fontSize === '{{ $key }}'"
-                                    tabindex="0"
+                                    :tabindex="fontSize === '{{ $key }}' ? 0 : -1"
                                     @click="setFontSize('{{ $key }}')"
-                                    @keydown.space.prevent="setFontSize('{{ $key }}')"
-                                    @keydown.enter.prevent="setFontSize('{{ $key }}')"
-                                    class="relative rounded-xl p-3 transition-all cursor-pointer min-h-[72px] flex flex-col justify-between select-none"
+                                    @keydown="handleFontSizeKeydown($event, '{{ $key }}')"
+                                    class="relative rounded-xl p-2.5 transition-all cursor-pointer min-h-[3.75rem] flex flex-col justify-between select-none outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0B5694] dark:focus-visible:ring-blue-400 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900"
                                     :class="fontSize === '{{ $key }}'
-                                        ? 'border-2 border-[#0B5694] dark:border-blue-500 bg-blue-50/50 dark:bg-blue-950/20 shadow-xs'
-                                        : 'border border-slate-200/90 dark:border-gray-800 bg-white dark:bg-gray-850 hover:border-slate-300 dark:hover:border-gray-700'"
+                                        ? 'border-2 border-[#0B5694] dark:border-blue-500 bg-blue-50/50 dark:bg-blue-950/25 shadow-xs'
+                                        : 'border border-slate-200/90 dark:border-gray-800 bg-white dark:bg-gray-850 hover:border-slate-300 dark:hover:border-gray-700 hover:bg-slate-50/70 dark:hover:bg-gray-800/50'"
                                 >
                                     <div class="flex items-center justify-between">
-                                        <span class="font-extrabold text-slate-700 dark:text-gray-200 {{ $meta['sampleClass'] }}">Aa</span>
+                                        <span class="font-extrabold text-slate-700 dark:text-gray-200 {{ $meta['sampleClass'] }} leading-none">Aa</span>
                                         <template x-if="fontSize === '{{ $key }}'">
-                                            <div class="w-4 h-4 rounded-full bg-[#0B5694] dark:bg-blue-500 text-white flex items-center justify-center shrink-0">
-                                                <svg class="w-2.5 h-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                            <div class="w-3.5 h-3.5 rounded-full bg-[#0B5694] dark:bg-blue-500 text-white flex items-center justify-center shrink-0">
+                                                <svg class="w-2 h-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                                             </div>
                                         </template>
                                     </div>
-                                    <div class="mt-2">
-                                        <div class="text-xs font-bold text-slate-900 dark:text-white">{{ $meta['title'] }}</div>
-                                        <div class="text-[10px] font-medium text-slate-400 dark:text-gray-400">{{ $meta['size'] }}</div>
+                                    <div class="mt-1.5 min-w-0">
+                                        <div class="text-xs font-bold text-slate-900 dark:text-white truncate">{{ $meta['title'] }}</div>
+                                        <div class="text-[10px] font-medium text-slate-400 dark:text-gray-400 truncate">{{ $meta['size'] }}</div>
                                     </div>
                                 </div>
                             @endforeach
                         </div>
                     </div>
 
-                    {{-- 3. Live Preview Area (Realistic UI Component) --}}
-                    <div class="space-y-2.5">
+                    {{-- 3. Preview Area (Realistic UI Component) --}}
+                    <div class="space-y-2">
                         <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-                                Live preview
-                            </span>
+                            <h4 class="text-xs font-bold text-slate-900 dark:text-white">
+                                Preview
+                            </h4>
                             <span 
-                                class="text-[11px] font-semibold text-[#0B5694] dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 border border-blue-200/60 dark:border-blue-800/40 px-2.5 py-0.5 rounded-full"
+                                class="text-[11px] font-semibold text-[#0B5694] dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 border border-blue-200/60 dark:border-blue-800/40 px-2 py-0.5 rounded-full"
                                 x-text="fontSize === 'sm' ? '14px · Small' : (fontSize === 'md' ? '16px · Medium' : (fontSize === 'lg' ? '18px · Large' : '20px · Extra large'))"
                             ></span>
                         </div>
 
-                        {{-- Preview Card --}}
-                        <div class="rounded-2xl border border-slate-200/90 dark:border-gray-800 bg-slate-50/70 dark:bg-gray-850/60 p-4 sm:p-5 space-y-4">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                                <div class="flex items-center gap-3">
+                        {{-- Compact Sample Preview Card (Non-interactive) --}}
+                        <div 
+                            class="rounded-xl border border-slate-200/90 dark:border-gray-800 bg-slate-50/70 dark:bg-gray-850/60 p-3 sm:p-3.5 space-y-2.5 pointer-events-none select-none"
+                            aria-hidden="true"
+                            aria-label="Sample preview"
+                            data-region="live-preview"
+                        >
+                            <div class="flex items-center justify-between gap-2.5">
+                                <div class="flex items-center gap-2.5 min-w-0">
                                     {{-- Avatar --}}
-                                    <div class="w-10 h-10 rounded-full bg-[#0B5694] dark:bg-blue-600 text-white font-bold flex items-center justify-center text-sm shadow-xs shrink-0">
+                                    <div class="w-8 h-8 rounded-full bg-[#0B5694] dark:bg-blue-600 text-white font-bold flex items-center justify-center text-xs shadow-xs shrink-0">
                                         AR
                                     </div>
-                                    <div>
-                                        <h4 class="text-sm font-bold text-slate-900 dark:text-white leading-tight">
+                                    <div class="min-w-0">
+                                        <h5 class="text-xs font-bold text-slate-900 dark:text-white leading-tight truncate">
                                             Alex Rivera
-                                        </h4>
-                                        <p class="text-xs font-medium text-slate-500 dark:text-gray-400 mt-0.5">
+                                        </h5>
+                                        <p class="text-[11px] font-medium text-slate-500 dark:text-gray-400 truncate">
                                             Intern · Information Technology
                                         </p>
                                     </div>
                                 </div>
 
                                 {{-- Status Pill --}}
-                                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40 self-start sm:self-auto shrink-0">
+                                <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40 shrink-0">
                                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                                     <span>Active</span>
                                 </div>
                             </div>
 
-                            <p class="text-xs font-medium text-slate-600 dark:text-gray-300 leading-relaxed">
+                            <p class="text-[11px] font-medium text-slate-600 dark:text-gray-300 leading-snug">
                                 Assigned to Manila Health Department · Office Geofence Verified
                             </p>
 
-                            {{-- Button Pair --}}
-                            <div class="flex items-center gap-2.5 pt-1">
-                                <button type="button" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-gray-800 text-slate-700 dark:text-gray-200 border border-slate-200 dark:border-gray-700 hover:bg-slate-50 dark:hover:bg-gray-750 transition-colors pointer-events-none">
+                            {{-- Button Pair (Non-interactive) --}}
+                            <div class="flex items-center gap-2 pt-0.5">
+                                <button 
+                                    type="button" 
+                                    tabindex="-1"
+                                    aria-disabled="true"
+                                    class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-white dark:bg-gray-800 text-slate-700 dark:text-gray-200 border border-slate-200 dark:border-gray-700 pointer-events-none"
+                                >
                                     View details
                                 </button>
-                                <button type="button" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-[#0B5694] hover:bg-[#084577] dark:bg-blue-600 dark:hover:bg-blue-700 text-white transition-colors pointer-events-none shadow-xs">
+                                <button 
+                                    type="button" 
+                                    tabindex="-1"
+                                    aria-disabled="true"
+                                    class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#0B5694] dark:bg-blue-600 text-white pointer-events-none shadow-xs"
+                                >
                                     Edit profile
                                 </button>
                             </div>
                         </div>
-                    </div>
-
-                    {{-- 4. Footer & Feedback Strip --}}
-                    <div class="pt-4 border-t border-slate-200/80 dark:border-gray-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <div class="flex items-center gap-2.5 text-xs text-slate-500 dark:text-gray-400">
-                            <span>Changes are saved automatically</span>
-                            <span 
-                                x-show="showSaveIndicator" 
-                                x-transition:enter="transition ease-out duration-200"
-                                x-transition:enter-start="opacity-0 scale-95"
-                                x-transition:enter-end="opacity-100 scale-100"
-                                x-transition:leave="transition ease-in duration-150"
-                                x-transition:leave-start="opacity-100 scale-100"
-                                x-transition:leave-end="opacity-0 scale-95"
-                                class="inline-flex items-center gap-1 font-semibold text-emerald-600 dark:text-emerald-400" 
-                                aria-live="polite"
-                            >
-                                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                                <span>Saved</span>
-                            </span>
-                        </div>
-
-                        <button 
-                            type="button" 
-                            @click="resetToDefaults()" 
-                            class="text-xs font-semibold text-slate-500 hover:text-[#0B5694] dark:text-gray-400 dark:hover:text-blue-400 underline underline-offset-2 transition-colors cursor-pointer self-start sm:self-auto min-h-[36px] flex items-center"
-                        >
-                            Reset to defaults
-                        </button>
-                    </div>
-
-                    {{-- Inline Undo Banner (Appears if user resets to default) --}}
-                    <div 
-                        x-show="showUndoBanner" 
-                        x-transition 
-                        class="p-3 rounded-xl bg-blue-50/80 dark:bg-blue-950/40 border border-blue-200/70 dark:border-blue-900/50 flex items-center justify-between text-xs text-[#0B5694] dark:text-blue-300"
-                    >
-                        <span>Display preferences reset to default.</span>
-                        <button 
-                            type="button" 
-                            @click="undoReset()" 
-                            class="font-bold underline ml-3 hover:text-[#084577] dark:hover:text-blue-200 cursor-pointer"
-                        >
-                            Undo
-                        </button>
                     </div>
                 </div>
 
@@ -472,14 +442,14 @@
                     role="tabpanel" 
                     id="panel-security" 
                     aria-labelledby="tab-security"
-                    class="space-y-6 sm:space-y-7"
+                    class="space-y-5 sm:space-y-6"
                 >
                     {{-- Pane Header --}}
                     <div>
-                        <h3 class="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+                        <h3 class="text-base font-bold text-slate-900 dark:text-white sm:hidden tracking-tight">
                             Security & MFA
                         </h3>
-                        <p class="text-xs sm:text-sm font-medium text-slate-500 dark:text-gray-400 mt-0.5">
+                        <p class="text-xs font-medium text-slate-500 dark:text-gray-400 mt-0.5">
                             Manage two-factor authentication and account protection methods.
                         </p>
                     </div>
@@ -855,6 +825,64 @@
                         </div>
                     </div>
                 </div>
+
+                {{-- Bottom Fade Gradient Overlay (Sticky inside scroll container) --}}
+                <div 
+                    class="pointer-events-none sticky bottom-0 left-0 right-0 h-6 -mb-6 bg-gradient-to-t from-white dark:from-gray-900 to-transparent transition-opacity duration-200"
+                    :class="canScrollDown ? 'opacity-100' : 'opacity-0'"
+                    aria-hidden="true"
+                ></div>
+            </div>
+
+            {{-- Sticky Footer (inside right pane, always visible on General tab) --}}
+            <div 
+                x-show="activeTab === 'general'"
+                class="shrink-0 px-4 sm:px-6 py-3 bg-white dark:bg-gray-900 border-t border-slate-200/80 dark:border-gray-800 transition-shadow pb-[max(0.75rem,env(safe-area-inset-bottom))]"
+                :class="canScrollDown ? 'shadow-[0_-4px_12px_rgba(0,0,0,0.05)] dark:shadow-[0_-4px_12px_rgba(0,0,0,0.25)]' : ''"
+            >
+                <div class="flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-gray-400 min-w-0">
+                        <span class="truncate">Changes are saved automatically</span>
+                        <span 
+                            x-show="showSaveIndicator" 
+                            x-transition:enter="transition ease-out duration-200"
+                            x-transition:enter-start="opacity-0 scale-95"
+                            x-transition:enter-end="opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-150"
+                            x-transition:leave-start="opacity-100 scale-100"
+                            x-transition:leave-end="opacity-0 scale-95"
+                            class="inline-flex items-center gap-1 font-semibold text-emerald-600 dark:text-emerald-400 shrink-0" 
+                            aria-live="polite"
+                        >
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Saved</span>
+                        </span>
+                    </div>
+
+                    <button 
+                        type="button" 
+                        @click="resetToDefaults()" 
+                        class="text-xs font-semibold text-slate-500 hover:text-[#0B5694] dark:text-gray-400 dark:hover:text-blue-400 underline underline-offset-2 transition-colors cursor-pointer shrink-0 min-h-[44px] px-2 flex items-center outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0B5694] dark:focus-visible:ring-blue-400 rounded-md"
+                    >
+                        Reset to defaults
+                    </button>
+                </div>
+
+                {{-- Inline Undo Banner (Appears if user resets to default) --}}
+                <div 
+                    x-show="showUndoBanner" 
+                    x-transition 
+                    class="mt-2.5 p-2.5 rounded-xl bg-blue-50/80 dark:bg-blue-950/40 border border-blue-200/70 dark:border-blue-900/50 flex items-center justify-between text-xs text-[#0B5694] dark:text-blue-300"
+                >
+                    <span>Display preferences reset to default.</span>
+                    <button 
+                        type="button" 
+                        @click="undoReset()" 
+                        class="font-bold underline ml-3 hover:text-[#084577] dark:hover:text-blue-200 cursor-pointer"
+                    >
+                        Undo
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -866,6 +894,11 @@ function settingsModalManager() {
         isOpen: false,
         activeTab: 'general',
         triggerElement: null,
+
+        // Layout & Scroll State
+        canScrollDown: false,
+        themeOptions: ['light', 'dark', 'system'],
+        fontSizeOptions: ['sm', 'md', 'lg', 'xl'],
 
         // Theme & Scaling
         themeMode: 'system',
@@ -936,6 +969,21 @@ function settingsModalManager() {
                 }
             } catch (e) {}
 
+            // Watch tab switch and font size changes to re-evaluate scroll overflow
+            this.$watch('activeTab', () => {
+                this.$nextTick(() => {
+                    if (this.$refs.scrollBody) {
+                        this.$refs.scrollBody.scrollTop = 0;
+                        this.checkScroll(this.$refs.scrollBody);
+                    }
+                });
+            });
+            this.$watch('fontSize', () => {
+                this.$nextTick(() => {
+                    this.checkScroll(this.$refs.scrollBody);
+                });
+            });
+
             // Sync initially without triggering noisy events
             this.applyTheme(false);
             this.applyFontSize(false);
@@ -950,6 +998,7 @@ function settingsModalManager() {
             document.body.classList.add('overflow-y-hidden');
 
             this.$nextTick(() => {
+                this.checkScroll(this.$refs.scrollBody);
                 const focusable = this.getFocusables()[0];
                 if (focusable) focusable.focus();
             });
@@ -963,9 +1012,15 @@ function settingsModalManager() {
             }
         },
 
+        checkScroll(el) {
+            const target = el || this.$refs.scrollBody;
+            if (!target) return;
+            this.canScrollDown = (target.scrollHeight - target.scrollTop - target.clientHeight) > 8;
+        },
+
         getFocusables() {
-            const selector = 'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
-            return [...this.$el.querySelectorAll(selector)].filter(el => !el.hasAttribute('disabled') && el.offsetParent !== null);
+            const selector = 'a[href], button:not([disabled]):not([tabindex="-1"]), input:not([disabled]):not([type="hidden"]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+            return [...this.$el.querySelectorAll(selector)].filter(el => !el.hasAttribute('disabled') && el.offsetParent !== null && !el.classList.contains('pointer-events-none'));
         },
 
         handleTabKey(e) {
@@ -987,12 +1042,78 @@ function settingsModalManager() {
             }
         },
 
+        setMobileTab(tab) {
+            this.activeTab = tab;
+            this.$nextTick(() => {
+                const el = document.getElementById('mobile-tab-' + tab);
+                if (el) el.focus();
+            });
+        },
+
         focusPrevTab() {
             this.activeTab = (this.activeTab === 'security') ? 'general' : 'security';
+            this.$nextTick(() => {
+                const el = document.getElementById('tab-' + this.activeTab);
+                if (el) el.focus();
+            });
         },
 
         focusNextTab() {
             this.activeTab = (this.activeTab === 'general') ? 'security' : 'general';
+            this.$nextTick(() => {
+                const el = document.getElementById('tab-' + this.activeTab);
+                if (el) el.focus();
+            });
+        },
+
+        handleThemeKeydown(e, currentMode) {
+            if (['ArrowRight', 'ArrowDown'].includes(e.key)) {
+                e.preventDefault();
+                const idx = this.themeOptions.indexOf(currentMode);
+                const next = this.themeOptions[(idx + 1) % this.themeOptions.length];
+                this.setThemeMode(next);
+                this.$nextTick(() => {
+                    const el = this.$el.querySelector(`[data-theme-value="${next}"]`);
+                    if (el) el.focus();
+                });
+            } else if (['ArrowLeft', 'ArrowUp'].includes(e.key)) {
+                e.preventDefault();
+                const idx = this.themeOptions.indexOf(currentMode);
+                const prev = this.themeOptions[(idx - 1 + this.themeOptions.length) % this.themeOptions.length];
+                this.setThemeMode(prev);
+                this.$nextTick(() => {
+                    const el = this.$el.querySelector(`[data-theme-value="${prev}"]`);
+                    if (el) el.focus();
+                });
+            } else if (e.key === ' ' || e.key === 'Enter') {
+                e.preventDefault();
+                this.setThemeMode(currentMode);
+            }
+        },
+
+        handleFontSizeKeydown(e, currentSize) {
+            if (['ArrowRight', 'ArrowDown'].includes(e.key)) {
+                e.preventDefault();
+                const idx = this.fontSizeOptions.indexOf(currentSize);
+                const next = this.fontSizeOptions[(idx + 1) % this.fontSizeOptions.length];
+                this.setFontSize(next);
+                this.$nextTick(() => {
+                    const el = this.$el.querySelector(`[data-size-value="${next}"]`);
+                    if (el) el.focus();
+                });
+            } else if (['ArrowLeft', 'ArrowUp'].includes(e.key)) {
+                e.preventDefault();
+                const idx = this.fontSizeOptions.indexOf(currentSize);
+                const prev = this.fontSizeOptions[(idx - 1 + this.fontSizeOptions.length) % this.fontSizeOptions.length];
+                this.setFontSize(prev);
+                this.$nextTick(() => {
+                    const el = this.$el.querySelector(`[data-size-value="${prev}"]`);
+                    if (el) el.focus();
+                });
+            } else if (e.key === ' ' || e.key === 'Enter') {
+                e.preventDefault();
+                this.setFontSize(currentSize);
+            }
         },
 
         setThemeMode(mode) {
